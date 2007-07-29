@@ -83,7 +83,7 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
 
   evas_object_event_callback_add (o, EVAS_CALLBACK_MOUSE_DOWN,
 	_button_cb_mouse_down, inst);
-  
+
   exalt_eth_init();
   return gcc;
 }/*}}}*/
@@ -144,7 +144,7 @@ _button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 		Evas_Coord x, y, w, h;
 		int cx, cy, cw, ch;
 
-		evas_object_geometry_get(inst->o_button, &x, &y, &w, &h); 
+		evas_object_geometry_get(inst->o_button, &x, &y, &w, &h);
 		e_gadcon_canvas_zone_geometry_get(inst->gcc->gadcon,
 				&cx, &cy, &cw, &ch);
 		x += cx;
@@ -232,7 +232,7 @@ _button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
 			e_gadcon_client_util_menu_items_append(inst->gcc, mn, 0);
 		}
- 	 	
+
 		mn = exalt_config->menu;
 
 		e_gadcon_canvas_zone_geometry_get(inst->gcc->gadcon, &cx, &cy, &cw, &ch);
@@ -273,7 +273,7 @@ _exalt_menu_pre_cb(void *data, E_Menu *m)
 	Instance *inst;
 
 	inst = data;
-	
+
 	/* get the current clients */
 	zone = e_util_zone_current_get (e_manager_current_get ());
 	desk = e_desk_current_get(zone);
@@ -307,7 +307,7 @@ void _exalt_menu_item_wireless_load(E_Menu *m, exalt_ethernet* eth)
 		exalt_wireless_scan_wait(eth);
 
 		l = exalt_wireless_get_networks_list(w);
-		ecore_list_goto_first(l);
+		ecore_list_first_goto(l);
 
 		if(ecore_list_is_empty(l))
 		{
@@ -319,9 +319,9 @@ void _exalt_menu_item_wireless_load(E_Menu *m, exalt_ethernet* eth)
 			data = ecore_list_next(l);
 			while(data)
 			{
-				mi = e_menu_item_new(m); 
+				mi = e_menu_item_new(m);
 				wi=EXALT_WIRELESS_INFO(data);
-				
+
 				e_menu_item_icon_file_set(mi,img[(exalt_wirelessinfo_get_quality(wi))/25]);
 				e_menu_item_label_set(mi, exalt_wirelessinfo_get_essid(wi));
 				e_menu_item_callback_set(mi, _exalt_wireless_cb, wi);
@@ -349,7 +349,7 @@ void _exalt_menu_item_cards_load(E_Menu *m)
 	 	return;
 
  	l = exalt_eth_get_list();
-	ecore_list_goto_first(l);
+	ecore_list_first_goto(l);
  	data = ecore_list_next(l);
  	while(data)
 	{
@@ -366,7 +366,7 @@ void _exalt_menu_item_cards_load(E_Menu *m)
 		}
 		else if(exalt_eth_is_activate(eth))
 			img = eth_img;
-		else 
+		else
 			img = eth_img_not_activate;
 
 		e_menu_item_icon_file_set(mi,img);
@@ -386,7 +386,7 @@ static void
 _exalt_card_cb(void *data, E_Menu *m, E_Menu_Item *mi)
 {/*{{{*/
  	exalt_ethernet* eth;
- 	char *command1=NULL,*command2=NULL;	
+ 	char *command1=NULL,*command2=NULL;
 	int pos;
 	eth = data;
 	if(!eth || !exalt_config || !exalt_config->cmd)
@@ -406,11 +406,11 @@ static void
 _exalt_wireless_cb(void *data, E_Menu *m, E_Menu_Item *mi)
 {/*{{{*/
  	exalt_wireless_info* wi;
- 	char *command1=NULL,*command2=NULL;	
+ 	char *command1=NULL,*command2=NULL;
 	int pos;
-	
+
 	wi = data;
-	
+
 	if(!wi || !exalt_config || !exalt_config->cmd)
 	 	return ;
 
@@ -429,7 +429,7 @@ static void
 _menu_cb_post(void *data, E_Menu *m)
 {/*{{{*/
    Instance *inst;
-   
+
    inst = data;
    if (!inst->win_menu) return;
    edje_object_signal_emit(inst->o_button, "passive", "");
@@ -490,14 +490,14 @@ e_modapi_shutdown (E_Module * m)
 	EAPI int
 e_modapi_save (E_Module * m)
 {/*{{{*/
-	e_config_domain_save("module.exalt",conf_edd, exalt_config); 
+	e_config_domain_save("module.exalt",conf_edd, exalt_config);
 	return 1;
 }/*}}}*/
 
 	EAPI int
 e_modapi_about (E_Module * m)
 {/*{{{*/
-	e_module_dialog_show (m, _("Exalt Module"), 
+	e_module_dialog_show (m, _("Exalt Module"),
 			_ ("This module allow you to configure yours networks cards."));
 	return 1;
 }/*}}}*/

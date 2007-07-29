@@ -124,8 +124,6 @@ e_mod_config.lo e_mod_config.o: e_mod_config.c \
   /usr/include/enlightenment/e_widget_entry.h \
   /usr/include/enlightenment/e_widget_image.h \
   /usr/include/enlightenment/e_config_dialog.h \
-  /usr/include/enlightenment/e_int_config_focus.h \
-  /usr/include/enlightenment/e_int_config_desks.h \
   /usr/include/enlightenment/e_int_border_locks.h \
   /usr/include/enlightenment/e_thumb.h \
   /usr/include/enlightenment/e_int_border_remember.h \
@@ -138,22 +136,6 @@ e_mod_config.lo e_mod_config.o: e_mod_config.c \
   /usr/include/enlightenment/e_widget_config_list.h \
   /usr/include/enlightenment/e_slider.h \
   /usr/include/enlightenment/e_widget_slider.h \
-  /usr/include/enlightenment/e_int_config_window_manipulation.h \
-  /usr/include/enlightenment/e_int_config_window_display.h \
-  /usr/include/enlightenment/e_int_config_menus.h \
-  /usr/include/enlightenment/e_int_config_keybindings.h \
-  /usr/include/enlightenment/e_int_config_mousebindings.h \
-  /usr/include/enlightenment/e_int_config_performance.h \
-  /usr/include/enlightenment/e_int_config_winlist.h \
-  /usr/include/enlightenment/e_int_config_display.h \
-  /usr/include/enlightenment/e_int_config_desklock.h \
-  /usr/include/enlightenment/e_int_config_screensaver.h \
-  /usr/include/enlightenment/e_int_config_dpms.h \
-  /usr/include/enlightenment/e_int_config_exebuf.h \
-  /usr/include/enlightenment/e_int_config_apps.h \
-  /usr/include/enlightenment/e_int_config_dialogs.h \
-  /usr/include/enlightenment/e_int_config_mime.h \
-  /usr/include/enlightenment/e_int_config_mime_edit.h \
   /usr/include/enlightenment/e_exebuf.h \
   /usr/include/enlightenment/e_desklock.h \
   /usr/include/enlightenment/e_screensaver.h \
@@ -168,9 +150,7 @@ e_mod_config.lo e_mod_config.o: e_mod_config.c \
   /usr/include/enlightenment/e_tlist.h \
   /usr/include/enlightenment/e_widget_tlist.h \
   /usr/include/enlightenment/e_widget_preview.h \
-  /usr/include/enlightenment/e_int_config_paths.h \
   /usr/include/enlightenment/e_int_shelf_config.h \
-  /usr/include/enlightenment/e_int_config_shelf.h \
   /usr/include/enlightenment/e_int_gadcon_config.h \
   /usr/include/enlightenment/e_confirm_dialog.h \
   /usr/include/enlightenment/e_int_border_prop.h \
@@ -193,11 +173,8 @@ e_mod_config.lo e_mod_config.o: e_mod_config.c \
   /usr/include/enlightenment/e_filereg.h \
   /usr/include/enlightenment/e_widget_aspect.h \
   /usr/include/enlightenment/e_widget_desk_preview.h \
-  /usr/include/enlightenment/e_int_config_desk.h \
-  /usr/include/enlightenment/e_int_config_clientlist.h \
   /usr/include/enlightenment/e_fm_prop.h \
   /usr/include/enlightenment/e_mouse.h \
-  /usr/include/enlightenment/e_int_config_mouse.h \
   /usr/include/enlightenment/e_order.h \
   /usr/include/enlightenment/e_exec.h \
   /usr/include/enlightenment/e_widget_font_preview.h \
@@ -615,10 +592,6 @@ config.h:
 
 /usr/include/enlightenment/e_config_dialog.h:
 
-/usr/include/enlightenment/e_int_config_focus.h:
-
-/usr/include/enlightenment/e_int_config_desks.h:
-
 /usr/include/enlightenment/e_int_border_locks.h:
 
 /usr/include/enlightenment/e_thumb.h:
@@ -642,38 +615,6 @@ config.h:
 /usr/include/enlightenment/e_slider.h:
 
 /usr/include/enlightenment/e_widget_slider.h:
-
-/usr/include/enlightenment/e_int_config_window_manipulation.h:
-
-/usr/include/enlightenment/e_int_config_window_display.h:
-
-/usr/include/enlightenment/e_int_config_menus.h:
-
-/usr/include/enlightenment/e_int_config_keybindings.h:
-
-/usr/include/enlightenment/e_int_config_mousebindings.h:
-
-/usr/include/enlightenment/e_int_config_performance.h:
-
-/usr/include/enlightenment/e_int_config_winlist.h:
-
-/usr/include/enlightenment/e_int_config_display.h:
-
-/usr/include/enlightenment/e_int_config_desklock.h:
-
-/usr/include/enlightenment/e_int_config_screensaver.h:
-
-/usr/include/enlightenment/e_int_config_dpms.h:
-
-/usr/include/enlightenment/e_int_config_exebuf.h:
-
-/usr/include/enlightenment/e_int_config_apps.h:
-
-/usr/include/enlightenment/e_int_config_dialogs.h:
-
-/usr/include/enlightenment/e_int_config_mime.h:
-
-/usr/include/enlightenment/e_int_config_mime_edit.h:
 
 /usr/include/enlightenment/e_exebuf.h:
 
@@ -703,11 +644,7 @@ config.h:
 
 /usr/include/enlightenment/e_widget_preview.h:
 
-/usr/include/enlightenment/e_int_config_paths.h:
-
 /usr/include/enlightenment/e_int_shelf_config.h:
-
-/usr/include/enlightenment/e_int_config_shelf.h:
 
 /usr/include/enlightenment/e_int_gadcon_config.h:
 
@@ -753,15 +690,9 @@ config.h:
 
 /usr/include/enlightenment/e_widget_desk_preview.h:
 
-/usr/include/enlightenment/e_int_config_desk.h:
-
-/usr/include/enlightenment/e_int_config_clientlist.h:
-
 /usr/include/enlightenment/e_fm_prop.h:
 
 /usr/include/enlightenment/e_mouse.h:
-
-/usr/include/enlightenment/e_int_config_mouse.h:
 
 /usr/include/enlightenment/e_order.h:
 
