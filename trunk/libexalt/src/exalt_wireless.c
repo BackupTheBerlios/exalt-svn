@@ -545,9 +545,6 @@ int exalt_wireless_scan(void *data)
 void exalt_wireless_scan_start(exalt_ethernet* eth)
 {
  	exalt_wireless* w;
-        int* c = 0;
-          printf("About to crash....\n");
-            *c = 4;
 
         if(!eth)
 	{
