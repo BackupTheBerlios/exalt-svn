@@ -10,11 +10,6 @@ typedef struct exalt_ethernet exalt_ethernet;
 #include "iwlib.h"
 #include "proc.h"
 
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <sys/socket.h>
-#include <net/route.h>
-
 #include <Ecore_Data.h>
 #include <Ecore.h>
 

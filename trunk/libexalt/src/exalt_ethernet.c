@@ -317,9 +317,7 @@ void exalt_eth_load_configuration_byeth(exalt_ethernet* eth, short load_file)
  */
 short exalt_eth_load_activate(exalt_ethernet * eth)
 {
-	struct sockaddr_in sin = { AF_INET };
 	struct ifreq ifr;
- 	int fd;
 
 	if(!eth)
 	{
@@ -327,23 +325,12 @@ short exalt_eth_load_activate(exalt_ethernet * eth)
 		return -1;
 	}
 
- 	fd=iw_sockets_open();
  	strncpy(ifr.ifr_name,exalt_eth_get_name(eth),sizeof(ifr.ifr_name));
- 	if (fd < 0)
-	{
-	 	fprintf(stderr,"exalt_eth_load_activate(): fd==%d",fd);
-		return -1;
-	}
 
- 	ifr.ifr_addr = *(struct sockaddr *) &sin;
-	if( ioctl(fd, SIOCGIFFLAGS, (caddr_t)&ifr) < 0)
-	{
-	 	perror("exalt_eth_load_activate(): ioctl (SIOCGIFFLAGS)");
-		close(fd);
-		return -1;
-	}
-	close(fd);
-	if( (ifr.ifr_flags & IFF_UP) && !exalt_eth_is_activate(eth))
+        if( !exalt_ioctl(&ifr,SIOCGIFFLAGS) )
+            return -1;
+
+        if( (ifr.ifr_flags & IFF_UP) && !exalt_eth_is_activate(eth))
  	 	exalt_eth_set_activate(eth,1);
 	else if( !(ifr.ifr_flags & IFF_UP) && exalt_eth_is_activate(eth))
 	 	exalt_eth_set_activate(eth,0);
@@ -415,7 +402,6 @@ int exalt_eth_load_ip(exalt_ethernet* eth)
 {
  	struct sockaddr_in sin = { AF_INET };
 	struct ifreq ifr;
- 	int fd;
 
 	if(!eth)
 	{
@@ -423,24 +409,14 @@ int exalt_eth_load_ip(exalt_ethernet* eth)
 		return -1;
 	}
 
- 	fd=iw_sockets_open();
  	strncpy(ifr.ifr_name,exalt_eth_get_name(eth),sizeof(ifr.ifr_name));
- 	if (fd < 0)
-	{
-	 	fprintf(stderr,"exalt_eth_load_ip(): fd==%d",fd);
-		return -1;
-	}
-
  	ifr.ifr_addr = *(struct sockaddr *) &sin;
-	if( ioctl(fd, SIOCGIFADDR, (caddr_t)&ifr) < 0)
-	{
-	 	perror("exalt_eth_load_ip(): ioctl (SIOCGIFADDR)");
-		close(fd);
+
+        if( !exalt_ioctl(&ifr, SIOCGIFADDR))
 		return -1;
-	}
-	sin = *(struct sockaddr_in*) &ifr.ifr_addr;
+
+        sin = *(struct sockaddr_in*) &ifr.ifr_addr;
 	exalt_eth_set_ip(eth,inet_ntoa(sin.sin_addr));
-	close(fd);
 
 	return 1;
 }
@@ -456,7 +432,6 @@ int exalt_eth_load_netmask(exalt_ethernet* eth)
 {
  	struct sockaddr_in sin = { AF_INET };
 	struct ifreq ifr;
- 	int fd;
 
 	if(!eth)
 	{
@@ -464,24 +439,13 @@ int exalt_eth_load_netmask(exalt_ethernet* eth)
 		return -1;
 	}
 
- 	fd=iw_sockets_open();
  	strncpy(ifr.ifr_name,exalt_eth_get_name(eth),sizeof(ifr.ifr_name));
- 	if (fd < 0)
-	{
-	 	fprintf(stderr,"exalt_eth_load_netmask(): fd==%d",fd);
-		return -1;
-	}
-
  	ifr.ifr_addr = *(struct sockaddr *) &sin;
-	if( ioctl(fd, SIOCGIFNETMASK, (caddr_t)&ifr) < 0)
-	{
-	 	perror("exalt_eth_load_netmask(): ioctl (SIOCGIFNETMASK)");
-		close(fd);
+	if( !exalt_ioctl(&ifr, SIOCGIFNETMASK) )
 		return -1;
-	}
-	sin = *(struct sockaddr_in*) &ifr.ifr_addr;
+
+        sin = *(struct sockaddr_in*) &ifr.ifr_addr;
 	exalt_eth_set_netmask(eth,inet_ntoa(sin.sin_addr));
-	close(fd);
 
 	return 1;
 }
@@ -495,9 +459,7 @@ int exalt_eth_load_netmask(exalt_ethernet* eth)
  */
 short exalt_eth_is_ethernet(char* name)
 {
- 	struct sockaddr_in sin = { AF_INET };
 	struct ifreq ifr;
- 	int fd;
 
 	if(!name)
 	{
@@ -505,21 +467,9 @@ short exalt_eth_is_ethernet(char* name)
 		return -1;
 	}
 
- 	fd=iw_sockets_open();
  	strncpy(ifr.ifr_name,name,sizeof(ifr.ifr_name));
- 	if (fd < 0)
-	{
-	 	fprintf(stderr,"exalt_eth_is_ethernet(): fd==%d",fd);
+	if(!exalt_ioctl(&ifr, SIOCGIFHWADDR))
 		return -1;
-	}
-
- 	ifr.ifr_addr = *(struct sockaddr *) &sin;
-	if( ioctl(fd, SIOCGIFHWADDR, (caddr_t)&ifr) < 0)
-	{
-	 	perror("exalt_eth_is_ethernet(): ioctl (SIOCGIFHWADDR)");
-		return -1;
-	}
-	close(fd);
 
 	return ifr.ifr_hwaddr.sa_family == ARPHRD_ETHER;
 }
@@ -536,9 +486,7 @@ short exalt_eth_is_ethernet(char* name)
  */
 void exalt_eth_activate(exalt_ethernet* eth)
 {
- 	struct sockaddr_in sin = { AF_INET };
 	struct ifreq ifr;
- 	int fd;
 
 	if(!eth)
 	{
@@ -546,28 +494,14 @@ void exalt_eth_activate(exalt_ethernet* eth)
 		return ;
 	}
 
- 	fd=iw_sockets_open();
  	strncpy(ifr.ifr_name,exalt_eth_get_name(eth),sizeof(ifr.ifr_name));
- 	if (fd < 0)
-	{
-	 	fprintf(stderr,"exalt_eth_activate(): fd==%d",fd);
-		return ;
-	}
 
- 	ifr.ifr_addr = *(struct sockaddr *) &sin;
-	if( ioctl(fd, SIOCGIFFLAGS, (caddr_t)&ifr) < 0)
-	{
-	 	perror("exalt_eth_activate(): ioctl (SIOCGIFFLAGS)");
+	if( !exalt_ioctl(&ifr, SIOCGIFFLAGS))
 		return ;
-	}
 
  	ifr.ifr_flags |= IFF_UP;
-	if( ioctl(fd, SIOCSIFFLAGS, (caddr_t)&ifr) < 0)
-	{
-	 	perror("exalt_eth_activate(): ioctl (SIOCSIFFLAGS)");
+	if( exalt_ioctl(&ifr, SIOCSIFFLAGS))
 		return ;
-	}
-	close(fd);
 
 	//save the configuration
 	exalt_eth_set_activate(eth,1);
@@ -582,9 +516,7 @@ void exalt_eth_activate(exalt_ethernet* eth)
  */
 void exalt_eth_deactivate(exalt_ethernet* eth)
 {
-	struct sockaddr_in sin = { AF_INET };
 	struct ifreq ifr;
- 	int fd;
 
 	if(!eth)
 	{
@@ -592,28 +524,14 @@ void exalt_eth_deactivate(exalt_ethernet* eth)
 		return ;
 	}
 
- 	fd=iw_sockets_open();
  	strncpy(ifr.ifr_name,exalt_eth_get_name(eth),sizeof(ifr.ifr_name));
- 	if (fd < 0)
-	{
-	 	fprintf(stderr,"exalt_eth_deactivate(): fd==%d",fd);
-		return ;
-	}
 
- 	ifr.ifr_addr = *(struct sockaddr *) &sin;
-	if( ioctl(fd, SIOCGIFFLAGS, (caddr_t)&ifr) < 0)
-	{
-	 	perror("exalt_eth_deactivate(): ioctl (SIOCGIFFLAGS)");
+	if( !exalt_ioctl(&ifr, SIOCGIFFLAGS))
 		return ;
-	}
 
  	ifr.ifr_flags &= ~IFF_UP;
-	if( ioctl(fd, SIOCSIFFLAGS, (caddr_t)&ifr) < 0)
-	{
-	 	perror("exalt_eth_deactivate(): ioctl (SIOCSIFFLAGS)");
+	if( !exalt_ioctl(&ifr, SIOCSIFFLAGS))
 		return ;
-	}
-	close(fd);
 
 	//save the configuration
  	exalt_eth_set_activate(eth,0);
@@ -985,7 +903,6 @@ int exalt_eth_apply_conf(exalt_ethernet* eth)
 {
 	int res;
  	struct rtentry rt;
-	int fd;
 	struct sockaddr_in sin = { AF_INET };
 	if(!eth)
 	{
@@ -1001,20 +918,13 @@ int exalt_eth_apply_conf(exalt_ethernet* eth)
 	 	exalt_wireless_apply_conf(eth);
 
 	//remove old gateway
-	fd=iw_sockets_open();
- 	if (fd < 0)
-	{
-	 	fprintf(stderr,"exalt_eth_apply_static(): fd==%d",fd);
-		return -1;
-	}
 	memset((char *) &rt, 0, sizeof(struct rtentry));
  	rt.rt_flags = ( RTF_UP | RTF_GATEWAY );
  	sin.sin_addr.s_addr = inet_addr ("0.0.0.0");
 	rt.rt_dst = *(struct sockaddr *) &sin;
 
-	while (ioctl(fd, SIOCDELRT, &rt) >= 0)
+	while (exalt_ioctl(&rt, SIOCDELRT) >=0)
 	 	;
- 	close(fd);
 
 	if(exalt_eth_is_dhcp(eth))
 		res = exalt_eth_apply_dhcp(eth);
@@ -1037,7 +947,6 @@ int exalt_eth_apply_static(exalt_ethernet *eth)
 	struct sockaddr_in sin = { AF_INET };
 	struct ifreq ifr;
 	struct rtentry rt;
-  	int fd;
 
 	if(!eth)
 	{
@@ -1045,33 +954,19 @@ int exalt_eth_apply_static(exalt_ethernet *eth)
 		return -1;
 	}
 
- 	fd=iw_sockets_open();
  	strncpy(ifr.ifr_name,exalt_eth_get_name(eth),sizeof(ifr.ifr_name));
- 	if (fd < 0)
-	{
-	 	fprintf(stderr,"exalt_eth_apply_static(): fd==%d",fd);
-		return -1;
-	}
 
  	//apply the ip
  	sin.sin_addr.s_addr = inet_addr (exalt_eth_get_ip(eth));
 	ifr.ifr_addr = *(struct sockaddr *) &sin;
-	if( ioctl(fd, SIOCSIFADDR, (caddr_t)&ifr) < 0)
-	{
-	 	perror("exalt_eth_apply_static(): ioctl (SIOCSIFADDR)");
-		close(fd);
+	if( exalt_ioctl(&ifr, SIOCSIFADDR) < 0)
 		return -1;
-	}
 
 	//apply the netmask
  	sin.sin_addr.s_addr = inet_addr (exalt_eth_get_netmask(eth));
 	ifr.ifr_addr = *(struct sockaddr *) &sin;
-	if( ioctl(fd, SIOCSIFNETMASK , (caddr_t)&ifr) < 0)
-	{
-	 	perror("exalt_eth_apply_static(): ioctl (SIOCSIFNETMASK)");
-	 	close(fd);
+	if( exalt_ioctl(&ifr, SIOCSIFNETMASK ) < 0)
 	 	return -1;
-	}
 
 
 	if(!exalt_eth_get_gateway(eth))
@@ -1087,27 +982,9 @@ int exalt_eth_apply_static(exalt_ethernet *eth)
 	rt.rt_metric = 2001;
 	rt.rt_dev = exalt_eth_get_name(eth);
 
-	if (ioctl(fd, SIOCADDRT, &rt) < 0) {
-	    perror("exalt_eth_apply_static(): ioctl (SIOCADDRT)");
-	    close(fd);
+	if ( exalt_ioctl(&rt, SIOCADDRT) < 0)
 	    return -1;
-	}
 
-
- 	close(fd);
-
-	/*//A CHANGER !!
-	char command[1024];
-	FILE* f;
-	sprintf(command, "%s %s",
-			COMMAND_ROUTE, "del default");
-	printf("\t%s\n",command);
-	f = exalt_execute_command(command);
-	EXALT_PCLOSE(f);
-
-
-	exalt_eth_apply_gateway(eth);
- 	*/
 	return 1;
 }
 

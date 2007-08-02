@@ -700,7 +700,6 @@ int exalt_wireless_scan_wait(exalt_ethernet* eth)
  */
 void exalt_wireless_reload(exalt_ethernet* eth)
 {
-	int fd;
 	char essid[IW_ESSID_MAX_SIZE];
  	struct iwreq wrq;
 	exalt_wireless* w;
@@ -711,37 +710,24 @@ void exalt_wireless_reload(exalt_ethernet* eth)
 		return ;
 	}
 
-
-	fd = iw_sockets_open();
-	if(fd<0)
-	{
-	 	fprintf(stderr,"exalt_wireless_reload(): fd==%d",fd);
-		return;
-	}
-
-
 	strncpy(wrq.ifr_name, exalt_eth_get_name(eth), sizeof(wrq.ifr_name));
-	if(ioctl(fd, SIOCGIWNAME, &wrq) < 0)
+	if(exalt_ioctl(&wrq, SIOCGIWNAME) < 0)
 	{
 	 	//no wireless extension
 		eth->wireless=NULL;
-		close(fd);
 		return;
 	}
 
  	//if the config not exist, we create one
 	if(!eth->wireless)
 	  	eth->wireless = exalt_wireless_create(eth);
-	if(!( w = exalt_eth_get_wireless(eth)))
-	{
-	 	close(fd);
+
+        if(!( w = exalt_eth_get_wireless(eth)))
 	 	return;
-	}
 
 	if(!exalt_wireless_load_radio_button(eth))
 	{
 	 	exalt_wireless_set_current_essid(w," ");
-		close(fd);
 		return ;
 	}
 
@@ -749,17 +735,13 @@ void exalt_wireless_reload(exalt_ethernet* eth)
 	wrq.u.essid.pointer = (caddr_t) essid;
 	wrq.u.essid.length = IW_ESSID_MAX_SIZE+1;
 	wrq.u.essid.flags = 0;
-	if(ioctl(fd, SIOCGIWESSID, &wrq) < 0)
-	{
-	 	perror("exalt_wireless_reload(): ioctl (SIOCGIWESSID)");
-		close(fd);
+	if(exalt_ioctl(&wrq, SIOCGIWESSID) < 0)
 		return ;
-	}
-	if(wrq.u.essid.length>0)
+
+        if(wrq.u.essid.length>0)
 	 	exalt_wireless_set_current_essid(w,(char*) wrq.u.essid.pointer);
  	else
 	 	exalt_wireless_set_current_essid(w," ");
-	close(fd);
  }
 
 
@@ -772,7 +754,6 @@ void exalt_wireless_reload(exalt_ethernet* eth)
 short exalt_wireless_load_radio_button(exalt_ethernet* eth)
 {
  	struct iwreq wrq;
-	int fd;
 	if(!eth)
 	{
 		fprintf(stderr,"exalt_wireless_load_radio_button(): eth==null\n");
@@ -785,26 +766,20 @@ short exalt_wireless_load_radio_button(exalt_ethernet* eth)
 		return -1;
 	}
 
- 	fd = iw_sockets_open();
 	strncpy(wrq.ifr_name, exalt_eth_get_name(eth), sizeof(wrq.ifr_name));
- 	if(ioctl(fd, SIOCGIWNAME, &wrq) < 0)
-	{
-	 	//no wireless extension
-		close(fd);
+ 	if(exalt_ioctl(&wrq, SIOCGIWNAME) < 0)
 		return -1;
-	}
-	if(strcmp("radio off",wrq.u.name)==0)
+
+        if(strcmp("radio off",wrq.u.name)==0)
 	{
 	 	if(exalt_wireless_raddiobutton_ison(eth->wireless) != 0)
 		 	exalt_wireless_set_raddio_button(eth->wireless,0);
-		close(fd);
 		return 0;
 	}
 	else
 	{
 	 	if(exalt_wireless_raddiobutton_ison(eth->wireless)!=1)
 		 	exalt_wireless_set_raddio_button(eth->wireless,1);
-		close(fd);
 		return 1;
 	}
 }

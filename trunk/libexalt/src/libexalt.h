@@ -11,6 +11,13 @@
 #define EXALT_PATH_ROUTE "/proc/net/route"
 #define EXALT_WPA_IFACE_DIR "/var/run/wpa_supplicant"
 
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <sys/socket.h>
+#include <net/route.h>
+
+
+
 #include "exalt_ethernet.h"
 #include "exalt_wireless_info.h"
 #include "exalt_wireless.h"
@@ -27,6 +34,7 @@ short exalt_is_essid(const char* essid);
 short exalt_is_passwd(const char* passwd, int passwd_mode);
 char *str_remove (const char *s, const char *ct);
 char* exalt_addr_hexa_to_dec(char* addr);
+short exalt_ioctl(void* argp, int request);
 
 #endif
 

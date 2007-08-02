@@ -150,4 +150,39 @@ char *str_remove (const char *s1, const char *ct)
     return new_s;
 }
 
+/**
+ * @brief execute a ioctl call
+ * @param argp the strucuture with data (struct ifreq, rtentry, iwreq)
+ * @param request the request key (SIOCGIWNAME ...)
+ * @return Return 1 if ok, else -1
+ */
+short exalt_ioctl(void* argp, int request)
+{
+    int fd;
+
+    //edit param: SIOCSIFFLAGS SIOCSIFFLAGS SIOCDELRT SIOCSIFADDR SIOCSIFNETMASK SIOCADDRT
+    //read param: SIOCGIWNAME SIOCGIWESSID SIOCGIWNAME SIOCGIFFLAGS SIOCGIFADDR SIOCGIFNETMASK SIOCGIFHWADDR
+
+    if(!argp)
+    {
+        fprintf(stderr,"exalt_iotl(): argp==null ! \n");
+        return -1;
+    }
+
+    fd=iw_sockets_open();
+    if (fd < 0)
+    {
+        fprintf(stderr,"exalt_ifreq_iotl(): fd==%d",fd);
+        return -1;
+    }
+
+    if( ioctl(fd, request, argp) < 0)
+    {
+        fprintf(stderr,"exalt_ifreq_iotl(): ioctl (%d): %s\n",request,strerror(errno));
+        close(fd);
+        return -1;
+    }
+    close(fd);
+    return 1;
+}
 

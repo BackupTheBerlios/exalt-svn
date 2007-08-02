@@ -39,8 +39,8 @@ target_triplet = i686-pc-linux-gnu
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(top_srcdir)/configure \
 	$(top_srcdir)/debian/changelog.in ABOUT-NLS AUTHORS COPYING \
-	ChangeLog INSTALL NEWS config.guess config.sub depcomp \
-	install-sh ltmain.sh missing
+	ChangeLog INSTALL NEWS config.guess config.rpath config.sub \
+	depcomp install-sh ltmain.sh missing
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.in
@@ -73,15 +73,15 @@ DIST_ARCHIVES = $(distdir).tar.gz
 GZIP_ENV = --best
 distuninstallcheck_listfiles = find . -type f -print
 distcleancheck_listfiles = find . -type f -print
-ACLOCAL = ${SHELL} /home/watchwolf/Projects/C/exalt/exalt/missing --run aclocal-1.9
+ACLOCAL = ${SHELL} /home/watchwolf/Projects/C/exalt_svn/trunk/exalt/missing --run aclocal-1.9
 ALL_LINGUAS = fr
 AMDEP_FALSE = #
 AMDEP_TRUE = 
-AMTAR = ${SHELL} /home/watchwolf/Projects/C/exalt/exalt/missing --run tar
+AMTAR = ${SHELL} /home/watchwolf/Projects/C/exalt_svn/trunk/exalt/missing --run tar
 AR = ar
-AUTOCONF = ${SHELL} /home/watchwolf/Projects/C/exalt/exalt/missing --run autoconf
-AUTOHEADER = ${SHELL} /home/watchwolf/Projects/C/exalt/exalt/missing --run autoheader
-AUTOMAKE = ${SHELL} /home/watchwolf/Projects/C/exalt/exalt/missing --run automake-1.9
+AUTOCONF = ${SHELL} /home/watchwolf/Projects/C/exalt_svn/trunk/exalt/missing --run autoconf
+AUTOHEADER = ${SHELL} /home/watchwolf/Projects/C/exalt_svn/trunk/exalt/missing --run autoheader
+AUTOMAKE = ${SHELL} /home/watchwolf/Projects/C/exalt_svn/trunk/exalt/missing --run automake-1.9
 AWK = gawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
@@ -125,7 +125,7 @@ LN_S = ln -s
 LTLIBICONV = -liconv
 LTLIBINTL = 
 LTLIBOBJS = 
-MAKEINFO = ${SHELL} /home/watchwolf/Projects/C/exalt/exalt/missing --run makeinfo
+MAKEINFO = ${SHELL} /home/watchwolf/Projects/C/exalt_svn/trunk/exalt/missing --run makeinfo
 MSGFMT = /usr/bin/msgfmt
 MSGFMT_015 = /usr/bin/msgfmt
 MSGMERGE = /usr/bin/msgmerge
@@ -179,7 +179,7 @@ host_vendor = pc
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = /home/watchwolf/Projects/C/exalt/exalt/install-sh
+install_sh = /home/watchwolf/Projects/C/exalt_svn/trunk/exalt/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
