@@ -69,6 +69,7 @@ int main(int argc,char**argv)
 				wirelesspanel_hide(win->wireless_panel);
 				generalpanel_hide(win->general_panel);
 				ethpanel_show(win->eth_panel);
+                                aboutpanel_hide(win->about_panel);
 			}
 			else
 			{
@@ -77,8 +78,8 @@ int main(int argc,char**argv)
 				wirelesspanel_set_eth(win->wireless_panel,eth);
 				ethpanel_hide(win->eth_panel);
 				generalpanel_hide(win->general_panel);
-				wirelesspanel_show(win->wireless_panel);
-
+                                wirelesspanel_show(win->wireless_panel);
+                                aboutpanel_hide(win->about_panel);
 				if(opt_w)
 				{
 					exalt_wireless_info *wi;
@@ -112,5 +113,4 @@ int main(int argc,char**argv)
 	etk_main();
 
 	return 1;
-
 }
