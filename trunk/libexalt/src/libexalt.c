@@ -163,6 +163,12 @@ short exalt_ioctl(void* argp, int request)
     //edit param: SIOCSIFFLAGS SIOCSIFFLAGS SIOCDELRT SIOCSIFADDR SIOCSIFNETMASK SIOCADDRT
     //read param: SIOCGIWNAME SIOCGIWESSID SIOCGIWNAME SIOCGIFFLAGS SIOCGIFADDR SIOCGIFNETMASK SIOCGIFHWADDR
 
+    if(!exalt_is_admin() && ( request == SIOCSIFFLAGS || request == SIOCSIFFLAGS || request == SIOCDELRT || request == SIOCSIFADDR || request == SIOCSIFNETMASK || request == SIOCADDRT))
+    {
+        fprintf(stderr,"exalt_iotl(): you need to be admnistrator if you want modify the configuration !\n");
+        return -1;
+    }
+
     if(!argp)
     {
         fprintf(stderr,"exalt_iotl(): argp==null ! \n");
@@ -186,3 +192,11 @@ short exalt_ioctl(void* argp, int request)
     return 1;
 }
 
+/**
+ * @brief return if we have the administrator right
+ * @return Return EXALT_TRUE if yes, else EXALT_FALSE
+ */
+short exalt_is_admin()
+{
+    return exalt_eth_interfaces.admin;
+}

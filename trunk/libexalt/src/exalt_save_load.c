@@ -63,6 +63,13 @@ int exalt_wireless_save_wpasupplicant(exalt_wireless *w)
 		return -1;
 	}
 
+        if(!exalt_is_admin())
+        {
+            fprintf(stderr,"exalt_wireless_save_wpasupplicant(): you need to be root if you want save the configuration file! \n");
+            return -1;
+        }
+
+
  	eth = exalt_wireless_get_eth(w);
  	enc_mode = exalt_wireless_get_current_passwd_mode(w);
 
@@ -158,6 +165,13 @@ int exalt_wireless_save_byeth(exalt_wireless* w)
             fprintf(stderr,"exalt_wireless_save_byeth(): w==null !");
             return -1;
         }
+
+        if(!exalt_is_admin())
+        {
+            fprintf(stderr,"exalt_wireless_save_byeth(): you need to be root if you want save the configuration file! \n");
+            return -1;
+        }
+
         eth = exalt_wireless_get_eth(w);
 	ecore_config_file_load(EXALT_CONF_FILE);
 

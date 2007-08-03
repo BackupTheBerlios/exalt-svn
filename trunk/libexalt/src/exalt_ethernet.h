@@ -87,6 +87,8 @@ typedef struct Exalt_Ethernets
 
 	int we_version;
 
+        short admin;
+
 } Exalt_Ethernets;
 
 

@@ -801,7 +801,13 @@ int exalt_wireless_apply_conf(exalt_ethernet* eth)
 		return -1;
 	}
 
- 	//reload wpa_supplicant configuration
+ 	if(!exalt_is_admin())
+        {
+            fprintf(stderr,"exalt_wireless_apply_conf(): you need to be root if you want save the configuration file! \n");
+            return -1;
+        }
+
+        //reload wpa_supplicant configuration
 	ctrl_conn = exalt_wpa_open_connection(exalt_eth_get_name(eth));
 	if(!ctrl_conn)
 	{

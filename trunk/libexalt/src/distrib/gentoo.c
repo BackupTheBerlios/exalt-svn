@@ -13,6 +13,12 @@ int exalt_eth_save_byeth(exalt_ethernet* eth)
 		return -1;
 	}
 
+        if(!exalt_is_admin())
+        {
+            fprintf(stderr,"exalt_eth_save_byeth(): you need to be administrator to save the configuration file! \n");
+            return-1;
+        }
+
  	if(!exalt_eth_save_file_exist(CONF_FILE))
 	 	if(exalt_eth_save_file_create(CONF_FILE,NULL)==-1)
 		{
@@ -207,6 +213,12 @@ int exalt_eth_save_autoload(exalt_ethernet* eth)
 	 	fprintf(stderr,"exalt_eth_save_autoload(): eth==null ! \n");
 		return -1;
 	}
+
+        if(!exalt_is_admin())
+        {
+            fprintf(stderr,"exalt_eth_save_autoload(): you need to be administrator to save the configuration file! \n");
+            return-1;
+        }
 
  	if(exalt_eth_is_activate(eth))
 	{

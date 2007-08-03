@@ -130,7 +130,7 @@ SET_MAKE =
 SHELL = /bin/sh
 STRIP = strip
 USE_NLS = yes
-VERSION = 0.5
+VERSION = 0.6
 XGETTEXT = /usr/bin/xgettext
 XGETTEXT_015 = /usr/bin/xgettext
 ac_ct_CC = gcc
@@ -184,7 +184,7 @@ target_alias =
 target_cpu = i686
 target_os = linux-gnu
 target_vendor = pc
-PNG = encryption.png quality_25-.png  wireless_not_activate.png ethernet_not_activate.png  network-config.png  quality_50-.png  wireless.png ethernet.png quality_100-.png quality_75-.png
+PNG = about.png encryption.png quality_25-.png  wireless_not_activate.png ethernet_not_activate.png  network-config.png  quality_50-.png  wireless.png ethernet.png quality_100-.png quality_75-.png
 icondir = $(pkgdatadir)/icons
 icon_DATA = $(PNG)
 all: all-am

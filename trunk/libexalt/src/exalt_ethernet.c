@@ -35,7 +35,14 @@ int exalt_eth_init()
 	exalt_eth_interfaces.wireless_scan_cb_user_data = NULL;
 
   	exalt_eth_interfaces.we_version = iw_get_kernel_we_version();
-	return 1;
+
+        //test if we have the administrator right
+        if(getuid()==0)
+            exalt_eth_interfaces.admin = EXALT_TRUE;
+        else
+            exalt_eth_interfaces.admin = EXALT_FALSE;
+
+        return 1;
 }
 
 
@@ -500,7 +507,7 @@ void exalt_eth_activate(exalt_ethernet* eth)
 		return ;
 
  	ifr.ifr_flags |= IFF_UP;
-	if( exalt_ioctl(&ifr, SIOCSIFFLAGS))
+	if( !exalt_ioctl(&ifr, SIOCSIFFLAGS))
 		return ;
 
 	//save the configuration
@@ -910,7 +917,14 @@ int exalt_eth_apply_conf(exalt_ethernet* eth)
 		return -1;
 	}
 
-	printf("## Apply configuration for %s ##\n",exalt_eth_get_name(eth));
+
+        printf("## Apply configuration for %s ##\n",exalt_eth_get_name(eth));
+
+        if(!exalt_is_admin())
+        {
+            fprintf(stderr,"exalt_eth_apply_conf(): you need to be root if you want save the configuration file! \n");
+            return -1;
+        }
 
 	exalt_eth_save_byeth(eth);
 

@@ -2,7 +2,7 @@
 
 
 general_panel* generalpanel_create()
-{/*{{{*/
+{
 	Etk_Widget *vbox,*hbox,*scroll;
 	general_panel* pnl;
 
@@ -20,7 +20,7 @@ general_panel* generalpanel_create()
 	//#######################
 	//## DNS CONFIGURATION ##
 	//######################
-	
+
 	//## dns list
 	scroll = etk_scrolled_view_new ();
 	etk_box_append(ETK_BOX(vbox), scroll, ETK_BOX_START, ETK_BOX_FILL, 0);
@@ -35,7 +35,7 @@ general_panel* generalpanel_create()
 	etk_container_add(ETK_CONTAINER(scroll), pnl->dns_list);
 
 	//load the dns list
-	generalpanel_load_dns_list(pnl);	
+	generalpanel_load_dns_list(pnl);
 
 	//## dns configuration (buttons & entry)
 	pnl->hbox_dns_conf = etk_hbox_new(ETK_FALSE,5);
@@ -49,7 +49,7 @@ general_panel* generalpanel_create()
 	etk_box_append(ETK_BOX(pnl->hbox_dns_conf), pnl->btn_dns_modify, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 	etk_box_append(ETK_BOX(pnl->hbox_dns_conf), pnl->btn_dns_delete, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
-	
+
 	etk_signal_connect("text-changed",ETK_OBJECT(pnl->entry_dns),ETK_CALLBACK(generalpanel_textchanged_entry_cb),pnl);
 	etk_signal_connect_swapped("clicked", ETK_OBJECT(pnl->btn_dns_modify),ETK_CALLBACK(generalpanel_btn_dns_modify_clicked_cb), pnl);
 	etk_signal_connect_swapped("clicked", ETK_OBJECT(pnl->btn_dns_delete),ETK_CALLBACK(generalpanel_btn_dns_delete_clicked_cb), pnl);
@@ -57,10 +57,10 @@ general_panel* generalpanel_create()
 	pnl->select_dns = NULL;
 
 	return pnl;
-}/*}}}*/
+}
 
 void generalpanel_load_dns_list(general_panel* pnl)
-{/*{{{*/
+{
 	int i,nb_dns;
 	char** t;
 
@@ -69,24 +69,24 @@ void generalpanel_load_dns_list(general_panel* pnl)
 	for(i=0;i<nb_dns;i++)
 		etk_tree_row_append(ETK_TREE(pnl->dns_list), NULL,
 		    pnl->dns_col,t[i],NULL);
-	exalt_dns_free_list(t,nb_dns);	
-}/*}}}*/
+	exalt_dns_free_list(t,nb_dns);
+}
 
 
 void generalpanel_show(general_panel* pnl)
-{/*{{{*/
+{
 	etk_widget_show_all(pnl->frame);
 	generalpanel_load_dns_list(pnl);
  	generalpanel_textchanged_entry_cb(NULL,pnl);
-}/*}}}*/
+}
 
 void generalpanel_hide(general_panel* pnl)
-{/*{{{*/
+{
 	etk_widget_hide_all(pnl->frame);
-}/*}}}*/
+}
 
 void generalpanel_btn_dns_add_clicked_cb(void *data)
-{/*{{{*/
+{
 	if(!data)
 	{
 		fprintf(stderr,"ethpanel_btn_dns_add_clicked_cb(), data==null !\n");
@@ -98,10 +98,10 @@ void generalpanel_btn_dns_add_clicked_cb(void *data)
 	//load the dns list
 	EXALT_FREE(pnl->select_dns);
 	generalpanel_load_dns_list(pnl);
-}/*}}}*/
+}
 
 void generalpanel_btn_dns_modify_clicked_cb(void *data)
-{/*{{{*/
+{
 	if(!data)
 	{
 		fprintf(stderr,"ethpanel_btn_dns_modify_clicked_cb(), data==null !\n");
@@ -113,10 +113,10 @@ void generalpanel_btn_dns_modify_clicked_cb(void *data)
 	//load the dns list
 	EXALT_FREE(pnl->select_dns);
 	generalpanel_load_dns_list(pnl);
-}/*}}}*/
+}
 
 void generalpanel_btn_dns_delete_clicked_cb(void *data)
-{/*{{{*/
+{
 	if(!data)
 	{
 		fprintf(stderr,"ethpanel_btn_dns_delete_clicked_cb(), data==null !\n");
@@ -130,32 +130,32 @@ void generalpanel_btn_dns_delete_clicked_cb(void *data)
 		//load the dns list
 		generalpanel_load_dns_list(pnl);
 		EXALT_FREE(pnl->select_dns);
-	}	
-}/*}}}*/
+	}
+}
 
 
 void generalpanel_list_dns_row_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data)
-{/*{{{*/
+{
 	Etk_Tree *tree;
 	char *row_name;
 	general_panel *pnl;
 
 	if (!(tree = ETK_TREE(object)) || !row || !event || !data)
 		return;
-	
+
 	pnl = (general_panel*)data;
 
 	etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 0),  &row_name, NULL);
 	EXALT_FREE(pnl->select_dns);
 	pnl->select_dns = strdup(row_name);
 	etk_entry_text_set(ETK_ENTRY(pnl->entry_dns),row_name);
-	
 
-}/*}}}*/
+
+}
 
 
 void generalpanel_textchanged_entry_cb(Etk_Object *object, void *data)
-{/*{{{*/
+{
  	general_panel* pnl;
 	if(!data)
 	{
@@ -174,6 +174,6 @@ void generalpanel_textchanged_entry_cb(Etk_Object *object, void *data)
 	 	etk_widget_disabled_set(pnl->btn_dns_add,ETK_FALSE);
 		etk_widget_disabled_set(pnl->btn_dns_modify,ETK_FALSE);
 	}
-}/*}}}*/
+}
 
 

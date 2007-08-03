@@ -53,7 +53,8 @@ binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_exalt_OBJECTS = exalt.$(OBJEXT) main_window.$(OBJEXT) \
 	eth_panel.$(OBJEXT) general_panel.$(OBJEXT) \
-	wireless_panel.$(OBJEXT)
+	wireless_panel.$(OBJEXT) info_panel.$(OBJEXT) \
+	about_panel.$(OBJEXT)
 exalt_OBJECTS = $(am_exalt_OBJECTS)
 exalt_DEPENDENCIES =
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I.
@@ -144,7 +145,7 @@ SET_MAKE =
 SHELL = /bin/sh
 STRIP = strip
 USE_NLS = yes
-VERSION = 0.5
+VERSION = 0.6
 XGETTEXT = /usr/bin/xgettext
 XGETTEXT_015 = /usr/bin/xgettext
 ac_ct_CC = gcc
@@ -206,17 +207,21 @@ exalt.h            \
 main_window.h        \
 eth_panel.h     \
 general_panel.h     \
-wireless_panel.h 
+wireless_panel.h \
+info_panel.h \
+about_panel.h
 
 exalt_SOURCES = \
 exalt.c \
 main_window.c        \
 eth_panel.c     \
 general_panel.c     \
-wireless_panel.c 
+wireless_panel.c \
+info_panel.c \
+about_panel.c
 
 exalt_LDFLAGS = -export-dynamic
-exalt_LDADD = -L/usr/local/lib -letk -lecore_file -ledje -lecore_x -lecore -levas -lexalt   
+exalt_LDADD = -L/usr/local/lib -letk -lecore_file -ledje -lecore_x -lecore -levas -lexalt  
 MAINTAINERCLEANFILES = Makefile.in
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -307,9 +312,11 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+include ./$(DEPDIR)/about_panel.Po
 include ./$(DEPDIR)/eth_panel.Po
 include ./$(DEPDIR)/exalt.Po
 include ./$(DEPDIR)/general_panel.Po
+include ./$(DEPDIR)/info_panel.Po
 include ./$(DEPDIR)/main_window.Po
 include ./$(DEPDIR)/wireless_panel.Po
 

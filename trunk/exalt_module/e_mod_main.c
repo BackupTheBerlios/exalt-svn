@@ -59,7 +59,7 @@ Config *exalt_config = NULL;
 
 static E_Gadcon_Client *
 _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
-{/*{{{*/
+{
   Evas_Object *o;
   E_Gadcon_Client *gcc;
   Instance *inst;
@@ -86,11 +86,11 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
 
   exalt_eth_init();
   return gcc;
-}/*}}}*/
+}
 
    static void
 _gc_shutdown (E_Gadcon_Client * gcc)
-{/*{{{*/
+{
    Instance *inst;
 
   inst = gcc->data;
@@ -102,24 +102,24 @@ _gc_shutdown (E_Gadcon_Client * gcc)
      }
   evas_object_del (inst->o_button);
   free (inst);
-}/*}}}*/
+}
 
 static void
 _gc_orient (E_Gadcon_Client * gcc)
-{/*{{{*/
+{
   e_gadcon_client_aspect_set (gcc, 16, 16);
   e_gadcon_client_min_size_set (gcc, 16, 16);
-}/*}}}*/
+}
 
 static char *
 _gc_label (void)
-{/*{{{*/
+{
   return _("Exalt");
-}/*}}}*/
+}
 
 static Evas_Object *
 _gc_icon (Evas * evas)
-{/*{{{*/
+{
   Evas_Object *o;
   char buf[4096];
 
@@ -128,12 +128,12 @@ _gc_icon (Evas * evas)
 	    e_module_dir_get (exalt_module));
   edje_object_file_set (o, buf, "icon");
   return o;
-}/*}}}*/
+}
 
 
 	static void
 _button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
-{/*{{{*/
+{
 	Instance *inst;
 	Evas_Event_Mouse_Down *ev;
 
@@ -242,30 +242,30 @@ _button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 		e_util_evas_fake_mouse_up_later(inst->gcc->gadcon->evas, ev->button);
 	}
 
-}/*}}}*/
+}
 
 static void
 _exalt_cb_menu_configure(void *data, E_Menu *m, E_Menu_Item *mi)
-{/*{{{*/
+{
  	if (!exalt_config) return ;
 	if(exalt_config->config_dialog) return ;
 	_config_exalt_module();
-}/*}}}*/
+}
 
 	static E_Menu *
 _exalt_menu_new(Instance *inst)
-{/*{{{*/
+{
 	E_Menu *m;
 
 	m = e_menu_new();
 	e_menu_title_set(m, _("Networks"));
 	e_menu_pre_activate_callback_set(m, _exalt_menu_pre_cb, inst);
 	return m;
-}/*}}}*/
+}
 
 	static void
 _exalt_menu_pre_cb(void *data, E_Menu *m)
-{/*{{{*/
+{
 	E_Menu_Item *mi;
 	Evas_List *lcards = NULL, *l, *borders = NULL, *alt = NULL;
 	E_Zone *zone = NULL;
@@ -280,10 +280,10 @@ _exalt_menu_pre_cb(void *data, E_Menu *m)
 
 	e_menu_item_separator_set(e_menu_item_new(inst->win_menu), 1);
 	_exalt_menu_item_cards_load(inst->win_menu);
-}/*}}}*/
+}
 
 void _exalt_menu_item_wireless_load(E_Menu *m, exalt_ethernet* eth)
-{/*{{{*/
+{
  	void* data;
   	E_Menu_Item *mi;
 	exalt_wireless_info *wi;
@@ -326,19 +326,20 @@ void _exalt_menu_item_wireless_load(E_Menu *m, exalt_ethernet* eth)
 				e_menu_item_label_set(mi, exalt_wirelessinfo_get_essid(wi));
 				e_menu_item_callback_set(mi, _exalt_wireless_cb, wi);
  	 	 	 	e_menu_item_check_set(mi,1);
-				e_menu_item_toggle_set(mi, exalt_wirelessinfo_get_encryption(wi));
+				e_menu_item_toggle_set(mi, strcmp(exalt_wireless_get_current_essid(w),exalt_wirelessinfo_get_essid(wi))==0);
 				data = ecore_list_next(l);
 			}
 		}
 	}
-}/*}}}*/
+}
 
 void _exalt_menu_item_cards_load(E_Menu *m)
-{/*{{{*/
+{
 	void* data;
   	E_Menu_Item *mi;
  	exalt_ethernet *eth;
 	Ecore_List *l;
+        char buf[1024];
 
 	char wireless_img[] = PACKAGE_DATA_DIR ICONS_WIRELESS_ACTIVATE;
 	char wireless_img_not_activate[] = PACKAGE_DATA_DIR ICONS_WIRELESS_NOT_ACTIVATE;
@@ -370,7 +371,8 @@ void _exalt_menu_item_cards_load(E_Menu *m)
 			img = eth_img_not_activate;
 
 		e_menu_item_icon_file_set(mi,img);
-		e_menu_item_label_set(mi, exalt_eth_get_name(eth));
+                sprintf(buf,"%s (%s)", exalt_eth_get_name(eth), exalt_eth_get_ip(eth));
+		e_menu_item_label_set(mi,buf);
 
  	 	e_menu_item_callback_set(mi, _exalt_card_cb, eth);
 
@@ -380,11 +382,11 @@ void _exalt_menu_item_cards_load(E_Menu *m)
  	 	e_menu_item_separator_set(e_menu_item_new(m), 1);
 		data = ecore_list_next(l);
 	}
-}/*}}}*/
+}
 
 static void
 _exalt_card_cb(void *data, E_Menu *m, E_Menu_Item *mi)
-{/*{{{*/
+{
  	exalt_ethernet* eth;
  	char *command1=NULL,*command2=NULL;
 	int pos;
@@ -400,11 +402,11 @@ _exalt_card_cb(void *data, E_Menu *m, E_Menu_Item *mi)
 	exalt_execute_command(command2);
 	EXALT_FREE(command1)
 	EXALT_FREE(command2)
-}/*}}}*/
+}
 
 static void
 _exalt_wireless_cb(void *data, E_Menu *m, E_Menu_Item *mi)
-{/*{{{*/
+{
  	exalt_wireless_info* wi;
  	char *command1=NULL,*command2=NULL;
 	int pos;
@@ -423,11 +425,11 @@ _exalt_wireless_cb(void *data, E_Menu *m, E_Menu_Item *mi)
 	EXALT_FREE(command1)
 	EXALT_FREE(command2)
 
-}/*}}}*/
+}
 
 static void
 _menu_cb_post(void *data, E_Menu *m)
-{/*{{{*/
+{
    Instance *inst;
 
    inst = data;
@@ -435,7 +437,7 @@ _menu_cb_post(void *data, E_Menu *m)
    edje_object_signal_emit(inst->o_button, "passive", "");
    e_object_del(E_OBJECT(inst->win_menu));
    inst->win_menu = NULL;
-}/*}}}*/
+}
 
 /* module setup */
 EAPI E_Module_Api e_modapi = {
@@ -445,7 +447,7 @@ EAPI E_Module_Api e_modapi = {
 
 	EAPI void *
 e_modapi_init (E_Module * m)
-{/*{{{*/
+{
 	exalt_module = m;
 	e_gadcon_provider_register (&_gadcon_class);
 
@@ -470,11 +472,11 @@ e_modapi_init (E_Module * m)
 	exalt_config->module = m;
 
 	return exalt_module;
-}/*}}}*/
+}
 
 	EAPI int
 e_modapi_shutdown (E_Module * m)
-{/*{{{*/
+{
 	exalt_module = NULL;
 	e_gadcon_provider_unregister (&_gadcon_class);
 	if(exalt_config->config_dialog)
@@ -485,28 +487,28 @@ e_modapi_shutdown (E_Module * m)
 	EXALT_FREE(exalt_config);
 	E_CONFIG_DD_FREE(conf_edd);
 	return 1;
-}/*}}}*/
+}
 
 	EAPI int
 e_modapi_save (E_Module * m)
-{/*{{{*/
+{
 	e_config_domain_save("module.exalt",conf_edd, exalt_config);
 	return 1;
-}/*}}}*/
+}
 
 	EAPI int
 e_modapi_about (E_Module * m)
-{/*{{{*/
+{
 	e_module_dialog_show (m, _("Exalt Module"),
 			_ ("This module allow you to configure yours networks cards."));
 	return 1;
-}/*}}}*/
+}
 
 
 
 
 int str_istr (const char *cs, const char *ct)
-{/*{{{*/
+{
 	int index = -1;
 
 	if (cs && ct)
@@ -520,11 +522,11 @@ int str_istr (const char *cs, const char *ct)
 		}
 	}
 	return index;
-}/*}}}*/
+}
 
 
 char *str_remplace (const char *s, unsigned int start, unsigned int lenght, const char *ct)
-{/*{{{*/
+{
 	char *new_s = NULL;
 
 	if (s && ct && start >= 0 && lenght >= 0)
@@ -545,7 +547,7 @@ char *str_remplace (const char *s, unsigned int start, unsigned int lenght, cons
 		return NULL;
 
 	return new_s;
-}/*}}}*/
+}
 
 
 

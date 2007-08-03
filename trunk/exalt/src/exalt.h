@@ -9,6 +9,7 @@
 //#define _(STRING)    gettext(STRING)
 
 #define ICONS_NETWORK_CONFIG "/icons/network-config.png"
+#define ICONS_ABOUT "/icons/about.png"
 #define ICONS_ETHERNET_ACTIVATE "/icons/ethernet.png"
 #define ICONS_WIRELESS_ACTIVATE "/icons/wireless.png"
 #define ICONS_ETHERNET_NOT_ACTIVATE "/icons/ethernet_not_activate.png"
@@ -32,7 +33,7 @@
 #include "eth_panel.h"
 #include "wireless_panel.h"
 #include "general_panel.h"
-
+#include "info_panel.h"
 
 #endif
 

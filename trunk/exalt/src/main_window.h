@@ -12,23 +12,29 @@ typedef struct _main_window main_window;
 #include "eth_panel.h"
 #include "wireless_panel.h"
 #include "general_panel.h"
+#include "info_panel.h"
+#include "about_panel.h"
 
 #define MAINWINDOW_ETH_STATE_TIME_MAX 2
 
 struct _main_window
 {
 	Etk_Widget *win;
-	
+
 	Etk_Widget* eth_list;
 	Etk_Tree_Col* eth_col0;
 
 	eth_panel* eth_panel;
 	wireless_panel* wireless_panel;
 	general_panel* general_panel;
-
+        about_panel* about_panel;
+        info_panel* info_panel;
 };
 
 main_window* mainwindow_create();
+void mainwindow_create_admin(main_window* win);
+void mainwindow_create_noadmin(main_window* win);
+
 Etk_Bool mainWindow_free(main_window** win);
 Etk_Bool mainWindow_close(Etk_Object *object, void *data);
 

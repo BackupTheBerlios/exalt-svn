@@ -11,16 +11,20 @@ exalt.h            \
 main_window.h        \
 eth_panel.h     \
 general_panel.h     \
-wireless_panel.h 
+wireless_panel.h \
+info_panel.h \
+about_panel.h
 
 exalt_SOURCES = \
 exalt.c \
 main_window.c        \
 eth_panel.c     \
 general_panel.c     \
-wireless_panel.c 
+wireless_panel.c \
+info_panel.c \
+about_panel.c
 
 exalt_LDFLAGS = @DLLDFLAGS@
-exalt_LDADD = @EXALT_LIBS@ 
+exalt_LDADD = @EXALT_LIBS@
 
 MAINTAINERCLEANFILES = Makefile.in
