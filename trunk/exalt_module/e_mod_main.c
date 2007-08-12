@@ -326,7 +326,7 @@ void _exalt_menu_item_wireless_load(E_Menu *m, exalt_ethernet* eth)
 				e_menu_item_label_set(mi, exalt_wirelessinfo_get_essid(wi));
 				e_menu_item_callback_set(mi, _exalt_wireless_cb, wi);
  	 	 	 	e_menu_item_check_set(mi,1);
-				e_menu_item_toggle_set(mi, strcmp(exalt_wireless_get_current_essid(w),exalt_wirelessinfo_get_essid(wi))==0);
+				e_menu_item_toggle_set(mi, strcmp(exalt_wireless_get_essid(w),exalt_wirelessinfo_get_essid(wi))==0);
 				data = ecore_list_next(l);
 			}
 		}

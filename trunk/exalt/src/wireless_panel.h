@@ -13,9 +13,16 @@ typedef struct _wireless_panel wireless_panel;
 #define WIRELESS_ENCRYPTION_TEXT_NONE _("none")
 #define WIRELESS_ENCRYPTION_TEXT_WEP_ASCII _("WEP (ASCII)")
 #define WIRELESS_ENCRYPTION_TEXT_WEP_HEXA _("WEP (10 or 26 hexadecimals characters)")
-#define WIRELESS_ENCRYPTION_TEXT_WPA_PSK_ASCII _("WPA PSK")
-#define WIRELESS_ENCRYPTION_TEXT_WPA_PSK_TKIP_ASCII ("WPA PSK-TKIP")
-#define WIRELESS_MODE_TEXT_ADHOC _("Ad-hoc")
+#define WIRELESS_ENCRYPTION_TEXT_WPA_PSK_CCMP_ASCII _("WPA Personal (PSK-CCMP)")
+#define WIRELESS_ENCRYPTION_TEXT_WPA_PSK_TKIP_ASCII ("WPA Personal (PSK-TKIP)")
+#define WIRELESS_ENCRYPTION_TEXT_WPA2_PSK_CCMP_ASCII _("WPA2 Personal (PSK-CCMP)")
+#define WIRELESS_ENCRYPTION_TEXT_WPA2_PSK_TKIP_ASCII ("WPA2 Personal (PSK-TKIP)")
+
+#define WIRELESS_SECURITY_TEXT_OPEN _("Open")
+#define WIRELESS_SECURITY_TEXT_SHARED _("Shared")
+
+#define WIRELESS_MODE_TEXT_AUTO _("Auto")
+#define WIRELESS_MODE_TEXT_ADHOC _("Ad-Hoc")
 #define WIRELESS_MODE_TEXT_MANAGED _("Managed")
 
 struct _wireless_panel
@@ -54,8 +61,11 @@ struct _wireless_panel
 	Etk_Widget *check_static;
 	Etk_Widget *check_dhcp;
 	Etk_Widget *cmbox_encryption;
-	Etk_Widget *btn_apply;
- 	//pbar pannel
+	Etk_Widget *cmbox_security;
+        Etk_Widget *cmbox_mode;
+        Etk_Widget *btn_apply;
+
+        //pbar pannel
 	pid_t pid_dhcp_process;
 	Etk_Widget* hbox_pbar;
 	Etk_Widget* pbar;
@@ -91,4 +101,7 @@ void wirelesspanel_textchanged_entry_cb(Etk_Object *object, void *data);
 int wirelesspanel_dhcp_timer(void* data);
 
 #endif
+
+Etk_Combobox_Item * exalt_etk_combobox_data_item_get (Etk_Combobox *combobox, void *data);
+
 

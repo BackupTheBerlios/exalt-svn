@@ -18,7 +18,5 @@
 #define COMMAND_AUTO_LOAD "cd /etc/init.d && ln -s net.lo net.%s"
 #define COMMAND_DEL_AUTO_LOAD "rm /etc/init.d/net.%s"
 
-#define COMMAND_WPA "wpa_supplicant -D%s -i%s -c%s -B"
-
 #endif
 

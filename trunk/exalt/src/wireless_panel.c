@@ -4,7 +4,7 @@
 
 
 wireless_panel* wirelesspanel_create(main_window* win)
-{/*{{{*/
+{
 	Etk_Widget *hbox,*vbox,*scroll,*label, *table;
 	wireless_panel* pnl;
 	pnl=(wireless_panel*)malloc((unsigned int)sizeof(wireless_panel));
@@ -108,20 +108,20 @@ wireless_panel* wirelesspanel_create(main_window* win)
 	exalt_eth_set_scan_cb(wirelesspanel_scan_networks_cb,pnl);
 
 	return pnl;
-}/*}}}*/
+}
 
 
 
 void wirelesspanel_show(wireless_panel* pnl)
-{/*{{{*/
+{
 	etk_widget_show_all(pnl->frame);
 	wirelesspanel_set_boxbutton(pnl);
 	etk_widget_hide(pnl->hbox_pbar);
-}/*}}}*/
+}
 
 //test if the radio button is on
 void wirelesspanel_set_boxbutton(wireless_panel* pnl)
-{/*{{{*/
+{
 	if(!pnl)
 	{
 	 	fprintf(stderr,"wirelesspanel_set_boxbutton(): pnl=null ! \n");
@@ -139,9 +139,9 @@ void wirelesspanel_set_boxbutton(wireless_panel* pnl)
 	 	fprintf(stderr,"wirelesspanel_set_boxbutton(): pnl->eth->wireless==null ! \n");
 		return ;
 	}
-	exalt_wireless_reload(pnl->eth);
-	if(exalt_wireless_raddiobutton_ison(pnl->eth->wireless))
-	{
+
+        //if(exalt_wireless_radiobutton_ison(pnl->eth->wireless))
+	//{
 		etk_widget_hide_all(pnl->box_button_off);
 		etk_widget_show_all(pnl->box_button_on);
  	 	etk_widget_hide(pnl->hbox_pbar);
@@ -149,25 +149,24 @@ void wirelesspanel_set_boxbutton(wireless_panel* pnl)
 	 	exalt_wireless_scan_stop(pnl->eth);
 		exalt_wireless_scan_start(pnl->eth);
 		etk_tree_clear (ETK_TREE(pnl->scan_list));
-		if(!exalt_eth_is_activate(pnl->eth))
+		if(!exalt_eth_is_up(pnl->eth))
 			wirelesspanel_disabled_widget_activate(pnl,ETK_TRUE);
 		else
 			wirelesspanel_disabled_widget_activate(pnl,ETK_FALSE);
 
-	}
+	/*}
 	else
 	{
 	 	exalt_wireless_scan_stop(pnl->eth);
 		//the radio button is off
 		etk_widget_hide_all(pnl->box_button_on);
 		etk_widget_show_all(pnl->box_button_off);
-	}
-
-}/*}}}*/
+	}*/
+}
 
 
 void wirelesspanel_disabled_widget_activate(wireless_panel* pnl,Etk_Bool b)
-{/*{{{*/
+{
  	Etk_Combobox_Item* active_item;
 	int* encryption;
 
@@ -207,22 +206,43 @@ void wirelesspanel_disabled_widget_activate(wireless_panel* pnl,Etk_Bool b)
 
 	encryption = etk_combobox_item_data_get(active_item);
 
-	if(!b && encryption && *encryption!=0)
-		etk_widget_disabled_set(pnl->entry_conn_pwd,ETK_FALSE);
-	else
-		etk_widget_disabled_set(pnl->entry_conn_pwd, ETK_TRUE);
+        if(!b && encryption && *encryption!=EXALT_WIRELESS_ENCRYPTION_NONE)
+        {
+            etk_widget_disabled_set(pnl->entry_conn_pwd,ETK_FALSE);
+            etk_widget_disabled_set(pnl->cmbox_security,ETK_FALSE);
+        }
+        else
+        {
+            etk_widget_disabled_set(pnl->entry_conn_pwd, ETK_TRUE);
+            etk_widget_disabled_set(pnl->cmbox_security, ETK_TRUE);
+        }
 
- 	wirelesspanel_textchanged_entry_cb(NULL,pnl);
-}/*}}}*/
+        if(!b && encryption && *encryption!=EXALT_WIRELESS_ENCRYPTION_NONE
+                && *encryption!=EXALT_WIRELESS_ENCRYPTION_WEP_ASCII
+                && *encryption!=EXALT_WIRELESS_ENCRYPTION_WEP_HEXA)
+        {
+            etk_widget_disabled_set(pnl->cmbox_mode, ETK_TRUE);
+            etk_widget_disabled_set(pnl->cmbox_security, ETK_TRUE);
+        }
+        else if(!b && encryption && *encryption!=EXALT_WIRELESS_ENCRYPTION_NONE)
+        {
+            etk_widget_disabled_set(pnl->cmbox_mode, ETK_FALSE);
+            etk_widget_disabled_set(pnl->cmbox_security, ETK_FALSE);
+        }
+        else if(b)
+            etk_widget_disabled_set(pnl->cmbox_mode, ETK_TRUE);
+
+        wirelesspanel_textchanged_entry_cb(NULL,pnl);
+}
 
 void wirelesspanel_hide(wireless_panel* pnl)
-{/*{{{*/
+{
 	etk_widget_hide_all(pnl->frame);
  	exalt_wireless_scan_stop(pnl->eth);
-}/*}}}*/
+}
 
 void wirelesspanel_set_eth(wireless_panel* pnl, exalt_ethernet* eth)
-{/*{{{*/
+{
 	if(pnl && eth)
 	{
 		char name[100];
@@ -232,10 +252,10 @@ void wirelesspanel_set_eth(wireless_panel* pnl, exalt_ethernet* eth)
 		wirelesspanel_set_boxbutton(pnl);
 	 	wirelesspanel_update_current_conf(pnl);
 	}
-}/*}}}*/
+}
 
 void wirelesspanel_update_current_conf(wireless_panel* pnl)
-{/*{{{*/
+{
 	exalt_wireless* w;
 	if(!pnl)
 	{
@@ -243,30 +263,45 @@ void wirelesspanel_update_current_conf(wireless_panel* pnl)
 		return ;
 	}
  	w = exalt_eth_get_wireless(pnl->eth);
-	etk_label_set(ETK_LABEL(pnl->lbl_essid), exalt_wireless_get_current_essid(w));
+	etk_label_set(ETK_LABEL(pnl->lbl_essid), exalt_wireless_get_essid(w));
 	etk_label_set(ETK_LABEL(pnl->lbl_ip), exalt_eth_get_ip(pnl->eth));
 	etk_label_set(ETK_LABEL(pnl->lbl_mask), exalt_eth_get_netmask(pnl->eth));
 	etk_label_set(ETK_LABEL(pnl->lbl_gateway), exalt_eth_get_gateway(pnl->eth));
-}/*}}}*/
+}
 
 Etk_Widget* wirelesspanel_pageconnection_create(wireless_panel* pnl)
-{/*{{{*/
+{
 	Etk_Widget *table,*label;
 	Etk_Combobox_Item* item;
-	table = etk_table_new(2, 10,ETK_TABLE_NOT_HOMOGENEOUS);
+	table = etk_table_new(2, 12,ETK_TABLE_NOT_HOMOGENEOUS);
  	int *en_none = malloc(sizeof(int));
-	*en_none = WIRELESS_ENCRYPTION_NONE;
+	*en_none = EXALT_WIRELESS_ENCRYPTION_NONE;
 	int *en_wep_ascii = malloc(sizeof(int));
-	*en_wep_ascii = WIRELESS_ENCRYPTION_WEP_ASCII;
+	*en_wep_ascii = EXALT_WIRELESS_ENCRYPTION_WEP_ASCII;
 	int *en_wep_hexa = malloc(sizeof(int));
-	*en_wep_hexa = WIRELESS_ENCRYPTION_WEP_HEXA;
- 	int *en_wpa_psk = malloc(sizeof(int));
-	*en_wpa_psk = WIRELESS_ENCRYPTION_WPA_PSK_ASCII;
- 	int *en_wpa_tkip = malloc(sizeof(int));
-	*en_wpa_tkip = WIRELESS_ENCRYPTION_WPA_PSK_TKIP_ASCII;
+	*en_wep_hexa = EXALT_WIRELESS_ENCRYPTION_WEP_HEXA;
 
+        int *en_wpa_psk_ccmp = malloc(sizeof(int));
+	*en_wpa_psk_ccmp = EXALT_WIRELESS_ENCRYPTION_WPA_PSK_CCMP_ASCII;
+ 	int *en_wpa_psk_tkip = malloc(sizeof(int));
+	*en_wpa_psk_tkip = EXALT_WIRELESS_ENCRYPTION_WPA_PSK_TKIP_ASCII;
 
-	pnl->entry_conn_essid = etk_entry_new();
+        int *en_wpa2_psk_ccmp = malloc(sizeof(int));
+	*en_wpa2_psk_ccmp = EXALT_WIRELESS_ENCRYPTION_WPA2_PSK_CCMP_ASCII;
+ 	int *en_wpa2_psk_tkip = malloc(sizeof(int));
+	*en_wpa2_psk_tkip = EXALT_WIRELESS_ENCRYPTION_WPA2_PSK_TKIP_ASCII;
+
+        int *sec_open = malloc(sizeof(int));
+        *sec_open = EXALT_WIRELESS_SECURITY_OPEN;
+        int *sec_shared = malloc(sizeof(int));
+        *sec_shared = EXALT_WIRELESS_SECURITY_SHARED;
+
+        int *mode_adhoc = malloc(sizeof(int));
+        *mode_adhoc = EXALT_WIRELESS_MODE_ADHOC;
+	int *mode_managed = malloc(sizeof(int));
+        *mode_managed = EXALT_WIRELESS_MODE_MANAGED;
+
+        pnl->entry_conn_essid = etk_entry_new();
 	etk_entry_clear_button_add(ETK_ENTRY(pnl->entry_conn_essid));
 	etk_entry_text_set(ETK_ENTRY(pnl->entry_conn_essid),"");
 	pnl->entry_conn_pwd = etk_entry_new();
@@ -282,7 +317,9 @@ Etk_Widget* wirelesspanel_pageconnection_create(wireless_panel* pnl)
 	pnl->check_static = etk_radio_button_new_with_label(_("Static address"),NULL);
 	pnl->check_dhcp = etk_radio_button_new_with_label_from_widget(_("DHCP (Automatic configuration)"),ETK_RADIO_BUTTON(pnl->check_static));
 	pnl->cmbox_encryption = etk_combobox_new();
-	pnl->hbox_pbar = etk_hbox_new(ETK_FALSE,5);
+        pnl->cmbox_security = etk_combobox_new();
+        pnl->cmbox_mode = etk_combobox_new();
+        pnl->hbox_pbar = etk_hbox_new(ETK_FALSE,5);
 	pnl->pbar = etk_progress_bar_new_with_text(DHCP_TEXT);
 	etk_progress_bar_pulse_step_set(ETK_PROGRESS_BAR(pnl->pbar), DHCP_PULSE);
 	etk_box_append(ETK_BOX(pnl->hbox_pbar), pnl->pbar, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
@@ -307,11 +344,30 @@ Etk_Widget* wirelesspanel_pageconnection_create(wireless_panel* pnl)
 	etk_combobox_item_data_set_full(item, en_wep_ascii, free);
 	item = etk_combobox_item_append(ETK_COMBOBOX(pnl->cmbox_encryption), WIRELESS_ENCRYPTION_TEXT_WEP_HEXA);
 	etk_combobox_item_data_set_full(item, en_wep_hexa, free);
-	item = etk_combobox_item_append(ETK_COMBOBOX(pnl->cmbox_encryption), WIRELESS_ENCRYPTION_TEXT_WPA_PSK_ASCII);
- 	etk_combobox_item_data_set_full(item, en_wpa_psk, free);
+	item = etk_combobox_item_append(ETK_COMBOBOX(pnl->cmbox_encryption), WIRELESS_ENCRYPTION_TEXT_WPA_PSK_CCMP_ASCII);
+ 	etk_combobox_item_data_set_full(item, en_wpa_psk_ccmp, free);
 	item = etk_combobox_item_append(ETK_COMBOBOX(pnl->cmbox_encryption), WIRELESS_ENCRYPTION_TEXT_WPA_PSK_TKIP_ASCII);
-	etk_combobox_item_data_set_full(item, en_wpa_tkip, free);
-	etk_signal_connect_swapped("clicked", ETK_OBJECT(pnl->btn_apply),ETK_CALLBACK(wirelesspanel_btn_apply_clicked_cb), pnl);
+	etk_combobox_item_data_set_full(item, en_wpa_psk_tkip, free);
+        item = etk_combobox_item_append(ETK_COMBOBOX(pnl->cmbox_encryption), WIRELESS_ENCRYPTION_TEXT_WPA2_PSK_CCMP_ASCII);
+ 	etk_combobox_item_data_set_full(item, en_wpa2_psk_ccmp, free);
+	item = etk_combobox_item_append(ETK_COMBOBOX(pnl->cmbox_encryption), WIRELESS_ENCRYPTION_TEXT_WPA2_PSK_TKIP_ASCII);
+	etk_combobox_item_data_set_full(item, en_wpa2_psk_tkip, free);
+
+
+        etk_combobox_column_add(ETK_COMBOBOX(pnl->cmbox_security), ETK_COMBOBOX_LABEL, 50, ETK_TRUE, 0.5);
+	etk_combobox_build(ETK_COMBOBOX(pnl->cmbox_security));
+	item = etk_combobox_item_append(ETK_COMBOBOX(pnl->cmbox_security), WIRELESS_SECURITY_TEXT_OPEN);
+	etk_combobox_item_data_set_full(item, sec_open, free);
+	item = etk_combobox_item_append(ETK_COMBOBOX(pnl->cmbox_security), WIRELESS_SECURITY_TEXT_SHARED);
+	etk_combobox_item_data_set_full(item, sec_shared, free);
+
+        etk_combobox_column_add(ETK_COMBOBOX(pnl->cmbox_mode), ETK_COMBOBOX_LABEL, 50, ETK_TRUE, 0.5);
+	etk_combobox_build(ETK_COMBOBOX(pnl->cmbox_mode));
+        item = etk_combobox_item_append(ETK_COMBOBOX(pnl->cmbox_mode), WIRELESS_MODE_TEXT_ADHOC);
+        etk_combobox_item_data_set_full(item, mode_adhoc, free);
+        item = etk_combobox_item_append(ETK_COMBOBOX(pnl->cmbox_mode), WIRELESS_MODE_TEXT_MANAGED);
+        etk_combobox_item_data_set_full(item, mode_managed, free);
+        etk_signal_connect_swapped("clicked", ETK_OBJECT(pnl->btn_apply),ETK_CALLBACK(wirelesspanel_btn_apply_clicked_cb), pnl);
 
 
 
@@ -327,32 +383,42 @@ Etk_Widget* wirelesspanel_pageconnection_create(wireless_panel* pnl)
 	etk_table_attach(ETK_TABLE(table), label, 0, 0, 2, 2, 0, 0, ETK_TABLE_HFILL);
 	etk_table_attach_default(ETK_TABLE(table), pnl->entry_conn_pwd, 1, 1, 2, 2);
 
-	etk_table_attach(ETK_TABLE(table), pnl->check_static,0, 0, 3, 3, 0, 0, ETK_TABLE_HFILL);
-	etk_table_attach_default(ETK_TABLE(table), pnl->check_dhcp, 1, 1, 3, 3);
+        label = etk_label_new(_("Connection mode: "));
+	etk_table_attach(ETK_TABLE(table), label, 0, 0, 3, 3, 0, 0, ETK_TABLE_HFILL);
+	etk_table_attach_default(ETK_TABLE(table), pnl->cmbox_mode, 1, 1, 3, 3);
+
+	label = etk_label_new(_("Security mode: "));
+	etk_table_attach(ETK_TABLE(table), label, 0, 0, 4, 4, 0, 0, ETK_TABLE_HFILL);
+	etk_table_attach_default(ETK_TABLE(table), pnl->cmbox_security, 1, 1, 4, 4);
+
+
+
+	etk_table_attach(ETK_TABLE(table), pnl->check_static,0, 0, 5, 5, 0, 0, ETK_TABLE_HFILL);
+	etk_table_attach_default(ETK_TABLE(table), pnl->check_dhcp, 1, 1, 5, 5);
 
 	label = etk_label_new(_("Ip address: "));
-	etk_table_attach(ETK_TABLE(table), label, 0, 0, 4, 4, 0, 0, ETK_TABLE_HFILL);
-	etk_table_attach_default(ETK_TABLE(table), pnl->entry_conn_ip, 1, 1, 4, 4);
+	etk_table_attach(ETK_TABLE(table), label, 0, 0, 6, 6, 0, 0, ETK_TABLE_HFILL);
+	etk_table_attach_default(ETK_TABLE(table), pnl->entry_conn_ip, 1, 1, 6, 6);
 
 	label = etk_label_new(_("Network mask: "));
-	etk_table_attach(ETK_TABLE(table), label, 0, 0, 5, 5, 0, 0, ETK_TABLE_HFILL);
-	etk_table_attach_default(ETK_TABLE(table), pnl->entry_conn_mask, 1, 1, 5, 5);
+	etk_table_attach(ETK_TABLE(table), label, 0, 0, 7, 7, 0, 0, ETK_TABLE_HFILL);
+	etk_table_attach_default(ETK_TABLE(table), pnl->entry_conn_mask, 1, 1, 7, 7);
 
 	label = etk_label_new(_("Gateway: "));
-	etk_table_attach(ETK_TABLE(table), label, 0, 0, 6, 6, 0, 0, ETK_TABLE_HFILL);
-	etk_table_attach_default(ETK_TABLE(table), pnl->entry_conn_gateway, 1, 1, 6, 6);
+	etk_table_attach(ETK_TABLE(table), label, 0, 0, 8, 8, 0, 0, ETK_TABLE_HFILL);
+	etk_table_attach_default(ETK_TABLE(table), pnl->entry_conn_gateway, 1, 1, 8, 8);
 
 
-	etk_table_attach(ETK_TABLE(table), pnl->btn_apply, 0, 0, 7, 7, 0, 0, ETK_TABLE_HFILL);
-	etk_table_attach_default(ETK_TABLE(table), pnl->hbox_pbar, 1, 1, 7, 7);
+	etk_table_attach(ETK_TABLE(table), pnl->btn_apply, 0, 0, 9, 9, 0, 0, ETK_TABLE_HFILL);
+	etk_table_attach_default(ETK_TABLE(table), pnl->hbox_pbar, 1, 1, 9, 9);
 
 
 
 	return table;
-}/*}}}*/
+}
 
 void wirelesspanel_scanlist_row_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data)
-{/*{{{*/
+{
 	Etk_Tree *tree;
 	char *row_name;
 	wireless_panel* pnl;
@@ -371,10 +437,10 @@ void wirelesspanel_scanlist_row_clicked_cb(Etk_Object *object, Etk_Tree_Row *row
 	{
  	 	etk_entry_text_set(ETK_ENTRY(pnl->entry_conn_essid),exalt_wirelessinfo_get_essid(w));
 	}
-}/*}}}*/
+}
 
 void wirelesspanel_scan_networks_cb(exalt_wireless_info* wi, int action, void* data)
-{/*{{{*/
+{
 	wireless_panel* pnl=(wireless_panel*)data;
 	char encryption[] = PACKAGE_DATA_DIR ICONS_ENCRYPTION;
 	char img1[] = PACKAGE_DATA_DIR ICONS_QUALITY_LESS_25;
@@ -385,7 +451,7 @@ void wirelesspanel_scan_networks_cb(exalt_wireless_info* wi, int action, void* d
 	img[0] = img1;img[1] = img2;img[2] = img3;img[3] = img4;
 
 
-	if(action==EXALT_WIRELESS_SCAN_CB_NEW)
+	if(action==EXALT_WIRELESS_SCAN_CB_ACTION_NEW)
 	{
 	 	etk_tree_row_append(ETK_TREE(pnl->scan_list), NULL,
 					pnl->scan_quality,
@@ -398,7 +464,7 @@ void wirelesspanel_scan_networks_cb(exalt_wireless_info* wi, int action, void* d
 
 
 	}
-	else if(action ==EXALT_WIRELESS_SCAN_CB_REMOVE)
+	else if(action ==EXALT_WIRELESS_SCAN_CB_ACTION_REMOVE)
 	{
 		Etk_Tree_Row* row = NULL;
 		char* row_name;
@@ -415,12 +481,12 @@ void wirelesspanel_scan_networks_cb(exalt_wireless_info* wi, int action, void* d
 			 	row = etk_tree_row_next_get(row);
 		}
 	}
-}/*}}}*/
+}
 
 
 
 void wirelesspanel_btn_disactivate_clicked_cb(void *data)
-{/*{{{*/
+{
 	wireless_panel* pnl;
 	if(!data)
 	{
@@ -429,11 +495,11 @@ void wirelesspanel_btn_disactivate_clicked_cb(void *data)
 	}
 
 	pnl = (wireless_panel*)data;
-	exalt_eth_deactivate(pnl->eth);
-}/*}}}*/
+	exalt_eth_down(pnl->eth);
+}
 
 void wirelesspanel_btn_activate_clicked_cb(void *data)
-{/*{{{*/
+{
 	wireless_panel* pnl;
 	if(!data)
 	{
@@ -442,12 +508,12 @@ void wirelesspanel_btn_activate_clicked_cb(void *data)
 	}
 
 	pnl = (wireless_panel*)data;
-	exalt_eth_activate(pnl->eth);
-}/*}}}*/
+	exalt_eth_up(pnl->eth);
+}
 
 
 void wirelesspanel_set_static_dhcp_clicked_cb(Etk_Object *object, void *data)
-{/*{{{*/
+{
 	wireless_panel* pnl;
 
 	if(!data)
@@ -458,10 +524,10 @@ void wirelesspanel_set_static_dhcp_clicked_cb(Etk_Object *object, void *data)
 
 	pnl = (wireless_panel*)data;
 	wirelesspanel_disabled_widget_activate(pnl, ETK_FALSE);
-}/*}}}*/
+}
 
 void wirelesspanel_cmboxencryption_active_item_changed_cb(Etk_Object *object, void *data)
-{/*{{{*/
+{
 	wireless_panel* pnl;
 	if(!data)
 	{
@@ -471,14 +537,16 @@ void wirelesspanel_cmboxencryption_active_item_changed_cb(Etk_Object *object, vo
 
 	pnl = (wireless_panel*)data;
  	wirelesspanel_disabled_widget_activate(pnl, ETK_FALSE);
-}/*}}}*/
+}
 
 
 void wirelesspanel_btn_apply_clicked_cb(void *data)
-{/*{{{*/
+{
 	wireless_panel* pnl;
 	pid_t f;
  	int* encryption;
+        int *mode;
+        int *security;
  	Etk_Combobox_Item *active_item;
 
 	if(!data)
@@ -491,25 +559,38 @@ void wirelesspanel_btn_apply_clicked_cb(void *data)
 
 	if(etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(pnl->check_static)))
 	{
-		exalt_eth_set_dhcp(pnl->eth,0);
+		exalt_eth_set_new_dhcp(pnl->eth,EXALT_STATIC);
 		//static mode
-		exalt_eth_set_ip(pnl->eth,etk_entry_text_get(ETK_ENTRY(pnl->entry_conn_ip)));
-		exalt_eth_set_netmask(pnl->eth,etk_entry_text_get(ETK_ENTRY(pnl->entry_conn_mask)));
-		exalt_eth_set_gateway(pnl->eth,etk_entry_text_get(ETK_ENTRY(pnl->entry_conn_gateway)));
+		exalt_eth_set_new_ip(pnl->eth,etk_entry_text_get(ETK_ENTRY(pnl->entry_conn_ip)));
+		exalt_eth_set_new_netmask(pnl->eth,etk_entry_text_get(ETK_ENTRY(pnl->entry_conn_mask)));
+		exalt_eth_set_new_gateway(pnl->eth,etk_entry_text_get(ETK_ENTRY(pnl->entry_conn_gateway)));
 	}
 	else
-		exalt_eth_set_dhcp(pnl->eth,1);
+		exalt_eth_set_new_dhcp(pnl->eth,EXALT_DHCP);
 
 
-	exalt_wireless_set_current_essid(exalt_eth_get_wireless(pnl->eth),etk_entry_text_get(ETK_ENTRY(pnl->entry_conn_essid)));
+	exalt_wireless_set_new_essid(exalt_eth_get_wireless(pnl->eth),etk_entry_text_get(ETK_ENTRY(pnl->entry_conn_essid)));
 
 	//get the passwd mode
 	if (!(active_item = etk_combobox_active_item_get(ETK_COMBOBOX(pnl->cmbox_encryption))))
 		return;
 	encryption = etk_combobox_item_data_get(active_item);
-	exalt_wireless_set_current_passwd_mode(exalt_eth_get_wireless(pnl->eth),*encryption);
-	if(*encryption>WIRELESS_ENCRYPTION_NONE)
-	 	exalt_wireless_set_current_passwd(exalt_eth_get_wireless(pnl->eth),etk_entry_text_get(ETK_ENTRY(pnl->entry_conn_pwd)));
+        exalt_wireless_set_new_passwd_mode(exalt_eth_get_wireless(pnl->eth),*encryption);
+	if(*encryption>EXALT_WIRELESS_ENCRYPTION_NONE)
+	 	exalt_wireless_set_new_passwd(exalt_eth_get_wireless(pnl->eth),etk_entry_text_get(ETK_ENTRY(pnl->entry_conn_pwd)));
+
+        //get the mode
+	if (!(active_item = etk_combobox_active_item_get(ETK_COMBOBOX(pnl->cmbox_mode))))
+		return;
+	mode = etk_combobox_item_data_get(active_item);
+	exalt_wireless_set_new_mode(exalt_eth_get_wireless(pnl->eth),*mode);
+
+        //get the security mode
+	if (!(active_item = etk_combobox_active_item_get(ETK_COMBOBOX(pnl->cmbox_security))))
+		return;
+	security = etk_combobox_item_data_get(active_item);
+	exalt_wireless_set_new_security_mode(exalt_eth_get_wireless(pnl->eth),*security);
+
 
 	etk_widget_show(pnl->hbox_pbar);
 	f=fork();
@@ -518,22 +599,22 @@ void wirelesspanel_btn_apply_clicked_cb(void *data)
 		fprintf(stderr,"ethpanel_btn_apply_clicked_cb(): fork erreur!\n");
 		return ;
 	}
-	else if(f==0)
-	{
-		exalt_eth_apply_conf(pnl->eth);
-		exit(1);
-	}
+        else if(f==0)
+        {
+            exalt_eth_apply_conf(pnl->eth);
+            exit(1);
+        }
 	wirelesspanel_disabled_widget_activate(pnl,ETK_TRUE);
 	etk_widget_disabled_set(pnl->win->eth_list,ETK_TRUE);
 	etk_widget_disabled_set(pnl->btn_activate,ETK_TRUE);
 	etk_widget_disabled_set(pnl->btn_apply,ETK_TRUE);
 	pnl->pid_dhcp_process = f;
 	pnl->dhcp_timer = ecore_timer_add(DHCP_TIMER ,wirelesspanel_dhcp_timer,pnl);
-}/*}}}*/
+}
 
 
 void wirelesspanel_textchanged_entry_cb(Etk_Object *object, void *data)
-{/*{{{*/
+{
 	wireless_panel* pnl;
 	Etk_Combobox_Item* active_item;
 	int * passwd_mode;
@@ -567,9 +648,14 @@ void wirelesspanel_textchanged_entry_cb(Etk_Object *object, void *data)
 		if(wi)
 		{
 			//load the default configuration
-			int passwd_mode = exalt_wirelessinfo_get_default_passwd_mode(wi);
+			int *passwd_mode = malloc(sizeof(int));
+                        *passwd_mode = exalt_wirelessinfo_get_default_passwd_mode(wi);
  	 	 	int dhcp = exalt_wirelessinfo_is_default_dhcp(wi);
-			Etk_Combobox_Item* item;
+			int *security = malloc(sizeof(int));
+                        *security = exalt_wirelessinfo_get_default_security_mode(wi);
+                        int *mode = malloc(sizeof(int));
+                        *mode = exalt_wirelessinfo_get_default_mode(wi);
+                        Etk_Combobox_Item* item;
 			if(dhcp)
 			{
  	 	 	 	etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(pnl->check_static),ETK_FALSE);
@@ -588,10 +674,16 @@ void wirelesspanel_textchanged_entry_cb(Etk_Object *object, void *data)
 			}
 
 
-			item = etk_combobox_nth_item_get(ETK_COMBOBOX(pnl->cmbox_encryption),passwd_mode);
+			item = exalt_etk_combobox_data_item_get(ETK_COMBOBOX(pnl->cmbox_encryption),passwd_mode);
 			etk_combobox_active_item_set(ETK_COMBOBOX(pnl->cmbox_encryption),item);
 
-			if(passwd_mode > WIRELESS_ENCRYPTION_NONE)
+                        item = exalt_etk_combobox_data_item_get(ETK_COMBOBOX(pnl->cmbox_security),security);
+			etk_combobox_active_item_set(ETK_COMBOBOX(pnl->cmbox_security),item);
+
+                	item = exalt_etk_combobox_data_item_get(ETK_COMBOBOX(pnl->cmbox_mode),mode);
+			etk_combobox_active_item_set(ETK_COMBOBOX(pnl->cmbox_mode),item);
+
+			if(*passwd_mode > EXALT_WIRELESS_ENCRYPTION_NONE)
 				etk_entry_text_set(ETK_ENTRY(pnl->entry_conn_pwd),exalt_wirelessinfo_get_default_passwd(wi));
 			else
 				etk_entry_clear(ETK_ENTRY(pnl->entry_conn_pwd));
@@ -602,7 +694,7 @@ void wirelesspanel_textchanged_entry_cb(Etk_Object *object, void *data)
 
  	//get the password mode
 	passwd_mode = etk_combobox_item_data_get(active_item);
- 	if(!passwd_mode) { passwd_mode=malloc(sizeof(int)); *passwd_mode=WIRELESS_ENCRYPTION_NONE; }
+ 	if(!passwd_mode) { passwd_mode=malloc(sizeof(int)); *passwd_mode=EXALT_WIRELESS_ENCRYPTION_NONE; }
 
 	//verify if all entry contains a valid address && essid & passwd
 	gateway = etk_entry_text_get(ETK_ENTRY(pnl->entry_conn_gateway));
@@ -620,12 +712,11 @@ void wirelesspanel_textchanged_entry_cb(Etk_Object *object, void *data)
 	 	etk_widget_disabled_set(pnl->btn_apply,ETK_FALSE);
 	else
 	 	etk_widget_disabled_set(pnl->btn_apply, ETK_TRUE);
-
-}/*}}}*/
+}
 
 
 int wirelesspanel_dhcp_timer(void* data)
-{/*{{{*/
+{
 	wireless_panel* pnl;
 	pid_t res;
 	int status;
@@ -646,7 +737,6 @@ int wirelesspanel_dhcp_timer(void* data)
 		DELETE_TIMER(pnl->dhcp_timer)
 
 		//update the configuration
-		exalt_eth_load_configuration_byeth(pnl->eth,0);
 		wirelesspanel_update_current_conf(pnl);
 
  	 	wirelesspanel_disabled_widget_activate(pnl,ETK_FALSE);
@@ -655,5 +745,21 @@ int wirelesspanel_dhcp_timer(void* data)
 
 	}
 	return 1;
-}/*}}}*/
+}
+
+Etk_Combobox_Item * exalt_etk_combobox_data_item_get (Etk_Combobox *combobox, void *data)
+{
+    Etk_Combobox_Item *item;
+    void * data2;
+    item = etk_combobox_first_item_get(combobox);
+    while(item)
+    {
+        data2 = etk_combobox_item_data_get(item);
+        if(strcmp(data2,data)==0)
+            return item;
+        else
+            item = etk_combobox_item_next_get(item);
+    }
+    return NULL;
+}
 

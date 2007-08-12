@@ -15,7 +15,7 @@
 
 
 /** Command to lauch the wpa_supplicant daemon */
-#define COMMAND_WPA "wpa_supplicant -D%s -i%s -c%s -B"
+#define COMMAND_WPA "wpa_supplicant -D%s -i%s -c%s -P%s -B"
 
 /** Command to lauch a dhcp */
 #define COMMAND_DHCLIENT "dhclient"

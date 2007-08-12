@@ -20,7 +20,6 @@
  */
 exalt_wireless_info* exalt_wirelessinfo_create(exalt_wireless* w)
 {
-
 	exalt_wireless_info* wi = (exalt_wireless_info*)malloc((unsigned int)sizeof(exalt_wireless_info));
 
 	if(!wi)
@@ -519,6 +518,70 @@ void exalt_wirelessinfo_set_default_passwd_mode(exalt_wireless_info* wi,int pass
 }
 
 
+/**
+ * @brief get the security mode
+ * @param wi the exalt_wireless_info
+ * @return Return the security mode, -1 if a error occurs
+ */
+int exalt_wirelessinfo_get_default_security_mode(exalt_wireless_info* wi)
+{
+ 	if(!wi)
+	{
+	 	fprintf(stderr,"exalt_wirelessinfo_get_default_security_mode(): wi == null! \n");
+		return -1;
+	}
+	return wi->default_security_mode;
+}
+
+
+
+/**
+ * @brief set the security mode
+ * @param wi the exalt_wireless_info
+ * @param security_mode the new security mode
+ */
+void exalt_wirelessinfo_set_default_security_mode(exalt_wireless_info* wi,int security_mode)
+{
+	if(!wi )
+	{
+		fprintf(stderr,"exalt_wirelessinfo_set_default_security_mode(): wi == NULL ! \n");
+		return ;
+	}
+	wi->default_security_mode = security_mode;
+}
+
+/**
+ * @brief get the  mode
+ * @param wi the exalt_wireless_info
+ * @return Return the  mode, -1 if a error occurs
+ */
+int exalt_wirelessinfo_get_default_mode(exalt_wireless_info* wi)
+{
+ 	if(!wi)
+	{
+	 	fprintf(stderr,"exalt_wirelessinfo_get_default_mode(): wi == null! \n");
+		return -1;
+	}
+	return wi->default_mode;
+}
+
+
+
+/**
+ * @brief set the  mode
+ * @param wi the exalt_wireless_info
+ * @param mode the new  mode
+ */
+void exalt_wirelessinfo_set_default_mode(exalt_wireless_info* wi,int mode)
+{
+	if(!wi )
+	{
+		fprintf(stderr,"exalt_wirelessinfo_set_default_mode(): wi == NULL ! \n");
+		return ;
+	}
+	wi->default_mode = mode;
+}
+
 
 
 /**
@@ -683,8 +746,5 @@ int exalt_wirelessinfo_set_default_dhcp(exalt_wireless_info* wi, short dhcp)
 	wi->default_dhcp=dhcp;
 	return 1;
 }
-
-
-
 
 

@@ -22,6 +22,9 @@ int main(int argc,char**argv)
      	textdomain( "exalt" );
 
 	exalt_eth_init();
+        //eth_printf();
+	win = mainwindow_create();
+        exalt_main();
 
  	argc--;
 	argv++;
@@ -52,12 +55,7 @@ int main(int argc,char**argv)
  	 	argv++;
 	}
 
-	//eth_printf();
-	win = mainwindow_create();
-
-	exalt_eth_load();
-
- 	if(opt_i)
+	if(opt_i)
 	{
 	 	exalt_ethernet* eth;
 		eth = exalt_eth_get_ethernet_byname(interface);
@@ -94,7 +92,7 @@ int main(int argc,char**argv)
 					while(data)
 					{
  	 	 	 	 	 	wi = EXALT_WIRELESS_INFO(data);
- 	 	 	 	 	  	wirelesspanel_scan_networks_cb(wi, EXALT_WIRELESS_SCAN_CB_NEW,win->wireless_panel);
+ 	 	 	 	 	  	wirelesspanel_scan_networks_cb(wi, EXALT_WIRELESS_SCAN_CB_ACTION_NEW,win->wireless_panel);
 						data = ecore_list_next(l);
 					}
 					wi=exalt_wireless_get_networkinfo_by_essid(w,wireless);

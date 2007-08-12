@@ -97,7 +97,8 @@ fi
 
 PKG_CHECK_MODULES(LIBEXALT, [
 		ecore >= 0.9.9.037,
-		ecore-config >= 0.9.9.038
+		ecore-config >= 0.9.9.038,
+                ehal >= 0.1.0.002
 		])
 
 AC_SUBST(requirements)

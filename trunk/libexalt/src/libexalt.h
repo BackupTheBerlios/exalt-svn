@@ -14,11 +14,18 @@
 #define EXALT_TRUE 1
 #define EXALT_FALSE 0
 
+#define EXALT_DHCP 1
+#define EXALT_STATIC 0
+#define EXALT_ERROR -1
+
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <net/route.h>
+#include <linux/ethtool.h>
 
+#include <sys/ioctl.h>
+#include <linux/sockios.h>
 
 
 #include "exalt_ethernet.h"
@@ -26,7 +33,7 @@
 #include "exalt_wireless.h"
 #include "exalt_command.h"
 #include "exalt_dns.h"
-#include "exalt_save_load.h"
+#include "exalt_sys_conf.h"
 #include "exalt_regexp.h"
 #include "iwlib.h"
 

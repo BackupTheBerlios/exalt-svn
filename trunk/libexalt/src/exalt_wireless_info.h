@@ -14,14 +14,14 @@ typedef struct exalt_wireless_info exalt_wireless_info;
 
 #include "exalt_wireless.h"
 
-/** 
+/**
  * @brief informations about a wireless network
  * @structinfo
  */
 struct exalt_wireless_info
 {
     exalt_wireless* w;
-    
+
     char* address;
     char* essid;
     int encryption;
@@ -30,16 +30,16 @@ struct exalt_wireless_info
     int noise_lvl;
     char* mode;
 
-    //no more use 
+    //no more use
     char* protocol;
     char* channel;
     char* bit_rates;
     //
-    
-    
+
+
     short scan_ok; //0 if the network is not in the scan result
     short known;   //1 if the network is known, in the config file.
- 
+
     //default configuration
     int default_passwd_mode;
     char* default_passwd;
@@ -47,6 +47,8 @@ struct exalt_wireless_info
     char* default_ip;
     char* default_gateway;
     char* default_netmask;
+    int default_security_mode;
+    int default_mode;
 };
 #include "libexalt.h"
 
@@ -90,6 +92,11 @@ char* exalt_wirelessinfo_get_default_passwd(exalt_wireless_info* wi);
 void exalt_wirelessinfo_set_default_passwd(exalt_wireless_info* wi,const char* passwd);
 int exalt_wirelessinfo_get_default_passwd_mode(exalt_wireless_info* wi);
 void exalt_wirelessinfo_set_default_passwd_mode(exalt_wireless_info* wi,int passwd_mode);
+int exalt_wirelessinfo_get_default_security_mode(exalt_wireless_info* wi);
+void exalt_wirelessinfo_set_default_security_mode(exalt_wireless_info* wi,int security_mode);
+int exalt_wirelessinfo_get_default_mode(exalt_wireless_info* wi);
+void exalt_wirelessinfo_set_default_mode(exalt_wireless_info* wi,int mode);
+
 char* exalt_wirelessinfo_get_default_ip(exalt_wireless_info* wi);
 char* exalt_wirelessinfo_get_default_netmask(exalt_wireless_info* wi);
 char* exalt_wirelessinfo_get_default_gateway(exalt_wireless_info* wi);

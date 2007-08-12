@@ -3,6 +3,7 @@
 
 
 #define CONF_FILE "/etc/network/interfaces"
+//#define CONF_FILE "/home/watchwolf/Projects/C/interfaces"
 #define WPA_CONF_FILE "/etc/wpa_supplicant.conf"
 #define WPA_CONF_HEADER "ctrl_interface=/var/run/wpa_supplicant\n" \
     "ctrl_interface_group=0\n" \
@@ -18,8 +19,6 @@
 
 #define REGEXP_SAVE_DEBIAN_IS_AUTO_ETH ".*auto.*%s.*"
 #define REGEXP_SAVE_DEBIAN_IS_AUTO_ALONE "^[^a-zA-Z0-9]*auto[^a-zA-Z0-9]*$"
-
-#define COMMAND_WPA "wpa_supplicant -D%s -i%s -c%s -B"
 
 #endif
 

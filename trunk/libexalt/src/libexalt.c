@@ -47,13 +47,13 @@ short exalt_is_passwd(const char* passwd, int passwd_mode)
 {
     exalt_regex *r;
     short res;
-    if(passwd_mode == WIRELESS_ENCRYPTION_NONE)
+    if(passwd_mode == EXALT_WIRELESS_ENCRYPTION_NONE)
         return 1;
 
     if(!passwd)
         return -0;
 
-    if(passwd_mode == WIRELESS_ENCRYPTION_WEP_ASCII)
+    if(passwd_mode == EXALT_WIRELESS_ENCRYPTION_WEP_ASCII)
     {
         if(strlen(passwd)>0)
             return 1;
@@ -61,7 +61,7 @@ short exalt_is_passwd(const char* passwd, int passwd_mode)
             return 0;
     }
 
-    if(passwd_mode == WIRELESS_ENCRYPTION_WEP_HEXA)
+    if(passwd_mode == EXALT_WIRELESS_ENCRYPTION_WEP_HEXA)
     {
         r = exalt_regex_create(strdup(passwd), REGEXP_IS_WEP_HEXA, 0);
         res = exalt_regex_execute(r);
@@ -69,9 +69,12 @@ short exalt_is_passwd(const char* passwd, int passwd_mode)
         return res;
     }
 
-    if(passwd_mode == WIRELESS_ENCRYPTION_WPA_PSK_TKIP_ASCII || passwd_mode==WIRELESS_ENCRYPTION_WPA_PSK_ASCII)
+    if(passwd_mode == EXALT_WIRELESS_ENCRYPTION_WPA_PSK_TKIP_ASCII
+            || passwd_mode ==EXALT_WIRELESS_ENCRYPTION_WPA_PSK_CCMP_ASCII
+            || passwd_mode == EXALT_WIRELESS_ENCRYPTION_WPA2_PSK_TKIP_ASCII
+            || passwd_mode == EXALT_WIRELESS_ENCRYPTION_WPA2_PSK_CCMP_ASCII)
     {
-        if(strlen(passwd)>0)
+        if(strlen(passwd)>=8 && strlen(passwd)<=63)
             return 1;
         else
             return 0;
@@ -120,9 +123,8 @@ char* exalt_addr_hexa_to_dec(char* addr)
  * @param ct the substring
  * @return Return the new string
  */
-char *str_remove (const char *s1, const char *ct)
+char *str_remove (const char *s, const char *ct)
 {
-    char* s = strdup(s1);
     char *new_s = NULL;
     char* start = strstr(s,ct);
     char* end_s = s + strlen(s)+1;
@@ -146,7 +148,6 @@ char *str_remove (const char *s1, const char *ct)
             }
         }
     }
-    EXALT_FREE(s);
     return new_s;
 }
 
@@ -162,6 +163,7 @@ short exalt_ioctl(void* argp, int request)
 
     //edit param: SIOCSIFFLAGS SIOCSIFFLAGS SIOCDELRT SIOCSIFADDR SIOCSIFNETMASK SIOCADDRT
     //read param: SIOCGIWNAME SIOCGIWESSID SIOCGIWNAME SIOCGIFFLAGS SIOCGIFADDR SIOCGIFNETMASK SIOCGIFHWADDR
+
 
     if(!exalt_is_admin() && ( request == SIOCSIFFLAGS || request == SIOCSIFFLAGS || request == SIOCDELRT || request == SIOCSIFADDR || request == SIOCSIFNETMASK || request == SIOCADDRT))
     {

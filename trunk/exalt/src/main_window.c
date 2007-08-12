@@ -4,6 +4,7 @@
 main_window* mainwindow_create()
 {
     main_window* win;
+
     win=(main_window*)malloc((unsigned int)sizeof(main_window));
 
     win->win = etk_window_new();
@@ -118,34 +119,35 @@ void mainWindow_eth_cb(exalt_ethernet* eth, int action, void* user_data)
     char eth_img_not_activate[] = PACKAGE_DATA_DIR ICONS_ETHERNET_NOT_ACTIVATE;
 
     main_window* win =  (main_window*) user_data;
+    printf("ACTION %d\n",action);
 
-    if(action == EXALT_ETH_CB_NEW)
+    if(action == EXALT_ETH_CB_ACTION_NEW || action == EXALT_ETH_CB_ACTION_ADD)
     {
         char* img;
         if(exalt_eth_is_wireless(eth))
         {
-            if(exalt_eth_is_activate(eth) && exalt_wireless_raddiobutton_ison(exalt_eth_get_wireless(eth)))
+            if(exalt_eth_is_up(eth))
                 img = wireless_img;
             else
                 img = wireless_img_not_activate;
         }
-        else if(exalt_eth_is_activate(eth))
+        else if(exalt_eth_is_up(eth))
             img = eth_img;
         else
             img = eth_img_not_activate;
-
+        printf("NEW\n");
         etk_tree_row_append(ETK_TREE(win->eth_list), NULL,
                 win->eth_col0,img,NULL,exalt_eth_get_name(eth) ,
                 NULL);
     }
-    else if(action == EXALT_ETH_CB_REMOVE)
+    else if(action == EXALT_ETH_CB_ACTION_REMOVE)
     {
         Etk_Tree_Row* row;
         row = mainWindow_findrow(win, eth);
         if(row)
             etk_tree_row_delete(row);
     }
-    else if(action == EXALT_ETH_CB_ACTIVATE || EXALT_ETH_CB_DEACTIVATE || EXALT_ETH_CB_WIRELESS_RADIO_ON || EXALT_ETH_CB_WIRELESS_RADIO_OFF)
+    else if(action == EXALT_ETH_CB_ACTION_UP || action == EXALT_ETH_CB_ACTION_DOWN || action == EXALT_ETH_CB_ACTION_LINK || action == EXALT_ETH_CB_ACTION_UNLINK )
     {
         Etk_Tree_Row *row;
         row = mainWindow_findrow(win, eth);
@@ -153,15 +155,13 @@ void mainWindow_eth_cb(exalt_ethernet* eth, int action, void* user_data)
         {
             if(exalt_eth_is_wireless(eth))
             {
-                short radio;
-                radio = exalt_wireless_raddiobutton_ison(exalt_eth_get_wireless(eth));
-                if(radio && exalt_eth_is_activate(eth))
+                if(exalt_eth_is_up(eth))
                     etk_tree_row_fields_set(row, 0, win->eth_col0,wireless_img,NULL,exalt_eth_get_name(eth), NULL);
                 else
                     etk_tree_row_fields_set(row, 0, win->eth_col0,wireless_img_not_activate,NULL,exalt_eth_get_name(eth), NULL);
             }
             else
-                if(exalt_eth_is_activate(eth))
+                if(exalt_eth_is_up(eth) && exalt_eth_is_link(eth))
                     etk_tree_row_fields_set(row, 0, win->eth_col0,eth_img,NULL,exalt_eth_get_name(eth), NULL);
                 else
                     etk_tree_row_fields_set(row, 0, win->eth_col0,eth_img_not_activate,NULL,exalt_eth_get_name(eth), NULL);
@@ -171,6 +171,24 @@ void mainWindow_eth_cb(exalt_ethernet* eth, int action, void* user_data)
         eth_panel* pnl = win->eth_panel;
         if(pnl->eth == eth)
             ethpanel_set_eth(pnl,eth);
+        //update the wireless panel
+        wireless_panel* wpnl = win->wireless_panel;
+        if(wpnl->eth == eth)
+            wirelesspanel_set_eth(wpnl,eth);
+    }
+    else if(action == EXALT_ETH_CB_ACTION_ADDRESS_NEW || action == EXALT_ETH_CB_ACTION_NETMASK_NEW || action == EXALT_ETH_CB_ACTION_GATEWAY_NEW)
+    {
+        //update the panel
+        eth_panel* pnl = win->eth_panel;
+        if(pnl->eth == eth)
+            ethpanel_set_eth(pnl,eth);
+        //update the wireless panel
+        wireless_panel* wpnl = win->wireless_panel;
+        if(wpnl->eth == eth)
+            wirelesspanel_set_eth(wpnl,eth);
+    }
+    else if(action == EXALT_WIRELESS_CB_ACTION_ESSIDCHANGE)
+    {
         //update the wireless panel
         wireless_panel* wpnl = win->wireless_panel;
         if(wpnl->eth == eth)
@@ -218,15 +236,14 @@ int mainWindow_eth_state_timer(void* data)
             if(exalt_eth_is_wireless(eth))
             {
                 short radio;
-                exalt_wireless_load_radio_button(eth);
-                radio = exalt_wireless_raddiobutton_ison(exalt_eth_get_wireless(eth));
-                if(radio && exalt_eth_is_activate(eth))
+                radio = exalt_wireless_radiobutton_ison(exalt_eth_get_wireless(eth));
+                if(radio && exalt_eth_is_up(eth))
                     etk_tree_row_fields_set(row, 0, win->eth_col0,PACKAGE_DATA_DIR ICONS_WIRELESS_ACTIVATE,NULL,row_name, NULL);
                 else
                     etk_tree_row_fields_set(row, 0, win->eth_col0,PACKAGE_DATA_DIR ICONS_WIRELESS_NOT_ACTIVATE,NULL,row_name, NULL);
             }
             else
-                if(exalt_eth_is_activate(eth))
+                if(exalt_eth_is_up(eth))
                     etk_tree_row_fields_set(row, 0, win->eth_col0,PACKAGE_DATA_DIR ICONS_ETHERNET_ACTIVATE,NULL,row_name, NULL);
                 else
                     etk_tree_row_fields_set(row, 0, win->eth_col0,PACKAGE_DATA_DIR ICONS_ETHERNET_NOT_ACTIVATE,NULL,row_name, NULL);

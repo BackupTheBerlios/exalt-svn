@@ -47,7 +47,7 @@ void infopanel_eth_cb(exalt_ethernet* eth, int action, void* user_data)
     char buf[1024];
     int i;
 
-    if(action!= EXALT_ETH_CB_NEW)
+    if(action!= EXALT_ETH_CB_ACTION_NEW)
         return ;
 
     hbox = win->info_panel->hbox;
@@ -65,7 +65,7 @@ void infopanel_eth_cb(exalt_ethernet* eth, int action, void* user_data)
         table = etk_table_new(2, 4,ETK_TABLE_HOMOGENEOUS);
         label = etk_label_new(_("Essid: "));
  	etk_table_attach(ETK_TABLE(table), label, 0, 0, 0, 0, 0, 0, ETK_TABLE_HFILL);
-	etk_table_attach_default(ETK_TABLE(table), etk_label_new(exalt_wireless_get_current_essid(exalt_eth_get_wireless(eth))), 1, 1, 0, 0);
+	etk_table_attach_default(ETK_TABLE(table), etk_label_new(exalt_wireless_get_essid(exalt_eth_get_wireless(eth))), 1, 1, 0, 0);
         i = 1;
     }
     else

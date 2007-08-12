@@ -18,9 +18,6 @@
     "ap_scan=1\n" \
     "fast_reauth=1\n"
 
-
-#define COMMAND_WPA "wpa_supplicant -D%s -i%s -c%s -B"
-
 #endif
 /** @} */
 
