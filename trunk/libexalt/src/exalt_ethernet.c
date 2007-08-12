@@ -244,8 +244,6 @@ void _exalt_cb_net_properties(void *data, void *reply_data, DBusError *error)
 
     if(exalt_eth_interfaces.eth_cb)
         exalt_eth_interfaces.eth_cb(eth,action,exalt_eth_interfaces.eth_cb_user_data);
-
-    free(data);
 }
 
 

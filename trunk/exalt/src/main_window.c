@@ -119,7 +119,6 @@ void mainWindow_eth_cb(exalt_ethernet* eth, int action, void* user_data)
     char eth_img_not_activate[] = PACKAGE_DATA_DIR ICONS_ETHERNET_NOT_ACTIVATE;
 
     main_window* win =  (main_window*) user_data;
-    printf("ACTION %d\n",action);
 
     if(action == EXALT_ETH_CB_ACTION_NEW || action == EXALT_ETH_CB_ACTION_ADD)
     {
@@ -135,7 +134,6 @@ void mainWindow_eth_cb(exalt_ethernet* eth, int action, void* user_data)
             img = eth_img;
         else
             img = eth_img_not_activate;
-        printf("NEW\n");
         etk_tree_row_append(ETK_TREE(win->eth_list), NULL,
                 win->eth_col0,img,NULL,exalt_eth_get_name(eth) ,
                 NULL);
