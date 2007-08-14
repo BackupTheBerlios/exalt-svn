@@ -141,6 +141,7 @@ AC_SUBST(e_modules)
 
 PKG_CHECK_MODULES(EXALT, [
    exalt >= 0.0.1
+   ehal >= 0.1.0.002
 ])
 
 AC_OUTPUT([

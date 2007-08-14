@@ -174,7 +174,6 @@ char* exalt_eth_get_new_ip(exalt_ethernet* eth);
 char* exalt_eth_get_new_gateway(exalt_ethernet* eth);
 char* exalt_eth_get_new_netmask(exalt_ethernet* eth);
 
-
 /** @} */
 
 #endif

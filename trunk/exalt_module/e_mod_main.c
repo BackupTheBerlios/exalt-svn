@@ -70,8 +70,7 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
   snprintf (buf, sizeof (buf), "%s/exalt.edj", e_module_dir_get
 	(exalt_module));
   o = edje_object_add (gc->evas);
-   edje_object_file_set (o, buf, "e/modules/exalt/main");
-  evas_object_show (o);
+  edje_object_file_set (o, buf, "e/modules/exalt/main");
 
   gcc = e_gadcon_client_new (gc, name, id, style, o);
   gcc->data = inst;
@@ -79,12 +78,13 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
   inst->gcc = gcc;
   inst->o_button = o;
 
-  e_gadcon_client_util_menu_attach (gcc);
-
   evas_object_event_callback_add (o, EVAS_CALLBACK_MOUSE_DOWN,
 	_button_cb_mouse_down, inst);
 
+ exalt_config->instances = evas_list_append(exalt_config->instances, inst);
+
   exalt_eth_init();
+  exalt_main();
   return gcc;
 }
 
@@ -214,33 +214,31 @@ _button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	else if( ev->button == 3)
 	{
 
-		E_Menu *mn;
-		E_Menu_Item *mi;
-		int cx,cy,cw,ch;
+            E_Menu *mn;
+            E_Menu_Item *mi;
+            int cx,cy,cw,ch;
 
-		if(!exalt_config->menu)
-		{
-			mn = e_menu_new();
-			e_menu_post_deactivate_callback_set(mn, _menu_cb_post, inst);
-			exalt_config->menu = mn;
+            if(!exalt_config->menu)
+            {
+                mn = e_menu_new();
+                e_menu_post_deactivate_callback_set(mn, _menu_cb_post, inst);
+                exalt_config->menu = mn;
 
-			mi = e_menu_item_new(mn);
-			e_menu_item_label_set(mi, _("Configuration"));
-			e_util_menu_item_edje_icon_set(mi,  "enlightenment/configuration");
+                mi = e_menu_item_new(mn);
+                e_menu_item_label_set(mi, _("Configuration"));
+                e_util_menu_item_edje_icon_set(mi,  "enlightenment/configuration");
+                e_menu_item_callback_set(mi, _exalt_cb_menu_configure, NULL);
 
-			e_menu_item_callback_set(mi, _exalt_cb_menu_configure, NULL);
+                e_gadcon_client_util_menu_items_append(inst->gcc, mn, 0);
+            }
 
-			e_gadcon_client_util_menu_items_append(inst->gcc, mn, 0);
-		}
-
-		mn = exalt_config->menu;
-
-		e_gadcon_canvas_zone_geometry_get(inst->gcc->gadcon, &cx, &cy, &cw, &ch);
-		e_menu_activate_mouse(mn,e_util_zone_current_get(e_manager_current_get()),
-				cx + ev->output.x, cy + ev->output.y, 1, 1,
-				E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
-		e_util_evas_fake_mouse_up_later(inst->gcc->gadcon->evas, ev->button);
-	}
+            mn = exalt_config->menu;
+            e_gadcon_canvas_zone_geometry_get(inst->gcc->gadcon, &cx, &cy, &cw, &ch);
+            e_menu_activate_mouse(mn,e_util_zone_current_get(e_manager_current_get()),
+                    cx + ev->output.x, cy + ev->output.y, 1, 1,
+                    E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
+            e_util_evas_fake_mouse_up_later(inst->gcc->gadcon->evas, ev->button);
+        }
 
 }
 
@@ -352,20 +350,19 @@ void _exalt_menu_item_cards_load(E_Menu *m)
  	l = exalt_eth_get_list();
 	ecore_list_first_goto(l);
  	data = ecore_list_next(l);
- 	while(data)
+        while(data)
 	{
 	 	eth = EXALT_ETHERNET(data);
 		mi = e_menu_item_new(m);
-
 		char* img;
 		if(exalt_eth_is_wireless(eth))
 		{
-			if(exalt_eth_is_activate(eth) && exalt_wireless_raddiobutton_ison(exalt_eth_get_wireless(eth)))
+			if(exalt_eth_is_up(eth))
 				img = wireless_img;
 			else
 				img = wireless_img_not_activate;
 		}
-		else if(exalt_eth_is_activate(eth))
+		else if(exalt_eth_is_up(eth))
 			img = eth_img;
 		else
 			img = eth_img_not_activate;

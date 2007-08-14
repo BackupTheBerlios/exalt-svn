@@ -23582,15 +23582,18 @@ if test -n "$PKG_CONFIG"; then
         if test -n "$PKG_CONFIG" && \
     { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"
    exalt >= 0.0.1
+   ehal >= 0.1.0.002
 \"") >&5
   ($PKG_CONFIG --exists --print-errors "
    exalt >= 0.0.1
+   ehal >= 0.1.0.002
 ") 2>&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; then
   pkg_cv_EXALT_CFLAGS=`$PKG_CONFIG --cflags "
    exalt >= 0.0.1
+   ehal >= 0.1.0.002
 " 2>/dev/null`
 else
   pkg_failed=yes
@@ -23606,15 +23609,18 @@ if test -n "$PKG_CONFIG"; then
         if test -n "$PKG_CONFIG" && \
     { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"
    exalt >= 0.0.1
+   ehal >= 0.1.0.002
 \"") >&5
   ($PKG_CONFIG --exists --print-errors "
    exalt >= 0.0.1
+   ehal >= 0.1.0.002
 ") 2>&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; then
   pkg_cv_EXALT_LIBS=`$PKG_CONFIG --libs "
    exalt >= 0.0.1
+   ehal >= 0.1.0.002
 " 2>/dev/null`
 else
   pkg_failed=yes
@@ -23636,10 +23642,12 @@ fi
         if test $_pkg_short_errors_supported = yes; then
 	        EXALT_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "
    exalt >= 0.0.1
+   ehal >= 0.1.0.002
 "`
         else
 	        EXALT_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "
    exalt >= 0.0.1
+   ehal >= 0.1.0.002
 "`
         fi
 	# Put the nasty error message in config.log where it belongs
@@ -23647,6 +23655,7 @@ fi
 
 	{ { echo "$as_me:$LINENO: error: Package requirements (
    exalt >= 0.0.1
+   ehal >= 0.1.0.002
 ) were not met:
 
 $EXALT_PKG_ERRORS
@@ -23660,6 +23669,7 @@ See the pkg-config man page for more details.
 " >&5
 echo "$as_me: error: Package requirements (
    exalt >= 0.0.1
+   ehal >= 0.1.0.002
 ) were not met:
 
 $EXALT_PKG_ERRORS

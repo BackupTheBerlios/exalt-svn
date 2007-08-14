@@ -1,5 +1,5 @@
-#ifndef ENIGMA_H
-#define ENIGMA_H
+#ifndef EXALT_H
+#define EXALT_H
 
 #include "config.h"
 #include <libintl.h>
@@ -28,6 +28,8 @@
 
 #define DELETE_TIMER(a) if(a) {ecore_timer_del(a); a=NULL; }
 
+extern char* exalt_default_interface;
+extern char* exalt_default_network;
 
 #include "main_window.h"
 #include "eth_panel.h"

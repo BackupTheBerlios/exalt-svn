@@ -469,6 +469,7 @@ int exalt_wireless_scan(void *data)
     delay = iw_process_scan(fd, exalt_eth_get_name(eth), exalt_eth_interfaces.we_version, context);
     if(delay<=0)
     {
+        Ecore_List* temp;
         l = ecore_list_new();
         l->free_func =  ECORE_FREE_CB(exalt_wirelessinfo_free);
         ecore_list_init(l);
@@ -521,16 +522,19 @@ int exalt_wireless_scan(void *data)
         //compare w->networks and l
         //if a network is in l & not int w->networks, it's a new network
         //if a network is in w->networks & not in l, it's a old network
+        temp = w->networks;
+        w->networks = l;
+        l = temp;
 
         //new networks
-        ecore_list_first_goto(l);
-        data_l = ecore_list_next(l);
+        ecore_list_first_goto(w->networks);
+        data_l = ecore_list_next(w->networks);
         while(data_l)
         {
             find = 0;
             wi_l = EXALT_WIRELESS_INFO(data_l);
-            ecore_list_first_goto(w->networks);
-            data_n = ecore_list_next(w->networks);
+            ecore_list_first_goto(l);
+            data_n = ecore_list_next(l);
             while(data_n)
             {
                 wi_n = EXALT_WIRELESS_INFO(data_n);
@@ -541,22 +545,22 @@ int exalt_wireless_scan(void *data)
                     find = 1;
                 }
                 else
-                    data_n = ecore_list_next(w->networks);
+                    data_n = ecore_list_next(l);
             }
             if(!find && exalt_eth_interfaces.wireless_scan_cb)
                 exalt_eth_interfaces.wireless_scan_cb(wi_l,EXALT_WIRELESS_SCAN_CB_ACTION_NEW,exalt_eth_interfaces.wireless_scan_cb_user_data);
-            data_l = ecore_list_next(l);
+            data_l = ecore_list_next(w->networks);
         }
 
         //old networks
-        ecore_list_first_goto(w->networks);
-        data_n = ecore_list_next(w->networks);
+        ecore_list_first_goto(l);
+        data_n = ecore_list_next(l);
         while(data_n)
         {
             find = 0;
             wi_n = EXALT_WIRELESS_INFO(data_n);
-            ecore_list_first_goto(l);
-            data_l = ecore_list_next(l);
+            ecore_list_first_goto(w->networks);
+            data_l = ecore_list_next(w->networks);
             while(data_l)
             {
                 wi_l = EXALT_WIRELESS_INFO(data_l);
@@ -567,16 +571,15 @@ int exalt_wireless_scan(void *data)
                     find = 1;
                 }
                 else
-                    data_l = ecore_list_next(l);
+                    data_l = ecore_list_next(w->networks);
             }
             if(!find && exalt_eth_interfaces.wireless_scan_cb)
                 exalt_eth_interfaces.wireless_scan_cb(wi_n,EXALT_WIRELESS_SCAN_CB_ACTION_REMOVE,exalt_eth_interfaces.wireless_scan_cb_user_data);
 
-            data_n = ecore_list_next(w->networks);
+            data_n = ecore_list_next(l);
         }
 
-        ecore_list_destroy(w->networks);
-        w->networks = l;
+        ecore_list_destroy(l);
 
         delay = EXALT_WIRELESS_SCAN_UPDATE_TIME*1000;
 

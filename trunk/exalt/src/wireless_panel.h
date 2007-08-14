@@ -70,7 +70,6 @@ struct _wireless_panel
 	Etk_Widget* hbox_pbar;
 	Etk_Widget* pbar;
 	Ecore_Timer* dhcp_timer;
-
 };
 
 void wirelesspanel_scan_networks_cb(exalt_wireless_info* wi, int action, void* data);

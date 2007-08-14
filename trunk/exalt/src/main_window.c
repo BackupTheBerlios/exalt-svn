@@ -137,6 +137,26 @@ void mainWindow_eth_cb(exalt_ethernet* eth, int action, void* user_data)
         etk_tree_row_append(ETK_TREE(win->eth_list), NULL,
                 win->eth_col0,img,NULL,exalt_eth_get_name(eth) ,
                 NULL);
+
+        if(exalt_default_interface && strcmp(exalt_eth_get_name(eth),exalt_default_interface)==0)
+        {
+            if(!exalt_eth_is_wireless(eth))
+            {
+                ethpanel_set_eth(win->eth_panel,eth);
+                wirelesspanel_hide(win->wireless_panel);
+                generalpanel_hide(win->general_panel);
+                aboutpanel_hide(win->about_panel);
+                ethpanel_show(win->eth_panel);
+            }
+            else
+            {
+                wirelesspanel_set_eth(win->wireless_panel,eth);
+                ethpanel_hide(win->eth_panel);
+                generalpanel_hide(win->general_panel);
+                wirelesspanel_show(win->wireless_panel);
+                aboutpanel_hide(win->about_panel);
+            }
+        }
     }
     else if(action == EXALT_ETH_CB_ACTION_REMOVE)
     {
