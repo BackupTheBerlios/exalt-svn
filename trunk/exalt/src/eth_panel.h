@@ -48,7 +48,7 @@ eth_panel* ethpanel_create(main_window* win);
 void ethpanel_show(eth_panel* pnl);
 void ethpanel_hide(eth_panel* pnl);
 void ethpanel_set_eth(eth_panel* pnl, exalt_ethernet* eth);
-void ethpanel_disabled_set(eth_panel* pnl, Etk_Bool down, Etk_Bool apply);
+void ethpanel_disabled_set(eth_panel* pnl);
 
 void ethpanel_set_static_dhcp_clicked_cb(Etk_Object *object, void *data);
 void ethpanel_textchanged_entry_cb(Etk_Object *object, void *data);

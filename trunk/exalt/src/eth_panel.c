@@ -10,7 +10,7 @@ eth_panel* ethpanel_create(main_window* win)
 	pnl->eth = NULL;
 	pnl->win = win;
 	pnl->frame = etk_frame_new("hehe");
-
+        pnl->dhcp_timer = NULL;
 
 	pnl->box_configuration = etk_vbox_new(ETK_FALSE,5);
 	etk_container_add(ETK_CONTAINER(pnl->frame), pnl->box_configuration);
@@ -142,8 +142,7 @@ void ethpanel_set_eth(eth_panel* pnl, exalt_ethernet* eth)
     else
         etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(pnl->check_static),ETK_TRUE);
 
-    ethpanel_disabled_set(pnl, !exalt_eth_is_up(eth), ETK_FALSE);
-
+    ethpanel_disabled_set(pnl);
 }
 
 void ethpanel_set_static_dhcp_clicked_cb(Etk_Object *object, void *data)
@@ -157,7 +156,7 @@ void ethpanel_set_static_dhcp_clicked_cb(Etk_Object *object, void *data)
 	}
 
 	pnl = (eth_panel*)data;
-	ethpanel_disabled_set(pnl, !exalt_eth_is_up(pnl->eth), ETK_FALSE);
+	ethpanel_disabled_set(pnl);
 	//call the function to set the button apply
 	ethpanel_textchanged_entry_cb(NULL,pnl);
 }
@@ -207,17 +206,6 @@ void ethpanel_btn_activate_clicked_cb(void *data)
 
 	pnl = (eth_panel*)data;
 	exalt_eth_up(pnl->eth);
-
-        if(exalt_eth_is_dhcp(pnl->eth))
-        {
-            etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(pnl->check_static),ETK_TRUE);
-            etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(pnl->check_dhcp),ETK_TRUE);
-        }
-        else
-        {
-            etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(pnl->check_dhcp),ETK_TRUE);
-            etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(pnl->check_static),ETK_TRUE);
-        }
 }
 
 void ethpanel_btn_apply_clicked_cb(void *data)
@@ -255,15 +243,18 @@ void ethpanel_btn_apply_clicked_cb(void *data)
         exalt_eth_apply_conf(pnl->eth);
         exit(1);
     }
-    ethpanel_disabled_set(pnl, ETK_FALSE, ETK_TRUE);
+    ethpanel_disabled_set(pnl);
     etk_widget_disabled_set(pnl->win->eth_list,ETK_TRUE);
     etk_widget_disabled_set(pnl->btn_disactivate,ETK_TRUE);
     pnl->pid_dhcp_process = f;
     pnl->dhcp_timer = ecore_timer_add(DHCP_TIMER ,ethpanel_dhcp_timer,pnl);
 }
 
-void ethpanel_disabled_set(eth_panel* pnl, Etk_Bool down, Etk_Bool apply)
+void ethpanel_disabled_set(eth_panel* pnl)
 {
+    int apply = pnl->dhcp_timer !=NULL;
+    int down = !exalt_eth_is_up(pnl->eth);
+
     etk_widget_disabled_set(pnl->btn_disactivate,ETK_FALSE);
     etk_widget_disabled_set(pnl->btn_activate,ETK_TRUE);
     etk_widget_disabled_set(pnl->check_static,ETK_FALSE);
@@ -322,24 +313,12 @@ int ethpanel_dhcp_timer(void* data)
 	else
 	{
             etk_widget_hide(pnl->hbox_pbar);
-            if(exalt_eth_is_dhcp(pnl->eth))
-            {
-                etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(pnl->check_static),ETK_TRUE);
-                etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(pnl->check_dhcp),ETK_TRUE);
-            }
-            else
-            {
-                etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(pnl->check_dhcp),ETK_TRUE);
-                etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(pnl->check_static),ETK_TRUE);
-            }
-
-
-            ethpanel_disabled_set(pnl, !exalt_eth_is_up(pnl->eth), ETK_FALSE);
             etk_widget_disabled_set(pnl->win->eth_list,ETK_FALSE);
             etk_widget_disabled_set(pnl->btn_disactivate,ETK_FALSE);
 
             ecore_timer_del(pnl->dhcp_timer);
             pnl->dhcp_timer = NULL;
+            ethpanel_disabled_set(pnl);
         }
         return 1;
 }
