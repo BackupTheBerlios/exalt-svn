@@ -14,7 +14,14 @@ typedef struct exalt_ethernet exalt_ethernet;
 #include <Ecore.h>
 #include <E_Hal.h>
 #include <sys/socket.h>
-#include <sys/types.h>
+
+#include <linux/types.h>
+typedef __u64 u64;         /* hack, so we may include kernel's ethtool.h */
+typedef __u32 u32;         /* ditto */
+typedef __u16 u16;         /* ditto */
+typedef __u8 u8;           /* ditto */
+
+
 #include <linux/ethtool.h>
 #include <linux/netlink.h>
 #include <linux/rtnetlink.h>
