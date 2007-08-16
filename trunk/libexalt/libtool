@@ -328,7 +328,7 @@ link_all_deplibs=unknown
 sys_lib_search_path_spec="/usr/lib/gcc/i686-pc-linux-gnu/4.1.2 /usr/i686-pc-linux-gnu/lib /usr/lib /lib"
 
 # Run-time system search path for libraries
-sys_lib_dlsearch_path_spec="/lib /usr/lib /usr/local/lib //usr//lib/opengl/ati/lib /usr/i686-pc-linux-gnu/lib /usr/lib/gcc/i686-pc-linux-gnu/4.1.2 /usr/lib/nspr /usr/lib/nss /usr/lib/openmotif-2.2 /usr/kde/3.5/lib /usr/qt/3/lib /usr/games/lib /usr/local/lib /usr/lib/libstdc++-v3/ "
+sys_lib_dlsearch_path_spec="/lib /usr/lib /usr/local/lib //usr//lib/opengl/ati/lib /usr/i686-pc-linux-gnu/lib /usr/lib/gcc/i686-pc-linux-gnu/4.1.2 /usr/lib/nspr /usr/lib/nss /usr/lib/openmotif-2.2 /usr/lib/qt4 /usr/kde/3.5/lib /usr/qt/3/lib /usr/games/lib /usr/lib/libstdc++-v3/ "
 
 # Fix the shell variable $srcfile for the compiler.
 fix_srcfile_path=""
@@ -7627,7 +7627,7 @@ link_all_deplibs=unknown
 sys_lib_search_path_spec="/usr/lib/gcc/i686-pc-linux-gnu/4.1.2 /usr/i686-pc-linux-gnu/lib /usr/lib /lib"
 
 # Run-time system search path for libraries
-sys_lib_dlsearch_path_spec="/lib /usr/lib /usr/local/lib //usr//lib/opengl/ati/lib /usr/i686-pc-linux-gnu/lib /usr/lib/gcc/i686-pc-linux-gnu/4.1.2 /usr/lib/nspr /usr/lib/nss /usr/lib/openmotif-2.2 /usr/kde/3.5/lib /usr/qt/3/lib /usr/games/lib /usr/local/lib /usr/lib/libstdc++-v3/ "
+sys_lib_dlsearch_path_spec="/lib /usr/lib /usr/local/lib //usr//lib/opengl/ati/lib /usr/i686-pc-linux-gnu/lib /usr/lib/gcc/i686-pc-linux-gnu/4.1.2 /usr/lib/nspr /usr/lib/nss /usr/lib/openmotif-2.2 /usr/lib/qt4 /usr/kde/3.5/lib /usr/qt/3/lib /usr/games/lib /usr/lib/libstdc++-v3/ "
 
 # Fix the shell variable $srcfile for the compiler.
 fix_srcfile_path=""
@@ -7935,7 +7935,7 @@ link_all_deplibs=unknown
 sys_lib_search_path_spec="/usr/lib/gcc/i686-pc-linux-gnu/4.1.2 /usr/i686-pc-linux-gnu/lib /usr/lib /lib"
 
 # Run-time system search path for libraries
-sys_lib_dlsearch_path_spec="/lib /usr/lib /usr/local/lib //usr//lib/opengl/ati/lib /usr/i686-pc-linux-gnu/lib /usr/lib/gcc/i686-pc-linux-gnu/4.1.2 /usr/lib/nspr /usr/lib/nss /usr/lib/openmotif-2.2 /usr/kde/3.5/lib /usr/qt/3/lib /usr/games/lib /usr/local/lib /usr/lib/libstdc++-v3/ "
+sys_lib_dlsearch_path_spec="/lib /usr/lib /usr/local/lib //usr//lib/opengl/ati/lib /usr/i686-pc-linux-gnu/lib /usr/lib/gcc/i686-pc-linux-gnu/4.1.2 /usr/lib/nspr /usr/lib/nss /usr/lib/openmotif-2.2 /usr/lib/qt4 /usr/kde/3.5/lib /usr/qt/3/lib /usr/games/lib /usr/lib/libstdc++-v3/ "
 
 # Fix the shell variable $srcfile for the compiler.
 fix_srcfile_path=""

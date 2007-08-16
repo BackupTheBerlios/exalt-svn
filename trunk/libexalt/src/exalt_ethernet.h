@@ -16,12 +16,6 @@ typedef struct exalt_ethernet exalt_ethernet;
 #include <sys/socket.h>
 
 #include <linux/types.h>
-typedef __u64 u64;         /* hack, so we may include kernel's ethtool.h */
-typedef __u32 u32;         /* ditto */
-typedef __u16 u16;         /* ditto */
-typedef __u8 u8;           /* ditto */
-
-
 #include <linux/ethtool.h>
 #include <linux/netlink.h>
 #include <linux/rtnetlink.h>
@@ -101,6 +95,7 @@ struct exalt_ethernet
         short _save_up;
 };
 
+
 /**
  * @brief all cards
  * @structinfo
@@ -169,7 +164,7 @@ int exalt_eth_set_scan_cb(Exalt_Wifi_Scan_Cb fct, void* user_data);
 int exalt_eth_set_new_ip(exalt_ethernet* eth,const char* ip);
 int exalt_eth_set_new_netmask(exalt_ethernet* eth,const char* netmask);
 int exalt_eth_set_new_gateway(exalt_ethernet* eth,const char* gateway);
-int exalt_eth_set_dhcp(exalt_ethernet* eth, short dhcp);
+int exalt_eth_set_new_dhcp(exalt_ethernet* eth, short dhcp);
 
 
 int exalt_eth_apply_conf(exalt_ethernet* eth);

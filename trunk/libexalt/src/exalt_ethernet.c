@@ -67,6 +67,10 @@ int exalt_eth_init()
 
     exalt_eth_interfaces.we_version = iw_get_kernel_we_version();
 
+    exalt_eth_interfaces.exe.wpa_supplicant = NULL;
+    exalt_eth_interfaces.exe.dhcp = NULL;
+    exalt_eth_interfaces.exe.dns = NULL;
+
     //test if we have the administrator right
     if(getuid()==0)
         exalt_eth_interfaces.admin = EXALT_TRUE;
@@ -166,6 +170,9 @@ exalt_ethernet* exalt_eth_create(const char* name)
 void exalt_eth_ethernets_free()
 {
     e_dbus_connection_unref(exalt_eth_interfaces.dbus_conn);
+    EXALT_FREE_EXE(exalt_eth_interfaces.exe.wpa_supplicant)
+    EXALT_FREE_EXE(exalt_eth_interfaces.exe.dhcp)
+    EXALT_FREE_EXE(exalt_eth_interfaces.exe.dns)
     ecore_list_destroy(exalt_eth_interfaces.ethernets);
 }
 

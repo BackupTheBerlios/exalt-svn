@@ -14,10 +14,10 @@ typedef struct _eth_panel eth_panel;
 struct _eth_panel
 {
 	exalt_ethernet* eth;
-	
+
 	main_window* win;
 	Etk_Widget *frame;
-	
+
 	Etk_Widget* box_configuration;
 
 
@@ -26,7 +26,7 @@ struct _eth_panel
 	Etk_Widget *entry_ip;
 	Etk_Widget *entry_mask;
 	Etk_Widget *entry_gateway;
-	
+
 	Etk_Widget *check_static;
 	Etk_Widget *check_dhcp;
 
@@ -48,8 +48,7 @@ eth_panel* ethpanel_create(main_window* win);
 void ethpanel_show(eth_panel* pnl);
 void ethpanel_hide(eth_panel* pnl);
 void ethpanel_set_eth(eth_panel* pnl, exalt_ethernet* eth);
-void ethpanel_disabled_set(eth_panel* pnl,Etk_Bool b);
-void ethpanel_disabled_entry_set(eth_panel* pnl, Etk_Bool b);
+void ethpanel_disabled_set(eth_panel* pnl, Etk_Bool down, Etk_Bool apply);
 
 void ethpanel_set_static_dhcp_clicked_cb(Etk_Object *object, void *data);
 void ethpanel_textchanged_entry_cb(Etk_Object *object, void *data);

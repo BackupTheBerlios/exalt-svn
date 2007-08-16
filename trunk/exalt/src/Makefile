@@ -101,8 +101,8 @@ ECHO_C =
 ECHO_N = -n
 ECHO_T = 
 EGREP = /bin/grep -E
-EXALT_CFLAGS = -I/usr/local/include -I/usr/local/include/exalt -I/usr/include/etk  
-EXALT_LIBS = -L/usr/local/lib -letk -lecore_file -ledje -lecore_x -lecore -levas -lexalt  
+EXALT_CFLAGS = -I/usr/local/include -I/usr/local/include/etk -I/usr/local/include/exalt -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include  
+EXALT_LIBS = -L/usr/local/lib -letk -lecore_file -ledje -lecore_x -levas -lexalt -lehal -ledbus -lecore -ldbus-1  
 EXEEXT = 
 F77 = gfortran
 FFLAGS = -g -O2
@@ -200,7 +200,7 @@ target_cpu = i686
 target_os = linux-gnu
 target_vendor = pc
 AM_CFLAGS = \
--Wall -W -g -D_GNU_SOURCE -I/usr/local/include -I/usr/local/include/exalt -I/usr/include/etk  
+-Wall -W -g -D_GNU_SOURCE -I/usr/local/include -I/usr/local/include/etk -I/usr/local/include/exalt -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include  
 
 exalt_INCLUDES = \
 exalt.h            \
@@ -221,7 +221,7 @@ info_panel.c \
 about_panel.c
 
 exalt_LDFLAGS = -export-dynamic
-exalt_LDADD = -L/usr/local/lib -letk -lecore_file -ledje -lecore_x -lecore -levas -lexalt  
+exalt_LDADD = -L/usr/local/lib -letk -lecore_file -ledje -lecore_x -levas -lexalt -lehal -ledbus -lecore -ldbus-1  
 MAINTAINERCLEANFILES = Makefile.in
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am

@@ -21638,18 +21638,21 @@ if test -n "$PKG_CONFIG"; then
         if test -n "$PKG_CONFIG" && \
     { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"
 		ecore >= 0.9.9.037,
-		ecore-config >= 0.9.9.038
+		ecore-config >= 0.9.9.038,
+                ehal >= 0.1.0.002
 		\"") >&5
   ($PKG_CONFIG --exists --print-errors "
 		ecore >= 0.9.9.037,
-		ecore-config >= 0.9.9.038
+		ecore-config >= 0.9.9.038,
+                ehal >= 0.1.0.002
 		") 2>&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; then
   pkg_cv_LIBEXALT_CFLAGS=`$PKG_CONFIG --cflags "
 		ecore >= 0.9.9.037,
-		ecore-config >= 0.9.9.038
+		ecore-config >= 0.9.9.038,
+                ehal >= 0.1.0.002
 		" 2>/dev/null`
 else
   pkg_failed=yes
@@ -21665,18 +21668,21 @@ if test -n "$PKG_CONFIG"; then
         if test -n "$PKG_CONFIG" && \
     { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"
 		ecore >= 0.9.9.037,
-		ecore-config >= 0.9.9.038
+		ecore-config >= 0.9.9.038,
+                ehal >= 0.1.0.002
 		\"") >&5
   ($PKG_CONFIG --exists --print-errors "
 		ecore >= 0.9.9.037,
-		ecore-config >= 0.9.9.038
+		ecore-config >= 0.9.9.038,
+                ehal >= 0.1.0.002
 		") 2>&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; then
   pkg_cv_LIBEXALT_LIBS=`$PKG_CONFIG --libs "
 		ecore >= 0.9.9.037,
-		ecore-config >= 0.9.9.038
+		ecore-config >= 0.9.9.038,
+                ehal >= 0.1.0.002
 		" 2>/dev/null`
 else
   pkg_failed=yes
@@ -21698,12 +21704,14 @@ fi
         if test $_pkg_short_errors_supported = yes; then
 	        LIBEXALT_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "
 		ecore >= 0.9.9.037,
-		ecore-config >= 0.9.9.038
+		ecore-config >= 0.9.9.038,
+                ehal >= 0.1.0.002
 		"`
         else
 	        LIBEXALT_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "
 		ecore >= 0.9.9.037,
-		ecore-config >= 0.9.9.038
+		ecore-config >= 0.9.9.038,
+                ehal >= 0.1.0.002
 		"`
         fi
 	# Put the nasty error message in config.log where it belongs
@@ -21711,7 +21719,8 @@ fi
 
 	{ { echo "$as_me:$LINENO: error: Package requirements (
 		ecore >= 0.9.9.037,
-		ecore-config >= 0.9.9.038
+		ecore-config >= 0.9.9.038,
+                ehal >= 0.1.0.002
 		) were not met:
 
 $LIBEXALT_PKG_ERRORS
@@ -21725,7 +21734,8 @@ See the pkg-config man page for more details.
 " >&5
 echo "$as_me: error: Package requirements (
 		ecore >= 0.9.9.037,
-		ecore-config >= 0.9.9.038
+		ecore-config >= 0.9.9.038,
+                ehal >= 0.1.0.002
 		) were not met:
 
 $LIBEXALT_PKG_ERRORS

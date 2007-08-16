@@ -55,7 +55,7 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 am__objects_1 =
 am_libexalt_la_OBJECTS = proc.lo iwlib.lo wpa_ctrl.lo libexalt.lo \
 	exalt_command.lo exalt_dns.lo exalt_ethernet.lo \
-	exalt_regexp.lo exalt_save_load.lo exalt_wireless.lo \
+	exalt_regexp.lo exalt_sys_conf.lo exalt_wireless.lo \
 	exalt_wireless_info.lo $(am__objects_1)
 libexalt_la_OBJECTS = $(am_libexalt_la_OBJECTS)
 libexalt_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -114,8 +114,8 @@ INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
 LDFLAGS = 
-LIBEXALT_CFLAGS =  
-LIBEXALT_LIBS = -lecore_config -lecore_ipc -leet -lecore_con -lecore -lssl -lcrypto -ldl  
+LIBEXALT_CFLAGS = -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include  
+LIBEXALT_LIBS = -lecore_config -lecore_ipc -leet -lecore_con -lssl -lcrypto -ldl -lehal -ledbus -lecore -ldbus-1  
 LIBOBJS = 
 LIBS = 
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
@@ -196,7 +196,7 @@ top_srcdir = ..
 MAINTAINERCLEANFILES = Makefile.in
 AUTOMAKE_OPTIONS = 1.4 foreign
 INCLUDES = \
- -Wall -g   -Iiw/ -Inettools/ -Iwpa_supplicant/ -Idistrib/
+ -Wall -g -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include   -Iiw/ -Inettools/ -Iwpa_supplicant/ -Idistrib/
 
 lib_LTLIBRARIES = libexalt.la
 EXTRA_DIST = 
@@ -210,7 +210,7 @@ exalt_command.h \
 exalt_dns.h \
 exalt_ethernet.h \
 exalt_regexp.h \
-exalt_save_load.h \
+exalt_sys_conf.h \
 exalt_wireless.h \
 exalt_wireless_info.h \
 distrib/default.h \
@@ -226,14 +226,14 @@ exalt_command.c \
 exalt_dns.c \
 exalt_ethernet.c \
 exalt_regexp.c \
-exalt_save_load.c \
+exalt_sys_conf.c \
 exalt_wireless.c \
 exalt_wireless_info.c \
 $(EXALTHEADERS)
 
 installed_headersdir = $(prefix)/include/exalt
 installed_headers_DATA = $(EXALTHEADERS)
-libexalt_la_LIBADD = -lecore_config -lecore_ipc -leet -lecore_con -lecore -lssl -lcrypto -ldl  
+libexalt_la_LIBADD = -lecore_config -lecore_ipc -leet -lecore_con -lssl -lcrypto -ldl -lehal -ledbus -lecore -ldbus-1  
 libexalt_la_DEPENDENCIES = 
 libexalt_la_LDFLAGS = -version-info 1:0:0
 all: all-am
@@ -309,7 +309,7 @@ include ./$(DEPDIR)/exalt_command.Plo
 include ./$(DEPDIR)/exalt_dns.Plo
 include ./$(DEPDIR)/exalt_ethernet.Plo
 include ./$(DEPDIR)/exalt_regexp.Plo
-include ./$(DEPDIR)/exalt_save_load.Plo
+include ./$(DEPDIR)/exalt_sys_conf.Plo
 include ./$(DEPDIR)/exalt_wireless.Plo
 include ./$(DEPDIR)/exalt_wireless_info.Plo
 include ./$(DEPDIR)/iwlib.Plo

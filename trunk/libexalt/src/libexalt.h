@@ -22,6 +22,8 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <net/route.h>
+
+#include <linux/types.h>
 #include <linux/ethtool.h>
 
 #include <sys/ioctl.h>
