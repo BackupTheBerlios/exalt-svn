@@ -86,7 +86,7 @@ void wirelesspanel_update_current_conf(wireless_panel* pnl);
 
 Etk_Widget* wirelesspanel_pageconnection_create(wireless_panel* pnl);
 
-void wirelesspanel_disabled_widget_activate(wireless_panel* pnl,Etk_Bool b);
+void wirelesspanel_disabled_widget_activate(wireless_panel* pnl);
 
 void wirelesspanel_scanlist_row_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data);
 void wirelesspanel_btn_disactivate_clicked_cb(void *data);

@@ -60,7 +60,7 @@ static Evas_Object * _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_C
 	Evas_Object *o, *of, *ob;
 	o = e_widget_list_add(evas, 0, 0);
 	of = e_widget_framelist_add(evas, _("Settings"), 0);
-	ob = e_widget_label_add(evas, _("Lauch Application:"));
+	ob = e_widget_label_add(evas, _("Launch Application:"));
 	e_widget_framelist_object_append(of, ob);
 	ob = e_widget_label_add(evas, _("%i: the interface (eth0, wlan0 ...)"));
 	e_widget_framelist_object_append(of, ob);
@@ -69,7 +69,7 @@ static Evas_Object * _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_C
 	ob = e_widget_entry_add(evas, &(cfdata->cmd));
 	e_widget_framelist_object_append(of, ob);
 	e_widget_list_object_append(o, of, 1, 1, 0.5);
-	
+
 	return o;
 }
 
