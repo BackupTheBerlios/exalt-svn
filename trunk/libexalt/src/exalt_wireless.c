@@ -1089,7 +1089,8 @@ int exalt_rtlink_essid_change(exalt_wireless *w)
             || (essid && save_essid && strcmp(essid,save_essid)!=0))
     {
         _exalt_wireless_set_save_essid(w,exalt_wireless_get_essid(w));
-        exalt_eth_interfaces.eth_cb(exalt_wireless_get_eth(w),EXALT_WIRELESS_CB_ACTION_ESSIDCHANGE,exalt_eth_interfaces.eth_cb_user_data);
+        if(exalt_eth_interfaces.eth_cb)
+            exalt_eth_interfaces.eth_cb(exalt_wireless_get_eth(w),EXALT_WIRELESS_CB_ACTION_ESSIDCHANGE,exalt_eth_interfaces.eth_cb_user_data);
         return 1;
     }
 

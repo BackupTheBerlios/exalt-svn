@@ -1,21 +1,22 @@
-images 
+images
 {
    image: "module_icon.png" COMP;
 }
 
-collections 
+collections
 {
-   group 
+   group
      {
-	name: "icon";
+	name: "modules/exalt/main";
 	max: 128 128;
-	parts 
+	parts
 	  {
-	     part 
+	     part
 	       {
-		  name: "base";
+		  name: "icon";
+                  type: IMAGE;
 		  mouse_events: 0;
-		  description 
+		  description
 		    {
 		       state: "default" 0.0;
 		       aspect: 1.0 1.0;

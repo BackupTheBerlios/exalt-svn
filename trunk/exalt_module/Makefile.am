@@ -10,7 +10,7 @@ EDJE_FLAGS = -v \
 files_DATA = \
 module.desktop \
 e-module-exalt.edj \
-exalt.edj 
+exalt.edj
 
 EXTRA_DIST = \
 $(files_DATA) \
@@ -32,9 +32,13 @@ INCLUDES = -I. \
 
 pkgdir                 = $(datadir)/$(MODULE_ARCH)
 pkg_LTLIBRARIES        = module.la
-module_la_SOURCES      = e_mod_main.c \
-		       e_mod_main.h \
-		       e_mod_types.h \
+module_la_SOURCES      = e_mod_main.h \
+		       e_mod_exalt.h \
+		       e_mod_gadcon.h \
+		       e_mod_config.h \
+		       e_mod_main.c \
+		       e_mod_exalt.c \
+		       e_mod_gadcon.c \
 		       e_mod_config.c
 
 module_la_LIBADD       = @e_libs@ @EXALT_LIBS@

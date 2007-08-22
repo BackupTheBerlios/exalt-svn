@@ -276,7 +276,7 @@ void _exalt_cb_find_device_by_capability_net(void *user_data, void *reply_data, 
 }
 
 /**
- * @brief call when a new device is add
+ * @brief call when a new device is added
  */
 void _exalt_cb_signal_device_added(void *data, DBusMessage *msg)
 {
@@ -290,7 +290,7 @@ void _exalt_cb_signal_device_added(void *data, DBusMessage *msg)
 }
 
 /**
- * @brief call when a device is remove
+ * @brief call when a device is removed
  */
 void _exalt_cb_signal_device_removed(void *data, DBusMessage *msg)
 {
