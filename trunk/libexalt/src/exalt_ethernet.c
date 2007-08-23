@@ -1538,7 +1538,7 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
 
                 //test for each interface if the route has been modified
                 l = exalt_eth_get_list();
-                ecore_list_goto_first(l);
+                ecore_list_first_goto(l);
                 data_l = ecore_list_next(l);
                 while(data_l)
                 {

@@ -14,6 +14,8 @@ void _cb_mouse_down (void *data, Evas * e, Evas_Object * obj,void *event_info)
     ev = event_info;
     if (ev->button == 1)
     {
+        //_popup_show(inst, "heheh");
+
         Evas_Coord x, y, w, h;
         int cx, cy, cw, ch;
 
@@ -81,12 +83,10 @@ void _cb_mouse_down (void *data, Evas * e, Evas_Object * obj,void *event_info)
                     x, y, w, h, dir, ev->timestamp);
             evas_event_feed_mouse_up(inst->gcc->gadcon->evas, ev->button,
                     EVAS_BUTTON_NONE, ev->timestamp, NULL);
-
         }
     }
     else if( ev->button == 3)
     {
-
         E_Menu *mn;
         E_Menu_Item *mi;
         int cx,cy,cw,ch;
@@ -114,6 +114,119 @@ void _cb_mouse_down (void *data, Evas * e, Evas_Object * obj,void *event_info)
     }
 }
 
+void _popup_show(Instance *inst, char* text)
+{
+    E_Container *con;
+    Evas_Object *bg;
+    Evas_Coord cx, cy, cw, ch;
+    Evas_Coord ox, oy, ow, oh;
+    Evas_List *l;
+    int layer = -1;
+    int wx, wy, ww, wh;
+    char buf[PATH_MAX];
+
+
+
+    inst->popup = E_NEW(Popup, 1);
+    snprintf(buf, sizeof(buf), "%s/exalt.edj", e_module_dir_get(exalt_config->module));
+    con = e_container_current_get(e_manager_current_get());
+    inst->popup->win = e_popup_new(e_zone_current_get(con), 0, 0, 0, 0);
+    bg = edje_object_add(inst->popup->win->evas);
+
+    if (!e_theme_edje_object_set(bg, "base/theme/modules","e/modules/exalt/popup"))
+        edje_object_file_set(bg, buf, "e/modules/exalt/popup");
+    snprintf(buf, sizeof(buf), _("un test ..."));
+
+    edje_object_part_text_set(bg, "e.text", buf);
+    evas_object_show(bg);
+
+    edje_object_size_min_calc(bg, &ww, &wh);
+    evas_object_move(bg, 0, 0);
+    evas_object_resize(bg, ww, wh);
+    inst->popup->o_bg = bg;
+
+   // Begin Butt Ugly hack for shelf "layer"/position changes
+   cx = cy = cw = ch = -1;
+   for (l = e_shelf_list(); l; l = l->next)
+     {
+	E_Shelf *es;
+
+	es = l->data;
+	if (es->gadcon != inst->gcc->gadcon) continue;
+	layer = es->layer;
+	cx = es->x;
+	cy = es->y;
+	cw = es->w;
+	ch = es->h;
+	break;
+     }
+
+   if (cx == -1) return;
+   evas_object_geometry_get(inst->o_button, &ox, &oy, &ow, &oh);
+   switch (inst->gcc->gadcon->orient)
+     {
+      case E_GADCON_ORIENT_CORNER_RT:
+      case E_GADCON_ORIENT_CORNER_RB:
+      case E_GADCON_ORIENT_RIGHT:
+	wx = (cx - ww);
+	if (layer == 1)
+	  wy = oy;
+	else
+	  wy = (cy + oy);
+	if ((wy + wh) > (cy + ch))
+	  wy = (cy + ch) - wh;
+	break;
+      case E_GADCON_ORIENT_LEFT:
+      case E_GADCON_ORIENT_CORNER_LT:
+      case E_GADCON_ORIENT_CORNER_LB:
+	wx = (cx + cw);
+	if (layer == 1)
+	  wy = oy;
+	else
+	  wy = (cy + oy);
+	if ((wy + wh) > (cy + ch))
+	  wy = (cy + ch) - wh;
+	break;
+      case E_GADCON_ORIENT_TOP:
+      case E_GADCON_ORIENT_CORNER_TL:
+	if (layer == 1)
+	  wx = ox;
+	else
+	  wx = (cx + ox);
+	wy = (cy + ch);
+	break;
+      case E_GADCON_ORIENT_CORNER_TR:
+	if (layer == 1)
+	  wx = ox;
+	else
+	  wx = (cx + ox);
+	wy = (cy + ch);
+	if ((wx + ww) > (cx + cw))
+	  wx = (cx + cw) - ww;
+	break;
+      case E_GADCON_ORIENT_BOTTOM:
+      case E_GADCON_ORIENT_CORNER_BL:
+	if (layer == 1)
+	  wx = ox;
+	else
+	  wx = (cx + ox);
+	wy = (cy - wh);
+	break;
+      case E_GADCON_ORIENT_CORNER_BR:
+	if (layer == 1)
+	  wx = ox;
+	else
+	  wx = (cx + ox);
+	wy = (cy - wh);
+	if ((wx + ww) > (cx + cw))
+	  wx = (cx + cw) - ww;
+	break;
+      default:
+	break;
+     }
+   e_popup_move_resize(inst->popup->win, wx, wy, ww, wh);
+   e_popup_show(inst->popup->win);
+}
     static void
 _exalt_cb_menu_configure(void *data, E_Menu *m, E_Menu_Item *mi)
 {
@@ -179,7 +292,7 @@ void _exalt_menu_item_wireless_load(E_Menu *m, exalt_ethernet* eth)
         l = exalt_wireless_get_networks_list(w);
         ecore_list_first_goto(l);
 
-        if(ecore_list_is_empty(l))
+        if(ecore_list_empty_is(l))
         {
             mi = e_menu_item_new(m);
             e_menu_item_label_set(mi,_("(no networks)"));

@@ -9,13 +9,12 @@ typedef struct _Popup Popup;
 #include "e_mod_config.h"
 
 
-
-
 struct _Instance
 {
     E_Gadcon_Client *gcc;
     E_Menu           *win_menu;
     Evas_Object *o_button;
+    Popup *popup;
 };
 
 
