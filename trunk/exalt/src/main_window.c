@@ -196,6 +196,7 @@ void mainWindow_eth_cb(exalt_ethernet* eth, int action, void* user_data)
     }
     else if(action == EXALT_ETH_CB_ACTION_ADDRESS_NEW || action == EXALT_ETH_CB_ACTION_NETMASK_NEW || action == EXALT_ETH_CB_ACTION_GATEWAY_NEW)
     {
+        printf("NEW ADDRESS\n");
         //update the panel
         eth_panel* pnl = win->eth_panel;
         if(pnl->eth == eth)
@@ -208,6 +209,7 @@ void mainWindow_eth_cb(exalt_ethernet* eth, int action, void* user_data)
     else if(action == EXALT_WIRELESS_CB_ACTION_ESSIDCHANGE)
     {
         //update the wireless panel
+        printf("NEW ESSID\n");
         wireless_panel* wpnl = win->wireless_panel;
         if(wpnl->eth == eth)
             wirelesspanel_set_eth(wpnl,eth);

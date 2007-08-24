@@ -14,8 +14,6 @@ void _cb_mouse_down (void *data, Evas * e, Evas_Object * obj,void *event_info)
     ev = event_info;
     if (ev->button == 1)
     {
-        //_popup_show(inst, "heheh");
-
         Evas_Coord x, y, w, h;
         int cx, cy, cw, ch;
 
@@ -114,7 +112,7 @@ void _cb_mouse_down (void *data, Evas * e, Evas_Object * obj,void *event_info)
     }
 }
 
-void _popup_show(Instance *inst, char* text)
+void _popup_show(Instance *inst, exalt_ethernet* eth, int action)
 {
     E_Container *con;
     Evas_Object *bg;
@@ -124,109 +122,148 @@ void _popup_show(Instance *inst, char* text)
     int layer = -1;
     int wx, wy, ww, wh;
     char buf[PATH_MAX];
+    Popup* popup;
 
-
-
-    inst->popup = E_NEW(Popup, 1);
+    popup = E_NEW(Popup, 1);
     snprintf(buf, sizeof(buf), "%s/exalt.edj", e_module_dir_get(exalt_config->module));
     con = e_container_current_get(e_manager_current_get());
-    inst->popup->win = e_popup_new(e_zone_current_get(con), 0, 0, 0, 0);
-    bg = edje_object_add(inst->popup->win->evas);
+    popup->win = e_popup_new(e_zone_current_get(con), 0, 0, 0, 0);
+    bg = edje_object_add(popup->win->evas);
 
     if (!e_theme_edje_object_set(bg, "base/theme/modules","e/modules/exalt/popup"))
         edje_object_file_set(bg, buf, "e/modules/exalt/popup");
-    snprintf(buf, sizeof(buf), _("un test ..."));
-
+    switch(action)
+    {
+        case EXALT_ETH_CB_ACTION_ADD:
+            snprintf(buf, sizeof(buf), _("New card %s is plugged"), exalt_eth_get_name(eth));
+            break;
+        case EXALT_ETH_CB_ACTION_REMOVE:
+            snprintf(buf, sizeof(buf), _("The card %s is removed"), exalt_eth_get_name(eth));
+            break;
+        case EXALT_ETH_CB_ACTION_UP:
+            snprintf(buf, sizeof(buf), _("The card %s is activated"), exalt_eth_get_name(eth));
+            break;
+        case EXALT_ETH_CB_ACTION_DOWN:
+            snprintf(buf, sizeof(buf), _("The card %s is deactivated"), exalt_eth_get_name(eth));
+            break;
+        case EXALT_ETH_CB_ACTION_LINK:
+            snprintf(buf, sizeof(buf), _("The card %s is link"), exalt_eth_get_name(eth));
+            break;
+        case EXALT_ETH_CB_ACTION_UNLINK:
+            snprintf(buf, sizeof(buf), _("The card %s is unlink"), exalt_eth_get_name(eth));
+            break;
+        case EXALT_WIRELESS_CB_ACTION_ESSIDCHANGE:
+            snprintf(buf, sizeof(buf), _("The card %s has a new essid: %s"), exalt_eth_get_name(eth), exalt_wireless_get_essid(exalt_eth_get_wireless(eth)));
+            break;
+        case EXALT_ETH_CB_ACTION_ADDRESS_NEW:
+            snprintf(buf, sizeof(buf), _("The card %s has a new address"), exalt_eth_get_name(eth), exalt_eth_get_ip(eth));
+            break;
+        default:
+            return ;
+    }
     edje_object_part_text_set(bg, "e.text", buf);
     evas_object_show(bg);
 
     edje_object_size_min_calc(bg, &ww, &wh);
     evas_object_move(bg, 0, 0);
     evas_object_resize(bg, ww, wh);
-    inst->popup->o_bg = bg;
+    popup->o_bg = bg;
 
-   // Begin Butt Ugly hack for shelf "layer"/position changes
-   cx = cy = cw = ch = -1;
-   for (l = e_shelf_list(); l; l = l->next)
-     {
-	E_Shelf *es;
+    // Begin Butt Ugly hack for shelf "layer"/position changes
+    cx = cy = cw = ch = -1;
+    for (l = e_shelf_list(); l; l = l->next)
+    {
+        E_Shelf *es;
 
-	es = l->data;
-	if (es->gadcon != inst->gcc->gadcon) continue;
-	layer = es->layer;
-	cx = es->x;
-	cy = es->y;
-	cw = es->w;
-	ch = es->h;
-	break;
-     }
+        es = l->data;
+        if (es->gadcon != inst->gcc->gadcon) continue;
+        layer = es->layer;
+        cx = es->x;
+        cy = es->y;
+        cw = es->w;
+        ch = es->h;
+        break;
+    }
 
-   if (cx == -1) return;
-   evas_object_geometry_get(inst->o_button, &ox, &oy, &ow, &oh);
-   switch (inst->gcc->gadcon->orient)
-     {
-      case E_GADCON_ORIENT_CORNER_RT:
-      case E_GADCON_ORIENT_CORNER_RB:
-      case E_GADCON_ORIENT_RIGHT:
-	wx = (cx - ww);
-	if (layer == 1)
-	  wy = oy;
-	else
-	  wy = (cy + oy);
-	if ((wy + wh) > (cy + ch))
-	  wy = (cy + ch) - wh;
-	break;
-      case E_GADCON_ORIENT_LEFT:
-      case E_GADCON_ORIENT_CORNER_LT:
-      case E_GADCON_ORIENT_CORNER_LB:
-	wx = (cx + cw);
-	if (layer == 1)
-	  wy = oy;
-	else
-	  wy = (cy + oy);
-	if ((wy + wh) > (cy + ch))
-	  wy = (cy + ch) - wh;
-	break;
-      case E_GADCON_ORIENT_TOP:
-      case E_GADCON_ORIENT_CORNER_TL:
-	if (layer == 1)
-	  wx = ox;
-	else
-	  wx = (cx + ox);
-	wy = (cy + ch);
-	break;
-      case E_GADCON_ORIENT_CORNER_TR:
-	if (layer == 1)
-	  wx = ox;
-	else
-	  wx = (cx + ox);
-	wy = (cy + ch);
-	if ((wx + ww) > (cx + cw))
-	  wx = (cx + cw) - ww;
-	break;
-      case E_GADCON_ORIENT_BOTTOM:
-      case E_GADCON_ORIENT_CORNER_BL:
-	if (layer == 1)
-	  wx = ox;
-	else
-	  wx = (cx + ox);
-	wy = (cy - wh);
-	break;
-      case E_GADCON_ORIENT_CORNER_BR:
-	if (layer == 1)
-	  wx = ox;
-	else
-	  wx = (cx + ox);
-	wy = (cy - wh);
-	if ((wx + ww) > (cx + cw))
-	  wx = (cx + cw) - ww;
-	break;
-      default:
-	break;
-     }
-   e_popup_move_resize(inst->popup->win, wx, wy, ww, wh);
-   e_popup_show(inst->popup->win);
+    if (cx == -1) return;
+    evas_object_geometry_get(inst->o_button, &ox, &oy, &ow, &oh);
+    switch (inst->gcc->gadcon->orient)
+    {
+        case E_GADCON_ORIENT_CORNER_RT:
+        case E_GADCON_ORIENT_CORNER_RB:
+        case E_GADCON_ORIENT_RIGHT:
+            wx = (cx - ww);
+            if (layer == 1)
+                wy = oy;
+            else
+                wy = (cy + oy);
+            if ((wy + wh) > (cy + ch))
+                wy = (cy + ch) - wh;
+            break;
+        case E_GADCON_ORIENT_LEFT:
+        case E_GADCON_ORIENT_CORNER_LT:
+        case E_GADCON_ORIENT_CORNER_LB:
+            wx = (cx + cw);
+            if (layer == 1)
+                wy = oy;
+            else
+                wy = (cy + oy);
+            if ((wy + wh) > (cy + ch))
+                wy = (cy + ch) - wh;
+            break;
+        case E_GADCON_ORIENT_TOP:
+        case E_GADCON_ORIENT_CORNER_TL:
+            if (layer == 1)
+                wx = ox;
+            else
+                wx = (cx + ox);
+            wy = (cy + ch);
+            break;
+        case E_GADCON_ORIENT_CORNER_TR:
+            if (layer == 1)
+                wx = ox;
+            else
+                wx = (cx + ox);
+            wy = (cy + ch);
+            if ((wx + ww) > (cx + cw))
+                wx = (cx + cw) - ww;
+            break;
+        case E_GADCON_ORIENT_BOTTOM:
+        case E_GADCON_ORIENT_CORNER_BL:
+            if (layer == 1)
+                wx = ox;
+            else
+                wx = (cx + ox);
+            wy = (cy - wh);
+            break;
+        case E_GADCON_ORIENT_CORNER_BR:
+            if (layer == 1)
+                wx = ox;
+            else
+                wx = (cx + ox);
+            wy = (cy - wh);
+            if ((wx + ww) > (cx + cw))
+                wx = (cx + cw) - ww;
+            break;
+        default:
+            break;
+    }
+    e_popup_move_resize(popup->win, wx, wy, ww, wh);
+    e_popup_show(popup->win);
+    popup->timer = ecore_timer_add(6,_popup_timer_cb,popup);
 }
+
+int _popup_timer_cb(void* data)
+{
+    //close the popup
+    Popup* popup = (Popup*)data;
+
+    evas_object_del(popup->o_bg);
+    e_object_del(E_OBJECT(popup->win));
+    E_FREE(popup);
+    return 0;
+}
+
     static void
 _exalt_cb_menu_configure(void *data, E_Menu *m, E_Menu_Item *mi)
 {
@@ -242,6 +279,7 @@ _exalt_menu_new(Instance *inst)
 
     m = e_menu_new();
     e_menu_title_set(m, _("Networks"));
+
     e_menu_pre_activate_callback_set(m, _exalt_menu_pre_cb, inst);
     return m;
 }
@@ -260,7 +298,6 @@ _exalt_menu_pre_cb(void *data, E_Menu *m)
     /* get the current clients */
     zone = e_util_zone_current_get (e_manager_current_get ());
     desk = e_desk_current_get(zone);
-
     e_menu_item_separator_set(e_menu_item_new(inst->win_menu), 1);
     _exalt_menu_item_interfaces_load(inst->win_menu);
 }
@@ -408,7 +445,8 @@ void _exalt_wireless_cb(void *data, E_Menu *m, E_Menu_Item *mi)
 
 void _exalt_eth_cb(exalt_ethernet* eth, int action, void* user_data)
 {
-    return ;
+    Instance* inst = user_data;
+    _popup_show(inst,eth,action);
 }
 
     static void

@@ -1,5 +1,6 @@
 
 #include "e_mod_gadcon.h"
+short exalt_is_init = 0;
 
 static E_Gadcon_Client *_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style);
 static void _gc_shutdown(E_Gadcon_Client *gcc);
@@ -39,9 +40,16 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 
     exalt_config->instances = evas_list_append(exalt_config->instances, inst);
 
-    exalt_eth_init();
-    exalt_eth_set_cb(_exalt_eth_cb,gcc);
-    exalt_main();
+    if(!exalt_is_init)
+    {
+        exalt_eth_init();
+        exalt_eth_set_cb(_exalt_eth_cb,inst);
+
+        exalt_main();
+        exalt_is_init = 1;
+    }
+    exalt_eth_set_cb(_exalt_eth_cb,inst);
+
     return gcc;
 }
 

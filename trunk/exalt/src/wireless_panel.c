@@ -777,7 +777,6 @@ int wirelesspanel_dhcp_timer(void* data)
  	 	wirelesspanel_disabled_widget_activate(pnl);
 	 	etk_widget_disabled_set(pnl->win->eth_list,ETK_FALSE);
 		etk_widget_hide_all(pnl->pbar);
-
 	}
 	return 1;
 }

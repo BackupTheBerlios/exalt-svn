@@ -1084,6 +1084,8 @@ int exalt_rtlink_essid_change(exalt_wireless *w)
    essid = exalt_wireless_get_essid(w);
    save_essid = _exalt_wireless_get_save_essid(w);
 
+    printf("(%s)(%s)\n",essid,save_essid);
+
     if(   (!essid && save_essid)
             || (essid && !save_essid)
             || (essid && save_essid && strcmp(essid,save_essid)!=0))
@@ -1117,11 +1119,6 @@ int _exalt_wireless_set_save_essid(exalt_wireless* w,const char* essid)
 	{
 	 	fprintf(stderr,"_exalt_wireless_set_save_essid(): w==%p essid==%p !\n",w,essid);
 		return -1;
-	}
-	if(!exalt_is_essid(essid))
-	{
-	 	fprintf(stderr,"_exalt_wireless_set_save_essid(): essid(%s) is not a valid essid\n",essid);
-		return 0;
 	}
 
 	EXALT_FREE(w->_save_essid)

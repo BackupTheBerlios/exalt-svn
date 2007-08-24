@@ -55,6 +55,7 @@ int exalt_eth_init()
         return -1;
     }
 
+    exalt_eth_interfaces.is_launch = 0;
     exalt_eth_interfaces.ethernets = ecore_list_new();
     exalt_eth_interfaces.ethernets->free_func =  ECORE_FREE_CB(exalt_eth_free);
     ecore_list_init(exalt_eth_interfaces.ethernets);
@@ -83,6 +84,12 @@ int exalt_main()
 {
     int *fd = malloc(sizeof(int));
     struct sockaddr_nl addr;
+
+    if(exalt_eth_interfaces.is_launch>0)
+    {
+        fprintf(stderr,"exalt_main(): exalt_is launch !\n") ;
+        return -1;
+    }
 
     e_dbus_init();
     exalt_eth_interfaces.dbus_conn = e_dbus_bus_get(DBUS_BUS_SYSTEM);
@@ -113,6 +120,8 @@ int exalt_main()
     }
 
     exalt_eth_interfaces.rtlink_watch = ecore_main_fd_handler_add(*fd, ECORE_FD_READ,_exalt_rtlink_watch_cb, fd,NULL,NULL);
+
+    exalt_eth_interfaces.is_launch = 1;
 
     return 1;
 }
@@ -200,7 +209,7 @@ void _exalt_cb_is_net(void *user_data, void *reply_data, DBusError *error)
     char *udi = user_data;
     E_Hal_Device_Query_Capability_Return *ret = reply_data;
     int *action = malloc(sizeof(int));
-    *action = EXALT_ETH_CB_ACTION_NEW;
+    *action = EXALT_ETH_CB_ACTION_ADD;
 
     if (dbus_error_is_set(error))
     {
@@ -1511,7 +1520,7 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
                 if(!eth)
                     break;
 
-                if(strcmp(_exalt_eth_get_save_netmask(eth),exalt_eth_get_netmask(eth)) != 0)
+                if(strcmp(_exalt_eth_get_save_ip(eth),exalt_eth_get_ip(eth)) != 0)
                 {
                     _exalt_eth_set_save_ip(eth, exalt_eth_get_ip(eth));
                     if(exalt_eth_interfaces.eth_cb)

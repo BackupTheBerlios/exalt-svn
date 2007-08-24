@@ -14,7 +14,6 @@ struct _Instance
     E_Gadcon_Client *gcc;
     E_Menu           *win_menu;
     Evas_Object *o_button;
-    Popup *popup;
 };
 
 
@@ -22,6 +21,7 @@ struct _Popup
 {
    E_Popup *win;
    Evas_Object *o_bg;
+   Ecore_Timer* timer;
 };
 
 EAPI extern E_Module_Api e_modapi;

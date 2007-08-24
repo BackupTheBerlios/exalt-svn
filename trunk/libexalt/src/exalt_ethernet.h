@@ -107,7 +107,7 @@ typedef struct Exalt_Ethernets
     int we_version;
 
     short admin;
-
+    short is_launch ;
     E_DBus_Connection *dbus_conn;
     Ecore_Fd_Handler *rtlink_watch;
 
@@ -120,7 +120,6 @@ typedef struct Exalt_Ethernets
 
 
 Exalt_Ethernets exalt_eth_interfaces;
-
 exalt_ethernet* exalt_eth_create(const char* name);
 
 int exalt_eth_init();
