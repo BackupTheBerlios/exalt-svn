@@ -132,31 +132,35 @@ void _popup_show(Instance *inst, exalt_ethernet* eth, int action)
 
     if (!e_theme_edje_object_set(bg, "base/theme/modules","e/modules/exalt/popup"))
         edje_object_file_set(bg, buf, "e/modules/exalt/popup");
+
+    snprintf(buf,sizeof(buf), exalt_eth_get_name(eth));
+    edje_object_part_text_set(bg, "e.text.interface_name", buf);
+
     switch(action)
     {
         case EXALT_ETH_CB_ACTION_ADD:
-            snprintf(buf, sizeof(buf), _("New card %s is plugged"), exalt_eth_get_name(eth));
+            snprintf(buf, sizeof(buf), _("New card is <info>plugged</info>"));
             break;
         case EXALT_ETH_CB_ACTION_REMOVE:
-            snprintf(buf, sizeof(buf), _("The card %s is removed"), exalt_eth_get_name(eth));
+            snprintf(buf, sizeof(buf), _("The card is <info>removed</info>"));
             break;
         case EXALT_ETH_CB_ACTION_UP:
-            snprintf(buf, sizeof(buf), _("The card %s is activated"), exalt_eth_get_name(eth));
+            snprintf(buf, sizeof(buf), _("The card is <info>activated</info>"));
             break;
         case EXALT_ETH_CB_ACTION_DOWN:
-            snprintf(buf, sizeof(buf), _("The card %s is deactivated"), exalt_eth_get_name(eth));
+            snprintf(buf, sizeof(buf), _("The card is <info>deactivated</info>"));
             break;
         case EXALT_ETH_CB_ACTION_LINK:
-            snprintf(buf, sizeof(buf), _("The card %s is link"), exalt_eth_get_name(eth));
+            snprintf(buf, sizeof(buf), _("The card is <info>link</info>"));
             break;
         case EXALT_ETH_CB_ACTION_UNLINK:
-            snprintf(buf, sizeof(buf), _("The card %s is unlink"), exalt_eth_get_name(eth));
+            snprintf(buf, sizeof(buf), _("The card is <info>unlink</info>"));
             break;
         case EXALT_WIRELESS_CB_ACTION_ESSIDCHANGE:
-            snprintf(buf, sizeof(buf), _("The card %s has a new essid: %s"), exalt_eth_get_name(eth), exalt_wireless_get_essid(exalt_eth_get_wireless(eth)));
+            snprintf(buf, sizeof(buf), _("New essid: <info>%s</info>"), exalt_wireless_get_essid(exalt_eth_get_wireless(eth)));
             break;
         case EXALT_ETH_CB_ACTION_ADDRESS_NEW:
-            snprintf(buf, sizeof(buf), _("The card %s has a new address"), exalt_eth_get_name(eth), exalt_eth_get_ip(eth));
+            snprintf(buf, sizeof(buf), _("New address: <info>%s</info>"), exalt_eth_get_ip(eth));
             break;
         default:
             return ;
