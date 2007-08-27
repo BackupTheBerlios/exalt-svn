@@ -2,6 +2,9 @@ images
 {
    image: "exalt_icon.png" COMP;
    image: "data/icons/ethernet.png" COMP;
+   image: "data/icons/wireless.png" COMP;
+   image: "data/icons/ethernet_not_activate.png" COMP;
+   image: "data/icons/wireless_not_activate.png" COMP;
 }
 
 fonts
@@ -79,13 +82,14 @@ collections
             {
                 name: "icon";
                 mouse_events: 0;
+                type: IMAGE;
                 description
                 {
                     state: "default" 0.0;
                     min: 32 32;
-                    max: 128 128;
-                    align: 0.0 0.5;
+                    max: 32 32;
                     fixed: 1 1;
+                    visible: 1;
                     rel1
                     {
                         relative: 0.0 0.0;
@@ -100,6 +104,31 @@ collections
                     }
                     image.normal: "data/icons/ethernet.png";
                 }
+                description
+                {
+                    state: "ethernet_up" 0.0;
+                    inherit: "default" 0.0;
+                    image.normal: "data/icons/ethernet.png";
+                }
+                description
+                {
+                    state: "wireless_up" 0.0;
+                    inherit: "default" 0.0;
+                    image.normal: "data/icons/wireless.png";
+                }
+                description
+                {
+                    state: "ethernet_down" 0.0;
+                    inherit: "default" 0.0;
+                    image.normal: "data/icons/ethernet_not_activate.png";
+                }
+                description
+                {
+                    state: "wireless_down" 0.0;
+                    inherit: "default" 0.0;
+                    image.normal: "data/icons/wireless_not_activate.png";
+                }
+
             }
             part
             {
@@ -164,6 +193,40 @@ collections
                 }
             }
         }
+
+        program
+        {
+            name: "wireless_up";
+            signal: "e,state,wireless,up";
+            source: "exalt";
+            action: STATE_SET "wireless_up" 0.0;
+            target: "icon";
+        }
+        program
+        {
+            name: "ethernet_up";
+            signal: "e,state,ethernet,up";
+            source: "exalt";
+            action: STATE_SET "ethernet_up" 0.0;
+            target: "icon";
+        }
+        program
+        {
+            name: "wireless_down";
+            signal: "e,state,wireless,down";
+            source: "exalt";
+            action: STATE_SET "wireless_down" 0.0;
+            target: "icon";
+        }
+        program
+        {
+            name: "ethernet_down";
+            signal: "e,state,ethernet,down";
+            source: "exalt";
+            action: STATE_SET "ethernet_down" 0.0;
+            target: "icon";
+        }
     }
+
 } /* end collections */
 

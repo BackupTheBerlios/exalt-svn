@@ -162,33 +162,36 @@ short exalt_ioctl(void* argp, int request)
     int fd;
 
     //edit param: SIOCSIFFLAGS SIOCSIFFLAGS SIOCDELRT SIOCSIFADDR SIOCSIFNETMASK SIOCADDRT
-    //read param: SIOCGIWNAME SIOCGIWESSID SIOCGIWNAME SIOCGIFFLAGS SIOCGIFADDR SIOCGIFNETMASK SIOCGIFHWADDR
+    //read param: SIOCGIWNAME SIOCGIWESSID SIOCGIWNAME SIOCGIFFLAGS SIOCGIFADDR SIOCGIFNETMASK SIOCGIFHWADDR SIOCETHTOOL
 
 
-    if(!exalt_is_admin() && ( request == SIOCSIFFLAGS || request == SIOCSIFFLAGS || request == SIOCDELRT || request == SIOCSIFADDR || request == SIOCSIFNETMASK || request == SIOCADDRT))
+    if(!exalt_is_admin() &&
+            ( request == SIOCSIFFLAGS || request == SIOCSIFFLAGS
+              || request == SIOCDELRT || request == SIOCSIFADDR
+              || request == SIOCSIFNETMASK || request == SIOCADDRT))
     {
         fprintf(stderr,"exalt_iotl(): you need to be admnistrator if you want modify the configuration !\n");
-        return -1;
+        return -2;
     }
 
     if(!argp)
     {
         fprintf(stderr,"exalt_iotl(): argp==null ! \n");
-        return -1;
+        return -3;
     }
 
     fd=iw_sockets_open();
     if (fd < 0)
     {
         fprintf(stderr,"exalt_ifreq_iotl(): fd==%d",fd);
-        return -1;
+        return -4;
     }
 
     if( ioctl(fd, request, argp) < 0)
     {
         fprintf(stderr,"exalt_ifreq_iotl(): ioctl (%d): %s\n",request,strerror(errno));
         close(fd);
-        return -1;
+        return -5;
     }
     close(fd);
     return 1;

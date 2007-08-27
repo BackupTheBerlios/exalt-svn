@@ -514,7 +514,7 @@ exalt_ethernet* exalt_eth_get_ethernet_byifindex(int ifindex)
 
 
 /**
- * @brief test if a interface is link
+ * @brief test if an interface is link
  * @param eth the card
  * @return Return EXALT_TRUE if yes, else EXALT_FALSE
  */
@@ -522,7 +522,7 @@ short exalt_eth_is_link(exalt_ethernet* eth)
 {
     struct ifreq ifr;
     struct ethtool_value edata;
-
+    int res;
     if(!eth)
     {
         fprintf(stderr,"exalt_eth_load_ip(): eth==null ! \n");
@@ -530,16 +530,15 @@ short exalt_eth_is_link(exalt_ethernet* eth)
     }
 
     if(exalt_eth_is_wireless(eth))
-        return 1;
+        return EXALT_TRUE;
 
     strncpy(ifr.ifr_name,exalt_eth_get_name(eth),sizeof(ifr.ifr_name));
-    ifr.ifr_addr = *(struct sockaddr *) &sin;
     memset(&edata, 0, sizeof(edata));
     edata.cmd = ETHTOOL_GLINK;
     ifr.ifr_data = (caddr_t)&edata;
 
-    if( !exalt_ioctl(&ifr, SIOCETHTOOL))
-        return EXALT_TRUE; //if an interface doesn't support SIOCETHTOOL, we return true
+    if( (res = exalt_ioctl(&ifr, SIOCETHTOOL))<=-1)
+        return res; //if an interface doesn't support SIOCETHTOOL, we return true
 
     return edata.data ? EXALT_TRUE : EXALT_FALSE;
 }
@@ -789,7 +788,7 @@ short exalt_eth_is_up(exalt_ethernet* eth)
 
 	if(!eth)
 	{
-	 	fprintf(stderr,"exalt_eth_load_up(): eth==null ! \n");
+	 	fprintf(stderr,"exalt_eth_is_up(): eth==null ! \n");
 		return -1;
 	}
 
@@ -1491,9 +1490,11 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
                     else if(exalt_eth_interfaces.eth_cb)
                         exalt_eth_interfaces.eth_cb(eth,EXALT_ETH_CB_ACTION_DOWN,exalt_eth_interfaces.eth_cb_user_data);
                 }
+
                 if(_exalt_eth_get_save_link(eth) != exalt_eth_is_link(eth))
                 {
                     _exalt_eth_set_save_link(eth, exalt_eth_is_link(eth));
+
                     if(exalt_eth_is_link(eth) && exalt_eth_interfaces.eth_cb)
                         exalt_eth_interfaces.eth_cb(eth,EXALT_ETH_CB_ACTION_LINK,exalt_eth_interfaces.eth_cb_user_data);
                     else if(exalt_eth_interfaces.eth_cb)

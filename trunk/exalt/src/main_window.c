@@ -120,6 +120,7 @@ void mainWindow_eth_cb(exalt_ethernet* eth, int action, void* user_data)
 
     main_window* win =  (main_window*) user_data;
 
+
     if(action == EXALT_ETH_CB_ACTION_NEW || action == EXALT_ETH_CB_ACTION_ADD)
     {
         char* img;

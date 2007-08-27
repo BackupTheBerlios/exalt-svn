@@ -124,6 +124,24 @@ void _popup_show(Instance *inst, exalt_ethernet* eth, int action)
     char buf[PATH_MAX];
     Popup* popup;
 
+
+     switch(action)
+    {
+        case EXALT_ETH_CB_ACTION_ADD:
+        case EXALT_ETH_CB_ACTION_REMOVE:
+        case EXALT_ETH_CB_ACTION_UP:
+        case EXALT_ETH_CB_ACTION_DOWN:
+        case EXALT_ETH_CB_ACTION_LINK:
+        case EXALT_ETH_CB_ACTION_UNLINK:
+        case EXALT_WIRELESS_CB_ACTION_ESSIDCHANGE:
+        case EXALT_ETH_CB_ACTION_ADDRESS_NEW:
+            break;
+        default:
+            return ;
+    }
+
+
+
     popup = E_NEW(Popup, 1);
     snprintf(buf, sizeof(buf), "%s/exalt.edj", e_module_dir_get(exalt_config->module));
     con = e_container_current_get(e_manager_current_get());
@@ -133,8 +151,6 @@ void _popup_show(Instance *inst, exalt_ethernet* eth, int action)
     if (!e_theme_edje_object_set(bg, "base/theme/modules","e/modules/exalt/popup"))
         edje_object_file_set(bg, buf, "e/modules/exalt/popup");
 
-    snprintf(buf,sizeof(buf), exalt_eth_get_name(eth));
-    edje_object_part_text_set(bg, "e.text.interface_name", buf);
 
     switch(action)
     {
@@ -165,7 +181,25 @@ void _popup_show(Instance *inst, exalt_ethernet* eth, int action)
         default:
             return ;
     }
+
     edje_object_part_text_set(bg, "e.text", buf);
+
+    snprintf(buf,sizeof(buf), exalt_eth_get_name(eth));
+    edje_object_part_text_set(bg, "e.text.interface_name", buf);
+
+    if(exalt_eth_is_wireless(eth))
+    {
+        if(exalt_eth_is_up(eth))
+            edje_object_signal_emit(bg, "e,state,wireless,up", "exalt");
+        else
+            edje_object_signal_emit(bg, "e,state,wireless,down", "exalt");
+    }
+    else if(exalt_eth_is_up(eth) && exalt_eth_is_link(eth))
+        edje_object_signal_emit(bg, "e,state,ethernet,up", "exalt");
+    else
+        edje_object_signal_emit(bg, "e,state,ethernet,down", "exalt");
+
+
     evas_object_show(bg);
 
     edje_object_size_min_calc(bg, &ww, &wh);
@@ -388,7 +422,7 @@ void _exalt_menu_item_interfaces_load(E_Menu *m)
             else
                 img = wireless_img_not_activate;
         }
-        else if(exalt_eth_is_up(eth))
+        else if(exalt_eth_is_up(eth) && exalt_eth_is_link(eth))
             img = eth_img;
         else
             img = eth_img_not_activate;
