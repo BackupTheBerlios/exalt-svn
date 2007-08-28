@@ -124,7 +124,6 @@ void _popup_show(Instance *inst, exalt_ethernet* eth, int action)
     char buf[PATH_MAX];
     Popup* popup;
 
-
      switch(action)
     {
         case EXALT_ETH_CB_ACTION_ADD:
@@ -139,8 +138,6 @@ void _popup_show(Instance *inst, exalt_ethernet* eth, int action)
         default:
             return ;
     }
-
-
 
     popup = E_NEW(Popup, 1);
     snprintf(buf, sizeof(buf), "%s/exalt.edj", e_module_dir_get(exalt_config->module));
@@ -288,7 +285,7 @@ void _popup_show(Instance *inst, exalt_ethernet* eth, int action)
     }
     e_popup_move_resize(popup->win, wx, wy, ww, wh);
     e_popup_show(popup->win);
-    popup->timer = ecore_timer_add(6,_popup_timer_cb,popup);
+    popup->timer = ecore_timer_add(5,_popup_timer_cb,popup);
 }
 
 int _popup_timer_cb(void* data)
