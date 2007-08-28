@@ -1,0 +1,43 @@
+/home/watchwolf/Projects/C/exalt/libexalt/src/exalt_command.h:11: Warning: missing title after \defgroup Exalt_command
+/home/watchwolf/Projects/C/exalt/libexalt/src/exalt_dns.h:9: Warning: missing title after \defgroup Exalt_dns
+/home/watchwolf/Projects/C/exalt/libexalt/src/exalt_ethernet.h:25: Warning: missing title after \defgroup Exalt_ethernet
+/home/watchwolf/Projects/C/exalt/libexalt/src/exalt_regexp.h:12: Warning: missing title after \defgroup Exalt_regexp
+/home/watchwolf/Projects/C/exalt/libexalt/src/exalt_regexp.h:53: Warning: end of file while inside a group
+
+/home/watchwolf/Projects/C/exalt/libexalt/src/exalt_save_load.h:6: Warning: missing title after \defgroup Exalt_save_load
+/home/watchwolf/Projects/C/exalt/libexalt/src/exalt_wireless.h:8: Warning: missing title after \defgroup Exalt_wireless
+/home/watchwolf/Projects/C/exalt/libexalt/src/exalt_wireless_info.c:692: Warning: end of file while inside a group
+
+/home/watchwolf/Projects/C/exalt/libexalt/src/exalt_wireless_info.h:7: Warning: missing title after \defgroup Exalt_wireless_info
+/home/watchwolf/Projects/C/exalt/libexalt/src/libexalt.c:155: Warning: end of file while inside a group
+
+Error: could not open user specified style sheet doc/etk.css
+/home/watchwolf/Projects/C/exalt/libexalt/src/distrib/default.h:5: Warning: Found unknown command `\addgroup'
+/home/watchwolf/Projects/C/exalt/libexalt/src/exalt_regexp.c:12: Warning: Found unknown command `\debug'
+/home/watchwolf/Projects/C/exalt/libexalt/src/exalt_regexp.c:10: Warning: The following parameters of exalt_regex_create(const char *str_request, const char *str_regex, short debug) are not documented:
+  parameter debug
+
+/home/watchwolf/Projects/C/exalt/libexalt/src/exalt_save_load.c:146: Warning: argument `eth' of command @param is not found in the argument list of exalt_wireless_save_byeth(exalt_wireless *w)
+/home/watchwolf/Projects/C/exalt/libexalt/src/exalt_save_load.c:146: Warning: The following parameters of exalt_wireless_save_byeth(exalt_wireless *w) are not documented:
+  parameter w
+
+/home/watchwolf/Projects/C/exalt/libexalt/src/exalt_wireless.c:180: Warning: argument `the' of command @param is not found in the argument list of exalt_wireless_set_current_passwd(exalt_wireless *w, const char *passwd)
+/home/watchwolf/Projects/C/exalt/libexalt/src/exalt_wireless.c:180: Warning: The following parameters of exalt_wireless_set_current_passwd(exalt_wireless *w, const char *passwd) are not documented:
+  parameter passwd
+
+/home/watchwolf/Projects/C/exalt/libexalt/src/exalt_wireless.c:221: Warning: argument `the' of command @param is not found in the argument list of exalt_wireless_set_current_passwd_mode(exalt_wireless *w, int passwd_mode)
+/home/watchwolf/Projects/C/exalt/libexalt/src/exalt_wireless.c:221: Warning: The following parameters of exalt_wireless_set_current_passwd_mode(exalt_wireless *w, int passwd_mode) are not documented:
+  parameter passwd_mode
+
+/home/watchwolf/Projects/C/exalt/libexalt/src/exalt_wireless.c:377: Warning: argument `eth' of command @param is not found in the argument list of exalt_wireless_scan(void *data)
+/home/watchwolf/Projects/C/exalt/libexalt/src/exalt_wireless.c:377: Warning: The following parameters of exalt_wireless_scan(void *data) are not documented:
+  parameter data
+
+/home/watchwolf/Projects/C/exalt/libexalt/src/exalt_wireless.c:595: Warning: argument `w' of command @param is not found in the argument list of exalt_wireless_scan_wait(exalt_ethernet *eth)
+/home/watchwolf/Projects/C/exalt/libexalt/src/exalt_wireless.c:595: Warning: The following parameters of exalt_wireless_scan_wait(exalt_ethernet *eth) are not documented:
+  parameter eth
+
+/home/watchwolf/Projects/C/exalt/libexalt/src/exalt_wireless.c:976: Warning: argument `wpa_ctrl' of command @param is not found in the argument list of exalt_wpa_ctrl_command(struct wpa_ctrl *ctrl_conn, char *cmd)
+/home/watchwolf/Projects/C/exalt/libexalt/src/exalt_wireless.c:976: Warning: The following parameters of exalt_wpa_ctrl_command(struct wpa_ctrl *ctrl_conn, char *cmd) are not documented:
+  parameter ctrl_conn
+

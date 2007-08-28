@@ -1,0 +1,19 @@
+Making all in src
+make[1]: Entering directory `/home/watchwolf/Projects/C/exalt_svn/trunk/daemon/src'
+cd .. && /bin/sh /home/watchwolf/Projects/C/exalt_svn/trunk/daemon/missing --run autoheader
+rm -f stamp-h1
+touch config.h.in
+cd .. && /bin/sh ./config.status src/config.h
+config.status: creating src/config.h
+config.status: src/config.h is unchanged
+make  all-am
+make[2]: Entering directory `/home/watchwolf/Projects/C/exalt_svn/trunk/daemon/src'
+if gcc -DHAVE_CONFIG_H -I. -I. -I.    -Wall -W -g -D_GNU_SOURCE -I/usr/local/include -I/usr/local/include/exalt -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include   -g -O2 -MT exalt_daemon.o -MD -MP -MF ".deps/exalt_daemon.Tpo" -c -o exalt_daemon.o exalt_daemon.c; \
+	then mv -f ".deps/exalt_daemon.Tpo" ".deps/exalt_daemon.Po"; else rm -f ".deps/exalt_daemon.Tpo"; exit 1; fi
+/bin/sh ../libtool --tag=CC --mode=link gcc -Wall -W -g -D_GNU_SOURCE -I/usr/local/include -I/usr/local/include/exalt -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include   -g -O2   -o exalt-daemon -export-dynamic exalt_daemon.o -L/usr/local/lib -lexalt -ledbus -lecore -ldbus-1   
+gcc -Wall -W -g -D_GNU_SOURCE -I/usr/local/include -I/usr/local/include/exalt -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -g -O2 -o exalt-daemon exalt_daemon.o -Wl,--export-dynamic  -L/usr/local/lib /usr/local/lib/libexalt.so /usr/lib/libecore_config.so /usr/lib/libevas.so /usr/lib/libfontconfig.so /usr/lib/libfreetype.so /usr/lib/libxml2.so /usr/lib/libecore_ipc.so /usr/lib/libeet.so -lz /usr/lib/libjpeg.so /usr/lib/libecore_con.so -lssl -lcrypto /usr/lib/libehal.so /usr/lib/libedbus.so /usr/lib/libecore.so -lm -ldl /usr/lib/libdbus-1.so  
+make[2]: Leaving directory `/home/watchwolf/Projects/C/exalt_svn/trunk/daemon/src'
+make[1]: Leaving directory `/home/watchwolf/Projects/C/exalt_svn/trunk/daemon/src'
+make[1]: Entering directory `/home/watchwolf/Projects/C/exalt_svn/trunk/daemon'
+make[1]: Nothing to be done for `all-am'.
+make[1]: Leaving directory `/home/watchwolf/Projects/C/exalt_svn/trunk/daemon'
