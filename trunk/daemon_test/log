@@ -1,17 +1,13 @@
 Making all in src
-make[1]: Entering directory `/home/watchwolf/Projects/C/exalt_svn/trunk/daemon_test/src'
-cd .. && /bin/sh /home/watchwolf/Projects/C/exalt_svn/trunk/daemon_test/missing --run autoheader
-rm -f stamp-h1
-touch config.h.in
-cd .. && /bin/sh ./config.status src/config.h
-config.status: creating src/config.h
-config.status: src/config.h is unchanged
+make[1]: Entering directory `/home/watchwolf/Projects/C/exalt_svn/exalt/daemon_test/src'
 make  all-am
-make[2]: Entering directory `/home/watchwolf/Projects/C/exalt_svn/trunk/daemon_test/src'
-/bin/sh ../libtool --tag=CC --mode=link gcc -Wall -W -g -D_GNU_SOURCE -I/usr/local/include -I/usr/local/include/exalt_dbus -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include   -g -O2   -o exalt-daemon-test -export-dynamic exalt_daemon.o -L/usr/local/lib -lexalt_dbus -ledbus -lecore -ldbus-1   
-gcc -Wall -W -g -D_GNU_SOURCE -I/usr/local/include -I/usr/local/include/exalt_dbus -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -g -O2 -o exalt-daemon-test exalt_daemon.o -Wl,--export-dynamic  -L/usr/local/lib /usr/local/lib/libexalt_dbus.so /usr/lib/libedbus.so /usr/lib/libecore.so -lm -ldl /usr/lib/libdbus-1.so  
-make[2]: Leaving directory `/home/watchwolf/Projects/C/exalt_svn/trunk/daemon_test/src'
-make[1]: Leaving directory `/home/watchwolf/Projects/C/exalt_svn/trunk/daemon_test/src'
-make[1]: Entering directory `/home/watchwolf/Projects/C/exalt_svn/trunk/daemon_test'
+make[2]: Entering directory `/home/watchwolf/Projects/C/exalt_svn/exalt/daemon_test/src'
+gcc -DHAVE_CONFIG_H -I.    -Wall -W -g -D_GNU_SOURCE -I/usr/local/include -I/usr/local/include/exalt_dbus -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include   -g -O2 -MT main.o -MD -MP -MF .deps/main.Tpo -c -o main.o main.c
+mv -f .deps/main.Tpo .deps/main.Po
+/bin/sh ../libtool --tag=CC   --mode=link gcc -Wall -W -g -D_GNU_SOURCE -I/usr/local/include -I/usr/local/include/exalt_dbus -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include   -g -O2 -export-dynamic  -o exalt-daemon-test main.o -L/usr/local/lib -lexalt_dbus -ledbus -ldbus-1 -lecore   
+gcc -Wall -W -g -D_GNU_SOURCE -I/usr/local/include -I/usr/local/include/exalt_dbus -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -g -O2 -o exalt-daemon-test main.o -Wl,--export-dynamic  -L/usr/local/lib /usr/local/lib/libexalt_dbus.so /usr/lib/libedbus.so /usr/lib/libdbus-1.so /usr/lib/libecore.so -lm -ldl  
+make[2]: Leaving directory `/home/watchwolf/Projects/C/exalt_svn/exalt/daemon_test/src'
+make[1]: Leaving directory `/home/watchwolf/Projects/C/exalt_svn/exalt/daemon_test/src'
+make[1]: Entering directory `/home/watchwolf/Projects/C/exalt_svn/exalt/daemon_test'
 make[1]: Nothing to be done for `all-am'.
-make[1]: Leaving directory `/home/watchwolf/Projects/C/exalt_svn/trunk/daemon_test'
+make[1]: Leaving directory `/home/watchwolf/Projects/C/exalt_svn/exalt/daemon_test'

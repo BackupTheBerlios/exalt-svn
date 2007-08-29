@@ -15,10 +15,13 @@ lib_LTLIBRARIES = libexalt_dbus.la
 EXTRA_DIST =
 
 EXALT_DBUSHEADERS = \
-libexalt_dbus.h
+libexalt_dbus.h \
+define.h \
+exalt_dbus_ethernet.h
 
 libexalt_dbus_la_SOURCES = \
 libexalt_dbus.c \
+exalt_dbus_ethernet.c \
 $(EXALTHEADERS)
 
 installed_headersdir = $(prefix)/include/exalt_dbus

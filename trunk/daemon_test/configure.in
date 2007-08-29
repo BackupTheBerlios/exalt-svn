@@ -73,6 +73,7 @@ AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source Code Director
 PKG_CHECK_MODULES(EXALT_DAEMON_TEST, [
   exalt_dbus >= 0.0.1
   edbus >= 0.1.0.002
+  ecore >= 0.0.1
 ])
 
 

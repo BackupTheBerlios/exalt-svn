@@ -7,10 +7,13 @@ AM_CFLAGS = \
 bin_PROGRAMS = exalt-daemon
 
 exalt_daemon_INCLUDES = \
-exalt_daemon.h
+daemon.h \
+cb_functions.h \
+define.h
 
 exalt_daemon_SOURCES = \
-exalt_daemon.c
+daemon.c \
+cb_functions.c
 
 exalt_daemon_LDFLAGS = @DLLDFLAGS@
 exalt_daemon_LDADD = @EXALT_DAEMON_LIBS@

@@ -7,10 +7,10 @@ AM_CFLAGS = \
 bin_PROGRAMS = exalt-daemon-test
 
 exalt_daemon_test_INCLUDES = \
-exalt_daemon.h
+main.h
 
 exalt_daemon_test_SOURCES = \
-exalt_daemon.c
+main.c
 
 exalt_daemon_test_LDFLAGS = @DLLDFLAGS@
 exalt_daemon_test_LDADD = @EXALT_DAEMON_TEST_LIBS@

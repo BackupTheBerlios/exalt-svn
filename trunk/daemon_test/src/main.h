@@ -1,12 +1,12 @@
 /*
  * =====================================================================================
  *
- *       Filename:  exalt_daemon.c
+ *       Filename:  main.h
  *
- *    Description:  defines globals funtions
+ *    Description:  test the exalt's daemon
  *
  *        Version:  1.0
- *        Created:  08/28/2007 04:27:45 PM CEST
+ *        Created:  08/28/2007 04:26:56 PM CEST
  *       Revision:  none
  *       Compiler:  gcc
  *
@@ -16,10 +16,13 @@
  * =====================================================================================
  */
 
-#include "exalt_daemon.h"
+#ifndef  MAIN_INC
+#define  MAIN_INC
 
-int main(int argc, char** argv)
-{
-    printf("%s\n",get_test());
-    return 1;
-}
+#include <stdio.h>
+#include <libexalt_dbus.h>
+
+int main(int argc, char** argv);
+
+#endif   /* ----- #ifndef MAIN_INC  ----- */
+

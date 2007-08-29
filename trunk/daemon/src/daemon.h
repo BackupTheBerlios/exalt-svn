@@ -1,7 +1,7 @@
 /*
  * =====================================================================================
  *
- *       Filename:  exalt_daemon.h
+ *       Filename:  daemon.h
  *
  *    Description:  define globals functions
  *
@@ -16,13 +16,18 @@
  * =====================================================================================
  */
 
-#ifndef  EXALT_DAEMON_INC
-#define  EXALT_DAEMON_INC
+#ifndef  DAEMON_INC
+#define  DAEMON_INC
 
 #include <stdio.h>
-#include <libexalt_dbus.h>
+#include <libexalt.h>
+
+#include "define.h"
+#include "cb_functions.h"
 
 int main(int argc, char** argv);
+int setup(E_DBus_Connection *conn);
+exalt_ethernet* dbus_get_eth(DBusMessage* msg);
 
-#endif   /* ----- #ifndef EXALT_DAEMON_INC  ----- */
+#endif   /* ----- #ifndef DAEMON_INC  ----- */
 

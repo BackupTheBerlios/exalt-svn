@@ -1,0 +1,27 @@
+#!/sbin/runscript
+# Copyright 1999-2007 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+# $Header: $
+
+depend() {
+	need dbus hald
+}
+
+start() {
+	ebegin "Starting Exalt daemon"
+	start-stop-daemon --start --exec /usr/local/bin/exalt-daemon \
+		--pidfile /var/run/exaltd.pid
+	eend $?
+}
+
+stop() {
+	ebegin "Stopping Exalt daemon"
+	start-stop-daemon --stop --exec /usr/local/bin/exalt-daemon  \
+		--pidfile /var/run/exaltd.pid
+	eend $?
+}
+
+restart() {
+	stop
+	start
+}
