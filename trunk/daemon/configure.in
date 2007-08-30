@@ -70,6 +70,22 @@ packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source Code Directory])
 
 
+dnl detecting the Gnu/linux distribution
+dnl C_ARG_WITH(distro, AS_HELP_STRING([--with-distro=DISTRO],[Specify the Linux distribution t
+if test "z$with_distro" = "z"; then
+                AC_CHECK_FILE(/etc/SuSE-release,with_distro="suse")
+                AC_CHECK_FILE(/etc/gentoo-release,with_distro="gentoo")
+                AC_CHECK_FILE(/etc/arch-release,with_distro="archlinux")
+                AC_CHECK_FILE(/etc/debian_version,with_distro="debian")
+fi
+
+with_distro=`echo ${with_distro} | tr '[[:upper:]]' '[[:lower:]]' `
+
+AC_CHECK_FILE(data/init.d/exaltd,`rm data/init.d/gentoo data/init.d/exaltd`)
+if test "x$with_distro" = 'xgentoo'; then
+    `cp data/init.d/gentoo data/init.d/exaltd`
+fi
+
 PKG_CHECK_MODULES(EXALT_DAEMON, [
   exalt >= 0.5
   edbus >= 0.1.0.002
@@ -85,6 +101,9 @@ fi
 AC_OUTPUT([
 Makefile
 src/Makefile
+data/Makefile
+data/dbus/Makefile
+data/init.d/Makefile
 debian/changelog
 ]
 )

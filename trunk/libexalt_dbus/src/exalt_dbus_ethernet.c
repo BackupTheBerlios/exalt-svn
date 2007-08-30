@@ -197,4 +197,33 @@ int exalt_dbus_eth_is_link(exalt_dbus_conn* conn, char* eth)
     return res;
 }
 
+int exalt_dbus_eth_is_up(exalt_dbus_conn* conn, char* eth)
+{
+    DBusPendingCall * ret;
+    DBusMessage *msg;
+    DBusMessageIter args;
+    int res;
 
+    if(!conn || !eth)
+    {
+        fprintf(stderr,"exalt_dbus_eth_is_up(): conn==%p, eth==%p \n",conn, eth);
+        return 0;
+    }
+
+    msg = exalt_dbus_read_call_new("IS_UP");
+    dbus_message_iter_init_append(msg, &args);
+    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth)) {
+        fprintf(stderr, "exalt_dbus_eth_is_up(): Out Of Memory!\n");
+        dbus_message_unref(msg);
+        return 0;
+    }
+    dbus_connection_send_with_reply (conn->conn, msg, &ret, -1);
+    dbus_pending_call_block(ret);
+    msg = dbus_pending_call_steal_reply(ret);
+    dbus_pending_call_unref(ret);
+
+    //read the response
+    res = exalt_dbus_response_boolean(msg);
+    dbus_message_unref(msg);
+    return res;
+}

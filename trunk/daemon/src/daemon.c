@@ -32,11 +32,11 @@ int setup(E_DBus_Connection *conn)
     e_dbus_interface_method_add(iface, "GET_ETH_LIST", NULL, NULL, dbus_cb_get_eth_list);
     e_dbus_interface_method_add(iface, "IS_WIRELESS", NULL, NULL, dbus_cb_is_wireless);
     e_dbus_interface_method_add(iface, "IS_LINK", NULL, NULL, dbus_cb_is_link);
+    e_dbus_interface_method_add(iface, "IS_UP", NULL, NULL, dbus_cb_is_up);
 
     e_dbus_object_interface_attach(obj, iface);
     return 1;
 }
-
 
 
 int main(int argc, char** argv)
@@ -94,14 +94,7 @@ int main(int argc, char** argv)
     fprintf(stdout,"INIT EXALT_DAEMON\n");
     e_dbus_init();
     ecore_init();
-
     exalt_eth_init();
-    exalt_main();
-
-    if(!exalt_is_admin())
-        fprintf(stderr,"The daemon is not run with administrator's right, you can't modify the configuration\n");
-
-
 
     fprintf(stdout,"SETUP DBUS SERVER\n");
     conn = e_dbus_bus_get(DBUS_BUS_SYSTEM);
@@ -115,11 +108,46 @@ int main(int argc, char** argv)
 
     setup(conn);
 
+    exalt_eth_set_cb(eth_cb,conn);
+    exalt_main();
+
+    if(!exalt_is_admin())
+        fprintf(stderr,"The daemon is not run with administrator's right, you can't modify the configuration\n");
+
     ecore_main_loop_begin();
 
     e_dbus_shutdown();
     ecore_shutdown();
     return 1;
+}
+
+void eth_cb(exalt_ethernet* eth, int action, void* data)
+{
+    E_DBus_Connection *conn;
+    DBusMessage* msg;
+    DBusMessageIter args;
+    char* name;
+
+    conn = (E_DBus_Connection*) data;
+
+    //send a broadcast
+    msg = dbus_message_new_signal(EXALTD_PATH,EXALTD_INTERFACE_READ, "NOTIFY");
+    if(!msg)
+    {
+        fprintf(stderr, "eth_cb(): msg==null !\n");
+        return ;
+    }
+
+    name = exalt_eth_get_name(eth);
+
+    dbus_message_iter_init_append(msg, &args);
+    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &name))
+        fprintf(stderr,"eth_cb(): Out Of Memory !\n");
+
+    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_UINT32, &action))
+        fprintf(stderr,"eth_cb(): Out Of Memory !\n");
+
+    e_dbus_message_send(conn, msg, NULL, 3,NULL);
 }
 
 

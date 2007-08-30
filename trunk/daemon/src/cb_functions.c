@@ -219,10 +219,34 @@ DBusMessage * dbus_cb_is_link(E_DBus_Object *obj, DBusMessage *msg)
     is = exalt_eth_is_link(eth);
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_BOOLEAN, &is))
     {
-        fprintf(stderr, "dbus_cb_is_wireless(): Out Of Memory!\n");
+        fprintf(stderr, "dbus_cb_is_link(): Out Of Memory!\n");
         return reply;
     }
 
     return reply;
 }
 
+DBusMessage * dbus_cb_is_up(E_DBus_Object *obj, DBusMessage *msg)
+{
+    DBusMessage *reply;
+    DBusMessageIter args;
+    exalt_ethernet* eth;
+    int is;
+
+    reply = dbus_message_new_method_return(msg);
+
+    //search the interface
+    eth = dbus_get_eth(msg);
+    if(!eth)
+        return reply;
+
+    dbus_message_iter_init_append(reply, &args);
+    is = exalt_eth_is_up(eth);
+    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_BOOLEAN, &is))
+    {
+        fprintf(stderr, "dbus_cb_is_up(): Out Of Memory!\n");
+        return reply;
+    }
+
+    return reply;
+}

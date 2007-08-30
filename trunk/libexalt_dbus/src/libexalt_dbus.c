@@ -18,6 +18,9 @@
 
 #include "libexalt_dbus.h"
 
+void _exalt_dbus_notify(void *data, DBusMessage *msg);
+
+
 void exalt_dbus_init()
 {
     ecore_init();
@@ -41,6 +44,52 @@ void exalt_dbus_shutdown()
 {
     e_dbus_shutdown();
     ecore_shutdown();
+}
+
+void exalt_dbus_notify_set(exalt_dbus_conn* conn, exalt_notify_cb *cb, void* user_data)
+{
+    exalt_dbus_notify_data* d;
+    d = malloc(sizeof(exalt_dbus_notify_data));
+    d -> conn = conn;
+    d -> cb = cb;
+    d -> user_data = user_data;
+
+    e_dbus_signal_handler_add(conn->e_conn, EXALTD_SERVICE, EXALTD_PATH,
+            EXALTD_INTERFACE_READ, "NOTIFY",
+            _exalt_dbus_notify, d);
+}
+
+void _exalt_dbus_notify(void *data, DBusMessage *msg)
+{
+    DBusMessageIter args;
+    char* eth;
+    int action;
+    exalt_dbus_notify_data *d;
+
+    d = (exalt_dbus_notify_data*)data;
+
+    if(!dbus_message_iter_init(msg, &args))
+        fprintf(stderr,"_exalt_dbus_notify(): no arguments !\n");
+
+    if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
+    {
+        fprintf(stderr,"_exalt_dbus_notify(): the first argument is not a string !\n");
+        return ;
+    }
+
+    dbus_message_iter_get_basic(&args, &eth);
+    eth = strdup(eth);
+
+    dbus_message_iter_next(&args);
+    if (DBUS_TYPE_UINT32 != dbus_message_iter_get_arg_type(&args))
+    {
+        fprintf(stderr,"_exalt_dbus_notify(): the second argument is not an int !\n");
+        return ;
+    }
+
+    dbus_message_iter_get_basic(&args, &action);
+
+    d->cb(eth,action,d->user_data);
 }
 
 char* exalt_dbus_response_string(DBusMessage *msg)

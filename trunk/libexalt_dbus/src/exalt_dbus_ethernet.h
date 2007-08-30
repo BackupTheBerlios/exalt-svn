@@ -28,6 +28,7 @@ char* exalt_dbus_eth_get_gateway(exalt_dbus_conn* conn, char* eth);
 Ecore_List* exalt_dbus_eth_get_list(exalt_dbus_conn* conn);
 int exalt_dbus_eth_is_wireless(exalt_dbus_conn* conn, char* eth);
 int exalt_dbus_eth_is_link(exalt_dbus_conn* conn, char* eth);
+int exalt_dbus_eth_is_up(exalt_dbus_conn* conn, char* eth);
 
 #endif   /* ----- #ifndef EXALT_DBUS_ETHERNET_INC  ----- */
 

@@ -28,6 +28,6 @@
 int main(int argc, char** argv);
 int setup(E_DBus_Connection *conn);
 exalt_ethernet* dbus_get_eth(DBusMessage* msg);
-
+void eth_cb(exalt_ethernet* eth, int action, void* data);
 #endif   /* ----- #ifndef DAEMON_INC  ----- */
 

@@ -6,10 +6,6 @@ make[2]: Entering directory `/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt
  gcc -DLOCALEDIR=\"/usr/local/share/locale\" -DHAVE_CONFIG_H -I. -I.. -Wall -g -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -g -O2 -MT libexalt_dbus.lo -MD -MP -MF .deps/libexalt_dbus.Tpo -c libexalt_dbus.c  -fPIC -DPIC -o .libs/libexalt_dbus.o
  gcc -DLOCALEDIR=\"/usr/local/share/locale\" -DHAVE_CONFIG_H -I. -I.. -Wall -g -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -g -O2 -MT libexalt_dbus.lo -MD -MP -MF .deps/libexalt_dbus.Tpo -c libexalt_dbus.c -o libexalt_dbus.o >/dev/null 2>&1
 mv -f .deps/libexalt_dbus.Tpo .deps/libexalt_dbus.Plo
-/bin/sh ../libtool --tag=CC   --mode=compile gcc -DLOCALEDIR=\"/usr/local/share/locale\" -DHAVE_CONFIG_H -I. -I.. -Wall -g -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include      -g -O2 -MT exalt_dbus_ethernet.lo -MD -MP -MF .deps/exalt_dbus_ethernet.Tpo -c -o exalt_dbus_ethernet.lo exalt_dbus_ethernet.c
- gcc -DLOCALEDIR=\"/usr/local/share/locale\" -DHAVE_CONFIG_H -I. -I.. -Wall -g -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -g -O2 -MT exalt_dbus_ethernet.lo -MD -MP -MF .deps/exalt_dbus_ethernet.Tpo -c exalt_dbus_ethernet.c  -fPIC -DPIC -o .libs/exalt_dbus_ethernet.o
- gcc -DLOCALEDIR=\"/usr/local/share/locale\" -DHAVE_CONFIG_H -I. -I.. -Wall -g -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -g -O2 -MT exalt_dbus_ethernet.lo -MD -MP -MF .deps/exalt_dbus_ethernet.Tpo -c exalt_dbus_ethernet.c -o exalt_dbus_ethernet.o >/dev/null 2>&1
-mv -f .deps/exalt_dbus_ethernet.Tpo .deps/exalt_dbus_ethernet.Plo
 /bin/sh ../libtool --tag=CC   --mode=link gcc  -g -O2 -version-info 1:0:0  -o libexalt_dbus.la -rpath /usr/local/lib libexalt_dbus.lo exalt_dbus_ethernet.lo -ledbus -lecore -ldbus-1   
 rm -fr  .libs/libexalt_dbus.a .libs/libexalt_dbus.la .libs/libexalt_dbus.lai .libs/libexalt_dbus.so .libs/libexalt_dbus.so.1 .libs/libexalt_dbus.so.1.0.0
 gcc -shared  .libs/libexalt_dbus.o .libs/exalt_dbus_ethernet.o  /usr/lib/libedbus.so -L/usr/lib /usr/lib/libecore.so /usr/lib/libdbus-1.so  -Wl,-soname -Wl,libexalt_dbus.so.1 -o .libs/libexalt_dbus.so.1.0.0

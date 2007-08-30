@@ -27,6 +27,7 @@ DBusMessage * dbus_cb_get_gateway(E_DBus_Object *obj, DBusMessage *msg);
 DBusMessage * dbus_cb_get_eth_list(E_DBus_Object *obj, DBusMessage *msg);
 DBusMessage * dbus_cb_is_wireless(E_DBus_Object *obj, DBusMessage *msg);
 DBusMessage * dbus_cb_is_link(E_DBus_Object *obj, DBusMessage *msg);
+DBusMessage * dbus_cb_is_up(E_DBus_Object *obj, DBusMessage *msg);
 
 #endif   /* ----- #ifndef CB_FUNCTIONS_INC  ----- */
 

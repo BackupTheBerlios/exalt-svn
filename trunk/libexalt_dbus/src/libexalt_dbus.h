@@ -20,6 +20,8 @@
 #define  LIBEXALT_DBUS_INC
 
 typedef struct _exalt_dbus_conn exalt_dbus_conn;
+typedef struct _exalt_dbus_notify_data exalt_dbus_notify_data;
+typedef void (exalt_notify_cb) (char* eth, int action, void* user_data);
 
 #include <E_DBus.h>
 #include <Ecore_Data.h>
@@ -33,6 +35,13 @@ struct _exalt_dbus_conn
     DBusConnection* conn;
 };
 
+struct _exalt_dbus_notify_data
+{
+    exalt_dbus_conn* conn;
+    exalt_notify_cb* cb;
+    void* user_data;
+};
+
 void exalt_dbus_init();
 void exalt_dbus_shutdown();
 exalt_dbus_conn*  exalt_dbus_connect();
@@ -40,6 +49,7 @@ char* exalt_dbus_response_string(DBusMessage *msg);
 Ecore_List* exalt_dbus_response_strings(DBusMessage *msg);
 void exalt_dbus_string_free(void* data);
 int exalt_dbus_response_boolean(DBusMessage *msg);
+void exalt_dbus_notify_set(exalt_dbus_conn* conn, exalt_notify_cb* cb, void* user_data);
 
 #endif   /* ----- #ifndef LIBEXALT_DBUS_INC  ----- */
 

@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
-MYAPPNAME=exalt
-SUBDIRS = src
+MYAPPNAME=exalt-daemon
+SUBDIRS = src data
 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
                        config.h.in config.h.in~ config.sub configure \
