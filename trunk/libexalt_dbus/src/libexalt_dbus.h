@@ -28,6 +28,8 @@ typedef void (exalt_notify_cb) (char* eth, int action, void* user_data);
 #include <string.h>
 #include "define.h"
 #include "exalt_dbus_ethernet.h"
+#include "exalt_dbus_wireless.h"
+#include "exalt_dbus_wireless_info.h"
 
 struct _exalt_dbus_conn
 {
@@ -49,7 +51,11 @@ char* exalt_dbus_response_string(DBusMessage *msg);
 Ecore_List* exalt_dbus_response_strings(DBusMessage *msg);
 void exalt_dbus_string_free(void* data);
 int exalt_dbus_response_boolean(DBusMessage *msg);
+int exalt_dbus_response_integer(DBusMessage *msg);
 void exalt_dbus_notify_set(exalt_dbus_conn* conn, exalt_notify_cb* cb, void* user_data);
+
+
+void print_error(char* type, char* file, int line,const char* fct, char* msg);
 
 #endif   /* ----- #ifndef LIBEXALT_DBUS_INC  ----- */
 

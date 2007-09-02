@@ -27,5 +27,6 @@
 #define EXALTD_PIDFILE "/var/run/exaltd.pid"
 #define EXALTD_LOGFILE "/var/log/exaltd.log"
 
+
 #endif   /* ----- #ifndef DEFINE_INC  ----- */
 

@@ -23,11 +23,20 @@
 #include <libexalt.h>
 
 #include "define.h"
-#include "cb_functions.h"
+#include "cb_ethernet.h"
+#include "cb_wireless.h"
+#include "cb_wirelessinfo.h"
+
+void print_error(char* type, char*file, int line, const char* fct, char* msg);
 
 int main(int argc, char** argv);
 int setup(E_DBus_Connection *conn);
 exalt_ethernet* dbus_get_eth(DBusMessage* msg);
+exalt_wireless_info* dbus_get_wirelessinfo(DBusMessage* msg);
+exalt_wireless_info* get_wirelessinfo(exalt_ethernet* eth, char* essid);
 void eth_cb(exalt_ethernet* eth, int action, void* data);
+
+
 #endif   /* ----- #ifndef DAEMON_INC  ----- */
+
 

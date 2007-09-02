@@ -27,14 +27,16 @@ char* exalt_dbus_eth_get_ip(exalt_dbus_conn* conn, char* eth)
 
     if(!conn || !eth)
     {
-        fprintf(stderr,"exalt_dbus_eth_get_ip(): conn==%p, eth==%p \n",conn, eth);
+        char buf[1024];
+        sprintf(buf,"conn==%p, eth==%p \n",conn, eth);
+        print_error("ERROR", __FILE__,__LINE__,__func__,buf);
         return NULL;
     }
 
-    msg = exalt_dbus_read_call_new("GET_IP");
+    msg = exalt_dbus_read_call_new("IFACE_GET_IP");
     dbus_message_iter_init_append(msg, &args);
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth)) {
-        fprintf(stderr, "exalt_dbus_eth_get_ip(): Out Of Memory!\n");
+        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return NULL;
     }
@@ -58,14 +60,16 @@ char* exalt_dbus_eth_get_netmask(exalt_dbus_conn* conn, char* eth)
 
     if(!conn || !eth)
     {
-        fprintf(stderr,"exalt_dbus_eth_get_ip(): conn==%p, eth==%p \n",conn, eth);
+        char buf[1024];
+        sprintf(buf,"conn==%p, eth==%p \n",conn, eth);
+        print_error("ERROR", __FILE__,__LINE__,__func__,buf);
         return NULL;
     }
 
-    msg = exalt_dbus_read_call_new("GET_NETMASK");
+    msg = exalt_dbus_read_call_new("IFACE_GET_NETMASK");
     dbus_message_iter_init_append(msg, &args);
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth)) {
-        fprintf(stderr, "exalt_dbus_eth_get_ip(): Out Of Memory!\n");
+        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return NULL;
     }
@@ -89,14 +93,16 @@ char* exalt_dbus_eth_get_gateway(exalt_dbus_conn* conn, char* eth)
 
     if(!conn || !eth)
     {
-        fprintf(stderr,"exalt_dbus_eth_get_ip(): conn==%p, eth==%p \n",conn, eth);
+        char buf[1024];
+        sprintf(buf,"conn==%p, eth==%p \n",conn, eth);
+        print_error("ERROR", __FILE__,__LINE__,__func__,buf);
         return NULL;
     }
 
-    msg = exalt_dbus_read_call_new("GET_GATEWAY");
+    msg = exalt_dbus_read_call_new("IFACE_GET_GATEWAY");
     dbus_message_iter_init_append(msg, &args);
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth)) {
-        fprintf(stderr, "exalt_dbus_eth_get_ip(): Out Of Memory!\n");
+        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return NULL;
     }
@@ -119,11 +125,13 @@ Ecore_List* exalt_dbus_eth_get_list(exalt_dbus_conn* conn)
 
     if(!conn)
     {
-        fprintf(stderr,"exalt_dbus_eth_get_ip(): conn==%p \n",conn);
+        char buf[1024];
+        sprintf(buf,"conn==%p \n",conn);
+        print_error("ERROR", __FILE__,__LINE__,__func__,buf);
         return NULL;
     }
 
-    msg = exalt_dbus_read_call_new("GET_ETH_LIST");
+    msg = exalt_dbus_read_call_new("IFACE_GET_ETH_LIST");
     dbus_connection_send_with_reply (conn->conn, msg, &ret, -1);
     dbus_pending_call_block(ret);
     msg = dbus_pending_call_steal_reply(ret);
@@ -144,14 +152,16 @@ int exalt_dbus_eth_is_wireless(exalt_dbus_conn* conn, char* eth)
 
     if(!conn || !eth)
     {
-        fprintf(stderr,"exalt_dbus_eth_is_wireless(): conn==%p, eth==%p \n",conn, eth);
+        char buf[1024];
+        sprintf(buf,"conn==%p, eth==%p \n",conn, eth);
+        print_error("ERROR", __FILE__,__LINE__,__func__,buf);
         return 0;
     }
 
-    msg = exalt_dbus_read_call_new("IS_WIRELESS");
+    msg = exalt_dbus_read_call_new("IFACE_IS_WIRELESS");
     dbus_message_iter_init_append(msg, &args);
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth)) {
-        fprintf(stderr, "exalt_dbus_eth_is_wireless(): Out Of Memory!\n");
+        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return 0;
     }
@@ -175,14 +185,16 @@ int exalt_dbus_eth_is_link(exalt_dbus_conn* conn, char* eth)
 
     if(!conn || !eth)
     {
-        fprintf(stderr,"exalt_dbus_eth_is_link(): conn==%p, eth==%p \n",conn, eth);
+        char buf[1024];
+        sprintf(buf,"conn==%p, eth==%p \n",conn, eth);
+        print_error("ERROR", __FILE__,__LINE__,__func__,buf);
         return 0;
     }
 
-    msg = exalt_dbus_read_call_new("IS_LINK");
+    msg = exalt_dbus_read_call_new("IFACE_IS_LINK");
     dbus_message_iter_init_append(msg, &args);
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth)) {
-        fprintf(stderr, "exalt_dbus_eth_is_link(): Out Of Memory!\n");
+        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return 0;
     }
@@ -206,14 +218,16 @@ int exalt_dbus_eth_is_up(exalt_dbus_conn* conn, char* eth)
 
     if(!conn || !eth)
     {
-        fprintf(stderr,"exalt_dbus_eth_is_up(): conn==%p, eth==%p \n",conn, eth);
+        char buf[1024];
+        sprintf(buf,"conn==%p, eth==%p \n",conn, eth);
+        print_error("ERROR", __FILE__,__LINE__,__func__,buf);
         return 0;
     }
 
-    msg = exalt_dbus_read_call_new("IS_UP");
+    msg = exalt_dbus_read_call_new("IFACE_IS_UP");
     dbus_message_iter_init_append(msg, &args);
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth)) {
-        fprintf(stderr, "exalt_dbus_eth_is_up(): Out Of Memory!\n");
+        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return 0;
     }

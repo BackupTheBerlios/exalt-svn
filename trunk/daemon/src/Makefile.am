@@ -8,12 +8,16 @@ bin_PROGRAMS = exalt-daemon
 
 exalt_daemon_INCLUDES = \
 daemon.h \
-cb_functions.h \
+cb_ethernet.h \
+cb_wireless.h \
+cb_wirelessinfo.h \
 define.h
 
 exalt_daemon_SOURCES = \
 daemon.c \
-cb_functions.c
+cb_ethernet.c \
+cb_wireless.c \
+cb_wirelessinfo.c
 
 exalt_daemon_LDFLAGS = @DLLDFLAGS@
 exalt_daemon_LDADD = @EXALT_DAEMON_LIBS@

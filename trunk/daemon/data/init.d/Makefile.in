@@ -170,7 +170,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 FILE = exaltd
 filedir = /etc/init.d
-file_DATA = $(INIT_FILE)
+file_DATA = $(FILE)
 all: all-am
 
 .SUFFIXES:
