@@ -314,8 +314,13 @@ exalt_wireless_info* get_wirelessinfo(exalt_ethernet* eth, char* essid)
     return NULL;
 }
 
-void print_error(char* type, char* file, int line,const char* fct, char* msg)
+void print_error(const char* type, const char* file, int line,const char* fct, const char* msg, ...)
 {
+    va_list ap;
+    va_start(ap,msg);
     fprintf(stderr,"DAEMON:%s (%d)%s: %s\n",type,line,file,fct);
-    fprintf(stderr,"\t%s\n\n",msg);
+    fprintf(stderr,"\t");
+    fprintf(stderr,msg,ap);
+    fprintf(stderr,"\n\n");
+    va_end(ap);
 }

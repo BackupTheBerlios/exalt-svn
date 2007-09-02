@@ -102,13 +102,14 @@ _gc_icon(Evas *evas)
 }
 
     EAPI void
-_gc_register(void)
+exalt_gc_register(void)
 {
     e_gadcon_provider_register(&_gc_class);
 }
 
     EAPI void
-_gc_unregister(void)
+exalt_gc_unregister(void)
 {
     e_gadcon_provider_unregister(&_gc_class);
 }
+

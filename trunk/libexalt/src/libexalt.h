@@ -49,6 +49,7 @@ char *str_remove (const char *s, const char *ct);
 char* exalt_addr_hexa_to_dec(char* addr);
 short exalt_ioctl(void* argp, int request);
 short exalt_is_admin();
+void print_error(char* type, char* file, int line,const char* fct, char* msg);
 
 #endif
 

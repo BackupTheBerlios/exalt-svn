@@ -27,7 +27,7 @@
 #include "cb_wireless.h"
 #include "cb_wirelessinfo.h"
 
-void print_error(char* type, char*file, int line, const char* fct, char* msg);
+void print_error(const char* type, const char*file, int line, const char* fct, const char* msg, ...);
 
 int main(int argc, char** argv);
 int setup(E_DBus_Connection *conn);

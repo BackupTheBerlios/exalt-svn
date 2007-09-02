@@ -8,7 +8,7 @@
 
 
 
-EAPI void _gc_register(void);
-EAPI void _gc_unregister(void);
+EAPI void exalt_gc_register(void);
+EAPI void exalt_gc_unregister(void);
 
 #endif

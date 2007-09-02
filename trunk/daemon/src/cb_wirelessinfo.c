@@ -188,7 +188,7 @@ DBusMessage * dbus_cb_wirelessinfo_get_bitrates(E_DBus_Object *obj, DBusMessage 
 
     if(!bitrates)
     {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "bitrates==null");
+        print_error("WARNING", __FILE__, __LINE__,__func__, "bitrates==null %d %s",23, "test");
         return reply;
     }
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &bitrates))

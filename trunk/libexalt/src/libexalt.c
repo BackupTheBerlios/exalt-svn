@@ -97,7 +97,9 @@ char* exalt_addr_hexa_to_dec(char* addr)
     int n;
     if(strlen(addr)!=8)
     {
-        fprintf(stderr,"addr_hexa_to_dec(): the hexadecimal address is not correct: %s\n",addr);
+        char buf[1024];
+        sprintf(buf,"addr_hexa_to_dec(): the hexadecimal address is not correct: %s\n",addr);
+        print_error("ERROR", __FILE__, __LINE__,__func__, buf);
         return NULL;
     }
 
@@ -161,22 +163,24 @@ short exalt_ioctl(void* argp, int request)
 {
     int fd;
 
-    //edit param: SIOCSIFFLAGS SIOCSIFFLAGS SIOCDELRT SIOCSIFADDR SIOCSIFNETMASK SIOCADDRT
-    //read param: SIOCGIWNAME SIOCGIWESSID SIOCGIWNAME SIOCGIFFLAGS SIOCGIFADDR SIOCGIFNETMASK SIOCGIFHWADDR SIOCETHTOOL
+    //edit param: SIOCSIFFLAGS SIOCSIFFLAGS SIOCDELRT SIOCSIFADDR SIOCSIFNETMASK SIOCADDRT SIOCETHTOOL
+    //read param: SIOCGIWNAME SIOCGIWESSID SIOCGIWNAME SIOCGIFFLAGS SIOCGIFADDR SIOCGIFNETMASK SIOCGIFHWADDR
 
 
     if(!exalt_is_admin() &&
             ( request == SIOCSIFFLAGS || request == SIOCSIFFLAGS
               || request == SIOCDELRT || request == SIOCSIFADDR
-              || request == SIOCSIFNETMASK || request == SIOCADDRT))
+              || request == SIOCSIFNETMASK || request == SIOCADDRT
+              || request== SIOCETHTOOL ))
     {
-        fprintf(stderr,"exalt_iotl(): you need to be admnistrator if you want modify the configuration !\n");
+
+       print_error("ERROR", __FILE__, __LINE__,__func__, "you need to be admnistrator if you want modify the configuration !");
         return -2;
     }
 
     if(!argp)
     {
-        fprintf(stderr,"exalt_iotl(): argp==null ! \n");
+        print_error("ERROR", __FILE__, __LINE__,__func__, "argp==null");
         return -3;
     }
 
@@ -204,4 +208,10 @@ short exalt_ioctl(void* argp, int request)
 short exalt_is_admin()
 {
     return exalt_eth_interfaces.admin;
+}
+
+void print_error(char* type, char* file, int line,const char* fct, char* msg)
+{
+    fprintf(stderr,"LIBEXALT:%s (%d)%s: %s\n",type,line,file,fct);
+    fprintf(stderr,"\t%s\n\n",msg);
 }
