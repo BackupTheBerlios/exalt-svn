@@ -3,7 +3,7 @@
 #define EXALT_SYS_CONF_H
 
 /**
- * @defgroup Exalt_save_load
+ * @defgroup Exalt_System_Configuration
  * @brief all functions to save or load a configuration
  * @{
  */

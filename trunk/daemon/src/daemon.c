@@ -100,11 +100,7 @@ int main(int argc, char** argv)
             fclose(fp);
         }
         else
-        {
-            char buf[1024];
-            sprintf(buf,"Can not create the pid file: %s\n", EXALTD_PIDFILE);
-            print_error("WARNING", __FILE__, __LINE__,__func__, buf);
-        }
+            print_error("WARNING", __FILE__, __LINE__,__func__, "Can not create the pid file: %s\n", EXALTD_PIDFILE);
 
         //redirect stderr and stdout >> /var/log/exald.log
         remove(EXALTD_LOGFILE);
@@ -114,11 +110,7 @@ int main(int argc, char** argv)
             stdout = fp;
         }
         else
-        {
-            char buf[1024];
-            sprintf(buf,"Can not create the log file: %s\n",EXALTD_LOGFILE);
-            print_error("WARNING", __FILE__, __LINE__,__func__, buf);
-        }
+            print_error("WARNING", __FILE__, __LINE__,__func__, "Can not create the log file: %s\n",EXALTD_LOGFILE);
     }
 
     e_dbus_init();
@@ -162,7 +154,7 @@ void eth_cb(exalt_ethernet* eth, int action, void* data)
     msg = dbus_message_new_signal(EXALTD_PATH,EXALTD_INTERFACE_READ, "NOTIFY");
     if(!msg)
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "msg==null");
+        print_error("ERROR", __FILE__, __LINE__,__func__, "msg=%p",msg);
         return ;
     }
 
@@ -170,7 +162,7 @@ void eth_cb(exalt_ethernet* eth, int action, void* data)
 
     if(!name)
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "name==null");
+        print_error("ERROR", __FILE__, __LINE__,__func__, "name=%p",name);
         dbus_message_unref(msg);
         return ;
     }
@@ -216,9 +208,7 @@ exalt_ethernet* dbus_get_eth(DBusMessage* msg)
     eth = exalt_eth_get_ethernet_byname(interface);
     if(!eth)
     {
-        char buf[1024];
-        sprintf(buf,"the interface %s doesn't exist\n",interface);
-        print_error("WARNING", __FILE__, __LINE__,__func__, buf);
+        print_error("WARNING", __FILE__, __LINE__,__func__, "the interface %s doesn't exist\n",interface);
         return NULL;
     }
     return eth;
@@ -250,9 +240,7 @@ exalt_wireless_info* dbus_get_wirelessinfo(DBusMessage* msg)
     eth = exalt_eth_get_ethernet_byname(interface);
     if(!eth)
     {
-        char buf[1024];
-        sprintf(buf,"the interface %s doesn't exist\n",interface);
-        print_error("WARNING", __FILE__, __LINE__,__func__, buf);
+        print_error("WARNING", __FILE__, __LINE__,__func__, "the interface %s doesn't exist\n",interface);
         return NULL;
     }
 
@@ -269,9 +257,7 @@ exalt_wireless_info* dbus_get_wirelessinfo(DBusMessage* msg)
     wi = get_wirelessinfo(eth,essid);
     if(!wi)
     {
-        char buf[1024];
-        sprintf(buf,"the network %s doesn't exist\n",essid);
-        print_error("WARNING", __FILE__, __LINE__,__func__, buf);
+        print_error("WARNING", __FILE__, __LINE__,__func__, "the network %s doesn't exist\n",essid);
         return NULL;
     }
 
@@ -287,17 +273,13 @@ exalt_wireless_info* get_wirelessinfo(exalt_ethernet* eth, char* essid)
 
     if(!eth || !essid)
     {
-        char buf[1024];
-        sprintf(buf, "eth==%p essid=%p",eth,essid);
-        print_error("WARNING", __FILE__, __LINE__,__func__, buf);
+        print_error("WARNING", __FILE__, __LINE__,__func__, "eth==%p essid=%p",eth,essid);
         return NULL;
     }
 
     if(!exalt_eth_is_wireless(eth))
     {
-        char buf[1024];
-        sprintf(buf,"The card %s is not a wireless card",exalt_eth_get_name(eth));
-        print_error("WARNING", __FILE__, __LINE__,__func__, buf);
+        print_error("WARNING", __FILE__, __LINE__,__func__, "The card %s is not a wireless card",exalt_eth_get_name(eth));
         return NULL;
     }
     w = exalt_eth_get_wireless(eth);
@@ -318,9 +300,10 @@ void print_error(const char* type, const char* file, int line,const char* fct, c
 {
     va_list ap;
     va_start(ap,msg);
-    fprintf(stderr,"DAEMON:%s (%d)%s: %s\n",type,line,file,fct);
+    fprintf(stderr,"EXALTD:%s (%d)%s: %s\n",type,line,file,fct);
     fprintf(stderr,"\t");
-    fprintf(stderr,msg,ap);
+    vfprintf(stderr,msg,ap);
     fprintf(stderr,"\n\n");
     va_end(ap);
 }
+

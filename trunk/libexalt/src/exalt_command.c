@@ -1,10 +1,5 @@
-/** @file exalt_command.c */
 #include "./exalt_command.h"
 
-/**
- * @addtogroup Exalt_command
- * @{
- */
 
 /**
  * @brief execute a command
@@ -25,5 +20,4 @@ FILE* exalt_execute_command(char* cmd)
 }
 
 
-/** @} */
 

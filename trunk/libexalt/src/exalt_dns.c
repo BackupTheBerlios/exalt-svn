@@ -1,8 +1,9 @@
 /** @file exalt_dns.c */
 #include "exalt_dns.h"
+#include "libexalt_private.h"
 
 /**
- * @addtogroup Exalt_dns
+ * @addtogroup Exalt_DNS
  * @{
  */
 
@@ -19,7 +20,7 @@ char** exalt_dns_get_list(int* nb_dns)
 	int i;
 	if(!nb_dns)
 	{
-		fprintf(stderr,"dns_get_list(): nb_dns == null !\n");
+		print_error("ERROR", __FILE__, __LINE__,__func__,"nb_dns=%p",nb_dns);
 		return NULL;
 	}
 
@@ -27,7 +28,7 @@ char** exalt_dns_get_list(int* nb_dns)
 	tab=(char**)malloc((unsigned int)sizeof(char*)*NB_DNS_MAX);
 	if(!tab)
 	{
-		fprintf(stderr,"dns_get_list(): tab == null, malloc() error\n");
+		print_error("ERROR", __FILE__, __LINE__,__func__,"tab=%p, malloc() error", tab);
 	}
 
 	for(i=0;i<NB_DNS_MAX;i++)
@@ -57,7 +58,7 @@ void exalt_dns_free_list(char** t, int nb_dns)
 	int i;
 	if(!t)
 	{
-		fprintf(stderr,"dns_free_list(): t == null !\n");
+		print_error("ERROR", __FILE__, __LINE__,__func__,"t=%p", t);
 	}
 	for(i=0;i<nb_dns;i++)
 		EXALT_FREE(t[i]);
@@ -77,13 +78,13 @@ int exalt_dns_add(const char* dns)
 	FILE* f;
 	if(!dns)
 	{
-		fprintf(stderr,"dns_add(): dns==null! \n");
+		print_error("ERROR", __FILE__, __LINE__,__func__,"dns=%p", dns);
 		return -1;
 	}
 
 	if(!exalt_is_address(dns))
 	{
-	 	fprintf(stderr,"dns_add(): dns(%s) is not a valid address !\n",dns);
+	 	print_error("WARNING", __FILE__, __LINE__,__func__,"dns(%s) is not a valid address",dns);
 		return -1;
 	}
 
@@ -108,7 +109,7 @@ int exalt_dns_delete(const char* dns)
 	FILE* f;
 	if(!dns)
 	{
-		fprintf(stderr,"dns_delete(): dns==null! \n");
+		print_error("ERROR", __FILE__, __LINE__,__func__,"dns=%p", dns);
 		return -1;
 	}
 
@@ -134,13 +135,13 @@ int exalt_dns_replace(const char* old_dns, const char* new_dns)
 	FILE* f;
 	if(!old_dns || !new_dns)
 	{
-		fprintf(stderr,"dns_delete(): old_dns==%p  new_dns=%p ! \n",old_dns, new_dns);
+		print_error("ERROR", __FILE__, __LINE__,__func__,"old_dns=%p  new_dns=%p",old_dns, new_dns);
 		return -1;
 	}
 
 	if(!exalt_is_address(new_dns))
 	{
-	 	fprintf(stderr,"dns_replace(): dns(%s) is not a valid address !\n",new_dns);
+	 	print_error("WARNING", __FILE__, __LINE__,__func__,"dns(%s) is not a valid address",new_dns);
 		return -1;
 	}
 

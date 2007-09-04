@@ -1,11 +1,5 @@
-/** @file exalt_regexp.c */
 #include "./exalt_regexp.h"
-
-/**
- * @addgroup Exalt_regexp
- *@{
- */
-
+#include "libexalt_private.h"
 
 /**
  * @brief create a new regex
@@ -164,7 +158,7 @@ int exalt_regex_execute(exalt_regex* r)
             	}
 		else
             	{
-		    fprintf (stderr, "regex_execute(): Memoire insuffisante\n");
+		    print_error("ERROR", __FILE__, __LINE__,__func__, "Memoire insuffisante");
 		    return 0;
             	}
             }
@@ -175,7 +169,7 @@ int exalt_regex_execute(exalt_regex* r)
         {
 	    if(r->debug)
 	    {
-            	fprintf(stderr, "\n\n### execute_regexp(): no match found\n"
+            	print_error("ERROR", __FILE__, __LINE__,__func__, "no match found"
 					"str_request: %s"
 					"str_regex: %s\n\n", r->str_request,r->str_regex);
 	    }
@@ -191,7 +185,7 @@ int exalt_regex_execute(exalt_regex* r)
             if (text)
             {
                	regerror (err, &preg, text, size);
-               	fprintf (stderr, "%s\n", text);
+               	print_error("ERROR", __FILE__, __LINE__,__func__, "%s\n", text);
                	free (text);
 		return 0;
             }
@@ -203,11 +197,10 @@ int exalt_regex_execute(exalt_regex* r)
     }
     else
     {
-        fprintf (stderr, "execute_regex():  regcomp error\n");
+        print_error("ERROR", __FILE__, __LINE__,__func__, "regcomp error");
         return 0;
     }
 }
 
 
-/** @} */
 

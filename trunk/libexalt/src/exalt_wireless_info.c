@@ -1,12 +1,48 @@
 /** @file exalt_wireless_info.c */
 #include "exalt_wireless_info.h"
-
+#include "libexalt_private.h"
 
 /**
- * @addtogroup Exalt_wireless_info
+ * @addtogroup Exalt_Wireless_Info
  * @{
  */
 
+/**
+ * @brief informations about a wireless network
+ * @structinfo
+ */
+struct exalt_wireless_info
+{
+    exalt_wireless* w;
+
+    char* address;
+    char* essid;
+    int encryption;
+    int quality;
+    int signal_lvl;
+    int noise_lvl;
+    char* mode;
+
+    //no more use
+    char* protocol;
+    char* channel;
+    char* bit_rates;
+    //
+
+
+    short scan_ok; //0 if the network is not in the scan result
+    short known;   //1 if the network is known, in the config file.
+
+    //default configuration
+    int default_passwd_mode;
+    char* default_passwd;
+    short default_dhcp;
+    char* default_ip;
+    char* default_gateway;
+    char* default_netmask;
+    int default_security_mode;
+    int default_mode;
+};
 
 
 /*
@@ -23,10 +59,10 @@ exalt_wireless_info* exalt_wirelessinfo_create(exalt_wireless* w)
 	exalt_wireless_info* wi = (exalt_wireless_info*)malloc((unsigned int)sizeof(exalt_wireless_info));
 
 	if(!wi)
-	{
-		fprintf(stderr,"exalt_wirelessinfo_create() wi==null !");
-		return NULL;
-	}
+        {
+            print_error("ERROR", __FILE__, __LINE__,__func__, "wi=%p",wi);
+            return NULL;
+        }
 
  	wi->w = w;
 	wi->address = NULL;
@@ -101,11 +137,13 @@ void exalt_wirelessinfo_set_address(exalt_wireless_info* w, char* address)
  */
 void exalt_wirelessinfo_set_essid(exalt_wireless_info* w, char* essid)
 {
-	if(w && essid)
-	{
-		EXALT_FREE(w->essid)
-			w->essid = strdup(essid);
-	}
+    if(!w || !essid)
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "w=%p essid=%p",w,essid);
+        return ;
+    }
+    EXALT_FREE(w->essid)
+        w->essid = strdup(essid);
 }
 
 
@@ -117,11 +155,13 @@ void exalt_wirelessinfo_set_essid(exalt_wireless_info* w, char* essid)
  */
 void exalt_wirelessinfo_set_mode(exalt_wireless_info* w, char* mode)
 {
-	if(w && mode)
-	{
-		EXALT_FREE(w->mode)
-			w->mode = strdup(mode);
-	}
+    if(!w || !mode)
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "w=%p mode=%p",w,mode);
+        return ;
+    }
+    EXALT_FREE(w->mode)
+        w->mode = strdup(mode);
 }
 
 
@@ -133,11 +173,13 @@ void exalt_wirelessinfo_set_mode(exalt_wireless_info* w, char* mode)
  */
 void exalt_wirelessinfo_set_protocol(exalt_wireless_info* w, char* protocol)
 {
-	if(w && protocol)
-	{
-		EXALT_FREE(w->protocol)
-			w->protocol = strdup(protocol);
-	}
+    if(!w || !protocol)
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "w=%p protocol=%p",w,protocol);
+        return ;
+    }
+    EXALT_FREE(w->protocol)
+        w->protocol = strdup(protocol);
 }
 
 
@@ -149,11 +191,13 @@ void exalt_wirelessinfo_set_protocol(exalt_wireless_info* w, char* protocol)
  */
 void exalt_wirelessinfo_set_channel(exalt_wireless_info* w, char* channel)
 {
-	if(w && channel)
-	{
-		EXALT_FREE(w->channel)
-			w->channel = strdup(channel);
-	}
+    if(!w || !channel)
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "w=%p channel=%p",w,channel);
+        return ;
+    }
+    EXALT_FREE(w->channel)
+        w->channel = strdup(channel);
 }
 
 
@@ -165,10 +209,12 @@ void exalt_wirelessinfo_set_channel(exalt_wireless_info* w, char* channel)
  */
 void exalt_wirelessinfo_set_encryption(exalt_wireless_info* w, int  encryption)
 {
-	if(w)
-	{
-		w->encryption = encryption;
-	}
+    if(!w)
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "w=%p",w);
+        return ;
+    }
+    w->encryption = encryption;
 }
 
 
@@ -180,11 +226,14 @@ void exalt_wirelessinfo_set_encryption(exalt_wireless_info* w, int  encryption)
  */
 void exalt_wirelessinfo_set_bitrates(exalt_wireless_info* w, char* bit_rates)
 {
-	if(w && bit_rates)
-	{
-		EXALT_FREE(w->bit_rates)
-			w->bit_rates = strdup(bit_rates);
-	}
+    if(!w || !bit_rates)
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "w=%p bit_rates=%p",w, bit_rates);
+        return ;
+
+    }
+    EXALT_FREE(w->bit_rates)
+        w->bit_rates = strdup(bit_rates);
 }
 
 
@@ -196,7 +245,11 @@ void exalt_wirelessinfo_set_bitrates(exalt_wireless_info* w, char* bit_rates)
  */
 void exalt_wirelessinfo_set_quality(exalt_wireless_info* w, int quality)
 {
-	if(w)
+	if(!w)
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "w=%p",w);
+        return ;
+    }
 		w->quality = quality;
 }
 
@@ -209,7 +262,11 @@ void exalt_wirelessinfo_set_quality(exalt_wireless_info* w, int quality)
  */
 void exalt_wirelessinfo_set_signalvl(exalt_wireless_info* w, int signal_lvl)
 {
-	if(w)
+	if(!w)
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "w=%p",w);
+        return ;
+    }
 		w->signal_lvl = signal_lvl;
 }
 
@@ -222,7 +279,11 @@ void exalt_wirelessinfo_set_signalvl(exalt_wireless_info* w, int signal_lvl)
  */
 void exalt_wirelessinfo_set_noiselvl(exalt_wireless_info* w, int noise_lvl)
 {
-	if(w)
+	if(!w)
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "w=%p",w);
+        return ;
+    }
 		w->noise_lvl = noise_lvl;
 }
 
@@ -236,7 +297,11 @@ void exalt_wirelessinfo_set_noiselvl(exalt_wireless_info* w, int noise_lvl)
 
 void exalt_wirelessinfo_set_scanok(exalt_wireless_info *w,short ok)
 {
-	if(w)
+	if(!w)
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "w=%p",w);
+        return ;
+    }
 		w->scan_ok = ok;
 }
 
@@ -250,7 +315,11 @@ void exalt_wirelessinfo_set_scanok(exalt_wireless_info *w,short ok)
 
 void exalt_wirelessinfo_set_known(exalt_wireless_info* w,short known)
 {
-	if(w)
+	if(!w)
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "w=%p",w);
+        return ;
+    }
 		w->known = known;
 }
 
@@ -263,10 +332,12 @@ void exalt_wirelessinfo_set_known(exalt_wireless_info* w,short known)
  */
 char* exalt_wirelessinfo_get_addr(exalt_wireless_info* w)
 {
-	if(w)
+    if(!w)
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "w=%p",w);
+        return NULL;
+    }
 		return w->address;
-	else
-		return NULL;
 }
 
 
@@ -278,10 +349,12 @@ char* exalt_wirelessinfo_get_addr(exalt_wireless_info* w)
  */
 char* exalt_wirelessinfo_get_essid(exalt_wireless_info* w)
 {
-	if(w)
+	if(!w)
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "w=%p",w);
+        return NULL;
+    }
 		return w->essid;
-	else
-		return NULL;
 }
 
 
@@ -293,10 +366,12 @@ char* exalt_wirelessinfo_get_essid(exalt_wireless_info* w)
  */
 char* exalt_wirelessinfo_get_protocol(exalt_wireless_info* w)
 {
-	if(w)
+		if(!w)
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "w=%p",w);
+        return NULL;
+    }
 		return w->protocol;
-	else
-		return NULL;
 }
 
 
@@ -308,10 +383,12 @@ char* exalt_wirelessinfo_get_protocol(exalt_wireless_info* w)
  */
 char* exalt_wirelessinfo_get_mode(exalt_wireless_info* w)
 {
-	if(w)
-		return w->mode;
-	else
-		return NULL;
+    if(!w)
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "w=%p",w);
+        return NULL;
+    }
+    return w->mode;
 }
 
 
@@ -323,10 +400,12 @@ char* exalt_wirelessinfo_get_mode(exalt_wireless_info* w)
  */
 char* exalt_wirelessinfo_get_channel(exalt_wireless_info* w)
 {
-	if(w)
+	if(!w)
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "w=%p",w);
+        return NULL;
+    }
 		return w->channel;
-	else
-		return NULL;
 }
 
 
@@ -338,10 +417,12 @@ char* exalt_wirelessinfo_get_channel(exalt_wireless_info* w)
  */
 int exalt_wirelessinfo_get_encryption(exalt_wireless_info* w)
 {
-	if(w)
-		return w->encryption;
-	else
-		return -1;
+    if(!w)
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "w=%p",w);
+        return -1;
+    }
+    return w->encryption;
 }
 
 
@@ -353,10 +434,12 @@ int exalt_wirelessinfo_get_encryption(exalt_wireless_info* w)
  */
 char* exalt_wirelessinfo_get_bitrates(exalt_wireless_info* w)
 {
-	if(w)
-		return w->bit_rates;
-	else
-		return NULL;
+    if(!w)
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "w=%p",w);
+        return NULL;
+    }
+    return w->bit_rates;
 }
 
 
@@ -368,10 +451,12 @@ char* exalt_wirelessinfo_get_bitrates(exalt_wireless_info* w)
  */
 int exalt_wirelessinfo_get_quality(exalt_wireless_info* w)
 {
-	if(w)
+	if(!w)
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "w=%p",w);
+        return -1;
+    }
 		return w->quality;
-	else
-		return 0;
 }
 
 
@@ -383,10 +468,12 @@ int exalt_wirelessinfo_get_quality(exalt_wireless_info* w)
  */
 int exalt_wirelessinfo_get_signallvl(exalt_wireless_info* w)
 {
-	if(w)
+	if(!w)
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "w=%p",w);
+        return -1;
+    }
 		return w->signal_lvl;
-	else
-		return 0;
 }
 
 
@@ -398,10 +485,12 @@ int exalt_wirelessinfo_get_signallvl(exalt_wireless_info* w)
  */
 int exalt_wirelessinfo_get_noiselvl(exalt_wireless_info* w)
 {
-	if(w)
-		return w->noise_lvl;
-	else
-		return 0;
+	if(!w)
+        {
+            print_error("ERROR", __FILE__, __LINE__,__func__, "w=%p",w);
+            return -1;
+        }
+        return w->noise_lvl;
 }
 
 
@@ -415,7 +504,7 @@ int exalt_wirelessinfo_is_known(exalt_wireless_info* wi)
 {
  	if(!wi)
 	{
-	 	fprintf(stderr,"exalt_wirelessinfo_is_known(): wi==null! \n");
+	 	print_error("ERROR", __FILE__, __LINE__,__func__,"wi=%p",wi);
 		return -1;
 	}
 
@@ -433,7 +522,7 @@ int exalt_wirelessinfo_is_scan(exalt_wireless_info* wi)
 {
  	if(!wi)
 	{
-	 	fprintf(stderr,"exalt_wirelessinfo_is_scan(): wi==null! \n");
+	 	print_error("ERROR", __FILE__, __LINE__,__func__,"wi=",wi);
 		return -1;
 	}
 
@@ -453,7 +542,7 @@ char* exalt_wirelessinfo_get_default_passwd(exalt_wireless_info* wi)
 {
 	if(!wi)
 	{
-	 	fprintf(stderr,"exalt_wirelessinfo_get_default_passwd(): wi==null! \n");
+	 	print_error("ERROR", __FILE__, __LINE__,__func__,"wi=",wi);
 		return NULL;
 	}
 	return wi->default_passwd;
@@ -470,13 +559,13 @@ void exalt_wirelessinfo_set_default_passwd(exalt_wireless_info* wi,const char* p
 {
 	if(!wi || !passwd)
 	{
-	 	fprintf(stderr,"exalt_wirelessinfo_set_default_passwd(): wi==%p  passwd==%p ! \n",wi,passwd);
+	 	print_error("ERROR", __FILE__, __LINE__,__func__,"wi=%p  passwd=%p",wi,passwd);
 		return ;
 	}
 
 	if(!exalt_is_passwd(passwd,exalt_wirelessinfo_get_default_passwd_mode(wi)))
 	{
-		fprintf(stderr,"exalt_wirelessinfo_set_default_passwd(): passwd(%s) is not a correct password!\n",passwd);
+		print_error("WARNING", __FILE__, __LINE__,__func__,"passwd(%s) is not a correct password",passwd);
 		return ;
 	}
 	EXALT_FREE(wi->default_passwd)
@@ -494,7 +583,7 @@ int exalt_wirelessinfo_get_default_passwd_mode(exalt_wireless_info* wi)
 {
  	if(!wi)
 	{
-	 	fprintf(stderr,"exalt_wirelessinfo_get_default_passwd_mode(): wi == null! \n");
+	 	print_error("ERROR", __FILE__, __LINE__,__func__,"wi=%p",wi);
 		return -1;
 	}
 	return wi->default_passwd_mode;
@@ -511,7 +600,7 @@ void exalt_wirelessinfo_set_default_passwd_mode(exalt_wireless_info* wi,int pass
 {
 	if(!wi )
 	{
-		fprintf(stderr,"exalt_wirelessinfo_set_default_passwd_mode(): wi == NULL ! \n");
+		print_error("ERROR", __FILE__, __LINE__,__func__,"wi=%p",wi);
 		return ;
 	}
 	wi->default_passwd_mode = passwd_mode;
@@ -527,7 +616,7 @@ int exalt_wirelessinfo_get_default_security_mode(exalt_wireless_info* wi)
 {
  	if(!wi)
 	{
-	 	fprintf(stderr,"exalt_wirelessinfo_get_default_security_mode(): wi == null! \n");
+	 	print_error("ERROR", __FILE__, __LINE__,__func__,"wi=%p",wi);
 		return -1;
 	}
 	return wi->default_security_mode;
@@ -544,7 +633,7 @@ void exalt_wirelessinfo_set_default_security_mode(exalt_wireless_info* wi,int se
 {
 	if(!wi )
 	{
-		fprintf(stderr,"exalt_wirelessinfo_set_default_security_mode(): wi == NULL ! \n");
+		print_error("ERROR", __FILE__, __LINE__,__func__,"wi=%p",wi);
 		return ;
 	}
 	wi->default_security_mode = security_mode;
@@ -559,7 +648,7 @@ int exalt_wirelessinfo_get_default_mode(exalt_wireless_info* wi)
 {
  	if(!wi)
 	{
-	 	fprintf(stderr,"exalt_wirelessinfo_get_default_mode(): wi == null! \n");
+	 	print_error("ERROR", __FILE__, __LINE__,__func__,"wi=%p",wi);
 		return -1;
 	}
 	return wi->default_mode;
@@ -576,7 +665,7 @@ void exalt_wirelessinfo_set_default_mode(exalt_wireless_info* wi,int mode)
 {
 	if(!wi )
 	{
-		fprintf(stderr,"exalt_wirelessinfo_set_default_mode(): wi == NULL ! \n");
+		print_error("ERROR", __FILE__, __LINE__,__func__,"wi=%p",wi);
 		return ;
 	}
 	wi->default_mode = mode;
@@ -593,7 +682,7 @@ char* exalt_wirelessinfo_get_default_ip(exalt_wireless_info* wi)
 {
 	if(!wi)
 	{
-	 	fprintf(stderr,"exalt_wirelessinfo_get_default_ip(): wi==null ! \n");
+	 	print_error("ERROR", __FILE__, __LINE__,__func__,"wi=%p",wi);
 		return NULL;
 	}
 	return wi->default_ip;
@@ -610,7 +699,7 @@ char* exalt_wirelessinfo_get_default_netmask(exalt_wireless_info* wi)
 {
 	if(!wi)
 	{
-	 	fprintf(stderr,"exalt_wirelessinfo_get_default_netmask(): wi==null ! \n");
+	 	print_error("ERROR", __FILE__, __LINE__,__func__,"wi=%p",wi);
 		return NULL;
 	}
 	return wi->default_netmask;
@@ -627,7 +716,7 @@ char* exalt_wirelessinfo_get_default_gateway(exalt_wireless_info* wi)
 {
 	if(!wi)
 	{
-	 	fprintf(stderr,"exalt_wirelessinfo_get_default_gateway(): wi==null ! \n");
+	 	print_error("ERROR", __FILE__, __LINE__,__func__,"wi=%p",wi);
 		return NULL;
 	}
 	return wi->default_gateway;
@@ -645,12 +734,12 @@ int exalt_wirelessinfo_set_default_ip(exalt_wireless_info* wi, const char* ip)
 {
  	if(!wi || !ip)
 	{
-	 	fprintf(stderr,"exalt_wirelessinfo_set_default_ip(): wi==%p ip==%p !\n",wi,ip);
+	 	print_error("ERROR", __FILE__, __LINE__,__func__,"wi=%p ip=%p",wi,ip);
 		return -1;
 	}
 	if(!exalt_is_address(ip))
 	{
-	 	fprintf(stderr,"exalt_wirelessinfo_set_default_ip(): ip(%s) is not a valid address\n",ip);
+	 	print_error("WARNING", __FILE__, __LINE__,__func__,"ip(%s) is not a valid address",ip);
 		return 0;
 	}
 
@@ -671,12 +760,12 @@ int exalt_wirelessinfo_set_default_netmask(exalt_wireless_info* wi, const char* 
 {
  	if(!wi || !netmask)
 	{
-	 	fprintf(stderr,"exalt_wirelessinfo_set_default_netmask(): wi==%p netmask==%p !\n",wi,netmask);
+	 	print_error("ERROR", __FILE__, __LINE__,__func__,"wi=%p netmask=%p !",wi,netmask);
 		return -1;
 	}
 	if(!exalt_is_address(netmask))
 	{
-	 	fprintf(stderr,"exalt_wirelessinfo_set_default_netmask(): netmask(%s) is not a valid address\n",netmask);
+	 	print_error("WARNING", __FILE__, __LINE__,__func__,"netmask(%s) is not a valid netmask",netmask);
 		return 0;
 	}
 
@@ -697,12 +786,12 @@ int exalt_wirelessinfo_set_default_gateway(exalt_wireless_info* wi, const char* 
 {
  	if(!wi || !gateway)
 	{
-	 	fprintf(stderr,"exalt_wirelessinfo_set_default_gateway(): wi==%p gateway==%p !\n",wi,gateway);
+	 	print_error("ERROR", __FILE__, __LINE__,__func__,"wi=%p gateway=%p !",wi,gateway);
 		return -1;
 	}
 	if(!exalt_is_address(gateway))
 	{
-	 	fprintf(stderr,"exalt_wirelessinfo_set_default_gateway(): gateway(%s) is not a valid address\n",gateway);
+	 	print_error("WARNING", __FILE__, __LINE__,__func__,"gateway(%s) is not a valid address",gateway);
 		return 0;
 	}
 
@@ -722,7 +811,7 @@ short exalt_wirelessinfo_is_default_dhcp(exalt_wireless_info* wi)
 {
 	if(!wi)
 	{
-	 	fprintf(stderr,"exalt_wirelessinfo_is_default_dhcp(): wi==null ! \n");
+	 	print_error("ERROR", __FILE__, __LINE__,__func__,"wi=%p",wi);
 		return -1;
 	}
 	return wi->default_dhcp;
@@ -740,7 +829,7 @@ int exalt_wirelessinfo_set_default_dhcp(exalt_wireless_info* wi, short dhcp)
 {
 	if(!wi)
 	{
-	 	fprintf(stderr,"exalt_wirelessinfo_set_dhcp(): wi==null! \n");
+	 	print_error("ERROR", __FILE__, __LINE__,__func__,"wi=%p",wi);
 		return 0;
 	}
 	wi->default_dhcp=dhcp;

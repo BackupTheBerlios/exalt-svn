@@ -1,4 +1,5 @@
 #include "debian.h"
+#include "libexalt_private.h"
 
 int exalt_sys_conf_save(exalt_ethernet* eth)
 {

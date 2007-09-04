@@ -1,4 +1,3 @@
-/** @file exalt_regexp.h */
 #ifndef REGEX_H
 #define REGEX_H
 
@@ -8,11 +7,6 @@
 #include <string.h>
 #include <regex.h>
 
-/**
- * @defgroup Exalt_regexp
- * @brief The exalt_regex contains all functions to execute a regular expression on a request string
- * @{
- */
 
 /** partial ip regexp (only 1 number) */
 #define REGEXP_IP_PARTIAL "([01]?[0-9][0-9]?|2[0-4][0-9]|25[0-5])"
@@ -49,3 +43,4 @@ void exalt_regex_free(exalt_regex **r);
 int exalt_regex_execute(exalt_regex* r);
 
 #endif
+

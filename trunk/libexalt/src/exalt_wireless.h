@@ -2,15 +2,17 @@
 #ifndef WIRELESS_H
 #define WIRELESS_H
 
-#include <stdio.h>
-
 /**
- * @defgroup Exalt_wireless
+ * @defgroup Exalt_Wireless
  * @brief The exalt_wireless contains all informations about your wireless card as name, essid, list of scanning networks ...
  * @{
  */
 
-
+/**
+ * @brief informations about a wireless card
+ * @structinfo
+ */
+typedef struct exalt_wireless exalt_wireless;
 
 /** No encryption password mode */
 #define EXALT_WIRELESS_ENCRYPTION_NONE 0
@@ -37,45 +39,25 @@
 /** Shared security mode */
 #define EXALT_WIRELESS_SECURITY_SHARED 1
 
-typedef struct exalt_wireless exalt_wireless;
+
+/** when a new wireless network appears */
+#define EXALT_WIRELESS_SCAN_CB_ACTION_NEW 1
+/** when a new wireless network disappears */
+#define EXALT_WIRELESS_SCAN_CB_ACTION_REMOVE 2
+
+
+#define EXALT_WIRELESS_SCAN_UPDATE_TIME 10
+
 
 #include "libexalt.h"
 #include "exalt_wireless_info.h"
 #include <Ecore_Data.h>
 #include <Ecore.h>
-#include "iwlib.h"
-#include "wpa_ctrl.h"
-
-/**
- * @brief informations about a wireless card
- * @structinfo
- */
-struct exalt_wireless
-{
-	exalt_ethernet* eth;
-	char* new_essid;
-	char* new_passwd;
-	int new_passwd_mode;
-	int new_mode;
-        int new_security_mode;
-
-        Ecore_List* networks;
-
-        char* _save_essid;
-
-	//use for scanning
-	Ecore_Timer* scan_cb_timer;
-	wireless_scan_head *context;
-	int scan_fd;
-};
+#include <stdio.h>
 
 
 exalt_wireless* exalt_wireless_create(exalt_ethernet* eth);
 void exalt_wireless_free(exalt_wireless* w);
-void exalt_wireless_scan_execute(exalt_ethernet * eth);
-void exalt_wireless_scan_load(exalt_ethernet* eth);
-int exalt_wireless_scan(void* data);
-
 
 char* exalt_wireless_get_driver(exalt_wireless* w);
 
@@ -98,17 +80,8 @@ exalt_wireless_info* exalt_wireless_get_networkinfo_by_essid(exalt_wireless* w,c
 
 int exalt_wireless_apply_conf(exalt_wireless *w);
 
-void exalt_wireless_printf(exalt_wireless w);
-void exalt_wireless_printf_scan(exalt_wireless w);
-
-
-void exalt_wireless_scan_free(wireless_scan **w);
-
-struct wpa_ctrl * exalt_wpa_open_connection(const char *ifname);
-int exalt_wpa_ctrl_command(struct wpa_ctrl *ctrl, char *cmd);
-
-
-
+void exalt_wireless_printf(exalt_wireless *w);
+void exalt_wireless_printf_scan(exalt_wireless *w);
 
 
 char* exalt_wireless_get_essid(exalt_wireless* w);
@@ -124,8 +97,6 @@ int exalt_wireless_get_new_mode(exalt_wireless* w);
 int exalt_wireless_get_new_security_mode(exalt_wireless* w);
 char* exalt_wireless_get_new_passwd(exalt_wireless* w);
 char* exalt_wireless_get_new_essid(exalt_wireless* w);
-
-int exalt_rtlink_essid_change(exalt_wireless *w);
 
 /** @} */
 

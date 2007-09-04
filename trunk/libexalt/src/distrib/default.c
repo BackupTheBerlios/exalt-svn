@@ -1,6 +1,6 @@
 /** @file default.c */
 #include "default.h"
-
+#include "libexalt_private.h"
 /**
  * @addgroup Exalt_save_load
  *@{

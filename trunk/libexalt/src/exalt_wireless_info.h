@@ -4,7 +4,7 @@
 
 #include <stdio.h>
 /**
- * @defgroup Exalt_wireless_info
+ * @defgroup Exalt_Wireless_Info
  * @brief The exalt_wireless_info contains all informations about a wireless networks (essid, protocol ...)
  * @{
  */
@@ -13,43 +13,6 @@ typedef struct exalt_wireless_info exalt_wireless_info;
 #define EXALT_WIRELESS_INFO(x) (exalt_wireless_info*)x
 
 #include "exalt_wireless.h"
-
-/**
- * @brief informations about a wireless network
- * @structinfo
- */
-struct exalt_wireless_info
-{
-    exalt_wireless* w;
-
-    char* address;
-    char* essid;
-    int encryption;
-    int quality;
-    int signal_lvl;
-    int noise_lvl;
-    char* mode;
-
-    //no more use
-    char* protocol;
-    char* channel;
-    char* bit_rates;
-    //
-
-
-    short scan_ok; //0 if the network is not in the scan result
-    short known;   //1 if the network is known, in the config file.
-
-    //default configuration
-    int default_passwd_mode;
-    char* default_passwd;
-    short default_dhcp;
-    char* default_ip;
-    char* default_gateway;
-    char* default_netmask;
-    int default_security_mode;
-    int default_mode;
-};
 #include "libexalt.h"
 
 exalt_wireless_info* exalt_wirelessinfo_create(exalt_wireless* w);

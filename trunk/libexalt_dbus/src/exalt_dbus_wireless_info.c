@@ -17,6 +17,7 @@
  */
 
 #include "exalt_dbus_wireless_info.h"
+#include "libexalt_dbus_private.h"
 
 int exalt_dbus_wirelessinfo_get_quality(exalt_dbus_conn* conn, char* eth, char* essid)
 {
@@ -27,22 +28,21 @@ int exalt_dbus_wirelessinfo_get_quality(exalt_dbus_conn* conn, char* eth, char* 
 
     if(!conn || !eth || !essid)
     {
-        char buf[1024];
-        sprintf(buf,"conn==%p, eth==%p essid=%p\n",conn, eth, essid);
-        print_error("ERROR", __FILE__,__LINE__,__func__,buf);
+
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"conn==%p, eth==%p essid=%p",conn, eth, essid);
         return -1;
     }
 
     msg = exalt_dbus_read_call_new("NETWORK_GET_QUALITY");
     dbus_message_iter_init_append(msg, &args);
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth)) {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return -1;
     }
 
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid)) {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return -1;
     }
@@ -67,22 +67,20 @@ int exalt_dbus_wirelessinfo_get_encryption(exalt_dbus_conn* conn, char* eth, cha
 
     if(!conn || !eth || !essid)
     {
-        char buf[1024];
-        sprintf(buf,"conn==%p, eth==%p essid=%p\n",conn, eth, essid);
-        print_error("ERROR", __FILE__,__LINE__,__func__,buf);
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"conn==%p, eth==%p essid=%p",conn, eth, essid);
         return -1;
     }
 
     msg = exalt_dbus_read_call_new("NETWORK_GET_ENCRYPTION");
     dbus_message_iter_init_append(msg, &args);
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth)) {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return -1;
     }
 
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid)) {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return -1;
     }
@@ -107,22 +105,20 @@ int exalt_dbus_wirelessinfo_get_signallvl(exalt_dbus_conn* conn, char* eth, char
 
     if(!conn || !eth || !essid)
     {
-        char buf[1024];
-        sprintf(buf,"conn==%p, eth==%p essid=%p\n",conn, eth, essid);
-        print_error("ERROR", __FILE__,__LINE__,__func__,buf);
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"conn==%p, eth==%p essid=%p",conn, eth, essid);
         return -1;
     }
 
     msg = exalt_dbus_read_call_new("NETWORK_GET_SIGNALLVL");
     dbus_message_iter_init_append(msg, &args);
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth)) {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return -1;
     }
 
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid)) {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return -1;
     }
@@ -147,22 +143,20 @@ int exalt_dbus_wirelessinfo_get_noiselvl(exalt_dbus_conn* conn, char* eth, char*
 
     if(!conn || !eth || !essid)
     {
-        char buf[1024];
-        sprintf(buf,"conn==%p, eth==%p essid=%p\n",conn, eth, essid);
-        print_error("ERROR", __FILE__,__LINE__,__func__,buf);
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"conn==%p, eth==%p essid=%p",conn, eth, essid);
         return -1;
     }
 
     msg = exalt_dbus_read_call_new("NETWORK_GET_NOISELVL");
     dbus_message_iter_init_append(msg, &args);
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth)) {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return -1;
     }
 
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid)) {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return -1;
     }
@@ -187,22 +181,20 @@ char* exalt_dbus_wirelessinfo_get_addr(exalt_dbus_conn* conn, char* eth, char* e
 
     if(!conn || !eth || !essid)
     {
-        char buf[1024];
-        sprintf(buf,"conn==%p, eth==%p essid=%p\n",conn, eth, essid);
-        print_error("ERROR", __FILE__,__LINE__,__func__,buf);
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"conn==%p, eth==%p essid=%p",conn, eth, essid);
         return NULL;
     }
 
     msg = exalt_dbus_read_call_new("NETWORK_GET_ADDR");
     dbus_message_iter_init_append(msg, &args);
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth)) {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return NULL;
     }
 
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid)) {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return NULL;
     }
@@ -227,22 +219,20 @@ char* exalt_dbus_wirelessinfo_get_protocol(exalt_dbus_conn* conn, char* eth, cha
 
     if(!conn || !eth || !essid)
     {
-        char buf[1024];
-        sprintf(buf,"conn==%p, eth==%p essid=%p\n",conn, eth, essid);
-        print_error("ERROR", __FILE__,__LINE__,__func__,buf);
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"conn==%p, eth==%p essid=%p",conn, eth, essid);
         return NULL;
     }
 
     msg = exalt_dbus_read_call_new("NETWORK_GET_PROTOCOL");
     dbus_message_iter_init_append(msg, &args);
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth)) {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return NULL;
     }
 
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid)) {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return NULL;
     }
@@ -267,22 +257,20 @@ char* exalt_dbus_wirelessinfo_get_mode(exalt_dbus_conn* conn, char* eth, char* e
 
     if(!conn || !eth || !essid)
     {
-        char buf[1024];
-        sprintf(buf,"conn==%p, eth==%p essid=%p\n",conn, eth, essid);
-        print_error("ERROR", __FILE__,__LINE__,__func__,buf);
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"conn==%p, eth==%p essid=%p",conn, eth, essid);
         return NULL;
     }
 
     msg = exalt_dbus_read_call_new("NETWORK_GET_MODE");
     dbus_message_iter_init_append(msg, &args);
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth)) {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return NULL;
     }
 
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid)) {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return NULL;
     }
@@ -307,22 +295,20 @@ char* exalt_dbus_wirelessinfo_get_channel(exalt_dbus_conn* conn, char* eth, char
 
     if(!conn || !eth || !essid)
     {
-        char buf[1024];
-        sprintf(buf,"conn==%p, eth==%p essid=%p\n",conn, eth, essid);
-        print_error("ERROR", __FILE__,__LINE__,__func__,buf);
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"conn==%p, eth==%p essid=%p",conn, eth, essid);
         return NULL;
     }
 
     msg = exalt_dbus_read_call_new("NETWORK_GET_CHANNEL");
     dbus_message_iter_init_append(msg, &args);
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth)) {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return NULL;
     }
 
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid)) {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return NULL;
     }
@@ -347,22 +333,20 @@ char* exalt_dbus_wirelessinfo_get_bitrates(exalt_dbus_conn* conn, char* eth, cha
 
     if(!conn || !eth || !essid)
     {
-        char buf[1024];
-        sprintf(buf,"conn==%p, eth==%p essid=%p\n",conn, eth, essid);
-        print_error("ERROR", __FILE__,__LINE__,__func__,buf);
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"conn==%p, eth==%p essid=%p",conn, eth, essid);
         return NULL;
     }
 
     msg = exalt_dbus_read_call_new("NETWORK_GET_BITRATES");
     dbus_message_iter_init_append(msg, &args);
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth)) {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return NULL;
     }
 
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid)) {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return NULL;
     }
@@ -390,22 +374,20 @@ char* exalt_dbus_wirelessinfo_get_default_passwd(exalt_dbus_conn* conn, char* et
 
     if(!conn || !eth || !essid)
     {
-        char buf[1024];
-        sprintf(buf,"conn==%p, eth==%p essid=%p\n",conn, eth, essid);
-        print_error("ERROR", __FILE__,__LINE__,__func__,buf);
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"conn==%p, eth==%p essid=%p",conn, eth, essid);
         return NULL;
     }
 
     msg = exalt_dbus_read_call_new("NETWORK_GET_DEFAULT_PASSWD");
     dbus_message_iter_init_append(msg, &args);
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth)) {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return NULL;
     }
 
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid)) {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return NULL;
     }
@@ -430,22 +412,20 @@ char* exalt_dbus_wirelessinfo_get_default_ip(exalt_dbus_conn* conn, char* eth, c
 
     if(!conn || !eth || !essid)
     {
-        char buf[1024];
-        sprintf(buf,"conn==%p, eth==%p essid=%p\n",conn, eth, essid);
-        print_error("ERROR", __FILE__,__LINE__,__func__,buf);
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"conn==%p, eth==%p essid=%p",conn, eth, essid);
         return NULL;
     }
 
     msg = exalt_dbus_read_call_new("NETWORK_GET_DEFAULT_IP");
     dbus_message_iter_init_append(msg, &args);
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth)) {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return NULL;
     }
 
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid)) {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return NULL;
     }
@@ -470,22 +450,20 @@ char* exalt_dbus_wirelessinfo_get_default_netmask(exalt_dbus_conn* conn, char* e
 
     if(!conn || !eth || !essid)
     {
-        char buf[1024];
-        sprintf(buf,"conn==%p, eth==%p essid=%p\n",conn, eth, essid);
-        print_error("ERROR", __FILE__,__LINE__,__func__,buf);
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"conn==%p, eth==%p essid=%p",conn, eth, essid);
         return NULL;
     }
 
     msg = exalt_dbus_read_call_new("NETWORK_GET_DEFAULT_NETMASK");
     dbus_message_iter_init_append(msg, &args);
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth)) {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return NULL;
     }
 
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid)) {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return NULL;
     }
@@ -510,22 +488,20 @@ char* exalt_dbus_wirelessinfo_get_default_gateway(exalt_dbus_conn* conn, char* e
 
     if(!conn || !eth || !essid)
     {
-        char buf[1024];
-        sprintf(buf,"conn==%p, eth==%p essid=%p\n",conn, eth, essid);
-        print_error("ERROR", __FILE__,__LINE__,__func__,buf);
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"conn==%p, eth==%p essid=%p",conn, eth, essid);
         return NULL;
     }
 
     msg = exalt_dbus_read_call_new("NETWORK_GET_DEFAULT_GATEWAY");
     dbus_message_iter_init_append(msg, &args);
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth)) {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return NULL;
     }
 
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid)) {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return NULL;
     }
@@ -550,22 +526,20 @@ int exalt_dbus_wirelessinfo_get_default_passwd_mode(exalt_dbus_conn* conn, char*
 
     if(!conn || !eth || !essid)
     {
-        char buf[1024];
-        sprintf(buf,"conn==%p, eth==%p essid=%p\n",conn, eth, essid);
-        print_error("ERROR", __FILE__,__LINE__,__func__,buf);
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"conn==%p, eth==%p essid=%p",conn, eth, essid);
         return -1;
     }
 
     msg = exalt_dbus_read_call_new("NETWORK_GET_DEFAULT_PASSWD_MODE");
     dbus_message_iter_init_append(msg, &args);
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth)) {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return -1;
     }
 
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid)) {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return -1;
     }
@@ -590,22 +564,20 @@ int exalt_dbus_wirelessinfo_get_default_security_mode(exalt_dbus_conn* conn, cha
 
     if(!conn || !eth || !essid)
     {
-        char buf[1024];
-        sprintf(buf,"conn==%p, eth==%p essid=%p\n",conn, eth, essid);
-        print_error("ERROR", __FILE__,__LINE__,__func__,buf);
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"conn==%p, eth==%p essid=%p",conn, eth, essid);
         return -1;
     }
 
     msg = exalt_dbus_read_call_new("NETWORK_GET_DEFAULT_SECURITY_MODE");
     dbus_message_iter_init_append(msg, &args);
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth)) {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return -1;
     }
 
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid)) {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return -1;
     }
@@ -630,22 +602,20 @@ int exalt_dbus_wirelessinfo_get_default_mode(exalt_dbus_conn* conn, char* eth, c
 
     if(!conn || !eth || !essid)
     {
-        char buf[1024];
-        sprintf(buf,"conn==%p, eth==%p essid=%p\n",conn, eth, essid);
-        print_error("ERROR", __FILE__,__LINE__,__func__,buf);
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"conn==%p, eth==%p essid=%p",conn, eth, essid);
         return -1;
     }
 
     msg = exalt_dbus_read_call_new("NETWORK_GET_DEFAULT_MODE");
     dbus_message_iter_init_append(msg, &args);
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth)) {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return -1;
     }
 
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid)) {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return -1;
     }
@@ -670,22 +640,20 @@ int exalt_dbus_wirelessinfo_is_default_dhcp(exalt_dbus_conn* conn, char* eth, ch
 
     if(!conn || !eth || !essid)
     {
-        char buf[1024];
-        sprintf(buf,"conn==%p, eth==%p essid=%p\n",conn, eth, essid);
-        print_error("ERROR", __FILE__,__LINE__,__func__,buf);
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"conn==%p, eth==%p essid=%p",conn, eth, essid);
         return -1;
     }
 
     msg = exalt_dbus_read_call_new("NETWORK_IS_DEFAULT_DHCP");
     dbus_message_iter_init_append(msg, &args);
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth)) {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return -1;
     }
 
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid)) {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return -1;
     }

@@ -17,6 +17,7 @@
  */
 
 #include "exalt_dbus_wireless.h"
+#include "libexalt_dbus_private.h"
 
 Ecore_List* exalt_dbus_wireless_scan_wait(exalt_dbus_conn* conn, char* eth)
 {
@@ -29,14 +30,14 @@ Ecore_List* exalt_dbus_wireless_scan_wait(exalt_dbus_conn* conn, char* eth)
     {
         char buf[1024];
         sprintf(buf,"conn==%p, eth==%p \n",conn, eth);
-        print_error("ERROR", __FILE__,__LINE__,__func__,buf);
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,buf);
         return 0;
     }
 
     msg = exalt_dbus_read_call_new("IFACE_SCAN_WAIT");
     dbus_message_iter_init_append(msg, &args);
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth)) {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
         dbus_message_unref(msg);
         return 0;
     }

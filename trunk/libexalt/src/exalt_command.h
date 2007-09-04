@@ -1,17 +1,9 @@
-/** @file exalt_command.h */
-
 #ifndef COMMANDE_H
 #define COMMANDE_H
 
 #include <stdio.h>
 #include <stdlib.h>
 #include "libexalt.h"
-
-/**
- * @defgroup Exalt_command
- * @brief all functions to execut a command
- * @{
- */
 
 
 /** Command to lauch the wpa_supplicant daemon */
@@ -35,6 +27,4 @@ FILE* exalt_execute_command(char* cmd);
 
 
 #endif
-
-/** @} */
 

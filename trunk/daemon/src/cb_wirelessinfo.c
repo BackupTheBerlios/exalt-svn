@@ -63,7 +63,7 @@ DBusMessage * dbus_cb_wirelessinfo_get_addr(E_DBus_Object *obj, DBusMessage *msg
     addr = exalt_wirelessinfo_get_addr(wi);
    if(!addr)
     {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "addr==null");
+        print_error("WARNING", __FILE__, __LINE__,__func__, "addr=%p",addr);
         return reply;
     }
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &addr))
@@ -94,7 +94,7 @@ DBusMessage * dbus_cb_wirelessinfo_get_protocol(E_DBus_Object *obj, DBusMessage 
 
   if(!protocol)
     {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "protocol==null");
+        print_error("WARNING", __FILE__, __LINE__,__func__, "protocol=%p",protocol);
         return reply;
     }
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &protocol))
@@ -126,7 +126,7 @@ DBusMessage * dbus_cb_wirelessinfo_get_mode(E_DBus_Object *obj, DBusMessage *msg
 
       if(!mode)
     {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "mode==null");
+        print_error("WARNING", __FILE__, __LINE__,__func__, "mode=%p",mode);
         return reply;
     }
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &mode))
@@ -157,7 +157,7 @@ DBusMessage * dbus_cb_wirelessinfo_get_channel(E_DBus_Object *obj, DBusMessage *
 
     if(!channel)
     {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "channel==null");
+        print_error("WARNING", __FILE__, __LINE__,__func__, "channel=%p",channel);
         return reply;
     }
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &channel))
@@ -188,7 +188,7 @@ DBusMessage * dbus_cb_wirelessinfo_get_bitrates(E_DBus_Object *obj, DBusMessage 
 
     if(!bitrates)
     {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "bitrates==null %d %s",23, "test");
+        print_error("WARNING", __FILE__, __LINE__,__func__, "bitrates=%p",bitrates);
         return reply;
     }
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &bitrates))
@@ -296,7 +296,7 @@ DBusMessage * dbus_cb_wirelessinfo_get_default_passwd(E_DBus_Object *obj, DBusMe
     default_passwd = exalt_wirelessinfo_get_default_passwd(wi);
     if(!default_passwd)
     {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "default_passwd==null");
+        print_error("WARNING", __FILE__, __LINE__,__func__, "default_passwd=%p",default_passwd);
         return reply;
     }
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &default_passwd))
@@ -326,7 +326,7 @@ DBusMessage * dbus_cb_wirelessinfo_get_default_ip(E_DBus_Object *obj, DBusMessag
     default_ip = exalt_wirelessinfo_get_default_ip(wi);
     if(!default_ip)
     {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "default_ip==null");
+        print_error("WARNING", __FILE__, __LINE__,__func__, "default_ip=%p",default_ip);
         return reply;
     }
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &default_ip))
@@ -357,7 +357,7 @@ DBusMessage * dbus_cb_wirelessinfo_get_default_netmask(E_DBus_Object *obj, DBusM
 
     if(!default_netmask)
     {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "default_netmask==null");
+        print_error("WARNING", __FILE__, __LINE__,__func__, "default_netmask=%p",default_netmask);
         return reply;
     }
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &default_netmask))
@@ -388,7 +388,7 @@ DBusMessage * dbus_cb_wirelessinfo_get_default_gateway(E_DBus_Object *obj, DBusM
 
     if(!default_gateway)
     {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "default_gateway==null");
+        print_error("WARNING", __FILE__, __LINE__,__func__, "default_gateway=%p",default_gateway);
         return reply;
     }
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &default_gateway))
@@ -499,3 +499,4 @@ DBusMessage * dbus_cb_wirelessinfo_is_default_dhcp(E_DBus_Object *obj, DBusMessa
 
     return reply;
 }
+

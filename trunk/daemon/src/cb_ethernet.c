@@ -33,7 +33,7 @@ DBusMessage * dbus_cb_eth_get_eth_list(E_DBus_Object *obj, DBusMessage *msg)
     interfaces = exalt_eth_get_list();
     if(!interfaces)
     {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "interfaces==null");
+        print_error("WARNING", __FILE__, __LINE__,__func__, "interfaces=%p",interfaces);
         return reply;
     }
 
@@ -44,7 +44,7 @@ DBusMessage * dbus_cb_eth_get_eth_list(E_DBus_Object *obj, DBusMessage *msg)
         interface = exalt_eth_get_name(eth);
         if(!interface)
         {
-            print_error("WARNING", __FILE__, __LINE__,__func__, "interface==null");
+            print_error("WARNING", __FILE__, __LINE__,__func__, "interface=%p",interface);
             return reply;
         }
         if (!interface || !dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &interface))
@@ -77,7 +77,7 @@ DBusMessage * dbus_cb_eth_get_ip(E_DBus_Object *obj, DBusMessage *msg)
     ip = exalt_eth_get_ip(eth);
     if(!ip)
     {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "ip==null");
+        print_error("WARNING", __FILE__, __LINE__,__func__, "ip=%p",ip);
         return reply;
     }
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &ip))
@@ -108,7 +108,7 @@ DBusMessage * dbus_cb_eth_get_netmask(E_DBus_Object *obj, DBusMessage *msg)
     netmask = exalt_eth_get_netmask(eth);
     if(!netmask)
     {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "netmask==null");
+        print_error("WARNING", __FILE__, __LINE__,__func__, "netmask=%p",netmask);
         return reply;
     }
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &netmask))
@@ -139,7 +139,7 @@ DBusMessage * dbus_cb_eth_get_gateway(E_DBus_Object *obj, DBusMessage *msg)
     gateway = exalt_eth_get_gateway(eth);
     if(!gateway)
     {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "gateway==null");
+        print_error("WARNING", __FILE__, __LINE__,__func__, "gateway=%p",gateway);
         return reply;
     }
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &gateway))

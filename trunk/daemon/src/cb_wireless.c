@@ -49,7 +49,7 @@ DBusMessage * dbus_cb_wireless_scan_wait(E_DBus_Object *obj, DBusMessage *msg)
         essid = exalt_wirelessinfo_get_essid(wi);
         if(!essid)
         {
-            print_error("WARNING", __FILE__, __LINE__,__func__, "essid==null");
+            print_error("WARNING", __FILE__, __LINE__,__func__, "essid=%p",essid);
             return reply;
         }
         if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid))

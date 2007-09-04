@@ -16,7 +16,7 @@
 #endif
 
 /**
- * @addgroup Exalt_save_load
+ * @addgroup Exalt_System_Configuration
  *@{
  */
 
@@ -36,13 +36,13 @@ int exalt_sys_conf_save_wpasupplicant(exalt_wireless *w)
 
 	if(!w)
 	{
-	 	fprintf(stderr,"exalt_sys_conf_save_wpasupplicant(): w==null ! \n");
+	 	print_error("ERROR", __FILE__, __LINE__,__func__,"w=%p",w);
 		return -1;
 	}
 
         if(!exalt_is_admin())
         {
-            fprintf(stderr,"exalt_sys_conf_save_wpasupplicant(): you need to be root if you want save the configuration file! \n");
+            print_error("ERROR", __FILE__, __LINE__,__func__,"you need to be root if you want save the configuration file");
             return -1;
         }
 
@@ -54,7 +54,7 @@ int exalt_sys_conf_save_wpasupplicant(exalt_wireless *w)
 	if(!exalt_file_exist(WPA_CONF_FILE))
 		if(exalt_file_create(WPA_CONF_FILE,WPA_CONF_HEADER)==-1)
 		{
-			fprintf(stderr,"exalt_sys_conf_save_byeth(): error can't create the WPA conf file! \n");
+			print_error("ERROR", __FILE__, __LINE__,__func__,"error can't create the WPA conf file");
 			return -1;
 		}
 
@@ -145,13 +145,13 @@ int exalt_wireless_save(exalt_wireless* w)
 
         if(!w)
         {
-            fprintf(stderr,"exalt_wireless_save(): w==null !");
+            print_error("ERROR", __FILE__, __LINE__,__func__,"w=%p",w);
             return -1;
         }
 
         if(!exalt_is_admin())
         {
-            fprintf(stderr,"exalt_wireless_save(): you need to be root if you want save the configuration file! \n");
+            print_error("ERROR", __FILE__, __LINE__,__func__,"you need to be root if you want save the configuration file");
             return -1;
         }
 
@@ -161,7 +161,7 @@ int exalt_wireless_save(exalt_wireless* w)
 	sprintf(buf,"essid_%s",exalt_wireless_get_new_essid(w));
 	if(ecore_config_string_set(buf,exalt_wireless_get_new_essid(w)) != ECORE_CONFIG_ERR_SUCC)
 	{
-		fprintf(stderr,"exalt_wireless_save(): error set essid\n");
+		print_error("ERROR", __FILE__, __LINE__,__func__,"error set essid");
 		return -1;
 	}
 
@@ -194,7 +194,7 @@ int exalt_wireless_save(exalt_wireless* w)
 
         if(ecore_config_file_save(EXALT_CONF_FILE) != ECORE_CONFIG_ERR_SUCC)
 	{
-		fprintf(stderr,"exalt_wireless_save(): error can't save the config\n");
+		print_error("ERROR", __FILE__, __LINE__,__func__,"error can't save the config");
 		return -1;
 	}
 
@@ -213,10 +213,9 @@ int exalt_wireless_load(exalt_wireless_info* wi)
 	int res_i;
 	if(!wi)
 	{
-	 	fprintf(stderr,"exalt_wireless_load(): wi == null!\n");
+	 	print_error("ERROR", __FILE__, __LINE__,__func__,"wi=%p",wi);
 		return -1;
 	}
-
 
  	ecore_config_file_load(EXALT_CONF_FILE);
 
@@ -262,7 +261,7 @@ int exalt_wireless_load(exalt_wireless_info* wi)
 
 	if(ecore_config_file_save(EXALT_CONF_FILE) != ECORE_CONFIG_ERR_SUCC)
 	{
-	 	fprintf(stderr,"exalt_wireless_load(): error can't save the config\n");
+	 	print_error("ERROR", __FILE__, __LINE__,__func__,"error can't save the config");
 		return -1;
 	}
 

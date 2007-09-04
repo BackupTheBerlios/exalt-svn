@@ -1,3 +1,5 @@
+/** @file libexalt.h */
+
 #ifndef COMMON_H
 #define COMMON_H
 
@@ -34,23 +36,22 @@
 #include "exalt_ethernet.h"
 #include "exalt_wireless_info.h"
 #include "exalt_wireless.h"
-#include "exalt_command.h"
 #include "exalt_dns.h"
 #include "exalt_sys_conf.h"
-#include "exalt_regexp.h"
-#include "iwlib.h"
+
+/**
+ * @defgroup Exalt_General
+ * @brief Some functions
+ * @{
+ */
 
 
 
 short exalt_is_address(const char* ip);
 short exalt_is_essid(const char* essid);
 short exalt_is_passwd(const char* passwd, int passwd_mode);
-char *str_remove (const char *s, const char *ct);
-char* exalt_addr_hexa_to_dec(char* addr);
-short exalt_ioctl(void* argp, int request);
 short exalt_is_admin();
-void print_error(char* type, char* file, int line,const char* fct, char* msg);
 
 #endif
 
-
+/** @} */

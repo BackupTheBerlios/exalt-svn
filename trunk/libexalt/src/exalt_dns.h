@@ -6,7 +6,7 @@
 #include <string.h>
 
 /**
- * @defgroup Exalt_dns
+ * @defgroup Exalt_DNS
  * @brief manage the dns list (add, delet, print)
  * @{
  */

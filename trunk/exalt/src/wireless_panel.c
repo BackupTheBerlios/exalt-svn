@@ -464,7 +464,7 @@ void wirelesspanel_scanlist_row_clicked_cb(Etk_Object *object, Etk_Tree_Row *row
 
 	etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 2),  &row_name, NULL);
 	eth = pnl->eth;
-	w=exalt_wireless_get_networkinfo_by_essid(eth->wireless,row_name);
+	w=exalt_wireless_get_networkinfo_by_essid(exalt_eth_get_wireless(eth),row_name);
 	if(w)
 	{
  	 	etk_entry_text_set(ETK_ENTRY(pnl->entry_conn_essid),exalt_wirelessinfo_get_essid(w));

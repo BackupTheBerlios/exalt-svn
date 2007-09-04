@@ -26,6 +26,8 @@ libexalt_dbus.c \
 exalt_dbus_ethernet.c \
 exalt_dbus_wireless.c \
 exalt_dbus_wireless_info.c \
+libexalt_dbus_private.h \
+libexalt_dbus_private.c \
 $(EXALTHEADERS)
 
 installed_headersdir = $(prefix)/include/exalt_dbus
