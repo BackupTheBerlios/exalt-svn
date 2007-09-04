@@ -1,7 +1,8 @@
 #!/bin/sh
 rm -rf ./doc/html ./doc/latex ./doc/man
-mkdir -p doc/html doc/html/nav doc/html/widgets doc/man doc/latex
+mkdir -p doc/html doc/html/nav doc/man doc/latex
 doxygen
+cp doc/pages/pages.html doc/html/
 cp doc/img/nav/*.png doc/html/nav/
 cp doc/img/nav/*.jpg doc/html/nav/
 cp doc/img/nav/*.gif doc/html/nav/
