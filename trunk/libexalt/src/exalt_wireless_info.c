@@ -340,7 +340,20 @@ char* exalt_wirelessinfo_get_addr(exalt_wireless_info* w)
 		return w->address;
 }
 
-
+/**
+ * @brief get the wireless struct
+ * @param w the exalt_wireless_info
+ * @return Return the wireless struct of the card which provide the scan
+ */
+exalt_wireless* exalt_wirelessinfo_get_wireless(exalt_wireless_info* w)
+{
+    if(!w)
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "w=%p",w);
+        return NULL;
+    }
+		return w->w;
+}
 
 /**
  * @brief get the essid

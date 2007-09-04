@@ -470,7 +470,7 @@ void _exalt_wireless_cb(void *data, E_Menu *m, E_Menu_Item *mi)
 
     //sprintf(command,"%s -i %s\"","gksu \"/usr/local/bin/exalt",exalt_eth_get_name(eth));
     pos = str_istr(exalt_config->cmd,"%i");
-    command1 = str_remplace(exalt_config->cmd,pos,strlen("%i"),exalt_eth_get_name(wi->w->eth));
+    command1 = str_remplace(exalt_config->cmd,pos,strlen("%i"),exalt_eth_get_name(exalt_wireless_get_eth(exalt_wirelessinfo_get_wireless(wi))));
     pos = str_istr(command1,"%w");
     command2 = str_remplace(command1,pos,strlen("%w"),exalt_wirelessinfo_get_essid(wi));
     exalt_execute_command(command2);

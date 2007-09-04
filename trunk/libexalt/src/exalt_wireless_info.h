@@ -18,6 +18,7 @@ typedef struct exalt_wireless_info exalt_wireless_info;
 exalt_wireless_info* exalt_wirelessinfo_create(exalt_wireless* w);
 void exalt_wirelessinfo_free(void* data);
 
+exalt_wireless* exalt_wirelessinfo_get_wireless(exalt_wireless_info* w);
 void exalt_wirelessinfo_set_address(exalt_wireless_info* w, char* address);
 void exalt_wirelessinfo_set_essid(exalt_wireless_info* w, char* essid);
 void exalt_wirelessinfo_set_essid(exalt_wireless_info* w, char* essid);
