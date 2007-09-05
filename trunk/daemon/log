@@ -1,27 +1,18 @@
 Making all in src
 make[1]: Entering directory `/home/watchwolf/Projects/C/exalt_svn/exalt/daemon/src'
+cd .. && /bin/sh /home/watchwolf/Projects/C/exalt_svn/exalt/daemon/missing --run autoheader
+rm -f stamp-h1
+touch config.h.in
+cd .. && /bin/sh ./config.status src/config.h
+config.status: creating src/config.h
+config.status: src/config.h is unchanged
 make  all-am
 make[2]: Entering directory `/home/watchwolf/Projects/C/exalt_svn/exalt/daemon/src'
-gcc -DHAVE_CONFIG_H -I.    -Wall -W -g -D_GNU_SOURCE -I/usr/local/include -I/usr/local/include/exalt -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include   -g -O2 -MT daemon.o -MD -MP -MF .deps/daemon.Tpo -c -o daemon.o daemon.c
-mv -f .deps/daemon.Tpo .deps/daemon.Po
-/bin/sh ../libtool --tag=CC   --mode=link gcc -Wall -W -g -D_GNU_SOURCE -I/usr/local/include -I/usr/local/include/exalt -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include   -g -O2 -export-dynamic  -o exalt-daemon daemon.o cb_ethernet.o cb_wireless.o cb_wirelessinfo.o -L/usr/local/lib -lexalt -ledbus -lecore -ldbus-1   
-gcc -Wall -W -g -D_GNU_SOURCE -I/usr/local/include -I/usr/local/include/exalt -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -g -O2 -o exalt-daemon daemon.o cb_ethernet.o cb_wireless.o cb_wirelessinfo.o -Wl,--export-dynamic  -L/usr/local/lib /usr/local/lib/libexalt.so /usr/lib/libecore_config.so /usr/lib/libevas.so /usr/lib/libfontconfig.so /usr/lib/libfreetype.so /usr/lib/libxml2.so /usr/lib/libecore_ipc.so /usr/lib/libeet.so -lz /usr/lib/libjpeg.so /usr/lib/libecore_con.so -lssl -lcrypto /usr/lib/libehal.so /usr/lib/libedbus.so /usr/lib/libecore.so -lm -ldl /usr/lib/libdbus-1.so  
 make[2]: Leaving directory `/home/watchwolf/Projects/C/exalt_svn/exalt/daemon/src'
 make[1]: Leaving directory `/home/watchwolf/Projects/C/exalt_svn/exalt/daemon/src'
 Making all in data
 make[1]: Entering directory `/home/watchwolf/Projects/C/exalt_svn/exalt/daemon/data'
 Making all in init.d
 make[2]: Entering directory `/home/watchwolf/Projects/C/exalt_svn/exalt/daemon/data/init.d'
-make[2]: Nothing to be done for `all'.
 make[2]: Leaving directory `/home/watchwolf/Projects/C/exalt_svn/exalt/daemon/data/init.d'
-Making all in dbus
-make[2]: Entering directory `/home/watchwolf/Projects/C/exalt_svn/exalt/daemon/data/dbus'
-make[2]: Nothing to be done for `all'.
-make[2]: Leaving directory `/home/watchwolf/Projects/C/exalt_svn/exalt/daemon/data/dbus'
-make[2]: Entering directory `/home/watchwolf/Projects/C/exalt_svn/exalt/daemon/data'
-make[2]: Nothing to be done for `all-am'.
-make[2]: Leaving directory `/home/watchwolf/Projects/C/exalt_svn/exalt/daemon/data'
 make[1]: Leaving directory `/home/watchwolf/Projects/C/exalt_svn/exalt/daemon/data'
-make[1]: Entering directory `/home/watchwolf/Projects/C/exalt_svn/exalt/daemon'
-make[1]: Nothing to be done for `all-am'.
-make[1]: Leaving directory `/home/watchwolf/Projects/C/exalt_svn/exalt/daemon'

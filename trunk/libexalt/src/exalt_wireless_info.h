@@ -9,7 +9,12 @@
  * @{
  */
 
+/**
+ * @brief informations about a wireless network
+ * @structinfo
+ */
 typedef struct exalt_wireless_info exalt_wireless_info;
+
 #define EXALT_WIRELESS_INFO(x) (exalt_wireless_info*)x
 
 #include "exalt_wireless.h"

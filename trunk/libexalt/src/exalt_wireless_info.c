@@ -7,10 +7,6 @@
  * @{
  */
 
-/**
- * @brief informations about a wireless network
- * @structinfo
- */
 struct exalt_wireless_info
 {
     exalt_wireless* w;

@@ -81,7 +81,7 @@ fi
 
 with_distro=`echo ${with_distro} | tr '[[:upper:]]' '[[:lower:]]' `
 
-AC_CHECK_FILE(data/init.d/exaltd,`rm data/init.d/gentoo data/init.d/exaltd`)
+AC_CHECK_FILE(data/init.d/exaltd,`rm data/init.d/exaltd `)
 if test "x$with_distro" = 'xgentoo'; then
     `cp data/init.d/gentoo data/init.d/exaltd`
 fi

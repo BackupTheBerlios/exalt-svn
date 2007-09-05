@@ -2,7 +2,35 @@ make  all-recursive
 make[1]: Entering directory `/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt_dbus'
 Making all in src
 make[2]: Entering directory `/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt_dbus/src'
-make[2]: Nothing to be done for `all'.
+/bin/sh ../libtool --tag=CC   --mode=compile gcc -DLOCALEDIR=\"/usr/local/share/locale\" -DHAVE_CONFIG_H -I. -I.. -Wall -g -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include      -g -O2 -MT libexalt_dbus.lo -MD -MP -MF .deps/libexalt_dbus.Tpo -c -o libexalt_dbus.lo libexalt_dbus.c
+mkdir .libs
+ gcc -DLOCALEDIR=\"/usr/local/share/locale\" -DHAVE_CONFIG_H -I. -I.. -Wall -g -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -g -O2 -MT libexalt_dbus.lo -MD -MP -MF .deps/libexalt_dbus.Tpo -c libexalt_dbus.c  -fPIC -DPIC -o .libs/libexalt_dbus.o
+ gcc -DLOCALEDIR=\"/usr/local/share/locale\" -DHAVE_CONFIG_H -I. -I.. -Wall -g -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -g -O2 -MT libexalt_dbus.lo -MD -MP -MF .deps/libexalt_dbus.Tpo -c libexalt_dbus.c -o libexalt_dbus.o >/dev/null 2>&1
+mv -f .deps/libexalt_dbus.Tpo .deps/libexalt_dbus.Plo
+/bin/sh ../libtool --tag=CC   --mode=compile gcc -DLOCALEDIR=\"/usr/local/share/locale\" -DHAVE_CONFIG_H -I. -I.. -Wall -g -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include      -g -O2 -MT exalt_dbus_ethernet.lo -MD -MP -MF .deps/exalt_dbus_ethernet.Tpo -c -o exalt_dbus_ethernet.lo exalt_dbus_ethernet.c
+ gcc -DLOCALEDIR=\"/usr/local/share/locale\" -DHAVE_CONFIG_H -I. -I.. -Wall -g -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -g -O2 -MT exalt_dbus_ethernet.lo -MD -MP -MF .deps/exalt_dbus_ethernet.Tpo -c exalt_dbus_ethernet.c  -fPIC -DPIC -o .libs/exalt_dbus_ethernet.o
+ gcc -DLOCALEDIR=\"/usr/local/share/locale\" -DHAVE_CONFIG_H -I. -I.. -Wall -g -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -g -O2 -MT exalt_dbus_ethernet.lo -MD -MP -MF .deps/exalt_dbus_ethernet.Tpo -c exalt_dbus_ethernet.c -o exalt_dbus_ethernet.o >/dev/null 2>&1
+mv -f .deps/exalt_dbus_ethernet.Tpo .deps/exalt_dbus_ethernet.Plo
+/bin/sh ../libtool --tag=CC   --mode=compile gcc -DLOCALEDIR=\"/usr/local/share/locale\" -DHAVE_CONFIG_H -I. -I.. -Wall -g -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include      -g -O2 -MT exalt_dbus_wireless.lo -MD -MP -MF .deps/exalt_dbus_wireless.Tpo -c -o exalt_dbus_wireless.lo exalt_dbus_wireless.c
+ gcc -DLOCALEDIR=\"/usr/local/share/locale\" -DHAVE_CONFIG_H -I. -I.. -Wall -g -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -g -O2 -MT exalt_dbus_wireless.lo -MD -MP -MF .deps/exalt_dbus_wireless.Tpo -c exalt_dbus_wireless.c  -fPIC -DPIC -o .libs/exalt_dbus_wireless.o
+ gcc -DLOCALEDIR=\"/usr/local/share/locale\" -DHAVE_CONFIG_H -I. -I.. -Wall -g -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -g -O2 -MT exalt_dbus_wireless.lo -MD -MP -MF .deps/exalt_dbus_wireless.Tpo -c exalt_dbus_wireless.c -o exalt_dbus_wireless.o >/dev/null 2>&1
+mv -f .deps/exalt_dbus_wireless.Tpo .deps/exalt_dbus_wireless.Plo
+/bin/sh ../libtool --tag=CC   --mode=compile gcc -DLOCALEDIR=\"/usr/local/share/locale\" -DHAVE_CONFIG_H -I. -I.. -Wall -g -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include      -g -O2 -MT exalt_dbus_wireless_info.lo -MD -MP -MF .deps/exalt_dbus_wireless_info.Tpo -c -o exalt_dbus_wireless_info.lo exalt_dbus_wireless_info.c
+ gcc -DLOCALEDIR=\"/usr/local/share/locale\" -DHAVE_CONFIG_H -I. -I.. -Wall -g -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -g -O2 -MT exalt_dbus_wireless_info.lo -MD -MP -MF .deps/exalt_dbus_wireless_info.Tpo -c exalt_dbus_wireless_info.c  -fPIC -DPIC -o .libs/exalt_dbus_wireless_info.o
+ gcc -DLOCALEDIR=\"/usr/local/share/locale\" -DHAVE_CONFIG_H -I. -I.. -Wall -g -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -g -O2 -MT exalt_dbus_wireless_info.lo -MD -MP -MF .deps/exalt_dbus_wireless_info.Tpo -c exalt_dbus_wireless_info.c -o exalt_dbus_wireless_info.o >/dev/null 2>&1
+mv -f .deps/exalt_dbus_wireless_info.Tpo .deps/exalt_dbus_wireless_info.Plo
+/bin/sh ../libtool --tag=CC   --mode=compile gcc -DLOCALEDIR=\"/usr/local/share/locale\" -DHAVE_CONFIG_H -I. -I.. -Wall -g -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include      -g -O2 -MT libexalt_dbus_private.lo -MD -MP -MF .deps/libexalt_dbus_private.Tpo -c -o libexalt_dbus_private.lo libexalt_dbus_private.c
+ gcc -DLOCALEDIR=\"/usr/local/share/locale\" -DHAVE_CONFIG_H -I. -I.. -Wall -g -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -g -O2 -MT libexalt_dbus_private.lo -MD -MP -MF .deps/libexalt_dbus_private.Tpo -c libexalt_dbus_private.c  -fPIC -DPIC -o .libs/libexalt_dbus_private.o
+ gcc -DLOCALEDIR=\"/usr/local/share/locale\" -DHAVE_CONFIG_H -I. -I.. -Wall -g -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -g -O2 -MT libexalt_dbus_private.lo -MD -MP -MF .deps/libexalt_dbus_private.Tpo -c libexalt_dbus_private.c -o libexalt_dbus_private.o >/dev/null 2>&1
+mv -f .deps/libexalt_dbus_private.Tpo .deps/libexalt_dbus_private.Plo
+/bin/sh ../libtool --tag=CC   --mode=link gcc  -g -O2 -version-info 1:0:0  -o libexalt_dbus.la -rpath /usr/local/lib libexalt_dbus.lo exalt_dbus_ethernet.lo exalt_dbus_wireless.lo exalt_dbus_wireless_info.lo libexalt_dbus_private.lo -ledbus -lecore -ldbus-1   
+gcc -shared  .libs/libexalt_dbus.o .libs/exalt_dbus_ethernet.o .libs/exalt_dbus_wireless.o .libs/exalt_dbus_wireless_info.o .libs/libexalt_dbus_private.o  /usr/lib/libedbus.so -L/usr/lib /usr/lib/libecore.so /usr/lib/libdbus-1.so  -Wl,-soname -Wl,libexalt_dbus.so.1 -o .libs/libexalt_dbus.so.1.0.0
+(cd .libs && rm -f libexalt_dbus.so.1 && ln -s libexalt_dbus.so.1.0.0 libexalt_dbus.so.1)
+(cd .libs && rm -f libexalt_dbus.so && ln -s libexalt_dbus.so.1.0.0 libexalt_dbus.so)
+ar cru .libs/libexalt_dbus.a  libexalt_dbus.o exalt_dbus_ethernet.o exalt_dbus_wireless.o exalt_dbus_wireless_info.o libexalt_dbus_private.o
+ranlib .libs/libexalt_dbus.a
+creating libexalt_dbus.la
+(cd .libs && rm -f libexalt_dbus.la && ln -s ../libexalt_dbus.la libexalt_dbus.la)
 make[2]: Leaving directory `/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt_dbus/src'
 make[2]: Entering directory `/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt_dbus'
 make[2]: Nothing to be done for `all-am'.

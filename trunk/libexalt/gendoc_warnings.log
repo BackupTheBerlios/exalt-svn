@@ -2,7 +2,7 @@
 /home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_ethernet.h:12: Warning: missing title after \defgroup Exalt_Ethernet
 /home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_sys_conf.h:6: Warning: missing title after \defgroup Exalt_System_Configuration
 /home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_wireless.h:6: Warning: missing title after \defgroup Exalt_Wireless
-/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_wireless_info.c:854: Warning: end of file while inside a group
+/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_wireless_info.c:850: Warning: end of file while inside a group
 
 /home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_wireless_info.h:7: Warning: missing title after \defgroup Exalt_Wireless_Info
 /home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/libexalt.c:98: Warning: end of file while inside a group

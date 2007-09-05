@@ -607,25 +607,26 @@ void wirelesspanel_btn_apply_clicked_cb(void *data)
 	exalt_wireless_set_new_essid(exalt_eth_get_wireless(pnl->eth),etk_entry_text_get(ETK_ENTRY(pnl->entry_conn_essid)));
 
 	//get the passwd mode
-	if (!(active_item = etk_combobox_active_item_get(ETK_COMBOBOX(pnl->cmbox_encryption))))
-		return;
-	encryption = etk_combobox_item_data_get(active_item);
-        exalt_wireless_set_new_passwd_mode(exalt_eth_get_wireless(pnl->eth),*encryption);
-	if(*encryption>EXALT_WIRELESS_ENCRYPTION_NONE)
+	if ((active_item = etk_combobox_active_item_get(ETK_COMBOBOX(pnl->cmbox_encryption))))
+        {
+            encryption = etk_combobox_item_data_get(active_item);
+            exalt_wireless_set_new_passwd_mode(exalt_eth_get_wireless(pnl->eth),*encryption);
+	    if(*encryption>EXALT_WIRELESS_ENCRYPTION_NONE)
 	 	exalt_wireless_set_new_passwd(exalt_eth_get_wireless(pnl->eth),etk_entry_text_get(ETK_ENTRY(pnl->entry_conn_pwd)));
+        }
 
         //get the mode
-	if (!(active_item = etk_combobox_active_item_get(ETK_COMBOBOX(pnl->cmbox_mode))))
-		return;
-	mode = etk_combobox_item_data_get(active_item);
-	exalt_wireless_set_new_mode(exalt_eth_get_wireless(pnl->eth),*mode);
-
-        //get the security mode
-	if (!(active_item = etk_combobox_active_item_get(ETK_COMBOBOX(pnl->cmbox_security))))
-		return;
-	security = etk_combobox_item_data_get(active_item);
-	exalt_wireless_set_new_security_mode(exalt_eth_get_wireless(pnl->eth),*security);
-
+	if ((active_item = etk_combobox_active_item_get(ETK_COMBOBOX(pnl->cmbox_mode))))
+        {
+            mode = etk_combobox_item_data_get(active_item);
+	    exalt_wireless_set_new_mode(exalt_eth_get_wireless(pnl->eth),*mode);
+        }
+            //get the security mode
+	if ((active_item = etk_combobox_active_item_get(ETK_COMBOBOX(pnl->cmbox_security))))
+        {
+            security = etk_combobox_item_data_get(active_item);
+	    exalt_wireless_set_new_security_mode(exalt_eth_get_wireless(pnl->eth),*security);
+        }
 
 	etk_widget_show_all(pnl->hbox_pbar);
 	f=fork();
@@ -639,6 +640,7 @@ void wirelesspanel_btn_apply_clicked_cb(void *data)
             exalt_eth_apply_conf(pnl->eth);
             exit(1);
         }
+        printf("hehe\n");
 	etk_widget_disabled_set(pnl->win->eth_list,ETK_TRUE);
 	etk_widget_disabled_set(pnl->btn_activate,ETK_TRUE);
 	etk_widget_disabled_set(pnl->btn_apply,ETK_TRUE);
