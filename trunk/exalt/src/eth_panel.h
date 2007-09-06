@@ -20,8 +20,6 @@ struct _eth_panel
 
 	Etk_Widget* box_configuration;
 
-
-
 	//configuration panel
 	Etk_Widget *entry_ip;
 	Etk_Widget *entry_mask;
@@ -31,8 +29,9 @@ struct _eth_panel
 	Etk_Widget *check_dhcp;
 
 	Etk_Widget *btn_apply;
-	pid_t pid_dhcp_process;
-	Ecore_Timer* dhcp_timer;
+
+
+        Ecore_Timer* pulsebar_timer;
 
 	//pbar pannel
 	Etk_Widget* hbox_pbar;
@@ -53,7 +52,8 @@ void ethpanel_disabled_set(eth_panel* pnl);
 void ethpanel_set_static_dhcp_clicked_cb(Etk_Object *object, void *data);
 void ethpanel_textchanged_entry_cb(Etk_Object *object, void *data);
 void ethpanel_btn_apply_clicked_cb(void *data);
-int ethpanel_dhcp_timer(void* data);
+int ethpanel_apply_applied_cb(exalt_ethernet* eth, void* data);
+int ethpanel_apply_pulsebar_timer(void* data);
 void ethpanel_btn_disactivate_clicked_cb(void *data);
 void ethpanel_btn_activate_clicked_cb(void *data);
 #endif

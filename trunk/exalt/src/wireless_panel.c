@@ -10,7 +10,7 @@ wireless_panel* wirelesspanel_create(main_window* win)
 	pnl=(wireless_panel*)malloc((unsigned int)sizeof(wireless_panel));
 	pnl->win=win;
 	pnl->eth = NULL;
-        pnl->dhcp_timer = NULL;
+        pnl->pulsebar_timer = NULL;
 
 	pnl->frame = etk_frame_new("wireless_frame");
 
@@ -168,7 +168,7 @@ void wirelesspanel_disabled_widget_activate(wireless_panel* pnl)
 {
  	Etk_Combobox_Item* active_item;
 	int* encryption;
-        int apply = pnl->dhcp_timer != NULL;
+        int apply = pnl->pulsebar_timer != NULL;
         int down = !exalt_eth_is_up(pnl->eth);
 
 	if(!pnl)
@@ -193,6 +193,8 @@ void wirelesspanel_disabled_widget_activate(wireless_panel* pnl)
             etk_widget_disabled_set(pnl->entry_conn_gateway,ETK_TRUE);
             etk_widget_disabled_set(pnl->check_static,ETK_TRUE);
             etk_widget_disabled_set(pnl->check_dhcp,ETK_TRUE);
+
+            etk_widget_show_all(pnl->hbox_pbar);
 
             return ;
         }
@@ -352,8 +354,8 @@ Etk_Widget* wirelesspanel_pageconnection_create(wireless_panel* pnl)
         pnl->cmbox_security = etk_combobox_new();
         pnl->cmbox_mode = etk_combobox_new();
         pnl->hbox_pbar = etk_hbox_new(ETK_FALSE,5);
-	pnl->pbar = etk_progress_bar_new_with_text(DHCP_TEXT);
-	etk_progress_bar_pulse_step_set(ETK_PROGRESS_BAR(pnl->pbar), DHCP_PULSE);
+	pnl->pbar = etk_progress_bar_new_with_text(APPLY_TEXT);
+	etk_progress_bar_pulse_step_set(ETK_PROGRESS_BAR(pnl->pbar), APPLY_PULSE);
 	etk_box_append(ETK_BOX(pnl->hbox_pbar), pnl->pbar, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
 
@@ -578,7 +580,6 @@ void wirelesspanel_cmboxencryption_active_item_changed_cb(Etk_Object *object, vo
 void wirelesspanel_btn_apply_clicked_cb(void *data)
 {
 	wireless_panel* pnl;
-	pid_t f;
  	int* encryption;
         int *mode;
         int *security;
@@ -629,23 +630,12 @@ void wirelesspanel_btn_apply_clicked_cb(void *data)
         }
 
 	etk_widget_show_all(pnl->hbox_pbar);
-	f=fork();
-	if(f==-1)
-	{
-		fprintf(stderr,"ethpanel_btn_apply_clicked_cb(): fork erreur!\n");
-		return ;
-	}
-        else if(f==0)
-        {
-            exalt_eth_apply_conf(pnl->eth);
-            exit(1);
-        }
-        printf("hehe\n");
-	etk_widget_disabled_set(pnl->win->eth_list,ETK_TRUE);
+        exalt_eth_apply_conf(pnl->eth,wirelesspanel_apply_applied_cb, pnl);
+
+        etk_widget_disabled_set(pnl->win->eth_list,ETK_TRUE);
 	etk_widget_disabled_set(pnl->btn_activate,ETK_TRUE);
 	etk_widget_disabled_set(pnl->btn_apply,ETK_TRUE);
-	pnl->pid_dhcp_process = f;
-	pnl->dhcp_timer = ecore_timer_add(DHCP_TIMER ,wirelesspanel_dhcp_timer,pnl);
+	pnl->pulsebar_timer = ecore_timer_add(APPLY_PULSE_TIMER ,wirelesspanel_apply_pulsebar_timer,pnl);
         wirelesspanel_disabled_widget_activate(pnl);
 }
 
@@ -752,36 +742,32 @@ void wirelesspanel_textchanged_entry_cb(Etk_Object *object, void *data)
 }
 
 
-int wirelesspanel_dhcp_timer(void* data)
+int wirelesspanel_apply_applied_cb(exalt_ethernet* eth,void* data)
 {
 	wireless_panel* pnl;
-	pid_t res;
-	int status;
 
-	if(!data)
-	{
-		fprintf(stderr,"wirelesspanel_dhcp_time(): data==null ! \n");
-		return -1;
-	}
+        pnl = (wireless_panel*) data;
 
-	pnl = (wireless_panel*) data;
+        DELETE_TIMER(pnl->pulsebar_timer)
 
-	res = waitpid(pnl->pid_dhcp_process,&status,WNOHANG);
-	if(res==0)
-		etk_progress_bar_pulse(ETK_PROGRESS_BAR(pnl->pbar));
-	else
-	{
-		DELETE_TIMER(pnl->dhcp_timer)
+        //wirelesspanel_update_current_conf(pnl);
 
-		//update the configuration
-		wirelesspanel_update_current_conf(pnl);
+        wirelesspanel_disabled_widget_activate(pnl);
+        etk_widget_disabled_set(pnl->win->eth_list,ETK_FALSE);
+        etk_widget_hide_all(pnl->pbar);
 
- 	 	wirelesspanel_disabled_widget_activate(pnl);
-	 	etk_widget_disabled_set(pnl->win->eth_list,ETK_FALSE);
-		etk_widget_hide_all(pnl->pbar);
-	}
-	return 1;
+
+        return 1;
 }
+
+
+int wirelesspanel_apply_pulsebar_timer(void* data)
+{
+    wireless_panel* pnl = (wireless_panel*) data;
+    etk_progress_bar_pulse(ETK_PROGRESS_BAR(pnl->pbar));
+    return 1;
+}
+
 
 Etk_Combobox_Item * exalt_etk_combobox_data_item_get (Etk_Combobox *combobox, void *data)
 {

@@ -10,7 +10,7 @@ eth_panel* ethpanel_create(main_window* win)
 	pnl->eth = NULL;
 	pnl->win = win;
 	pnl->frame = etk_frame_new("hehe");
-        pnl->dhcp_timer = NULL;
+        pnl->pulsebar_timer = NULL;
 
 	pnl->box_configuration = etk_vbox_new(ETK_FALSE,5);
 	etk_container_add(ETK_CONTAINER(pnl->frame), pnl->box_configuration);
@@ -98,8 +98,8 @@ eth_panel* ethpanel_create(main_window* win)
 	//########################################
 
 	pnl->hbox_pbar = etk_hbox_new(ETK_FALSE,5);
-	pnl->pbar = etk_progress_bar_new_with_text(DHCP_TEXT);
-	etk_progress_bar_pulse_step_set(ETK_PROGRESS_BAR(pnl->pbar), DHCP_PULSE);
+	pnl->pbar = etk_progress_bar_new_with_text(APPLY_TEXT);
+	etk_progress_bar_pulse_step_set(ETK_PROGRESS_BAR(pnl->pbar), APPLY_PULSE);
 	etk_box_append(ETK_BOX(pnl->box_configuration), pnl->hbox_pbar, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 	etk_box_append(ETK_BOX(pnl->hbox_pbar), pnl->pbar, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
@@ -211,7 +211,6 @@ void ethpanel_btn_activate_clicked_cb(void *data)
 void ethpanel_btn_apply_clicked_cb(void *data)
 {
     eth_panel* pnl;
-    pid_t f;
 
     if(!data)
     {
@@ -232,27 +231,18 @@ void ethpanel_btn_apply_clicked_cb(void *data)
     else
         exalt_eth_set_new_dhcp(pnl->eth,EXALT_DHCP);
     etk_widget_show(pnl->hbox_pbar);
-    f=fork();
-    if(f==-1)
-    {
-        fprintf(stderr,"ethpanel_btn_apply_clicked_cb(): fork erreur!\n");
-        return ;
-    }
-    else if(f==0)
-    {
-        exalt_eth_apply_conf(pnl->eth);
-        exit(1);
-    }
+
+    exalt_eth_apply_conf(pnl->eth, ethpanel_apply_applied_cb, pnl);
+
     ethpanel_disabled_set(pnl);
     etk_widget_disabled_set(pnl->win->eth_list,ETK_TRUE);
     etk_widget_disabled_set(pnl->btn_disactivate,ETK_TRUE);
-    pnl->pid_dhcp_process = f;
-    pnl->dhcp_timer = ecore_timer_add(DHCP_TIMER ,ethpanel_dhcp_timer,pnl);
+    pnl->pulsebar_timer = ecore_timer_add(APPLY_PULSE_TIMER ,ethpanel_apply_pulsebar_timer,pnl);
 }
 
 void ethpanel_disabled_set(eth_panel* pnl)
 {
-    int apply = pnl->dhcp_timer !=NULL;
+    int apply = pnl->pulsebar_timer !=NULL;
     int down = !exalt_eth_is_up(pnl->eth);
 
     etk_widget_disabled_set(pnl->btn_disactivate,ETK_FALSE);
@@ -291,35 +281,25 @@ void ethpanel_disabled_set(eth_panel* pnl)
     }
 }
 
-int ethpanel_dhcp_timer(void* data)
+int ethpanel_apply_applied_cb(exalt_ethernet* eth, void* data)
 {
 	eth_panel* pnl;
-	pid_t res;
-	int status;
 
-	if(!data)
-	{
-		fprintf(stderr,"ethpanel_dhcp_time(): data==null ! \n");
-		return -1;
-	}
+        pnl = (eth_panel*) data;
 
-	pnl = (eth_panel*) data;
+        etk_widget_hide(pnl->hbox_pbar);
+        DELETE_TIMER(pnl->pulsebar_timer);
+        etk_widget_disabled_set(pnl->win->eth_list,ETK_FALSE);
+        etk_widget_disabled_set(pnl->btn_disactivate,ETK_FALSE);
 
-	res = waitpid(pnl->pid_dhcp_process,&status,WNOHANG);
-	if(res==0)
-	{
-		etk_progress_bar_pulse(ETK_PROGRESS_BAR(pnl->pbar));
-	}
-	else
-	{
-            etk_widget_hide(pnl->hbox_pbar);
-            etk_widget_disabled_set(pnl->win->eth_list,ETK_FALSE);
-            etk_widget_disabled_set(pnl->btn_disactivate,ETK_FALSE);
-
-            ecore_timer_del(pnl->dhcp_timer);
-            pnl->dhcp_timer = NULL;
-            ethpanel_disabled_set(pnl);
-        }
+        ethpanel_disabled_set(pnl);
         return 1;
+}
+
+int ethpanel_apply_pulsebar_timer(void* data)
+{
+    eth_panel* pnl = (eth_panel*) data;
+    etk_progress_bar_pulse(ETK_PROGRESS_BAR(pnl->pbar));
+    return 1;
 }
 

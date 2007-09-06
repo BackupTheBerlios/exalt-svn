@@ -66,10 +66,9 @@ struct _wireless_panel
         Etk_Widget *btn_apply;
 
         //pbar pannel
-	pid_t pid_dhcp_process;
 	Etk_Widget* hbox_pbar;
 	Etk_Widget* pbar;
-	Ecore_Timer* dhcp_timer;
+	Ecore_Timer* pulsebar_timer;
 };
 
 void wirelesspanel_scan_networks_cb(exalt_wireless_info* wi, int action, void* data);
@@ -97,7 +96,8 @@ void wirelesspanel_btn_apply_clicked_cb(void *data);
 void wirelesspanel_textchanged_entry_cb(Etk_Object *object, void *data);
 
 
-int wirelesspanel_dhcp_timer(void* data);
+int wirelesspanel_apply_pulsebar_timer(void* data);
+int wirelesspanel_apply_applied_cb(exalt_ethernet* eth, void* data);
 
 #endif
 

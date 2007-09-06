@@ -35,7 +35,7 @@ typedef struct Exalt_Ethernets Exalt_Ethernets;
 #include <linux/netlink.h>
 #include <linux/rtnetlink.h>
 
-
+#include <sys/wait.h>
 
 /** when we load the device list */
 #define EXALT_ETH_CB_ACTION_NEW 0
@@ -74,6 +74,9 @@ extern Exalt_Ethernets exalt_eth_interfaces;
 typedef void (*Exalt_Wifi_Scan_Cb) (exalt_wireless_info* wi, int action, void* user_data);
 /** cas into a Exalt_Wifi_Scan_Cb function */
 #define EXALT_WIRELESS_SCAN_CB(a) (Exalt_Wifi_Scan_Cb)a
+
+/** callback function used for notify than the configuration is applied */
+typedef void (*Exalt_Conf_Applied) (exalt_ethernet* eth, void* data);
 
 exalt_ethernet* exalt_eth_create(const char* name);
 
@@ -121,10 +124,7 @@ int exalt_eth_set_new_gateway(exalt_ethernet* eth,const char* gateway);
 int exalt_eth_set_new_dhcp(exalt_ethernet* eth, short dhcp);
 
 
-int exalt_eth_apply_conf(exalt_ethernet* eth);
-int exalt_eth_apply_gateway(exalt_ethernet *eth);
-int exalt_eth_apply_dhcp(exalt_ethernet* eth);
-int exalt_eth_apply_static(exalt_ethernet *eth);
+int exalt_eth_apply_conf(exalt_ethernet* eth, Exalt_Conf_Applied fct, void* user_data);
 
 char* exalt_eth_get_new_ip(exalt_ethernet* eth);
 char* exalt_eth_get_new_gateway(exalt_ethernet* eth);

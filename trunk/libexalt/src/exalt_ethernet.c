@@ -33,6 +33,10 @@ int _exalt_eth_remove_udi(const char* udi);
 
 int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler);
 
+int _exalt_apply_timer(void *data);
+int _exalt_eth_apply_dhcp(exalt_ethernet* eth);
+int _exalt_eth_apply_static(exalt_ethernet *eth);
+
 
 
 
@@ -43,21 +47,26 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler);
 
 struct exalt_ethernet
 {
-	char* name; //eth0, eth1...
-	char* udi;
-        int ifindex;
+    char* name; //eth0, eth1...
+    char* udi;
+    int ifindex;
 
-        char* new_ip;
-	char* new_netmask;
-	char* new_gateway;
-	short new_dhcp_static; //EXALT_DHCP || EXALT_STATIC
-	exalt_wireless* wireless; //if null, the interface is not wireless
+    char* new_ip;
+    char* new_netmask;
+    char* new_gateway;
+    short new_dhcp_static; //EXALT_DHCP || EXALT_STATIC
+    exalt_wireless* wireless; //if null, the interface is not wireless
 
-        char* _save_ip;
-        char* _save_netmask;
-        char* _save_gateway;
-        short _save_link;
-        short _save_up;
+    char* _save_ip;
+    char* _save_netmask;
+    char* _save_gateway;
+    short _save_link;
+    short _save_up;
+
+    pid_t apply_pid;
+    Ecore_Timer *apply_timer;
+    Exalt_Conf_Applied apply_fct_cb;
+    void * apply_user_data;
 };
 
 
@@ -1008,7 +1017,7 @@ int exalt_eth_set_scan_cb(Exalt_Wifi_Scan_Cb fct, void * user_data)
  * @param eth the card
  * @return Returns 1 if the configuration is apply, else 0
  */
-int exalt_eth_apply_conf(exalt_ethernet* eth)
+int exalt_eth_apply_conf(exalt_ethernet* eth, Exalt_Conf_Applied fct, void* user_data)
 {
 	int res;
  	struct rtentry rt;
@@ -1020,116 +1029,48 @@ int exalt_eth_apply_conf(exalt_ethernet* eth)
 	}
 
 
-        printf("## Apply configuration for %s ##\n",exalt_eth_get_name(eth));
-
-        if(!exalt_is_admin())
+        eth->apply_pid = fork();
+        if(eth->apply_pid < 0)
         {
-            print_error("ERROR", __FILE__, __LINE__,__func__,"you need to be root if you want apply the configuration");
+            print_error("ERROR", __FILE__, __LINE__,__func__,"fork failed");
             return -1;
         }
-
-	exalt_sys_conf_save(eth);
-
-	if(exalt_eth_is_wireless(eth))
-	 	exalt_wireless_apply_conf(exalt_eth_get_wireless(eth));
-
-	//remove old gateway
-        if(exalt_eth_is_new_dhcp(eth) || exalt_is_address(exalt_eth_get_new_gateway(eth)))
+        else if(eth->apply_pid == 0)
         {
-            memset((char *) &rt, 0, sizeof(struct rtentry));
-            rt.rt_flags = ( RTF_UP | RTF_GATEWAY );
-            sin.sin_addr.s_addr = inet_addr ("0.0.0.0");
-            rt.rt_dst = *(struct sockaddr *) &sin;
 
-            while (exalt_ioctl(&rt, SIOCDELRT) >=0)
-                ;
+            if(!exalt_is_admin())
+            {
+                print_error("ERROR", __FILE__, __LINE__,__func__,"you need to be root if you want apply the configuration");
+                return -1;
+            }
+
+            exalt_sys_conf_save(eth);
+
+            if(exalt_eth_is_wireless(eth))
+                exalt_wireless_apply_conf(exalt_eth_get_wireless(eth));
+
+            //remove old gateway
+            if(exalt_eth_is_new_dhcp(eth) || exalt_is_address(exalt_eth_get_new_gateway(eth)))
+            {
+                memset((char *) &rt, 0, sizeof(struct rtentry));
+                rt.rt_flags = ( RTF_UP | RTF_GATEWAY );
+                sin.sin_addr.s_addr = inet_addr ("0.0.0.0");
+                rt.rt_dst = *(struct sockaddr *) &sin;
+
+                while (exalt_ioctl(&rt, SIOCDELRT) >=0)
+                    ;
+            }
+            if(exalt_eth_is_new_dhcp(eth))
+                res = _exalt_eth_apply_dhcp(eth);
+            else
+                res = _exalt_eth_apply_static(eth);
+
+            exit(res);
         }
-        if(exalt_eth_is_new_dhcp(eth))
-		res = exalt_eth_apply_dhcp(eth);
-	else
-		res = exalt_eth_apply_static(eth);
 
-	printf("## End configuration ## \n");
-	return res;
-}
-
-
-
-/**
- * @brief apply static address for the card "eth"
- * @param eth the card
- * @return Returns 1 if static address are apply, else 0
- */
-int exalt_eth_apply_static(exalt_ethernet *eth)
-{
-	struct sockaddr_in sin = { AF_INET };
-	struct ifreq ifr;
-	struct rtentry rt;
-
-	if(!eth)
-	{
-	 	print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
-		return -1;
-	}
-
- 	strncpy(ifr.ifr_name,exalt_eth_get_name(eth),sizeof(ifr.ifr_name));
-
- 	//apply the ip
- 	sin.sin_addr.s_addr = inet_addr (exalt_eth_get_new_ip(eth));
-	ifr.ifr_addr = *(struct sockaddr *) &sin;
-	if( exalt_ioctl(&ifr, SIOCSIFADDR) < 0)
-		return -1;
-
-	//apply the netmask
- 	sin.sin_addr.s_addr = inet_addr (exalt_eth_get_new_netmask(eth));
-	ifr.ifr_addr = *(struct sockaddr *) &sin;
-	if( exalt_ioctl(&ifr, SIOCSIFNETMASK ) < 0)
-	 	return -1;
-
-
-	if(!exalt_eth_get_gateway(eth))
-	 	return 1;
-
-	//apply the default gateway
-	memset((char *) &rt, 0, sizeof(struct rtentry));
- 	rt.rt_flags = ( RTF_UP | RTF_GATEWAY );
-	sin.sin_addr.s_addr = inet_addr (exalt_eth_get_new_gateway(eth));
-	rt.rt_gateway = *(struct sockaddr *) &sin;
- 	sin.sin_addr.s_addr = inet_addr ("0.0.0.0");
-	rt.rt_dst = *(struct sockaddr *) &sin;
-	rt.rt_metric = 2001;
-	rt.rt_dev = exalt_eth_get_name(eth);
-
-	if ( exalt_ioctl(&rt, SIOCADDRT) < 0)
-	    return -1;
-
-	return 1;
-}
-
-
-
-/**
- * @brief apply the dhcp mode for the card "eth"
- * @param eth the card
- * @return Returns 1 if the dhcp is apply, else 0
- */
-int exalt_eth_apply_dhcp(exalt_ethernet* eth)
-{
-	FILE* f;
-	char command[1024];
-	char buf[1024];
-	if(!eth)
-	{
-		print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
-		return -1;
-	}
-
-	sprintf(command,"%s %s\n",COMMAND_DHCLIENT,exalt_eth_get_name(eth));
-	printf("\t%s\n",command);
-	f = exalt_execute_command(command);
-	while(fgets(buf,1024,f))
-		printf("\t%s\n",buf);
-	EXALT_PCLOSE(f);
+        eth->apply_fct_cb = fct;
+        eth->apply_user_data = user_data;
+        eth->apply_timer = ecore_timer_add(1 ,_exalt_apply_timer,eth);
 
 	return 1;
 }
@@ -1598,5 +1539,105 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
     }
     return 1;
 }
+
+int _exalt_apply_timer(void *data)
+{
+    exalt_ethernet* eth = EXALT_ETHERNET(data);
+    int res;
+    int status;
+
+    res = waitpid(eth->apply_pid,&status,WNOHANG);
+    if(res == 0)
+    {
+        return 1;
+    }
+
+    //apply done
+    if(eth->apply_fct_cb)
+        eth->apply_fct_cb(eth, eth->apply_user_data);
+
+    return 0;
+}
+
+
+/**
+ * @brief apply static address for the card "eth"
+ * @param eth the card
+ * @return Returns 1 if static address are apply, else 0
+ */
+int _exalt_eth_apply_static(exalt_ethernet *eth)
+{
+	struct sockaddr_in sin = { AF_INET };
+	struct ifreq ifr;
+	struct rtentry rt;
+
+	if(!eth)
+	{
+	 	print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
+		return -1;
+	}
+
+ 	strncpy(ifr.ifr_name,exalt_eth_get_name(eth),sizeof(ifr.ifr_name));
+
+ 	//apply the ip
+ 	sin.sin_addr.s_addr = inet_addr (exalt_eth_get_new_ip(eth));
+	ifr.ifr_addr = *(struct sockaddr *) &sin;
+	if( exalt_ioctl(&ifr, SIOCSIFADDR) < 0)
+		return -1;
+
+	//apply the netmask
+ 	sin.sin_addr.s_addr = inet_addr (exalt_eth_get_new_netmask(eth));
+	ifr.ifr_addr = *(struct sockaddr *) &sin;
+	if( exalt_ioctl(&ifr, SIOCSIFNETMASK ) < 0)
+	 	return -1;
+
+
+	if(!exalt_eth_get_gateway(eth))
+	 	return 1;
+
+	//apply the default gateway
+	memset((char *) &rt, 0, sizeof(struct rtentry));
+ 	rt.rt_flags = ( RTF_UP | RTF_GATEWAY );
+	sin.sin_addr.s_addr = inet_addr (exalt_eth_get_new_gateway(eth));
+	rt.rt_gateway = *(struct sockaddr *) &sin;
+ 	sin.sin_addr.s_addr = inet_addr ("0.0.0.0");
+	rt.rt_dst = *(struct sockaddr *) &sin;
+	rt.rt_metric = 2001;
+	rt.rt_dev = exalt_eth_get_name(eth);
+
+	if ( exalt_ioctl(&rt, SIOCADDRT) < 0)
+	    return -1;
+
+	return 1;
+}
+
+
+
+/**
+ * @brief apply the dhcp mode for the card "eth"
+ * @param eth the card
+ * @return Returns 1 if the dhcp is apply, else 0
+ */
+int _exalt_eth_apply_dhcp(exalt_ethernet* eth)
+{
+	FILE* f;
+	char command[1024];
+	char buf[1024];
+	if(!eth)
+	{
+		print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
+		return -1;
+	}
+
+	sprintf(command,"%s %s\n",COMMAND_DHCLIENT,exalt_eth_get_name(eth));
+	printf("\t%s\n",command);
+	f = exalt_execute_command(command);
+	while(fgets(buf,1024,f))
+		printf("\t%s\n",buf);
+	EXALT_PCLOSE(f);
+
+	return 1;
+}
+
 
 

@@ -21,9 +21,9 @@
 #define ICONS_QUALITY_LESS_50 "/icons/quality_50-.png"
 #define ICONS_QUALITY_LESS_75 "/icons/quality_75-.png"
 
-#define DHCP_TIMER 0.05
-#define DHCP_PULSE 0.04
-#define DHCP_TEXT _("Updating interface configuration ...")
+#define APPLY_PULSE_TIMER 0.05
+#define APPLY_PULSE 0.04
+#define APPLY_TEXT _("Updating interface configuration ...")
 
 
 #define DELETE_TIMER(a) if(a) {ecore_timer_del(a); a=NULL; }
