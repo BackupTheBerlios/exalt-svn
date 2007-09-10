@@ -23,7 +23,6 @@ typedef struct Exalt_Ethernets Exalt_Ethernets;
 #include "libexalt.h"
 #include "exalt_wireless.h"
 #include "exalt_wireless_info.h"
-#include "iwlib.h"
 
 #include <Ecore_Data.h>
 #include <Ecore.h>
