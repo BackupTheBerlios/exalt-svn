@@ -62,3 +62,33 @@ DBusMessage * dbus_cb_wireless_scan_wait(E_DBus_Object *obj, DBusMessage *msg)
     return reply;
 }
 
+DBusMessage * dbus_cb_wireless_get_essid(E_DBus_Object *obj, DBusMessage *msg)
+{
+    DBusMessage *reply;
+    DBusMessageIter args;
+    char* interface;
+    exalt_ethernet* eth;
+    char* essid;
+
+    reply = dbus_message_new_method_return(msg);
+
+    eth= dbus_get_eth(msg);
+
+    if(!eth)
+        return reply;
+
+    dbus_message_iter_init_append(reply, &args);
+    essid = exalt_wireless_get_essid(exalt_eth_get_wireless(eth));
+    if(!essid)
+    {
+        print_error("WARNING", __FILE__, __LINE__,__func__, "essid=%p",essid);
+        return reply;
+    }
+    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid))
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
+        return reply;
+    }
+
+    return reply;
+}

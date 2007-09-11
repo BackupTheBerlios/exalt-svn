@@ -8,7 +8,7 @@
 #include "e_mod_main.h"
 #include "e_mod_gadcon.h"
 #include "e_mod_config.h"
-#include <libexalt.h>
+#include <libexalt_dbus.h>
 
 
 typedef struct _Config Config;
@@ -21,6 +21,8 @@ struct _Config
 	E_Config_Dialog *config_dialog;
 	Evas_List       *instances;
 	E_Menu          *menu;
+
+        exalt_dbus_conn* conn;
 };
 
 extern Config *exalt_config;

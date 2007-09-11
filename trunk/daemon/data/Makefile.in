@@ -171,7 +171,7 @@ target_vendor = @target_vendor@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 filesdir = $(pkgdatadir)
-SUBDIRS = init.d dbus
+SUBDIRS = dbus
 all: all-recursive
 
 .SUFFIXES:

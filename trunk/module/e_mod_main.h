@@ -5,6 +5,7 @@
 typedef struct _Instance Instance;
 typedef struct _Popup Popup;
 
+#include <libexalt_dbus.h>
 #include "e_mod_gadcon.h"
 #include "e_mod_config.h"
 
@@ -12,7 +13,6 @@ typedef struct _Popup Popup;
 struct _Instance
 {
     E_Gadcon_Client *gcc;
-    E_Menu           *win_menu;
     Evas_Object *o_button;
 };
 

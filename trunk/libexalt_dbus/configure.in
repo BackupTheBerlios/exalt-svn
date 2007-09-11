@@ -61,9 +61,9 @@ requirements=""
 
 
 PKG_CHECK_MODULES(LIBEXALT_DBUS, [
-		ecore >= 0.9.9.037,
+		ecore >= 0.9.9.037
                 edbus >= 0.1.0.002
-		])
+                ])
 
 AC_SUBST(requirements)
 

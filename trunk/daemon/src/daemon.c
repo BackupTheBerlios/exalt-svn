@@ -33,6 +33,7 @@ int setup(E_DBus_Connection *conn)
     e_dbus_interface_method_add(iface, "IFACE_IS_WIRELESS", NULL, NULL, dbus_cb_eth_is_wireless);
     e_dbus_interface_method_add(iface, "IFACE_IS_LINK", NULL, NULL, dbus_cb_eth_is_link);
     e_dbus_interface_method_add(iface, "IFACE_IS_UP", NULL, NULL, dbus_cb_eth_is_up);
+    e_dbus_interface_method_add(iface, "IFACE_GET_ESSID", NULL, NULL, dbus_cb_wireless_get_essid);
 
     e_dbus_interface_method_add(iface, "IFACE_SCAN_WAIT", NULL, NULL, dbus_cb_wireless_scan_wait);
 

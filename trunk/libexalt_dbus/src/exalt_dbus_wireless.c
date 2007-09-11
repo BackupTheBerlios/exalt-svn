@@ -52,3 +52,33 @@ Ecore_List* exalt_dbus_wireless_scan_wait(exalt_dbus_conn* conn, char* eth)
     return res;
 }
 
+char* exalt_dbus_wireless_get_essid(exalt_dbus_conn* conn, char* eth)
+{
+    DBusPendingCall * ret;
+    DBusMessage *msg;
+    DBusMessageIter args;
+    char* res;
+
+    if(!conn || !eth)
+    {
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"conn==%p, eth==%p ",conn, eth);
+        return NULL;
+    }
+
+    msg = exalt_dbus_read_call_new("IFACE_GET_ESSID");
+    dbus_message_iter_init_append(msg, &args);
+    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth)) {
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        dbus_message_unref(msg);
+        return NULL;
+    }
+    dbus_connection_send_with_reply (conn->conn, msg, &ret, -1);
+    dbus_pending_call_block(ret);
+    msg = dbus_pending_call_steal_reply(ret);
+    dbus_pending_call_unref(ret);
+
+    //read the response
+    res = exalt_dbus_response_string(msg);
+    dbus_message_unref(msg);
+    return res;
+}

@@ -22,6 +22,7 @@
 #include <libexalt_dbus.h>
 
 Ecore_List* exalt_dbus_wireless_scan_wait(exalt_dbus_conn* conn, char* eth);
+char* exalt_dbus_wireless_get_essid(exalt_dbus_conn* conn, char* eth);
 
 #endif   /* ----- #ifndef EXALT_DBUS_WIRELESS_INC  ----- */
 

@@ -30,6 +30,11 @@ e_modapi_init(E_Module *m)
     }
 
     exalt_config->module = m;
+    exalt_config->menu = NULL;
+
+    exalt_dbus_init();
+    exalt_config->conn = exalt_dbus_connect();
+
     exalt_gc_register();
     return m;
 }
@@ -38,6 +43,8 @@ e_modapi_init(E_Module *m)
 e_modapi_shutdown(E_Module *m)
 {
     exalt_gc_unregister();
+
+    exalt_dbus_shutdown();
 
     if(exalt_config->config_dialog)
         e_object_del(E_OBJECT(exalt_config->config_dialog));

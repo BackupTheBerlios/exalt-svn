@@ -79,7 +79,9 @@ int main(int argc, char** argv)
         return -1;
     }
 
-    exalt_dbus_notify_set(conn,notify_cb,conn);
+    exalt_dbus_notify_set(conn,NULL,NULL);
+ exalt_dbus_notify_set(conn,notify_cb,conn);
+
 
     interfaces = exalt_dbus_eth_get_list(conn);
     if(!interfaces)
@@ -93,6 +95,7 @@ int main(int argc, char** argv)
         printf("wireless?: %d\n",exalt_dbus_eth_is_wireless(conn,interface));
         if(exalt_dbus_eth_is_wireless(conn,interface))
         {
+            printf("\tcurrent essid: %s\n", exalt_dbus_wireless_get_essid(conn,interface));
             networks = exalt_dbus_wireless_scan_wait(conn, interface);
             ecore_list_first_goto(networks);
             if(ecore_list_empty_is(networks))
@@ -124,7 +127,6 @@ int main(int argc, char** argv)
                 printf("\t\tSecurity    : %d\n", exalt_dbus_wirelessinfo_get_default_security_mode(conn,interface,essid));
                 printf("\t\tMode        : %d\n", exalt_dbus_wirelessinfo_get_default_mode(conn,interface,essid));
             }
-
         }
         printf("link?    : %d\n",exalt_dbus_eth_is_link(conn,interface));
         printf("up?      : %d\n",exalt_dbus_eth_is_up(conn, interface));

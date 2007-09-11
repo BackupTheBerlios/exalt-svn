@@ -48,8 +48,8 @@ static void _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
  	if(!exalt_config) return;
 	exalt_config->config_dialog = NULL;
-	EXALT_FREE(cfdata->cmd)
-	EXALT_FREE(cfdata)
+	EXALT_DBUS_FREE(cfdata->cmd);
+	EXALT_DBUS_FREE(cfdata);
 }
 
 static Evas_Object * _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)

@@ -35,11 +35,11 @@ struct _exalt_dbus_conn
 {
     E_DBus_Connection *e_conn;
     DBusConnection* conn;
+    exalt_dbus_notify_data* notify;
 };
 
 struct _exalt_dbus_notify_data
 {
-    exalt_dbus_conn* conn;
     exalt_notify_cb* cb;
     void* user_data;
 };

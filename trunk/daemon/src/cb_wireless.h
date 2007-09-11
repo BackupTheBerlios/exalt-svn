@@ -22,6 +22,7 @@
 #include "daemon.h"
 
 DBusMessage * dbus_cb_wireless_scan_wait(E_DBus_Object *obj, DBusMessage *msg);
+DBusMessage * dbus_cb_wireless_get_essid(E_DBus_Object *obj, DBusMessage *msg);
 
 
 #endif   /* ----- #ifndef CB_WIRELESS_INC  ----- */

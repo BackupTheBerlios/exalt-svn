@@ -8,11 +8,33 @@ config.status: creating src/config.h
 config.status: src/config.h is unchanged
 make  all-am
 make[2]: Entering directory `/home/watchwolf/Projects/C/exalt_svn/exalt/daemon/src'
+gcc -DHAVE_CONFIG_H -I.    -Wall -W -g -D_GNU_SOURCE -I/usr/local/include -I/usr/local/include/exalt -I/usr/include/dbus-1.0 -I/usr/lib64/dbus-1.0/include   -g -O2 -MT daemon.o -MD -MP -MF .deps/daemon.Tpo -c -o daemon.o daemon.c
+mv -f .deps/daemon.Tpo .deps/daemon.Po
+gcc -DHAVE_CONFIG_H -I.    -Wall -W -g -D_GNU_SOURCE -I/usr/local/include -I/usr/local/include/exalt -I/usr/include/dbus-1.0 -I/usr/lib64/dbus-1.0/include   -g -O2 -MT cb_ethernet.o -MD -MP -MF .deps/cb_ethernet.Tpo -c -o cb_ethernet.o cb_ethernet.c
+mv -f .deps/cb_ethernet.Tpo .deps/cb_ethernet.Po
+gcc -DHAVE_CONFIG_H -I.    -Wall -W -g -D_GNU_SOURCE -I/usr/local/include -I/usr/local/include/exalt -I/usr/include/dbus-1.0 -I/usr/lib64/dbus-1.0/include   -g -O2 -MT cb_wireless.o -MD -MP -MF .deps/cb_wireless.Tpo -c -o cb_wireless.o cb_wireless.c
+mv -f .deps/cb_wireless.Tpo .deps/cb_wireless.Po
+gcc -DHAVE_CONFIG_H -I.    -Wall -W -g -D_GNU_SOURCE -I/usr/local/include -I/usr/local/include/exalt -I/usr/include/dbus-1.0 -I/usr/lib64/dbus-1.0/include   -g -O2 -MT cb_wirelessinfo.o -MD -MP -MF .deps/cb_wirelessinfo.Tpo -c -o cb_wirelessinfo.o cb_wirelessinfo.c
+mv -f .deps/cb_wirelessinfo.Tpo .deps/cb_wirelessinfo.Po
+/bin/sh ../libtool --tag=CC   --mode=link gcc -Wall -W -g -D_GNU_SOURCE -I/usr/local/include -I/usr/local/include/exalt -I/usr/include/dbus-1.0 -I/usr/lib64/dbus-1.0/include   -g -O2 -export-dynamic  -o exalt-daemon daemon.o cb_ethernet.o cb_wireless.o cb_wirelessinfo.o -L/usr/local/lib -lexalt -ledbus -lecore -ldbus-1   
+mkdir .libs
+gcc -Wall -W -g -D_GNU_SOURCE -I/usr/local/include -I/usr/local/include/exalt -I/usr/include/dbus-1.0 -I/usr/lib64/dbus-1.0/include -g -O2 -o exalt-daemon daemon.o cb_ethernet.o cb_wireless.o cb_wirelessinfo.o -Wl,--export-dynamic  -L/usr/local/lib /usr/local/lib/libexalt.so /usr/lib64/libecore_config.so /usr/lib64/libevas.so /usr/lib64/libfreetype.so /usr/lib64/libfontconfig.so /usr/lib64/libexpat.so /usr/lib64/libecore_ipc.so /usr/lib64/libeet.so -lz /usr/lib64/libjpeg.so /usr/lib64/libecore_con.so -lssl -lcrypto /usr/lib64/libehal.so /usr/lib64/libedbus.so /usr/lib64/libecore.so -lm -ldl /usr/lib64/libdbus-1.so  
 make[2]: Leaving directory `/home/watchwolf/Projects/C/exalt_svn/exalt/daemon/src'
 make[1]: Leaving directory `/home/watchwolf/Projects/C/exalt_svn/exalt/daemon/src'
 Making all in data
 make[1]: Entering directory `/home/watchwolf/Projects/C/exalt_svn/exalt/daemon/data'
 Making all in init.d
 make[2]: Entering directory `/home/watchwolf/Projects/C/exalt_svn/exalt/daemon/data/init.d'
+make[2]: Nothing to be done for `all'.
 make[2]: Leaving directory `/home/watchwolf/Projects/C/exalt_svn/exalt/daemon/data/init.d'
+Making all in dbus
+make[2]: Entering directory `/home/watchwolf/Projects/C/exalt_svn/exalt/daemon/data/dbus'
+make[2]: Nothing to be done for `all'.
+make[2]: Leaving directory `/home/watchwolf/Projects/C/exalt_svn/exalt/daemon/data/dbus'
+make[2]: Entering directory `/home/watchwolf/Projects/C/exalt_svn/exalt/daemon/data'
+make[2]: Nothing to be done for `all-am'.
+make[2]: Leaving directory `/home/watchwolf/Projects/C/exalt_svn/exalt/daemon/data'
 make[1]: Leaving directory `/home/watchwolf/Projects/C/exalt_svn/exalt/daemon/data'
+make[1]: Entering directory `/home/watchwolf/Projects/C/exalt_svn/exalt/daemon'
+make[1]: Nothing to be done for `all-am'.
+make[1]: Leaving directory `/home/watchwolf/Projects/C/exalt_svn/exalt/daemon'

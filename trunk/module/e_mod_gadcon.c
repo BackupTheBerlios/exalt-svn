@@ -34,21 +34,12 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
     gcc = e_gadcon_client_new(gc, name, id, style, inst->o_button);
     gcc->data = inst;
     inst->gcc = gcc;
-    inst->win_menu = NULL;
 
     evas_object_event_callback_add(inst->o_button, EVAS_CALLBACK_MOUSE_DOWN, _cb_mouse_down, inst);
 
     exalt_config->instances = evas_list_append(exalt_config->instances, inst);
 
-    if(!exalt_is_init)
-    {
-        exalt_eth_init();
-        exalt_eth_set_cb(_exalt_eth_cb,inst);
-
-        exalt_main();
-        exalt_is_init = 1;
-    }
-    exalt_eth_set_cb(_exalt_eth_cb,inst);
+    exalt_dbus_notify_set( exalt_config->conn, _exalt_notify_cb, inst);
 
     return gcc;
 }
@@ -59,21 +50,27 @@ _gc_shutdown(E_Gadcon_Client *gcc)
     Instance *inst;
 
     inst = gcc->data;
+
     exalt_config->instances = evas_list_remove(exalt_config->instances, inst);
-    if (inst->win_menu)
+
+    if (exalt_config->menu)
     {
-        e_menu_post_deactivate_callback_set(inst->win_menu, NULL, NULL);
-        e_object_del(E_OBJECT(inst->win_menu));
-        inst->win_menu = NULL;
+        e_menu_post_deactivate_callback_set(exalt_config->menu, NULL, NULL);
+        e_menu_pre_activate_callback_set(exalt_config->menu, NULL, NULL);
+        e_object_del(E_OBJECT(exalt_config->menu));
+        exalt_config->menu = NULL;
     }
 
     if (inst->o_button)
     {
         evas_object_event_callback_del(inst->o_button, EVAS_CALLBACK_MOUSE_DOWN,
                 _cb_mouse_down);
+
         evas_object_del(inst->o_button);
     }
-    free(inst);
+
+    exalt_dbus_notify_set( exalt_config->conn, NULL, NULL);
+    E_FREE(inst);
 }
 
     static void

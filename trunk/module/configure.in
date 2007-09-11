@@ -140,8 +140,8 @@ AC_SUBST(e_libs)
 AC_SUBST(e_modules)
 
 PKG_CHECK_MODULES(EXALT, [
-   exalt >= 0.0.1
-   ehal >= 0.1.0.002
+    edbus >= 0.1.0.002
+    exalt_dbus >= 0.0.1
 ])
 
 AC_OUTPUT([
