@@ -61,15 +61,16 @@ general_panel* generalpanel_create()
 
 void generalpanel_load_dns_list(general_panel* pnl)
 {
-	int i,nb_dns;
-	char** t;
+	Ecore_List* l;
+        char* dns;
 
 	etk_tree_clear(ETK_TREE(pnl->dns_list));
-	t = exalt_dns_get_list(&nb_dns);
-	for(i=0;i<nb_dns;i++)
+	l = exalt_dbus_dns_get_list(exalt_conn);
+        ecore_list_first_goto(l);
+        while( (dns=ecore_list_next(l)))
 		etk_tree_row_append(ETK_TREE(pnl->dns_list), NULL,
-		    pnl->dns_col,t[i],NULL);
-	exalt_dns_free_list(t,nb_dns);
+		    pnl->dns_col,dns,NULL);
+                ecore_list_destroy(l);
 }
 
 
@@ -93,10 +94,10 @@ void generalpanel_btn_dns_add_clicked_cb(void *data)
 		return ;
 	}
 	general_panel* pnl = (general_panel*)data;
-	exalt_dns_add(etk_entry_text_get(ETK_ENTRY(pnl->entry_dns)));
+	exalt_dbus_dns_add(exalt_conn,etk_entry_text_get(ETK_ENTRY(pnl->entry_dns)));
 	etk_entry_text_set(ETK_ENTRY(pnl->entry_dns),"");
 	//load the dns list
-	EXALT_FREE(pnl->select_dns);
+	EXALT_DBUS_FREE(pnl->select_dns);
 	generalpanel_load_dns_list(pnl);
 }
 
@@ -108,10 +109,10 @@ void generalpanel_btn_dns_modify_clicked_cb(void *data)
 		return ;
 	}
 	general_panel* pnl = (general_panel*)data;
-	exalt_dns_replace(pnl->select_dns,etk_entry_text_get(ETK_ENTRY(pnl->entry_dns)));
+	exalt_dbus_dns_replace(exalt_conn, pnl->select_dns,etk_entry_text_get(ETK_ENTRY(pnl->entry_dns)));
 	etk_entry_text_set(ETK_ENTRY(pnl->entry_dns),"");
 	//load the dns list
-	EXALT_FREE(pnl->select_dns);
+	EXALT_DBUS_FREE(pnl->select_dns);
 	generalpanel_load_dns_list(pnl);
 }
 
@@ -125,11 +126,11 @@ void generalpanel_btn_dns_delete_clicked_cb(void *data)
 	general_panel* pnl = (general_panel*)data;
 	if(pnl->select_dns)
 	{
-		exalt_dns_delete(pnl->select_dns);
+		exalt_dbus_dns_delete(exalt_conn,pnl->select_dns);
 		etk_entry_text_set(ETK_ENTRY(pnl->entry_dns),"");
 		//load the dns list
 		generalpanel_load_dns_list(pnl);
-		EXALT_FREE(pnl->select_dns);
+		EXALT_DBUS_FREE(pnl->select_dns);
 	}
 }
 
@@ -146,7 +147,7 @@ void generalpanel_list_dns_row_clicked_cb(Etk_Object *object, Etk_Tree_Row *row,
 	pnl = (general_panel*)data;
 
 	etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 0),  &row_name, NULL);
-	EXALT_FREE(pnl->select_dns);
+	EXALT_DBUS_FREE(pnl->select_dns);
 	pnl->select_dns = strdup(row_name);
 	etk_entry_text_set(ETK_ENTRY(pnl->entry_dns),row_name);
 
@@ -154,7 +155,7 @@ void generalpanel_list_dns_row_clicked_cb(Etk_Object *object, Etk_Tree_Row *row,
 }
 
 
-void generalpanel_textchanged_entry_cb(Etk_Object *object, void *data)
+void generalpanel_textchanged_entry_cb(Etk_Object *object __UNUSED__, void *data)
 {
  	general_panel* pnl;
 	if(!data)
@@ -164,7 +165,7 @@ void generalpanel_textchanged_entry_cb(Etk_Object *object, void *data)
 	}
 
 	pnl = (general_panel*) data;
-	if(!exalt_is_address(etk_entry_text_get(ETK_ENTRY(pnl->entry_dns))))
+	if(!exalt_dbus_is_address(exalt_conn, etk_entry_text_get(ETK_ENTRY(pnl->entry_dns))))
 	{
 	 	etk_widget_disabled_set(pnl->btn_dns_add,ETK_TRUE);
 		etk_widget_disabled_set(pnl->btn_dns_modify,ETK_TRUE);

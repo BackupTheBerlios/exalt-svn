@@ -65,17 +65,15 @@ typedef struct Exalt_Ethernets Exalt_Ethernets;
 
 /** callback function used for notifications when a new card is add, new essid ... */
 typedef void (*Exalt_Eth_Cb) (exalt_ethernet* eth, int action, void* user_data);
-/** cast into an Exalt_Eth_Cb function */
-#define EXALT_ETH_CB(a) (Exalt_Eth_Cb)a
+
 extern Exalt_Ethernets exalt_eth_interfaces;
 
 /** callback function used for notifications during a scan */
-typedef void (*Exalt_Wifi_Scan_Cb) (exalt_wireless_info* wi, int action, void* user_data);
-/** cas into a Exalt_Wifi_Scan_Cb function */
-#define EXALT_WIRELESS_SCAN_CB(a) (Exalt_Wifi_Scan_Cb)a
+typedef void (*Exalt_Wifi_Scan_Cb) (exalt_ethernet* eth, Ecore_List* new_networks, Ecore_List* old_networks, void* user_data);
 
 /** callback function used for notify than the configuration is applied */
 typedef void (*Exalt_Conf_Applied) (exalt_ethernet* eth, void* data);
+
 
 exalt_ethernet* exalt_eth_create(const char* name);
 
@@ -101,11 +99,11 @@ exalt_ethernet* exalt_eth_get_ethernet_byifindex(int ifindex);
 
 
 short exalt_eth_is_link(exalt_ethernet *eth);
-char* exalt_eth_get_name(exalt_ethernet* eth);
+const char* exalt_eth_get_name(exalt_ethernet* eth);
 char* exalt_eth_get_ip(exalt_ethernet* eth);
 char* exalt_eth_get_netmask(exalt_ethernet* eth);
 char* exalt_eth_get_gateway(exalt_ethernet* eth);
-char* exalt_eth_get_udi(exalt_ethernet* eth);
+const char* exalt_eth_get_udi(exalt_ethernet* eth);
 int exalt_eth_get_ifindex(exalt_ethernet* eth);
 
 short exalt_eth_is_dhcp(exalt_ethernet * eth);
@@ -121,13 +119,14 @@ int exalt_eth_set_new_ip(exalt_ethernet* eth,const char* ip);
 int exalt_eth_set_new_netmask(exalt_ethernet* eth,const char* netmask);
 int exalt_eth_set_new_gateway(exalt_ethernet* eth,const char* gateway);
 int exalt_eth_set_new_dhcp(exalt_ethernet* eth, short dhcp);
+int exalt_eth_set_new_up(exalt_ethernet* eth, short up);
 
 
 int exalt_eth_apply_conf(exalt_ethernet* eth, Exalt_Conf_Applied fct, void* user_data);
 
-char* exalt_eth_get_new_ip(exalt_ethernet* eth);
-char* exalt_eth_get_new_gateway(exalt_ethernet* eth);
-char* exalt_eth_get_new_netmask(exalt_ethernet* eth);
+const char* exalt_eth_get_new_ip(exalt_ethernet* eth);
+const char* exalt_eth_get_new_gateway(exalt_ethernet* eth);
+const char* exalt_eth_get_new_netmask(exalt_ethernet* eth);
 
 /** @} */
 

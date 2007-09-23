@@ -19,9 +19,11 @@
 #ifndef  DEFINE_INC
 #define  DEFINE_INC
 
+#define __UNUSED__ __attribute__((unused))
 
 #define EXALTD_SERVICE "org.e.Exalt"
 #define EXALTD_INTERFACE_READ "org.e.Exalt.Read"
+#define EXALTD_INTERFACE_WRITE "org.e.Exalt.Write"
 #define EXALTD_PATH "/org/e/Exalt"
 
 #define EXALTD_PIDFILE "/var/run/exaltd.pid"

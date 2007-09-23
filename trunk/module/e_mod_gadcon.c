@@ -6,12 +6,14 @@ static E_Gadcon_Client *_gc_init(E_Gadcon *gc, const char *name, const char *id,
 static void _gc_shutdown(E_Gadcon_Client *gcc);
 static void _gc_orient(E_Gadcon_Client *gcc);
 static char *_gc_label(void);
+static const char *_gc_id_new(void);
+
 static Evas_Object *_gc_icon(Evas *evas);
 
 static const E_Gadcon_Client_Class _gc_class =
 {
     GADCON_CLIENT_CLASS_VERSION, "exalt",
-    {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon},
+    {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon, _gc_id_new},
     E_GADCON_CLIENT_STYLE_PLAIN
 };
 
@@ -109,4 +111,11 @@ exalt_gc_unregister(void)
 {
     e_gadcon_provider_unregister(&_gc_class);
 }
+
+    static const char *
+_gc_id_new(void)
+{
+    return _gc_class.name;
+}
+
 

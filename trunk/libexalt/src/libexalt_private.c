@@ -91,7 +91,7 @@ short exalt_ioctl(void* argp, int request)
  * @param addr the address
  * @return Return the address in decimal format
  */
-char* exalt_addr_hexa_to_dec(char* addr)
+char* exalt_addr_hexa_to_dec(const char* addr)
 {
     char *res;
     char buf[4];
@@ -156,4 +156,10 @@ char *str_remove (const char *s, const char *ct)
     }
     return new_s;
 }
+
+
+
+
+
+
 

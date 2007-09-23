@@ -114,7 +114,7 @@ void exalt_wirelessinfo_free(void* data)
  * @param w the exalt_wireless_info
  * @param address the new mac address
  */
-void exalt_wirelessinfo_set_address(exalt_wireless_info* w, char* address)
+void exalt_wirelessinfo_set_address(exalt_wireless_info* w, const char* address)
 {
 	if(w && address)
 	{
@@ -131,7 +131,7 @@ void exalt_wirelessinfo_set_address(exalt_wireless_info* w, char* address)
  * @param w the exalt_wireless_info
  * @param essid the new essid
  */
-void exalt_wirelessinfo_set_essid(exalt_wireless_info* w, char* essid)
+void exalt_wirelessinfo_set_essid(exalt_wireless_info* w, const char* essid)
 {
     if(!w || !essid)
     {
@@ -149,7 +149,7 @@ void exalt_wirelessinfo_set_essid(exalt_wireless_info* w, char* essid)
  * @param w the exalt_wireless_info
  * @param mode the new mode
  */
-void exalt_wirelessinfo_set_mode(exalt_wireless_info* w, char* mode)
+void exalt_wirelessinfo_set_mode(exalt_wireless_info* w, const char* mode)
 {
     if(!w || !mode)
     {
@@ -167,7 +167,7 @@ void exalt_wirelessinfo_set_mode(exalt_wireless_info* w, char* mode)
  * @param w the exalt_wireless_info
  * @param protocol the new protocol
  */
-void exalt_wirelessinfo_set_protocol(exalt_wireless_info* w, char* protocol)
+void exalt_wirelessinfo_set_protocol(exalt_wireless_info* w, const char* protocol)
 {
     if(!w || !protocol)
     {
@@ -185,7 +185,7 @@ void exalt_wirelessinfo_set_protocol(exalt_wireless_info* w, char* protocol)
  * @param w the exalt_wireless_info
  * @param channel the new channel
  */
-void exalt_wirelessinfo_set_channel(exalt_wireless_info* w, char* channel)
+void exalt_wirelessinfo_set_channel(exalt_wireless_info* w, const char* channel)
 {
     if(!w || !channel)
     {
@@ -220,7 +220,7 @@ void exalt_wirelessinfo_set_encryption(exalt_wireless_info* w, int  encryption)
  * @param w the exalt_wireless_info
  * @param bit_rates the new bit rates
  */
-void exalt_wirelessinfo_set_bitrates(exalt_wireless_info* w, char* bit_rates)
+void exalt_wirelessinfo_set_bitrates(exalt_wireless_info* w, const char* bit_rates)
 {
     if(!w || !bit_rates)
     {
@@ -326,7 +326,7 @@ void exalt_wirelessinfo_set_known(exalt_wireless_info* w,short known)
  * @param w the exalt_wireless_info
  * @return Return the mac address
  */
-char* exalt_wirelessinfo_get_addr(exalt_wireless_info* w)
+const char* exalt_wirelessinfo_get_addr(exalt_wireless_info* w)
 {
     if(!w)
     {
@@ -356,7 +356,7 @@ exalt_wireless* exalt_wirelessinfo_get_wireless(exalt_wireless_info* w)
  * @param w the exalt_wireless_info
  * @return Return the essid
  */
-char* exalt_wirelessinfo_get_essid(exalt_wireless_info* w)
+const char* exalt_wirelessinfo_get_essid(exalt_wireless_info* w)
 {
 	if(!w)
     {
@@ -373,7 +373,7 @@ char* exalt_wirelessinfo_get_essid(exalt_wireless_info* w)
  * @param w the exalt_wireless_info
  * @return Return the protocol
  */
-char* exalt_wirelessinfo_get_protocol(exalt_wireless_info* w)
+const char* exalt_wirelessinfo_get_protocol(exalt_wireless_info* w)
 {
 		if(!w)
     {
@@ -390,7 +390,7 @@ char* exalt_wirelessinfo_get_protocol(exalt_wireless_info* w)
  * @param w the exalt_wireless_info
  * @return Return the mode
  */
-char* exalt_wirelessinfo_get_mode(exalt_wireless_info* w)
+const char* exalt_wirelessinfo_get_mode(exalt_wireless_info* w)
 {
     if(!w)
     {
@@ -407,7 +407,7 @@ char* exalt_wirelessinfo_get_mode(exalt_wireless_info* w)
  * @param w the exalt_wireless_info
  * @return Return channel
  */
-char* exalt_wirelessinfo_get_channel(exalt_wireless_info* w)
+const char* exalt_wirelessinfo_get_channel(exalt_wireless_info* w)
 {
 	if(!w)
     {
@@ -441,7 +441,7 @@ int exalt_wirelessinfo_get_encryption(exalt_wireless_info* w)
  * @param w the exalt_wireless_info
  * @return Return the bit rates
  */
-char* exalt_wirelessinfo_get_bitrates(exalt_wireless_info* w)
+const char* exalt_wirelessinfo_get_bitrates(exalt_wireless_info* w)
 {
     if(!w)
     {
@@ -547,7 +547,7 @@ int exalt_wirelessinfo_is_scan(exalt_wireless_info* wi)
  * @param wi the exalt_wireless_info
  * @return Return the password
  */
-char* exalt_wirelessinfo_get_default_passwd(exalt_wireless_info* wi)
+const char* exalt_wirelessinfo_get_default_passwd(exalt_wireless_info* wi)
 {
 	if(!wi)
 	{
@@ -687,7 +687,7 @@ void exalt_wirelessinfo_set_default_mode(exalt_wireless_info* wi,int mode)
  * @param wi the exalt_wireless_info
  * @return Returns the ip address
  */
-char* exalt_wirelessinfo_get_default_ip(exalt_wireless_info* wi)
+const char* exalt_wirelessinfo_get_default_ip(exalt_wireless_info* wi)
 {
 	if(!wi)
 	{
@@ -704,7 +704,7 @@ char* exalt_wirelessinfo_get_default_ip(exalt_wireless_info* wi)
  * @param wi the exalt_wireless_info
  * @return Returns the netmask
  */
-char* exalt_wirelessinfo_get_default_netmask(exalt_wireless_info* wi)
+const char* exalt_wirelessinfo_get_default_netmask(exalt_wireless_info* wi)
 {
 	if(!wi)
 	{
@@ -721,7 +721,7 @@ char* exalt_wirelessinfo_get_default_netmask(exalt_wireless_info* wi)
  * @param wi the exalt_wireless_info
  * @return Returns the gateway
  */
-char* exalt_wirelessinfo_get_default_gateway(exalt_wireless_info* wi)
+const char* exalt_wirelessinfo_get_default_gateway(exalt_wireless_info* wi)
 {
 	if(!wi)
 	{
@@ -845,4 +845,37 @@ int exalt_wirelessinfo_set_default_dhcp(exalt_wireless_info* wi, short dhcp)
 	return 1;
 }
 
+
+/**
+ * @brief create an ett descriptor for saving a struct exalt_wireless_info
+ * @return Return the descriptor
+ */
+Eet_Data_Descriptor * exalt_wirelessinfo_edd_new()
+{
+    Eet_Data_Descriptor *edd_wi;
+
+    edd_wi = eet_data_descriptor_new("wireless_info", sizeof(exalt_wireless_info),
+            evas_list_next,
+            evas_list_append,
+            evas_list_data,
+            evas_list_free,
+            evas_hash_foreach,
+            evas_hash_add,
+            evas_hash_free);
+
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_wi, exalt_wireless_info, "essid", essid, EET_T_STRING);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_wi, exalt_wireless_info, "key", default_passwd, EET_T_STRING);
+
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_wi, exalt_wireless_info, "key_mode", default_passwd_mode, EET_T_INT);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_wi, exalt_wireless_info, "mode", default_mode, EET_T_INT);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_wi, exalt_wireless_info, "security_mode", default_security_mode, EET_T_INT);
+
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_wi, exalt_wireless_info, "ip", default_ip, EET_T_STRING);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_wi, exalt_wireless_info, "netmask", default_netmask, EET_T_STRING);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_wi, exalt_wireless_info, "gateway", default_gateway, EET_T_STRING);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_wi, exalt_wireless_info, "dhcp", default_dhcp, EET_T_SHORT);
+
+
+    return edd_wi;
+}
 

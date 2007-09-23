@@ -40,13 +40,7 @@ typedef struct exalt_wireless exalt_wireless;
 #define EXALT_WIRELESS_SECURITY_SHARED 1
 
 
-/** when a new wireless network appears */
-#define EXALT_WIRELESS_SCAN_CB_ACTION_NEW 1
-/** when a new wireless network disappears */
-#define EXALT_WIRELESS_SCAN_CB_ACTION_REMOVE 2
-
-
-#define EXALT_WIRELESS_SCAN_UPDATE_TIME 10
+#define EXALT_WIRELESS_SCAN_UPDATE_TIME 5
 
 
 #include "libexalt.h"
@@ -95,8 +89,8 @@ void exalt_wireless_set_new_essid(exalt_wireless* w,const char* essid);
 int exalt_wireless_get_new_passwd_mode(exalt_wireless* w);
 int exalt_wireless_get_new_mode(exalt_wireless* w);
 int exalt_wireless_get_new_security_mode(exalt_wireless* w);
-char* exalt_wireless_get_new_passwd(exalt_wireless* w);
-char* exalt_wireless_get_new_essid(exalt_wireless* w);
+const char* exalt_wireless_get_new_passwd(exalt_wireless* w);
+const char* exalt_wireless_get_new_essid(exalt_wireless* w);
 
 /** @} */
 

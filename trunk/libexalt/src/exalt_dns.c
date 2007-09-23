@@ -13,56 +13,24 @@
  * @param nb_dns the number of dns
  * @return Return the dns list
  */
-char** exalt_dns_get_list(int* nb_dns)
+Ecore_List* exalt_dns_get_list()
 {
 	FILE* f;
-	char **tab;
-	int i;
-	if(!nb_dns)
-	{
-		print_error("ERROR", __FILE__, __LINE__,__func__,"nb_dns=%p",nb_dns);
-		return NULL;
-	}
-
-	*nb_dns = 0;
-	tab=(char**)malloc((unsigned int)sizeof(char*)*NB_DNS_MAX);
-	if(!tab)
-	{
-		print_error("ERROR", __FILE__, __LINE__,__func__,"tab=%p, malloc() error", tab);
-	}
-
-	for(i=0;i<NB_DNS_MAX;i++)
-		tab[i] = (char*)malloc((unsigned int)sizeof(char)*DNS_LENGTH);
+        char buf[1024];
+        Ecore_List* l;
 
 
 	f = exalt_execute_command(DNS_GET_LIST);
+        l = ecore_list_new();
+        l->free_func = free;
 
-	while(fgets(tab[*nb_dns],DNS_LENGTH,f) && *nb_dns<NB_DNS_MAX)
-	{
-		tab[*nb_dns][strlen(tab[*nb_dns])-1] = '\0';
-		(*nb_dns)++;
-	}
-	EXALT_PCLOSE(f);
-	return tab;
-}
-
-
-
-/**
- * @brief free the dns list
- * @param t the dns list
- * @param nb_dns the number of dns
- */
-void exalt_dns_free_list(char** t, int nb_dns)
-{
-	int i;
-	if(!t)
-	{
-		print_error("ERROR", __FILE__, __LINE__,__func__,"t=%p", t);
-	}
-	for(i=0;i<nb_dns;i++)
-		EXALT_FREE(t[i]);
-	EXALT_FREE(t);
+	while(fgets(buf,1024,f))
+        {
+            buf[strlen(buf)-1] = '\0';
+            ecore_list_append(l, strdup(buf));
+        }
+        EXALT_PCLOSE(f);
+	return l;
 }
 
 
@@ -160,13 +128,14 @@ int exalt_dns_replace(const char* old_dns, const char* new_dns)
  */
 void exalt_dns_printf()
 {
-	int nb_dns;
-	int i;
-	char** t = exalt_dns_get_list(&nb_dns);
-	printf("## DNS LIST ##\n");
-	for(i=0;i<nb_dns;i++)
-		printf("%s\n",t[i]);
-	exalt_dns_free_list(t,nb_dns);
+	Ecore_List* l = exalt_dns_get_list();
+	char *dns;
+
+        printf("## DNS LIST ##\n");
+        ecore_list_first_goto(l);
+	while (( dns=ecore_list_next(l)))
+		printf("%s\n",dns);
+	ecore_list_destroy(l);
 }
 
 

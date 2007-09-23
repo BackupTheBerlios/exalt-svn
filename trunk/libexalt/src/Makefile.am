@@ -8,7 +8,7 @@ localedir = $(datadir)/locale
 DEFS = -DLOCALEDIR=\"$(localedir)\" @DEFS@
 
 INCLUDES	= \
- -Wall -g @LIBEXALT_CFLAGS@ -Idistrib/
+ -Wall -g @LIBEXALT_CFLAGS@
 
 lib_LTLIBRARIES = libexalt.la
 
@@ -21,10 +21,7 @@ exalt_dns.h \
 exalt_ethernet.h \
 exalt_sys_conf.h \
 exalt_wireless.h \
-exalt_wireless_info.h \
-distrib/default.h \
-distrib/gentoo.h \
-distrib/debian.h
+exalt_wireless_info.h
 
 libexalt_la_SOURCES = \
 nettools/proc.c \

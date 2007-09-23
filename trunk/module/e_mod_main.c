@@ -34,7 +34,9 @@ e_modapi_init(E_Module *m)
 
     exalt_dbus_init();
     exalt_config->conn = exalt_dbus_connect();
-
+    exalt_config->interfaces = NULL;
+    exalt_config->wireless = ecore_list_new();
+    exalt_config->wireless->free_func = ECORE_FREE_CB(ecore_list_destroy);
     exalt_gc_register();
     return m;
 }
@@ -53,6 +55,18 @@ e_modapi_shutdown(E_Module *m)
         e_menu_post_deactivate_callback_set(exalt_config->menu, NULL, NULL);
         e_object_del(E_OBJECT(exalt_config->menu));
         exalt_config->menu = NULL;
+    }
+
+    if(exalt_config->interfaces)
+    {
+        ecore_list_destroy(exalt_config->interfaces);
+        exalt_config->interfaces = NULL;
+    }
+
+    if(exalt_config->wireless)
+    {
+        ecore_list_destroy(exalt_config->wireless);
+        exalt_config->wireless= NULL;
     }
 
     free(exalt_config);

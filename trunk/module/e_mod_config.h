@@ -23,6 +23,8 @@ struct _Config
 	E_Menu          *menu;
 
         exalt_dbus_conn* conn;
+        Ecore_List* interfaces;
+        Ecore_List* wireless;
 };
 
 extern Config *exalt_config;

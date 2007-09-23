@@ -1,4 +1,3 @@
-
 #ifndef WIRELESSPANEL_H
 #define WIRELESSPANEL_H
 
@@ -28,11 +27,10 @@ typedef struct _wireless_panel wireless_panel;
 struct _wireless_panel
 {
 	main_window* win;
-	exalt_ethernet* eth;
+	char* interface;
 
 	Etk_Widget *frame;
 	Etk_Widget *box_button_on; //the main frame, list of network, configure ...
-	Etk_Widget *box_button_off; //a message to say than the radio button is off
 
 	//box current configuraton (display essid / ip / mask & gateway)
 	Etk_Widget* lbl_essid;
@@ -71,12 +69,12 @@ struct _wireless_panel
 	Ecore_Timer* pulsebar_timer;
 };
 
-void wirelesspanel_scan_networks_cb(exalt_wireless_info* wi, int action, void* data);
+void wirelesspanel_scan_networks_cb(char* interface, Ecore_List* new_networks, Ecore_List* old_networks, void* data);
 
 wireless_panel* wirelesspanel_create(main_window* win);
 void wirelesspanel_show(wireless_panel* pnl);
 void wirelesspanel_hide(wireless_panel* pnl);
-void wirelesspanel_set_eth(wireless_panel* pnl, exalt_ethernet* eth);
+void wirelesspanel_set_eth(wireless_panel* pnl, char* interface);
 void wirelesspanel_load_scan(wireless_panel* pnl);
 void wirelesspanel_set_boxbutton(wireless_panel* pnl);
 
@@ -97,10 +95,10 @@ void wirelesspanel_textchanged_entry_cb(Etk_Object *object, void *data);
 
 
 int wirelesspanel_apply_pulsebar_timer(void* data);
-int wirelesspanel_apply_applied_cb(exalt_ethernet* eth, void* data);
-
-#endif
+void wirelesspanel_apply_applied_cb(char* interface, void* data);
 
 Etk_Combobox_Item * exalt_etk_combobox_data_item_get (Etk_Combobox *combobox, void *data);
 
+
+#endif
 

@@ -11,14 +11,7 @@
  * @{
  */
 
-/** max number of dns */
-#define NB_DNS_MAX 20
-/** the max dns length */
-#define DNS_LENGTH 255
-
-
-char** exalt_dns_get_list(int* nb_dns);
-void exalt_dns_free_list(char** t, int nb_dns);
+Ecore_List* exalt_dns_get_list();
 
 int exalt_dns_add(const char* dns);
 int exalt_dns_delete(const char* dns);

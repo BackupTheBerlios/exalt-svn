@@ -27,6 +27,7 @@ void _cb_mouse_down (void *data, Evas * e, Evas_Object * obj,void *event_info)
 
         e_menu_post_deactivate_callback_set(exalt_config->menu, _menu_cb_post,
                 inst);
+
         dir = E_MENU_POP_DIRECTION_AUTO;
         switch (inst->gcc->gadcon->orient)
         {
@@ -347,13 +348,10 @@ void _exalt_menu_item_wireless_load(exalt_dbus_conn *conn, E_Menu *m, char* inte
     if(!m || !interface)
         return;
 
-    data = malloc(sizeof(char*)*2);
-    data[0] = interface;
-
     if(exalt_dbus_eth_is_wireless(conn,interface))
     {
         l = exalt_dbus_wireless_scan_wait(conn,interface);
-
+        ecore_list_insert(exalt_config->wireless,l);
         ecore_list_first_goto(l);
         if(ecore_list_empty_is(l))
         {
@@ -364,6 +362,9 @@ void _exalt_menu_item_wireless_load(exalt_dbus_conn *conn, E_Menu *m, char* inte
         {
             while( (essid=ecore_list_next(l)) )
             {
+                data = malloc(sizeof(char*)*2);
+                data[0] = interface;
+
                 mi = e_menu_item_new(m);
                 data[1] = essid;
                 e_menu_item_icon_file_set(mi,img[(exalt_dbus_wirelessinfo_get_quality(conn,interface,essid))/25]);
@@ -373,7 +374,6 @@ void _exalt_menu_item_wireless_load(exalt_dbus_conn *conn, E_Menu *m, char* inte
                 e_menu_item_toggle_set(mi, strcmp(exalt_dbus_wireless_get_essid(conn,interface),essid)==0);
             }
         }
-
     }
 }
 
@@ -393,6 +393,7 @@ void _exalt_menu_item_interfaces_load(exalt_dbus_conn *conn, E_Menu *m)
         return;
 
     l = exalt_dbus_eth_get_list(conn);
+    exalt_config->interfaces = l;
     ecore_list_first_goto(l);
     while( (interface= ecore_list_next(l)))
     {
@@ -467,12 +468,23 @@ void _exalt_notify_cb(char* interface, int action, void* user_data)
     _popup_show(inst,interface,action);
 }
 
-    static void
-_menu_cb_post(void *data, E_Menu *m)
+static void
+_menu_cb_post(void* data, E_Menu *m)
 {
-    if (!exalt_config->menu) return;
-    e_object_del(E_OBJECT(exalt_config->menu));
-    exalt_config->menu = NULL;
+    if (exalt_config->menu)
+    {
+        e_object_del(E_OBJECT(exalt_config->menu));
+        exalt_config->menu = NULL;
+    }
+
+    if(exalt_config->interfaces)
+    {
+        ecore_list_destroy(exalt_config->interfaces);
+        exalt_config->interfaces = NULL;
+    }
+
+    if(exalt_config->wireless)
+        ecore_list_clear(exalt_config->wireless);
 }
 
 int str_istr (const char *cs, const char *ct)

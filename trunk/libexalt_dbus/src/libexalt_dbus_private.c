@@ -59,10 +59,9 @@ Ecore_List* exalt_dbus_response_strings(DBusMessage *msg)
     while (DBUS_TYPE_STRING == dbus_message_iter_get_arg_type(&args))
     {
         dbus_message_iter_get_basic(&args, &val);
-        ecore_list_append(res,(void *)strdup(val));
+        ecore_list_append(res,strdup(val));
         dbus_message_iter_next(&args);
     }
-
     return res;
 }
 
@@ -74,13 +73,20 @@ int exalt_dbus_response_boolean(DBusMessage *msg)
     if(!dbus_message_iter_init(msg, &args))
     {
         exalt_dbus_print_error("WARNING", __FILE__, __LINE__,__func__, "no argument");
-        return -1;
+        return 0;
     }
 
     if (DBUS_TYPE_BOOLEAN != dbus_message_iter_get_arg_type(&args))
     {
-        exalt_dbus_print_error("ERROR", __FILE__, __LINE__,__func__, "the argument is not a boolean");
-        return -1;
+        if (DBUS_TYPE_STRING == dbus_message_iter_get_arg_type(&args))
+        {
+            char* error;
+            dbus_message_iter_get_basic(&args, &error);
+            exalt_dbus_print_error("ERROR", __FILE__, __LINE__,__func__, "%s",error);
+        }
+        else
+            exalt_dbus_print_error("ERROR", __FILE__, __LINE__,__func__, "the argument is not a boolean");
+        return 0;
     }
     else
     {
@@ -97,13 +103,20 @@ int exalt_dbus_response_integer(DBusMessage *msg)
     if(!dbus_message_iter_init(msg, &args))
     {
         exalt_dbus_print_error("WARNING", __FILE__, __LINE__,__func__, "no argument");
-        return -1;
+        return 0;
     }
 
     if (DBUS_TYPE_INT32 != dbus_message_iter_get_arg_type(&args))
     {
-        exalt_dbus_print_error("ERROR", __FILE__, __LINE__,__func__, "the argument is not an integer");
-        return -1;
+        if (DBUS_TYPE_STRING == dbus_message_iter_get_arg_type(&args))
+        {
+            char* error;
+            dbus_message_iter_get_basic(&args, &error);
+            exalt_dbus_print_error("ERROR", __FILE__, __LINE__,__func__, "%s",error);
+        }
+        else
+            exalt_dbus_print_error("ERROR", __FILE__, __LINE__,__func__, "the argument is not an integer");
+        return 0;
     }
     else
     {

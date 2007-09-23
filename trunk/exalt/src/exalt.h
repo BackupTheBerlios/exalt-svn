@@ -4,9 +4,11 @@
 #include "config.h"
 #include <libintl.h>
 #include <locale.h>
-#include <libexalt.h>
+#include <libexalt_dbus.h>
 
 //#define _(STRING)    gettext(STRING)
+
+#define __UNUSED__ __attribute__((unused))
 
 #define ICONS_NETWORK_CONFIG "/icons/network-config.png"
 #define ICONS_ABOUT "/icons/about.png"
@@ -30,12 +32,15 @@
 
 extern char* exalt_default_interface;
 extern char* exalt_default_network;
+extern exalt_dbus_conn* exalt_conn;
+
+void print_error(const char* type, const char* file, int line,const char* fct, const char* msg, ...);
+
 
 #include "main_window.h"
 #include "eth_panel.h"
 #include "wireless_panel.h"
 #include "general_panel.h"
-#include "info_panel.h"
 
 #endif
 

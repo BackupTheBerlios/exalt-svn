@@ -72,9 +72,10 @@ AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source Code Director
 
 PKG_CHECK_MODULES(EXALT, [
   etk >= 0.1.0.002
-  exalt >= 0.0.1
   ehal >= 0.1.0.002
-])
+  edbus >= 0.1.0.002
+  exalt_dbus >= 0.0.1
+  ])
 
 
 

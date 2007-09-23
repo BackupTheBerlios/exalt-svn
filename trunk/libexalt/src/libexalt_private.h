@@ -26,6 +26,7 @@
 #include "wpa_supplicant/wpa_ctrl.h"
 #include "exalt_command.h"
 #include "exalt_regexp.h"
+#include <Eet.h>
 
 struct Exalt_Ethernets
 {
@@ -50,12 +51,15 @@ struct Exalt_Ethernets
 
 char *str_remove (const char *s, const char *ct);
 void print_error(const char* type, const char* file, int line,const char* fct, const char* msg, ...);
-char* exalt_addr_hexa_to_dec(char* addr);
+char* exalt_addr_hexa_to_dec(const char* addr);
 short exalt_ioctl(void* argp, int request);
 
 int _exalt_rtlink_essid_change(exalt_wireless *w);
 
 
+Eet_Data_Descriptor * exalt_eth_edd_new(Eet_Data_Descriptor *edd_w);
+Eet_Data_Descriptor * exalt_wireless_edd_new();
+Eet_Data_Descriptor * exalt_wirelessinfo_edd_new();
 
 #endif   /* ----- #ifndef LIBEXALT_PRIVATE_INC  ----- */
 

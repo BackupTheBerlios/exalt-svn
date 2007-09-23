@@ -21,24 +21,24 @@
 
 #include "libexalt_dbus.h"
 
-int exalt_dbus_wirelessinfo_get_quality(exalt_dbus_conn* conn, char* eth, char* essid);
-int exalt_dbus_wirelessinfo_get_encryption(exalt_dbus_conn* conn, char* eth, char* essid);
-int exalt_dbus_wirelessinfo_get_signallvl(exalt_dbus_conn* conn, char* eth, char* essid);
-int exalt_dbus_wirelessinfo_get_noiselvl(exalt_dbus_conn* conn, char* eth, char* essid);
-char* exalt_dbus_wirelessinfo_get_addr(exalt_dbus_conn* conn, char* eth, char* essid);
-char* exalt_dbus_wirelessinfo_get_protocol(exalt_dbus_conn* conn, char* eth, char* essid);
-char* exalt_dbus_wirelessinfo_get_mode(exalt_dbus_conn* conn, char* eth, char* essid);
-char* exalt_dbus_wirelessinfo_get_channel(exalt_dbus_conn* conn, char* eth, char* essid);
-char* exalt_dbus_wirelessinfo_get_bitrates(exalt_dbus_conn* conn, char* eth, char* essid);
+int exalt_dbus_wirelessinfo_get_quality(const exalt_dbus_conn* conn, const char* eth, const char* essid);
+int exalt_dbus_wirelessinfo_get_encryption(const exalt_dbus_conn* conn, const char* eth, const char* essid);
+int exalt_dbus_wirelessinfo_get_signallvl(const exalt_dbus_conn* conn, const char* eth, const char* essid);
+int exalt_dbus_wirelessinfo_get_noiselvl(const exalt_dbus_conn* conn, const char* eth, const char* essid);
+char* exalt_dbus_wirelessinfo_get_addr(const exalt_dbus_conn* conn, const char* eth, const char* essid);
+char* exalt_dbus_wirelessinfo_get_protocol(const exalt_dbus_conn* conn, const char* eth, const char* essid);
+char* exalt_dbus_wirelessinfo_get_mode(const exalt_dbus_conn* conn, const char* eth, const char* essid);
+char* exalt_dbus_wirelessinfo_get_channel(const exalt_dbus_conn* conn, const char* eth, const char* essid);
+char* exalt_dbus_wirelessinfo_get_bitrates(const exalt_dbus_conn* conn, const char* eth, const char* essid);
 
 
-char* exalt_dbus_wirelessinfo_get_default_passwd(exalt_dbus_conn* conn, char* eth, char* essid);
-char* exalt_dbus_wirelessinfo_get_default_ip(exalt_dbus_conn* conn, char* eth, char* essid);
-char* exalt_dbus_wirelessinfo_get_default_netmask(exalt_dbus_conn* conn, char* eth, char* essid);
-char* exalt_dbus_wirelessinfo_get_default_gateway(exalt_dbus_conn* conn, char* eth, char* essid);
-int exalt_dbus_wirelessinfo_get_default_passwd_mode(exalt_dbus_conn* conn, char* eth, char* essid);
-int exalt_dbus_wirelessinfo_get_default_security_mode(exalt_dbus_conn* conn, char* eth, char* essid);
-int exalt_dbus_wirelessinfo_get_default_mode(exalt_dbus_conn* conn, char* eth, char* essid);
-int exalt_dbus_wirelessinfo_is_default_dhcp(exalt_dbus_conn* conn, char* eth, char* essid);
+char* exalt_dbus_wirelessinfo_get_default_passwd(const exalt_dbus_conn* conn, const char* eth, const char* essid);
+char* exalt_dbus_wirelessinfo_get_default_ip(const exalt_dbus_conn* conn, const char* eth, const char* essid);
+char* exalt_dbus_wirelessinfo_get_default_netmask(const exalt_dbus_conn* conn, const char* eth, const char* essid);
+char* exalt_dbus_wirelessinfo_get_default_gateway(const exalt_dbus_conn* conn, const char* eth, const char* essid);
+int exalt_dbus_wirelessinfo_get_default_passwd_mode(const exalt_dbus_conn* conn, const char* eth, const char* essid);
+int exalt_dbus_wirelessinfo_get_default_security_mode(const exalt_dbus_conn* conn, const char* eth, const char* essid);
+int exalt_dbus_wirelessinfo_get_default_mode(const exalt_dbus_conn* conn, const char* eth, const char* essid);
+int exalt_dbus_wirelessinfo_is_default_dhcp(const exalt_dbus_conn* conn, const char* eth, const char* essid);
 #endif   /* ----- #ifndef EXALT_DBUS_WIRELESS_INFO_INC  ----- */
 

@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <libexalt_dbus.h>
+
 
 typedef struct _eth_panel eth_panel;
 
@@ -13,7 +15,7 @@ typedef struct _eth_panel eth_panel;
 
 struct _eth_panel
 {
-	exalt_ethernet* eth;
+	char* interface;
 
 	main_window* win;
 	Etk_Widget *frame;
@@ -46,13 +48,13 @@ struct _eth_panel
 eth_panel* ethpanel_create(main_window* win);
 void ethpanel_show(eth_panel* pnl);
 void ethpanel_hide(eth_panel* pnl);
-void ethpanel_set_eth(eth_panel* pnl, exalt_ethernet* eth);
+void ethpanel_set_eth(eth_panel* pnl, char* interface);
 void ethpanel_disabled_set(eth_panel* pnl);
 
 void ethpanel_set_static_dhcp_clicked_cb(Etk_Object *object, void *data);
 void ethpanel_textchanged_entry_cb(Etk_Object *object, void *data);
 void ethpanel_btn_apply_clicked_cb(void *data);
-int ethpanel_apply_applied_cb(exalt_ethernet* eth, void* data);
+void ethpanel_apply_applied_cb(char* interface, void* data);
 int ethpanel_apply_pulsebar_timer(void* data);
 void ethpanel_btn_disactivate_clicked_cb(void *data);
 void ethpanel_btn_activate_clicked_cb(void *data);

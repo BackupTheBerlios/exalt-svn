@@ -4,6 +4,7 @@
 
 char* exalt_default_interface = NULL;
 char* exalt_default_network = NULL;
+exalt_dbus_conn* exalt_conn = NULL;
 
 int main(int argc,char**argv)
 {
@@ -13,21 +14,22 @@ int main(int argc,char**argv)
 
 	if (!etk_init(&argc, &argv))
         {
-            fprintf(stderr, "Unable to init ETK.\n");
+            print_error("ERROR", __FILE__, __LINE__,__func__,"Can not init ETK");
             return 1;
         }
 
+        exalt_dbus_init();
+        if(! (exalt_conn = exalt_dbus_connect()))
+        {
+            print_error("ERROR", __FILE__, __LINE__,__func__,"Can not connect to DBUS");
+            return -1;
+        }
 
-	setlocale( LC_ALL, "" );
+        setlocale( LC_ALL, "" );
       	bindtextdomain( "exalt", PACKAGE_LOCALE_DIR );
      	textdomain( "exalt" );
 
-	exalt_eth_init();
-        //eth_printf();
-	win = mainwindow_create();
-        exalt_main();
-
- 	argc--;
+	argc--;
 	argv++;
 	while(argc)
 	{
@@ -56,7 +58,22 @@ int main(int argc,char**argv)
  	 	argv++;
 	}
 
+        win = mainwindow_create();
+
 	etk_main();
 
 	return 1;
 }
+
+
+void print_error(const char* type, const char* file, int line,const char* fct, const char* msg, ...)
+{
+    va_list ap;
+    va_start(ap,msg);
+    fprintf(stderr,"LIBEXALT:%s (%d)%s: %s\n",type,line,file,fct);
+    fprintf(stderr,"\t");
+    vfprintf(stderr,msg,ap);
+    fprintf(stderr,"\n\n");
+    va_end(ap);
+}
+

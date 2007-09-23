@@ -26,6 +26,10 @@ int setup(E_DBus_Connection *conn)
     obj = e_dbus_object_add(conn, EXALTD_PATH, NULL);
     iface = e_dbus_interface_new(EXALTD_INTERFACE_READ);
 
+    e_dbus_interface_method_add(iface, "IS_ADDRESS", NULL, NULL, dbus_cb_is_address);
+    e_dbus_interface_method_add(iface, "IS_ESSID", NULL, NULL, dbus_cb_is_essid);
+    e_dbus_interface_method_add(iface, "IS_PASSWD", NULL, NULL, dbus_cb_is_passwd);
+
     e_dbus_interface_method_add(iface, "IFACE_GET_IP", NULL, NULL, dbus_cb_eth_get_ip);
     e_dbus_interface_method_add(iface, "IFACE_GET_NETMASK", NULL, NULL, dbus_cb_eth_get_netmask);
     e_dbus_interface_method_add(iface, "IFACE_GET_GATEWAY", NULL, NULL, dbus_cb_eth_get_gateway);
@@ -33,8 +37,12 @@ int setup(E_DBus_Connection *conn)
     e_dbus_interface_method_add(iface, "IFACE_IS_WIRELESS", NULL, NULL, dbus_cb_eth_is_wireless);
     e_dbus_interface_method_add(iface, "IFACE_IS_LINK", NULL, NULL, dbus_cb_eth_is_link);
     e_dbus_interface_method_add(iface, "IFACE_IS_UP", NULL, NULL, dbus_cb_eth_is_up);
-    e_dbus_interface_method_add(iface, "IFACE_GET_ESSID", NULL, NULL, dbus_cb_wireless_get_essid);
+    e_dbus_interface_method_add(iface, "IFACE_IS_DHCP", NULL, NULL, dbus_cb_eth_is_dhcp);
 
+
+    e_dbus_interface_method_add(iface, "IFACE_GET_ESSID", NULL, NULL, dbus_cb_wireless_get_essid);
+    e_dbus_interface_method_add(iface, "IFACE_SCAN_START", NULL, NULL, dbus_cb_wireless_scan_start);
+    e_dbus_interface_method_add(iface, "IFACE_SCAN_STOP", NULL, NULL, dbus_cb_wireless_scan_stop);
     e_dbus_interface_method_add(iface, "IFACE_SCAN_WAIT", NULL, NULL, dbus_cb_wireless_scan_wait);
 
     e_dbus_interface_method_add(iface, "NETWORK_GET_QUALITY", NULL, NULL, dbus_cb_wirelessinfo_get_quality);
@@ -56,7 +64,33 @@ int setup(E_DBus_Connection *conn)
     e_dbus_interface_method_add(iface, "NETWORK_GET_DEFAULT_MODE", NULL, NULL, dbus_cb_wirelessinfo_get_default_mode);
     e_dbus_interface_method_add(iface, "NETWORK_IS_DEFAULT_DHCP", NULL, NULL, dbus_cb_wirelessinfo_is_default_dhcp);
 
+    e_dbus_interface_method_add(iface, "DNS_GET_LIST", NULL, NULL, dbus_cb_dns_get_list);
+
     e_dbus_object_interface_attach(obj, iface);
+
+    iface = e_dbus_interface_new(EXALTD_INTERFACE_WRITE);
+    e_dbus_interface_method_add(iface, "IFACE_UP", NULL, NULL, dbus_cb_eth_up);
+    e_dbus_interface_method_add(iface, "IFACE_DOWN", NULL, NULL, dbus_cb_eth_down);
+    e_dbus_interface_method_add(iface, "IFACE_SET_NEW_IP", NULL, NULL, dbus_cb_eth_set_new_ip);
+    e_dbus_interface_method_add(iface, "IFACE_SET_NEW_NETMASK", NULL, NULL, dbus_cb_eth_set_new_netmask);
+    e_dbus_interface_method_add(iface, "IFACE_SET_NEW_GATEWAY", NULL, NULL, dbus_cb_eth_set_new_gateway);
+    e_dbus_interface_method_add(iface, "IFACE_SET_NEW_DHCP", NULL, NULL, dbus_cb_eth_set_new_dhcp);
+
+    e_dbus_interface_method_add(iface, "IFACE_SET_NEW_ESSID", NULL, NULL, dbus_cb_eth_set_new_essid);
+    e_dbus_interface_method_add(iface, "IFACE_SET_NEW_PASSWD", NULL, NULL, dbus_cb_eth_set_new_passwd);
+    e_dbus_interface_method_add(iface, "IFACE_SET_NEW_PASSWD_MODE", NULL, NULL, dbus_cb_eth_set_new_passwd_mode);
+    e_dbus_interface_method_add(iface, "IFACE_SET_NEW_MODE", NULL, NULL, dbus_cb_eth_set_new_mode);
+    e_dbus_interface_method_add(iface, "IFACE_SET_NEW_SECURITY_MODE", NULL, NULL, dbus_cb_eth_set_new_security_mode);
+
+    e_dbus_interface_method_add(iface, "DNS_ADD", NULL, NULL, dbus_cb_dns_add);
+    e_dbus_interface_method_add(iface, "DNS_REPLACE", NULL, NULL, dbus_cb_dns_replace);
+    e_dbus_interface_method_add(iface, "DNS_DELETE", NULL, NULL, dbus_cb_dns_delete);
+
+    e_dbus_interface_method_add(iface, "IFACE_APPLY_CONF", NULL, NULL, dbus_cb_eth_apply_conf);
+
+    e_dbus_object_interface_attach(obj, iface);
+
+
     return 1;
 }
 
@@ -130,6 +164,8 @@ int main(int argc, char** argv)
     setup(conn);
 
     exalt_eth_set_cb(eth_cb,conn);
+    exalt_eth_set_scan_cb(wireless_scan_cb,conn);
+
     exalt_main();
 
     if(!exalt_is_admin())
@@ -147,9 +183,12 @@ void eth_cb(exalt_ethernet* eth, int action, void* data)
     E_DBus_Connection *conn;
     DBusMessage* msg;
     DBusMessageIter args;
-    char* name;
+    const char* name;
 
     conn = (E_DBus_Connection*) data;
+
+    //if a new card appears we apply the configuration
+
 
     //send a broadcast
     msg = dbus_message_new_signal(EXALTD_PATH,EXALTD_INTERFACE_READ, "NOTIFY");
@@ -182,6 +221,100 @@ void eth_cb(exalt_ethernet* eth, int action, void* data)
         return ;
     }
     e_dbus_message_send(conn, msg, NULL, 3,NULL);
+    dbus_message_unref(msg);
+}
+
+void wireless_scan_cb(exalt_ethernet* eth,Ecore_List* new_networks, Ecore_List* old_networks, void* data)
+{
+    E_DBus_Connection *conn;
+    DBusMessage* msg;
+    DBusMessageIter args;
+    const char* name;
+    const char* essid;
+    exalt_wireless_info *wi;
+    int separator = 0;
+
+    Ecore_List* l;
+
+    if(!new_networks || !old_networks || !data)
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "new_networks=%p, old_networks=%p, data=%p",new_networks, old_networks, data);
+        return ;
+    }
+
+    conn = (E_DBus_Connection*) data;
+
+    //send a broadcast
+    msg = dbus_message_new_signal(EXALTD_PATH,EXALTD_INTERFACE_READ, "SCAN_NOTIFY");
+    if(!msg)
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "msg=%p",msg);
+        return ;
+    }
+
+    name = exalt_eth_get_name(eth);
+    if(!name)
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "name=%p",name);
+        dbus_message_unref(msg);
+        return ;
+    }
+    dbus_message_iter_init_append(msg, &args);
+    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &name))
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
+        dbus_message_unref(msg);
+        return ;
+    }
+
+    l=new_networks;
+    ecore_list_first_goto(l);
+    while ( (wi =  ecore_list_next(l)))
+    {
+        essid = exalt_wirelessinfo_get_essid(wi);
+        if(!essid)
+        {
+            print_error("ERROR", __FILE__, __LINE__,__func__, "essid=%p",essid);
+            dbus_message_unref(msg);
+            return ;
+        }
+
+        if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid))
+        {
+            print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
+            dbus_message_unref(msg);
+            return ;
+        }
+    }
+
+    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &separator))
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
+        dbus_message_unref(msg);
+        return ;
+    }
+
+    l=old_networks;
+    ecore_list_first_goto(l);
+    while ( (wi =  ecore_list_next(l)))
+    {
+        essid = exalt_wirelessinfo_get_essid(wi);
+        if(!essid)
+        {
+            print_error("ERROR", __FILE__, __LINE__,__func__, "essid=%p",essid);
+            dbus_message_unref(msg);
+            return ;
+        }
+
+        if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid))
+        {
+            print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
+            dbus_message_unref(msg);
+            return ;
+        }
+    }
+
+    e_dbus_message_send(conn, msg, NULL, -1,NULL);
     dbus_message_unref(msg);
 }
 
@@ -295,6 +428,121 @@ exalt_wireless_info* get_wirelessinfo(exalt_ethernet* eth, char* essid)
             return wi;
     }
     return NULL;
+}
+
+DBusMessage * dbus_cb_is_address(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
+{
+    DBusMessage *reply;
+    DBusMessageIter args;
+    int is;
+    char* address;
+
+
+    reply = dbus_message_new_method_return(msg);
+
+    if(!dbus_message_iter_init(msg, &args))
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "no argument");
+        return reply;
+    }
+    if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a string");
+        return reply;
+    }
+    else
+        dbus_message_iter_get_basic(&args, &address);
+
+
+    dbus_message_iter_init_append(reply, &args);
+    is = exalt_is_address(address);
+    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_BOOLEAN, &is))
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
+        return reply;
+    }
+
+    return reply;
+}
+
+DBusMessage * dbus_cb_is_essid(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
+{
+    DBusMessage *reply;
+    DBusMessageIter args;
+    int is;
+    char* essid;
+
+
+    reply = dbus_message_new_method_return(msg);
+
+    if(!dbus_message_iter_init(msg, &args))
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "no argument");
+        return reply;
+    }
+    if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a string");
+        return reply;
+    }
+    else
+        dbus_message_iter_get_basic(&args, &essid);
+
+
+    dbus_message_iter_init_append(reply, &args);
+    is = exalt_is_essid(essid);
+    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_BOOLEAN, &is))
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
+        return reply;
+    }
+
+    return reply;
+}
+
+DBusMessage * dbus_cb_is_passwd(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
+{
+    DBusMessage *reply;
+    DBusMessageIter args;
+    int is;
+    char* passwd;
+    int mode;
+
+    reply = dbus_message_new_method_return(msg);
+
+    if(!dbus_message_iter_init(msg, &args))
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "no argument");
+        return reply;
+    }
+    if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a string");
+        return reply;
+    }
+    else
+        dbus_message_iter_get_basic(&args, &passwd);
+
+    dbus_message_iter_next(&args);
+    if (DBUS_TYPE_INT32 != dbus_message_iter_get_arg_type(&args))
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not an int32");
+        return reply;
+    }
+    else
+        dbus_message_iter_get_basic(&args, &mode);
+
+
+
+    dbus_message_iter_init_append(reply, &args);
+    is = exalt_is_passwd(passwd,mode);
+    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_BOOLEAN, &is))
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
+        return reply;
+    }
+
+    return reply;
 }
 
 void print_error(const char* type, const char* file, int line,const char* fct, const char* msg, ...)

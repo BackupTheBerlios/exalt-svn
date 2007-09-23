@@ -32,6 +32,7 @@
 #include <sys/ioctl.h>
 #include <linux/sockios.h>
 
+#include <Eet.h>
 
 #include "exalt_ethernet.h"
 #include "exalt_wireless_info.h"
@@ -51,6 +52,11 @@ short exalt_is_address(const char* ip);
 short exalt_is_essid(const char* essid);
 short exalt_is_passwd(const char* passwd, int passwd_mode);
 short exalt_is_admin();
+
+
+
+
+
 
 #endif
 
