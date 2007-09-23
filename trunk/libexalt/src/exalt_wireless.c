@@ -227,7 +227,7 @@ char* exalt_wireless_get_driver(exalt_wireless* w)
         print_error("ERROR", __FILE__, __LINE__,__func__,"w=%p",w);
         return NULL;
     }
-    return "driver erreur :)";//exalt_sys_conf_get_driver(w);
+    return "wext";//exalt_sys_conf_get_driver(w);
 }
 
 /**

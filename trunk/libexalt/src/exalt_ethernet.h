@@ -108,6 +108,7 @@ int exalt_eth_get_ifindex(exalt_ethernet* eth);
 
 short exalt_eth_is_dhcp(exalt_ethernet * eth);
 short exalt_eth_is_new_dhcp(exalt_ethernet * eth);
+short exalt_eth_is_new_up(exalt_ethernet * eth);
 
 short exalt_eth_is_wireless(exalt_ethernet* eth);
 exalt_wireless* exalt_eth_get_wireless(exalt_ethernet* eth);

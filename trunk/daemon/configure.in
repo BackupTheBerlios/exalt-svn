@@ -84,6 +84,7 @@ with_distro=`echo ${with_distro} | tr '[[:upper:]]' '[[:lower:]]' `
 PKG_CHECK_MODULES(EXALT_DAEMON, [
   exalt >= 0.5
   edbus >= 0.1.0.002
+  evas >= 0.9
 ])
 
 

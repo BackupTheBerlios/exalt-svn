@@ -809,6 +809,19 @@ short exalt_eth_is_new_dhcp(exalt_ethernet* eth)
 		return 0;
 }
 
+/**
+ * @brief get if the card "eth" will be up or down
+ * @param eth the card
+ * @return Returns 1 if the card will be up, else 0
+ */
+short exalt_eth_is_new_up(exalt_ethernet* eth)
+{
+	if(eth)
+		return eth->new_up;
+	else
+		return 0;
+}
+
 
 /**
  * @brief get if the card "eth" use DHCP or static (look the configuration file)

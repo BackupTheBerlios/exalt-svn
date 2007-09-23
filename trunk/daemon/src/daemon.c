@@ -188,7 +188,26 @@ void eth_cb(exalt_ethernet* eth, int action, void* data)
     conn = (E_DBus_Connection*) data;
 
     //if a new card appears we apply the configuration
+    if(action == EXALT_ETH_CB_ACTION_NEW || action == EXALT_ETH_CB_ACTION_ADD)
+    {
+        printf("##### NEW CARD %s\n",exalt_eth_get_name(eth));
+        if(exalt_eth_is_new_up(eth))
+        {
+            printf("UP\n");
+            exalt_eth_up(eth);
+        }
+        else
+        {
+            printf("DOWN\n");
+            exalt_eth_down(eth);
+        }
+    }
 
+    if(action == EXALT_ETH_CB_ACTION_UP)
+    {
+        printf("APPLY CONFIGURARTION\n");
+        exalt_eth_apply_conf(eth, NULL, NULL);
+    }
 
     //send a broadcast
     msg = dbus_message_new_signal(EXALTD_PATH,EXALTD_INTERFACE_READ, "NOTIFY");
