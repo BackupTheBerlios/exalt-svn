@@ -40,6 +40,6 @@ DBusMessage * dbus_cb_eth_set_new_dhcp(E_DBus_Object *obj __UNUSED__, DBusMessag
 
 
 DBusMessage * dbus_cb_eth_apply_conf(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
-void dbus_cb_notify_conf_applied_cb(exalt_ethernet* eth, void* data);
+void dbus_cb_notify_conf_applied_cb(Exalt_Ethernet* eth, void* data);
 #endif   /* ----- #ifndef CB_FUNCTIONS_INC  ----- */
 

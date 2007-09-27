@@ -36,13 +36,13 @@
                         "fast_reauth=1\n"
 
 
-int exalt_conf_wirelessinfo_save(exalt_wireless* w);
-exalt_wireless_info* exalt_conf_wirelessinfo_load(const char*essid);
+int exalt_conf_wirelessinfo_save(Exalt_Wireless* w);
+Exalt_Wireless_Info* exalt_conf_wirelessinfo_load(const char*essid);
 
-int exalt_conf_save_wpasupplicant(exalt_wireless *w);
+int exalt_conf_save_wpasupplicant(Exalt_Wireless *w);
 
-int exalt_conf_save(exalt_ethernet* eth);
-exalt_ethernet* exalt_conf_load(const char* name);
+int exalt_conf_save(Exalt_Ethernet* eth);
+Exalt_Ethernet* exalt_conf_load(const char* name);
 
 #endif
 

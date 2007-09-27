@@ -1,10 +1,10 @@
-/**  @file exalt_wireless.h */
+/**  @file Exalt_Wireless.h */
 #ifndef WIRELESS_H
 #define WIRELESS_H
 
 /**
  * @defgroup Exalt_Wireless
- * @brief The exalt_wireless contains all informations about your wireless card as name, essid, list of scanning networks ...
+ * @brief The Exalt_Wireless contains all informations about your wireless card as name, essid, list of scanning networks ...
  * @{
  */
 
@@ -12,7 +12,7 @@
  * @brief informations about a wireless card
  * @structinfo
  */
-typedef struct exalt_wireless exalt_wireless;
+typedef struct Exalt_Wireless Exalt_Wireless;
 
 /** No encryption password mode */
 #define EXALT_WIRELESS_ENCRYPTION_NONE 0
@@ -50,47 +50,47 @@ typedef struct exalt_wireless exalt_wireless;
 #include <stdio.h>
 
 
-exalt_wireless* exalt_wireless_create(exalt_ethernet* eth);
-void exalt_wireless_free(exalt_wireless* w);
+Exalt_Wireless* exalt_wireless_create(Exalt_Ethernet* eth);
+void exalt_wireless_free(Exalt_Wireless* w);
 
-char* exalt_wireless_get_driver(exalt_wireless* w);
+char* exalt_wireless_get_driver(Exalt_Wireless* w);
 
-void exalt_wireless_scan_start(exalt_ethernet* eth);
-void exalt_wireless_scan_stop(exalt_ethernet* eth);
-int exalt_wireless_scan_wait(exalt_ethernet* eth);
+void exalt_wireless_scan_start(Exalt_Ethernet* eth);
+void exalt_wireless_scan_stop(Exalt_Ethernet* eth);
+int exalt_wireless_scan_wait(Exalt_Ethernet* eth);
 
-exalt_ethernet* exalt_wireless_get_ethernet(exalt_wireless* w);
-Ecore_List* exalt_wireless_get_networks_list(exalt_wireless* w);
-exalt_ethernet* exalt_wireless_get_eth(exalt_wireless* w);
+Exalt_Ethernet* exalt_wireless_get_ethernet(Exalt_Wireless* w);
+Ecore_List* exalt_wireless_get_networks_list(Exalt_Wireless* w);
+Exalt_Ethernet* exalt_wireless_get_eth(Exalt_Wireless* w);
 
-void exalt_set_button_state(exalt_wireless* w);
-short exalt_wireless_radiobutton_ison(exalt_wireless* w);
-
-
-
-exalt_wireless_info* exalt_wireless_get_networkinfo(exalt_wireless* w, int nb);
-exalt_wireless_info* exalt_wireless_get_networkinfo_by_essid(exalt_wireless* w,char *essid);
+void exalt_set_button_state(Exalt_Wireless* w);
+short exalt_wireless_radiobutton_ison(Exalt_Wireless* w);
 
 
-int exalt_wireless_apply_conf(exalt_wireless *w);
 
-void exalt_wireless_printf(exalt_wireless *w);
-void exalt_wireless_printf_scan(exalt_wireless *w);
+Exalt_Wireless_Info* exalt_wireless_get_networkinfo(Exalt_Wireless* w, int nb);
+Exalt_Wireless_Info* exalt_wireless_get_networkinfo_by_essid(Exalt_Wireless* w,const char *essid);
 
 
-char* exalt_wireless_get_essid(exalt_wireless* w);
+int exalt_wireless_apply_conf(Exalt_Wireless *w);
 
-void exalt_wireless_set_new_passwd_mode(exalt_wireless* w,int passwd_mode);
-void exalt_wireless_set_new_mode(exalt_wireless* w,int mode);
-void exalt_wireless_set_new_security_mode(exalt_wireless* w,int security_mode);
-void exalt_wireless_set_new_passwd(exalt_wireless* w,const char* passwd);
-void exalt_wireless_set_new_essid(exalt_wireless* w,const char* essid);
+void exalt_wireless_printf(Exalt_Wireless *w);
+void exalt_wireless_printf_scan(Exalt_Wireless *w);
 
-int exalt_wireless_get_new_passwd_mode(exalt_wireless* w);
-int exalt_wireless_get_new_mode(exalt_wireless* w);
-int exalt_wireless_get_new_security_mode(exalt_wireless* w);
-const char* exalt_wireless_get_new_passwd(exalt_wireless* w);
-const char* exalt_wireless_get_new_essid(exalt_wireless* w);
+
+char* exalt_wireless_get_essid(Exalt_Wireless* w);
+
+void exalt_wireless_set_new_passwd_mode(Exalt_Wireless* w,int passwd_mode);
+void exalt_wireless_set_new_mode(Exalt_Wireless* w,int mode);
+void exalt_wireless_set_new_security_mode(Exalt_Wireless* w,int security_mode);
+void exalt_wireless_set_new_passwd(Exalt_Wireless* w,const char* passwd);
+void exalt_wireless_set_new_essid(Exalt_Wireless* w,const char* essid);
+
+int exalt_wireless_get_new_passwd_mode(Exalt_Wireless* w);
+int exalt_wireless_get_new_mode(Exalt_Wireless* w);
+int exalt_wireless_get_new_security_mode(Exalt_Wireless* w);
+const char* exalt_wireless_get_new_passwd(Exalt_Wireless* w);
+const char* exalt_wireless_get_new_essid(Exalt_Wireless* w);
 
 /** @} */
 

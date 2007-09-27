@@ -49,6 +49,8 @@ int exalt_dbus_is_address(const exalt_dbus_conn* conn, const char* address);
 int exalt_dbus_is_essid(const exalt_dbus_conn* conn, const char* essid);
 int exalt_dbus_is_passwd(const exalt_dbus_conn* conn, const char* passwd, int mode);
 
+int exalt_dbus_wpasupplicant_is_support(const exalt_dbus_conn* conn);
+int exalt_dbus_dhcp_is_support(const exalt_dbus_conn* conn);
 
 
 #endif   /* ----- #ifndef LIBEXALT_DBUS_INC  ----- */

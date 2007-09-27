@@ -10,11 +10,11 @@
  * @param str_request the request string
  * @param str_regex the regular expression
  * @debug 1 if you want use the debug mode, else 0
- * @return Return a exalt_regex structure
+ * @return Return a Exalt_Regex structure
  */
-exalt_regex* exalt_regex_create(const char* str_request, const char* str_regex, short debug)
+Exalt_Regex* exalt_regex_create(const char* str_request, const char* str_regex, short debug)
 {
-    exalt_regex *r = (exalt_regex*)malloc((unsigned int)sizeof(exalt_regex));
+    Exalt_Regex *r = (Exalt_Regex*)malloc((unsigned int)sizeof(Exalt_Regex));
 
     r->str_request = NULL;
     r->str_regex = NULL;
@@ -34,10 +34,10 @@ exalt_regex* exalt_regex_create(const char* str_request, const char* str_regex, 
 
 /**
  * @brief change the request string
- * @param r the exalt_regex
+ * @param r the Exalt_Regex
  * @param str_request the new request string
  */
-void exalt_regex_set_request(exalt_regex* r,const char* str_request)
+void exalt_regex_set_request(Exalt_Regex* r,const char* str_request)
 {
     EXALT_FREE(r->str_request);
     r->str_request = strdup(str_request);
@@ -47,10 +47,10 @@ void exalt_regex_set_request(exalt_regex* r,const char* str_request)
 
 /**
  * @brief change the regular expression
- * @param r the exalt_regex
+ * @param r the Exalt_Regex
  * @param str_regex the new regular expression
  */
-void exalt_regex_set_regex(exalt_regex* r,const char* str_regex)
+void exalt_regex_set_regex(Exalt_Regex* r,const char* str_regex)
 {
     EXALT_FREE(r->str_regex);
     r->str_regex = strdup(str_regex);
@@ -60,10 +60,10 @@ void exalt_regex_set_regex(exalt_regex* r,const char* str_regex)
 
 /**
  * @brief set the debug mode
- * @param r the exalt_regex
+ * @param r the Exalt_Regex
  * @param debug the new debig mode, 0 or 1
  */
-void exalt_regex_set_debug(exalt_regex *r, short debug)
+void exalt_regex_set_debug(Exalt_Regex *r, short debug)
 {
     r->debug = debug;
 }
@@ -72,9 +72,9 @@ void exalt_regex_set_debug(exalt_regex *r, short debug)
 
 /*
  * @brief clear the current result
- * @param r the exalt_regex
+ * @param r the Exalt_Regex
  */
-void exalt_regex_clear_result(exalt_regex* r)
+void exalt_regex_clear_result(Exalt_Regex* r)
 {
     if(r!= NULL && r->res!=NULL)
     {
@@ -94,13 +94,13 @@ void exalt_regex_clear_result(exalt_regex* r)
 
 /*
  * @brief free tje regex
- * @param r the exalt_regex
+ * @param r the Exalt_Regex
  */
-void exalt_regex_free(exalt_regex **r)
+void exalt_regex_free(Exalt_Regex **r)
 {
     if(r!=NULL && *r!=NULL)
     {
-	exalt_regex* r2 = *r;
+	Exalt_Regex* r2 = *r;
 	exalt_regex_clear_result(r2);
 	if(r2->str_request)
 	    free(r2->str_request);
@@ -116,10 +116,10 @@ void exalt_regex_free(exalt_regex **r)
 
 /*
  * @brief execute a regular expression
- * @param r the exalt_regex
+ * @param r the Exalt_Regex
  * @return Return 1 if the regular expression is found int the request string, else 0
  */
-int exalt_regex_execute(exalt_regex* r)
+int exalt_regex_execute(Exalt_Regex* r)
 {
     int err;
     regex_t preg;

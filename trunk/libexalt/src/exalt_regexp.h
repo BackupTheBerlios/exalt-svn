@@ -20,13 +20,13 @@
 /** regexp to test if a key is a correct WEP hexadecimal key */
 #define REGEXP_IS_WEP_HEXA "^[0-9A-F]{10}$|^[0-91-F]{26}$"
 
-typedef struct exalt_regex exalt_regex;
+typedef struct Exalt_Regex Exalt_Regex;
 
 /**
  * @brief informations about a regular expression
  * @structinfo
  */
-struct exalt_regex
+struct Exalt_Regex
 {
     char* str_request;
     char* str_regex;
@@ -37,12 +37,12 @@ struct exalt_regex
 };
 
 
-exalt_regex* exalt_regex_create(const char* str_request, const char* str_regex,short debug);
-void exalt_regex_set_request(exalt_regex* r,const char* str_request);
-void exalt_regex_set_regex(exalt_regex* r,const char* str_regex);
-void exalt_regex_set_debug(exalt_regex *r, short debug);
-void exalt_regex_free(exalt_regex **r);
-int exalt_regex_execute(exalt_regex* r);
+Exalt_Regex* exalt_regex_create(const char* str_request, const char* str_regex,short debug);
+void exalt_regex_set_request(Exalt_Regex* r,const char* str_request);
+void exalt_regex_set_regex(Exalt_Regex* r,const char* str_regex);
+void exalt_regex_set_debug(Exalt_Regex *r, short debug);
+void exalt_regex_free(Exalt_Regex **r);
+int exalt_regex_execute(Exalt_Regex* r);
 
 #endif
 

@@ -61,6 +61,35 @@ AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source Code Director
 requirements=""
 
 
+
+
+if test "z$wpa_supplicant" = "z"; then
+    AC_PATH_PROG(wpa_supplicant, wpa_supplicant, none)
+fi
+if test "$wpa_supplicant" = "none"; then
+    have_wpa_supplicant="no"
+else
+    AC_DEFINE_UNQUOTED(WPA_SUPPLICANT_COMMAND_PATH, "${wpa_supplicant}", [Path of wpa_supplicant])
+    have_wpa_supplicant="yes"
+fi
+
+
+
+if test "z$dhcp" = "z"; then
+    AC_PATH_PROG(dhcp, dhclient, none)
+fi
+if test "$dhcp" = "none"; then
+    have_dhcp="no"
+else
+    have_dhcp="yes"
+    AC_DEFINE_UNQUOTED(DHCP_COMMAND_PATH, "${dhcp}", [Path of a dhcp command])
+fi
+
+
+
+
+
+
 PKG_CHECK_MODULES(LIBEXALT, [
 		ecore >= 0.9.9.037,
                 eet >= 0.9.9.038,
@@ -73,10 +102,34 @@ AC_SUBST(requirements)
 AC_SUBST(packagesrcdir)
 
 
+
 AC_OUTPUT([
 Makefile
 exalt.pc
 src/Makefile
 debian/changelog
 ])
+
+
+###############################################################
+#### Informations
+
+echo
+echo
+echo "--------------------------------------------------------"
+echo "$PACKAGE $VERSION"
+echo "--------------------------------------------------------"
+echo
+echo
+echo "Configuration Options Summary:"
+echo
+echo "  wpa_supplicant support.........: $have_wpa_supplicant ($wpa_supplicant)"
+echo "  dhcp support...................: $have_dhcp ($dhcp)"
+echo
+echo "  Installation Path..............: $prefix"
+echo
+echo "Now type 'make' ('gmake' on some systems) to compile $PACKAGE,"
+echo "and then afterwards as root (or the user who will install this), type"
+echo "'make install'. Change users with 'su' or 'sudo' appropriately."
+echo
 

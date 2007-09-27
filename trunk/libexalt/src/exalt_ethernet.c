@@ -1,26 +1,27 @@
 /** @file exalt_ethernet.c */
 #include "exalt_ethernet.h"
 #include "libexalt_private.h"
+#include "../config.h"
 
 /**
  * Private functions headers
  */
 
-const char* _exalt_eth_get_save_ip(exalt_ethernet* eth);
-const char* _exalt_eth_get_save_gateway(exalt_ethernet* eth);
-const char* _exalt_eth_get_save_netmask(exalt_ethernet* eth);
-short _exalt_eth_get_save_link(exalt_ethernet* eth);
-short _exalt_eth_get_save_up(exalt_ethernet* eth);
+const char* _exalt_eth_get_save_ip(Exalt_Ethernet* eth);
+const char* _exalt_eth_get_save_gateway(Exalt_Ethernet* eth);
+const char* _exalt_eth_get_save_netmask(Exalt_Ethernet* eth);
+short _exalt_eth_get_save_link(Exalt_Ethernet* eth);
+short _exalt_eth_get_save_up(Exalt_Ethernet* eth);
 
-int _exalt_eth_set_save_ip(exalt_ethernet* eth,const char* ip);
-int _exalt_eth_set_save_netmask(exalt_ethernet* eth,const char* netmask);
-int _exalt_eth_set_save_gateway(exalt_ethernet* eth,const char* gateway);
-int _exalt_eth_set_save_link(exalt_ethernet* eth,short link);
-int _exalt_eth_set_save_up(exalt_ethernet* eth,short up);
+int _exalt_eth_set_save_ip(Exalt_Ethernet* eth,const char* ip);
+int _exalt_eth_set_save_netmask(Exalt_Ethernet* eth,const char* netmask);
+int _exalt_eth_set_save_gateway(Exalt_Ethernet* eth,const char* gateway);
+int _exalt_eth_set_save_link(Exalt_Ethernet* eth,short link);
+int _exalt_eth_set_save_up(Exalt_Ethernet* eth,short up);
 
-int _exalt_eth_set_udi(exalt_ethernet* eth,const char* udi);
-int _exalt_eth_set_ifindex(exalt_ethernet* eth,int ifindex);
-int _exalt_eth_set_name(exalt_ethernet* eth,const char* name);
+int _exalt_eth_set_udi(Exalt_Ethernet* eth,const char* udi);
+int _exalt_eth_set_ifindex(Exalt_Ethernet* eth,int ifindex);
+int _exalt_eth_set_name(Exalt_Ethernet* eth,const char* name);
 
 void _exalt_cb_is_net(void *user_data, void *reply_data, DBusError *error);
 void _exalt_cb_find_device_by_capability_net(void *user_data, void *reply_data, DBusError *error);
@@ -34,8 +35,8 @@ int _exalt_eth_remove_udi(const char* udi);
 int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler);
 
 int _exalt_apply_timer(void *data);
-int _exalt_eth_apply_dhcp(exalt_ethernet* eth);
-int _exalt_eth_apply_static(exalt_ethernet *eth);
+int _exalt_eth_apply_dhcp(Exalt_Ethernet* eth);
+int _exalt_eth_apply_static(Exalt_Ethernet *eth);
 
 
 
@@ -43,7 +44,7 @@ int _exalt_eth_apply_static(exalt_ethernet *eth);
  * @addtogroup Exalt_Ethernet
  */
 
-struct exalt_ethernet
+struct Exalt_Ethernet
 {
     char* name; //eth0, eth1...
     char* udi;
@@ -53,7 +54,7 @@ struct exalt_ethernet
     char* new_netmask;
     char* new_gateway;
     short new_dhcp_static; //EXALT_DHCP || EXALT_STATIC
-    exalt_wireless* wireless; //if null, the interface is not wireless
+    Exalt_Wireless* wireless; //if null, the interface is not wireless
 
     char* _save_ip;
     char* _save_netmask;
@@ -156,19 +157,19 @@ int exalt_main()
 
 
 /**
- * @brief create a exalt_ethernet structure
+ * @brief create a Exalt_Ethernet structure
  * @param name the name of the card (eth0, ath3 ...)
- * @return Return a new exalt_ethernet structure
+ * @return Return a new Exalt_Ethernet structure
  */
-exalt_ethernet* exalt_eth_create(const char* name)
+Exalt_Ethernet* exalt_eth_create(const char* name)
 {
     struct iwreq wrq;
-    exalt_ethernet* eth;
+    Exalt_Ethernet* eth;
 
     eth = exalt_conf_load(name);
     if(!eth)
     {
-        eth = (exalt_ethernet*)malloc((unsigned int)sizeof(exalt_ethernet));
+        eth = (Exalt_Ethernet*)malloc((unsigned int)sizeof(Exalt_Ethernet));
         if(!eth)
         {
             print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p, malloc error",eth);
@@ -221,12 +222,12 @@ void exalt_eth_ethernets_free()
 
 
 /**
- * @brief free a exalt_ethernet structure
- * @param data a exalt_ethernet* structure
+ * @brief free a Exalt_Ethernet structure
+ * @param data a Exalt_Ethernet* structure
  */
 void exalt_eth_free(void *data)
 {
-	exalt_ethernet* eth = EXALT_ETHERNET(data);
+	Exalt_Ethernet* eth = Exalt_Ethernet(data);
 	EXALT_FREE(eth->name)
         EXALT_FREE(eth->udi)
 	EXALT_FREE(eth->new_ip)
@@ -272,7 +273,7 @@ void _exalt_cb_net_properties(void *data, void *reply_data, DBusError *error)
     int action = *((int*)data);
     E_Hal_Properties *ret = reply_data;
     int err = 0;
-    exalt_ethernet* eth;
+    Exalt_Ethernet* eth;
 
     if (dbus_error_is_set(error))
     {
@@ -385,7 +386,7 @@ short exalt_eth_is_ethernet(char* name)
  * @brief up the card "eth"
  * @param eth the card
  */
-void exalt_eth_up(exalt_ethernet* eth)
+void exalt_eth_up(Exalt_Ethernet* eth)
 {
 	struct ifreq ifr;
 
@@ -414,7 +415,7 @@ void exalt_eth_up(exalt_ethernet* eth)
  * @brief down the card eth"
  * @param eth the card
  */
-void exalt_eth_down(exalt_ethernet* eth)
+void exalt_eth_down(Exalt_Ethernet* eth)
 {
     struct ifreq ifr;
 
@@ -462,9 +463,9 @@ Ecore_List* exalt_eth_get_list()
  * @param pos the position
  * @return Returns the card
  */
-exalt_ethernet* exalt_eth_get_ethernet_bypos(int pos)
+Exalt_Ethernet* exalt_eth_get_ethernet_bypos(int pos)
 {
-	return EXALT_ETHERNET(ecore_list_index_goto(exalt_eth_interfaces.ethernets,pos));
+	return Exalt_Ethernet(ecore_list_index_goto(exalt_eth_interfaces.ethernets,pos));
 }
 
 
@@ -474,10 +475,10 @@ exalt_ethernet* exalt_eth_get_ethernet_bypos(int pos)
  * @param name the name
  * @return Returns the card
  */
-exalt_ethernet* exalt_eth_get_ethernet_byname(char* name)
+Exalt_Ethernet* exalt_eth_get_ethernet_byname(char* name)
 {
 	void *data;
-	exalt_ethernet* eth;
+	Exalt_Ethernet* eth;
 
 	if(!name)
 	{
@@ -489,7 +490,7 @@ exalt_ethernet* exalt_eth_get_ethernet_byname(char* name)
 	data = ecore_list_next(exalt_eth_interfaces.ethernets);
 	while(data)
 	{
-	 	eth = EXALT_ETHERNET(data);
+	 	eth = Exalt_Ethernet(data);
 		if(strcmp(exalt_eth_get_name(eth),name) == 0)
 			return eth;
 
@@ -504,10 +505,10 @@ exalt_ethernet* exalt_eth_get_ethernet_byname(char* name)
  * @param udi the udi
  * @return Returns the card
  */
-exalt_ethernet* exalt_eth_get_ethernet_byudi(char* udi)
+Exalt_Ethernet* exalt_eth_get_ethernet_byudi(char* udi)
 {
 	void *data;
-	exalt_ethernet* eth;
+	Exalt_Ethernet* eth;
 
 	if(!udi)
 	{
@@ -519,7 +520,7 @@ exalt_ethernet* exalt_eth_get_ethernet_byudi(char* udi)
 	data = ecore_list_next(exalt_eth_interfaces.ethernets);
 	while(data)
 	{
-	 	eth = EXALT_ETHERNET(data);
+	 	eth = Exalt_Ethernet(data);
 		if(strcmp(exalt_eth_get_udi(eth),udi) == 0)
 			return eth;
 
@@ -534,16 +535,16 @@ exalt_ethernet* exalt_eth_get_ethernet_byudi(char* udi)
  * @param ifindex the ifindex
  * @return Returns the card
  */
-exalt_ethernet* exalt_eth_get_ethernet_byifindex(int ifindex)
+Exalt_Ethernet* exalt_eth_get_ethernet_byifindex(int ifindex)
 {
 	void *data;
-	exalt_ethernet* eth;
+	Exalt_Ethernet* eth;
 
  	ecore_list_first_goto(exalt_eth_interfaces.ethernets);
 	data = ecore_list_next(exalt_eth_interfaces.ethernets);
 	while(data)
 	{
-	 	eth = EXALT_ETHERNET(data);
+	 	eth = Exalt_Ethernet(data);
 		if(ifindex == exalt_eth_get_ifindex(eth))
 			return eth;
 
@@ -560,7 +561,7 @@ exalt_ethernet* exalt_eth_get_ethernet_byifindex(int ifindex)
  * @param eth the card
  * @return Return EXALT_TRUE if yes, else EXALT_FALSE
  */
-short exalt_eth_is_link(exalt_ethernet* eth)
+short exalt_eth_is_link(Exalt_Ethernet* eth)
 {
     struct ifreq ifr;
     struct ethtool_value edata;
@@ -590,7 +591,7 @@ short exalt_eth_is_link(exalt_ethernet* eth)
  * @param eth the card
  * @return Returns the name
  */
-const char* exalt_eth_get_name(exalt_ethernet* eth)
+const char* exalt_eth_get_name(Exalt_Ethernet* eth)
 {
 	if(!eth)
     {
@@ -605,7 +606,7 @@ const char* exalt_eth_get_name(exalt_ethernet* eth)
  * @param eth the card
  * @return Returns the udi
  */
-const char* exalt_eth_get_udi(exalt_ethernet* eth)
+const char* exalt_eth_get_udi(Exalt_Ethernet* eth)
 {
     if(!eth)
     {
@@ -619,7 +620,7 @@ const char* exalt_eth_get_udi(exalt_ethernet* eth)
  * @param eth the card
  * @return Returns the ifindex
  */
-int exalt_eth_get_ifindex(exalt_ethernet* eth)
+int exalt_eth_get_ifindex(Exalt_Ethernet* eth)
 {
     if(!eth)
     {
@@ -637,7 +638,7 @@ int exalt_eth_get_ifindex(exalt_ethernet* eth)
  * @param eth the card
  * @return Returns the ip address
  */
-char* exalt_eth_get_ip(exalt_ethernet* eth)
+char* exalt_eth_get_ip(Exalt_Ethernet* eth)
 {
     struct sockaddr_in sin = { AF_INET };
     struct ifreq ifr;
@@ -666,7 +667,7 @@ char* exalt_eth_get_ip(exalt_ethernet* eth)
  * @param eth the card
  * @return Returns the netmask address
  */
-char* exalt_eth_get_netmask(exalt_ethernet* eth)
+char* exalt_eth_get_netmask(Exalt_Ethernet* eth)
 {
     struct sockaddr_in sin = { AF_INET };
     struct ifreq ifr;
@@ -693,7 +694,7 @@ char* exalt_eth_get_netmask(exalt_ethernet* eth)
  * @param eth the card
  * @return Returns the gateway address
  */
-char* exalt_eth_get_gateway(exalt_ethernet* eth)
+char* exalt_eth_get_gateway(Exalt_Ethernet* eth)
 {
     FILE* f;
     char buf[1024];
@@ -752,7 +753,7 @@ char* exalt_eth_get_gateway(exalt_ethernet* eth)
  * @param eth the card
  * @return Returns the ip address
  */
-const char* exalt_eth_get_new_ip(exalt_ethernet* eth)
+const char* exalt_eth_get_new_ip(Exalt_Ethernet* eth)
 {
     if(!eth)
     {
@@ -768,7 +769,7 @@ const char* exalt_eth_get_new_ip(exalt_ethernet* eth)
  * @param eth the card
  * @return Returns the ip address
  */
-const char* exalt_eth_get_new_netmask(exalt_ethernet* eth)
+const char* exalt_eth_get_new_netmask(Exalt_Ethernet* eth)
 {
     if(!eth)
     {
@@ -784,7 +785,7 @@ const char* exalt_eth_get_new_netmask(exalt_ethernet* eth)
  * @param eth the card
  * @return Returns the ip address
  */
-const char* exalt_eth_get_new_gateway(exalt_ethernet* eth)
+const char* exalt_eth_get_new_gateway(Exalt_Ethernet* eth)
 {
     if(!eth)
     {
@@ -801,7 +802,7 @@ const char* exalt_eth_get_new_gateway(exalt_ethernet* eth)
  * @param eth the card
  * @return Returns 1 if the card use DHCP, else 0
  */
-short exalt_eth_is_new_dhcp(exalt_ethernet* eth)
+short exalt_eth_is_new_dhcp(Exalt_Ethernet* eth)
 {
 	if(eth)
 		return eth->new_dhcp_static == EXALT_DHCP;
@@ -814,7 +815,7 @@ short exalt_eth_is_new_dhcp(exalt_ethernet* eth)
  * @param eth the card
  * @return Returns 1 if the card will be up, else 0
  */
-short exalt_eth_is_new_up(exalt_ethernet* eth)
+short exalt_eth_is_new_up(Exalt_Ethernet* eth)
 {
 	if(eth)
 		return eth->new_up;
@@ -828,7 +829,7 @@ short exalt_eth_is_new_up(exalt_ethernet* eth)
  * @param eth the card
  * @return Returns 1 if the card use DHCP, else 0
  */
-short exalt_eth_is_dhcp(exalt_ethernet* eth)
+short exalt_eth_is_dhcp(Exalt_Ethernet* eth)
 {
 	if(eth)
 		return 1;//exalt_sys_conf_is_dhcp(eth);
@@ -843,7 +844,7 @@ short exalt_eth_is_dhcp(exalt_ethernet* eth)
  * @param eth the card
  * @return Returns 1 if the card is activated, else 0
  */
-short exalt_eth_is_up(exalt_ethernet* eth)
+short exalt_eth_is_up(Exalt_Ethernet* eth)
 {
 	struct ifreq ifr;
 
@@ -873,7 +874,7 @@ short exalt_eth_is_up(exalt_ethernet* eth)
  * @param eth the card
  * @return Returns 1 if the card is a wireless card, else 0
  */
-short exalt_eth_is_wireless(exalt_ethernet* eth)
+short exalt_eth_is_wireless(Exalt_Ethernet* eth)
 {
 	if(eth)
 	{
@@ -890,7 +891,7 @@ short exalt_eth_is_wireless(exalt_ethernet* eth)
  * @param eth the card
  * @return Returns the wireless structure
  */
-exalt_wireless* exalt_eth_get_wireless(exalt_ethernet* eth)
+Exalt_Wireless* exalt_eth_get_wireless(Exalt_Ethernet* eth)
 {
 	if(eth)
 		return eth->wireless;
@@ -906,7 +907,7 @@ exalt_wireless* exalt_eth_get_wireless(exalt_ethernet* eth)
  * @param ip the new ip address
  * @return Returns 1 if the new ip address is apply, 0 if the "ip" doesn't have a correct format else -1
  */
-int exalt_eth_set_new_ip(exalt_ethernet* eth, const char* ip)
+int exalt_eth_set_new_ip(Exalt_Ethernet* eth, const char* ip)
 {
  	if(!eth || !ip)
 	{
@@ -932,7 +933,7 @@ int exalt_eth_set_new_ip(exalt_ethernet* eth, const char* ip)
  * @param netmask the new netmask address
  * @return Returns 1 if the new netmask address is apply, 0 if the "netmask" doesn't have a correct format else -1
  */
-int exalt_eth_set_new_netmask(exalt_ethernet* eth, const char* netmask)
+int exalt_eth_set_new_netmask(Exalt_Ethernet* eth, const char* netmask)
 {
 	if(!eth || !netmask)
 	{
@@ -958,7 +959,7 @@ int exalt_eth_set_new_netmask(exalt_ethernet* eth, const char* netmask)
  * @param gateway the new gateway address
  * @return Returns 1 if the new gateway address is apply, 0 if the "gateway" doesn't have a correct format else -1
  */
-int exalt_eth_set_new_gateway(exalt_ethernet* eth, const char* gateway)
+int exalt_eth_set_new_gateway(Exalt_Ethernet* eth, const char* gateway)
 {
 	if(!eth || !gateway)
 	{
@@ -987,7 +988,7 @@ int exalt_eth_set_new_gateway(exalt_ethernet* eth, const char* gateway)
  * @param dhcp the mode: 1 -> dhcp, 0 -> static
  * @return Returns 1 if the mode is apply, else 0
  */
-int exalt_eth_set_new_dhcp(exalt_ethernet* eth, short dhcp)
+int exalt_eth_set_new_dhcp(Exalt_Ethernet* eth, short dhcp)
 {
     if(!eth)
     {
@@ -1004,7 +1005,7 @@ int exalt_eth_set_new_dhcp(exalt_ethernet* eth, short dhcp)
  * @param up: 1 -> up, 0 -> down
  * @return Returns 1 if success, else 0
  */
-int exalt_eth_set_new_up(exalt_ethernet* eth, short up)
+int exalt_eth_set_new_up(Exalt_Ethernet* eth, short up)
 {
     if(!eth)
     {
@@ -1056,7 +1057,7 @@ int exalt_eth_set_scan_cb(Exalt_Wifi_Scan_Cb fct, void * user_data)
  * @param eth the card
  * @return Returns 1 if the configuration is apply, else 0
  */
-int exalt_eth_apply_conf(exalt_ethernet* eth, Exalt_Conf_Applied fct, void* user_data)
+int exalt_eth_apply_conf(Exalt_Ethernet* eth, Exalt_Conf_Applied fct, void* user_data)
 {
 	int res;
  	struct rtentry rt;
@@ -1068,6 +1069,10 @@ int exalt_eth_apply_conf(exalt_ethernet* eth, Exalt_Conf_Applied fct, void* user
 	}
 
         exalt_conf_save(eth);
+        //save the configuration of the current network
+        if(exalt_eth_is_wireless(eth))
+            exalt_conf_wirelessinfo_save(exalt_eth_get_wireless(eth));
+
 
 
         eth->apply_pid = fork();
@@ -1125,13 +1130,13 @@ int exalt_eth_apply_conf(exalt_ethernet* eth, Exalt_Conf_Applied fct, void* user
 void exalt_eth_printf()
 {
 	void *data;
-	exalt_ethernet* eth;
+	Exalt_Ethernet* eth;
 
 	ecore_list_first_goto(exalt_eth_interfaces.ethernets);
 	data = ecore_list_next(exalt_eth_interfaces.ethernets);
 	while(data)
 	{
-	 	eth = EXALT_ETHERNET(data);
+	 	eth = Exalt_Ethernet(data);
 		printf("###   %s   ###\n",eth->name);
 		printf("Up: %d\n",exalt_eth_is_up(eth));
 		if(exalt_eth_is_dhcp(eth))
@@ -1144,7 +1149,7 @@ void exalt_eth_printf()
 		if(eth->wireless!=NULL)
 		{
 			exalt_wireless_scan_wait(eth);
-                        exalt_wireless *w = exalt_eth_get_wireless(eth);
+                        Exalt_Wireless *w = exalt_eth_get_wireless(eth);
 			exalt_wireless_printf(w);
 		}
 		data = ecore_list_next(exalt_eth_interfaces.ethernets);
@@ -1167,7 +1172,7 @@ void exalt_eth_printf()
  * @param eth the card
  * @return Returns the ip address
  */
-const char* _exalt_eth_get_save_ip(exalt_ethernet* eth)
+const char* _exalt_eth_get_save_ip(Exalt_Ethernet* eth)
 {
     if(!eth)
     {
@@ -1183,7 +1188,7 @@ const char* _exalt_eth_get_save_ip(exalt_ethernet* eth)
  * @param eth the card
  * @return Returns the gateway
  */
-const char* _exalt_eth_get_save_gateway(exalt_ethernet* eth)
+const char* _exalt_eth_get_save_gateway(Exalt_Ethernet* eth)
 {
     if(!eth)
     {
@@ -1199,7 +1204,7 @@ const char* _exalt_eth_get_save_gateway(exalt_ethernet* eth)
  * @param eth the card
  * @return Returns the netmask
  */
-const char* _exalt_eth_get_save_netmask(exalt_ethernet* eth)
+const char* _exalt_eth_get_save_netmask(Exalt_Ethernet* eth)
 {
     if(!eth)
     {
@@ -1215,7 +1220,7 @@ const char* _exalt_eth_get_save_netmask(exalt_ethernet* eth)
  * @param eth the card
  * @return Returns EXALT_TRUE or EXALT_FALSE
  */
-short _exalt_eth_get_save_link(exalt_ethernet* eth)
+short _exalt_eth_get_save_link(Exalt_Ethernet* eth)
 {
     if(!eth)
     {
@@ -1231,7 +1236,7 @@ short _exalt_eth_get_save_link(exalt_ethernet* eth)
  * @param eth the card
  * @return Returns EXALT_TRUE or EXALT_FALSE
  */
-short _exalt_eth_get_save_up(exalt_ethernet* eth)
+short _exalt_eth_get_save_up(Exalt_Ethernet* eth)
 {
     if(!eth)
     {
@@ -1249,7 +1254,7 @@ short _exalt_eth_get_save_up(exalt_ethernet* eth)
  * @param ip the new ip address
  * @return Returns 1 if the save ip address is apply, 0 if the ip address doesn't have a correct format else -1
  */
-int _exalt_eth_set_save_ip(exalt_ethernet* eth,const char* ip)
+int _exalt_eth_set_save_ip(Exalt_Ethernet* eth,const char* ip)
 {
  	if(!eth || !ip)
 	{
@@ -1273,7 +1278,7 @@ int _exalt_eth_set_save_ip(exalt_ethernet* eth,const char* ip)
  * @param ip the new netmask
  * @return Returns 1 if the netmask is apply, 0 if the netmask doesn't have a correct format else -1
  */
-int _exalt_eth_set_save_netmask(exalt_ethernet* eth,const char* netmask)
+int _exalt_eth_set_save_netmask(Exalt_Ethernet* eth,const char* netmask)
 {
  	if(!eth || !netmask)
 	{
@@ -1297,7 +1302,7 @@ int _exalt_eth_set_save_netmask(exalt_ethernet* eth,const char* netmask)
  * @param ip the new gateway
  * @return Returns 1 if the new gateway is apply, 0 if the gateway doesn't have a correct format else -1
  */
-int _exalt_eth_set_save_gateway(exalt_ethernet* eth,const char* gateway)
+int _exalt_eth_set_save_gateway(Exalt_Ethernet* eth,const char* gateway)
 {
  	if(!eth || !gateway)
 	{
@@ -1321,7 +1326,7 @@ int _exalt_eth_set_save_gateway(exalt_ethernet* eth,const char* gateway)
  * @param ip the state link (EXALT_TRUE or EXALT_FALSE)
  * @return Returns 1 if the new stat is apply,else -1
  */
-int _exalt_eth_set_save_link(exalt_ethernet* eth,short link)
+int _exalt_eth_set_save_link(Exalt_Ethernet* eth,short link)
 {
  	if(!eth )
 	{
@@ -1337,7 +1342,7 @@ int _exalt_eth_set_save_link(exalt_ethernet* eth,short link)
  * @param ip the up state (EXALT_TRUE or EXALT_FALSE)
  * @return Returns 1 if the new state is apply,else -1
  */
-int _exalt_eth_set_save_up(exalt_ethernet* eth,short up)
+int _exalt_eth_set_save_up(Exalt_Ethernet* eth,short up)
 {
  	if(!eth )
 	{
@@ -1355,7 +1360,7 @@ int _exalt_eth_set_save_up(exalt_ethernet* eth,short up)
  * @param name the new name
  * @return Returns 1 if the new name is apply, else 0
  */
-int _exalt_eth_set_name(exalt_ethernet* eth, const char* name)
+int _exalt_eth_set_name(Exalt_Ethernet* eth, const char* name)
 {
 	if(eth && name)
 	{
@@ -1374,7 +1379,7 @@ int _exalt_eth_set_name(exalt_ethernet* eth, const char* name)
  * @param udi the new udi
  * @return Returns 1 if udi is apply, else -1
  */
-int _exalt_eth_set_udi(exalt_ethernet* eth,const char* udi)
+int _exalt_eth_set_udi(Exalt_Ethernet* eth,const char* udi)
 {
  	if(!eth || !udi)
 	{
@@ -1393,7 +1398,7 @@ int _exalt_eth_set_udi(exalt_ethernet* eth,const char* udi)
  * @param ifindex the ifindex
  * @return Returns 1 if the new ifindex is apply,else -1
  */
-int _exalt_eth_set_ifindex(exalt_ethernet* eth,int ifindex)
+int _exalt_eth_set_ifindex(Exalt_Ethernet* eth,int ifindex)
 {
  	if(!eth )
 	{
@@ -1419,7 +1424,7 @@ int _exalt_eth_remove_udi(const char* udi)
     data = ecore_list_next(l);
     while(data)
     {
-        exalt_ethernet* eth = EXALT_ETHERNET(data);
+        Exalt_Ethernet* eth = Exalt_Ethernet(data);
         if(strcmp(exalt_eth_get_udi(eth),udi)==0)
         {
             if(exalt_eth_interfaces.eth_cb)
@@ -1452,7 +1457,7 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
     struct nlmsghdr *nh;
     struct iovec iov = { buf, sizeof(buf) };
     struct msghdr msg = { (void *)&addr, sizeof(addr), &iov, 1, NULL, 0, 0 };
-    exalt_ethernet* eth;
+    Exalt_Ethernet* eth;
     void* data_l;
     Ecore_List* l;
 
@@ -1561,7 +1566,7 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
                 data_l = ecore_list_next(l);
                 while(data_l)
                 {
-                    eth = EXALT_ETHERNET(data_l);
+                    eth = Exalt_Ethernet(data_l);
                     if(strcmp(_exalt_eth_get_save_gateway(eth),exalt_eth_get_gateway(eth)) != 0)
                     {
                         _exalt_eth_set_save_gateway(eth, exalt_eth_get_gateway(eth));
@@ -1580,7 +1585,7 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
 
 int _exalt_apply_timer(void *data)
 {
-    exalt_ethernet* eth = EXALT_ETHERNET(data);
+    Exalt_Ethernet* eth = Exalt_Ethernet(data);
     int res;
     int status;
 
@@ -1603,7 +1608,7 @@ int _exalt_apply_timer(void *data)
  * @param eth the card
  * @return Returns 1 if static address are apply, else 0
  */
-int _exalt_eth_apply_static(exalt_ethernet *eth)
+int _exalt_eth_apply_static(Exalt_Ethernet *eth)
 {
 	struct sockaddr_in sin = { AF_INET };
 	struct ifreq ifr;
@@ -1657,25 +1662,27 @@ int _exalt_eth_apply_static(exalt_ethernet *eth)
  * @param eth the card
  * @return Returns 1 if the dhcp is apply, else 0
  */
-int _exalt_eth_apply_dhcp(exalt_ethernet* eth)
+int _exalt_eth_apply_dhcp(Exalt_Ethernet* eth)
 {
-	FILE* f;
-	char command[1024];
-	char buf[1024];
-	if(!eth)
-	{
-		print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
-		return -1;
-	}
+#ifdef DHCP_COMMAND_PATH
+    FILE* f;
+    char command[1024];
+    char buf[1024];
+    if(!eth)
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
+        return -1;
+    }
 
-	sprintf(command,"%s %s\n",COMMAND_DHCLIENT,exalt_eth_get_name(eth));
-	printf("\t%s\n",command);
-	f = exalt_execute_command(command);
-	while(fgets(buf,1024,f))
-		printf("\t%s\n",buf);
-	EXALT_PCLOSE(f);
-
-	return 1;
+    sprintf(command,COMMAND_DHCLIENT,exalt_eth_get_name(eth));
+    f = exalt_execute_command(command);
+    while(fgets(buf,1024,f))
+        ;
+    EXALT_PCLOSE(f);
+#else
+    print_error("WARNING", __FILE__, __LINE__,__func__,"Your build of libexalt doesn't support dhcp");
+#endif
+    return 1;
 }
 
 
@@ -1684,7 +1691,7 @@ Eet_Data_Descriptor * exalt_eth_edd_new(Eet_Data_Descriptor *edd_w)
 {
     Eet_Data_Descriptor *edd_eth;
 
-    edd_eth = eet_data_descriptor_new("ethernet", sizeof(exalt_ethernet),
+    edd_eth = eet_data_descriptor_new("ethernet", sizeof(Exalt_Ethernet),
             evas_list_next,
             evas_list_append,
             evas_list_data,
@@ -1693,15 +1700,15 @@ Eet_Data_Descriptor * exalt_eth_edd_new(Eet_Data_Descriptor *edd_w)
             evas_hash_add,
             evas_hash_free);
 
-    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_eth, exalt_ethernet, "up", new_up, EET_T_SHORT);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_eth, Exalt_Ethernet, "up", new_up, EET_T_SHORT);
 
-    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_eth, exalt_ethernet, "ip", new_ip, EET_T_STRING);
-    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_eth, exalt_ethernet, "netmask", new_netmask, EET_T_STRING);
-    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_eth, exalt_ethernet, "gateway", new_gateway, EET_T_STRING);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_eth, Exalt_Ethernet, "ip", new_ip, EET_T_STRING);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_eth, Exalt_Ethernet, "netmask", new_netmask, EET_T_STRING);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_eth, Exalt_Ethernet, "gateway", new_gateway, EET_T_STRING);
 
-    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_eth, exalt_ethernet, "dhcp", new_dhcp_static, EET_T_SHORT);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_eth, Exalt_Ethernet, "dhcp", new_dhcp_static, EET_T_SHORT);
 
-    EET_DATA_DESCRIPTOR_ADD_SUB(edd_eth, exalt_ethernet, "wireless", wireless, edd_w);
+    EET_DATA_DESCRIPTOR_ADD_SUB(edd_eth, Exalt_Ethernet, "wireless", wireless, edd_w);
 
     return edd_eth;
 }

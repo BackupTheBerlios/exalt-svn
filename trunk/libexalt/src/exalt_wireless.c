@@ -1,14 +1,15 @@
-/** @file exalt_wireless.c */
+/** @file Exalt_Wireless.c */
 #include "exalt_wireless.h"
 #include "libexalt_private.h"
+#include "../config.h"
 
 /**
  * Private functions headers
  */
 
 void _exalt_wireless_scan_free(wireless_scan **w);
-char* _exalt_wireless_get_save_essid(exalt_wireless* w);
-int _exalt_wireless_set_save_essid(exalt_wireless* w,const char* essid);
+char* _exalt_wireless_get_save_essid(Exalt_Wireless* w);
+int _exalt_wireless_set_save_essid(Exalt_Wireless* w,const char* essid);
 
 int _exalt_wireless_scan(void* data);
 
@@ -21,9 +22,9 @@ int _exalt_wpa_ctrl_command(struct wpa_ctrl *ctrl, char *cmd);
  */
 
 
-struct exalt_wireless
+struct Exalt_Wireless
 {
-    exalt_ethernet* eth;
+    Exalt_Ethernet* eth;
     char* new_essid;
     char* new_passwd;
     int new_passwd_mode;
@@ -49,12 +50,12 @@ struct exalt_wireless
 
 
 /**
- * @brief create a new exalt_wireless
- * @return Returns the new exalt_wireless struct
+ * @brief create a new Exalt_Wireless
+ * @return Returns the new Exalt_Wireless struct
  */
-exalt_wireless* exalt_wireless_create(exalt_ethernet* eth)
+Exalt_Wireless* exalt_wireless_create(Exalt_Ethernet* eth)
 {
-    exalt_wireless *w;
+    Exalt_Wireless *w;
     if(!eth)
     {
         fprintf(stderr,"exalt_wireless_create(): eth==null! \n");
@@ -63,7 +64,7 @@ exalt_wireless* exalt_wireless_create(exalt_ethernet* eth)
 
     if(!exalt_eth_is_wireless(eth))
     {
-        w = (exalt_wireless*)malloc((unsigned int)sizeof(exalt_wireless));
+        w = (Exalt_Wireless*)malloc((unsigned int)sizeof(Exalt_Wireless));
         if(!w)
         {
             fprintf(stderr,"exalt_wireless_create(): w==null, malloc error\n");
@@ -100,10 +101,10 @@ exalt_wireless* exalt_wireless_create(exalt_ethernet* eth)
 
 
 /**
- * @brief free a exalt_wireless
- * @param w the exalt_wireless
+ * @brief free a Exalt_Wireless
+ * @param w the Exalt_Wireless
  */
-void exalt_wireless_free(exalt_wireless* w)
+void exalt_wireless_free(Exalt_Wireless* w)
 {
     if(!w)
     {
@@ -124,7 +125,7 @@ void exalt_wireless_free(exalt_wireless* w)
 
 
 /*
- * Set/Get functions for exalt_wireless
+ * Set/Get functions for Exalt_Wireless
  */
 
 
@@ -132,14 +133,14 @@ void exalt_wireless_free(exalt_wireless* w)
 
 /**
  * @brief return the current essid
- * @param w the exalt_wireless
+ * @param w the Exalt_Wireless
  * @return Return the current essid
  */
-char* exalt_wireless_get_essid(exalt_wireless* w)
+char* exalt_wireless_get_essid(Exalt_Wireless* w)
 {
     char essid[IW_ESSID_MAX_SIZE +1];
     struct iwreq wrq;
-    exalt_ethernet *eth;
+    Exalt_Ethernet *eth;
 
     if(!w)
     {
@@ -165,10 +166,10 @@ char* exalt_wireless_get_essid(exalt_wireless* w)
 
 /**
  * @brief return the new essid
- * @param w the exalt_wireless
+ * @param w the Exalt_Wireless
  * @return Return the new essid
  */
-const char* exalt_wireless_get_new_essid(exalt_wireless* w)
+const char* exalt_wireless_get_new_essid(Exalt_Wireless* w)
 {
     if(!w)
     {
@@ -180,10 +181,10 @@ const char* exalt_wireless_get_new_essid(exalt_wireless* w)
 
 /**
  * @brief set the new essid
- * @param w the exalt_wireless
+ * @param w the Exalt_Wireless
  * @param essid the essid which will be set
  */
-void exalt_wireless_set_new_essid(exalt_wireless* w,const char* essid)
+void exalt_wireless_set_new_essid(Exalt_Wireless* w,const char* essid)
 {
     if(!w || !essid)
     {
@@ -202,10 +203,10 @@ void exalt_wireless_set_new_essid(exalt_wireless* w,const char* essid)
 
 /**
  * @brief return the new password
- * @param w the exalt_wireless
+ * @param w the Exalt_Wireless
  * @return Return the new passwd
  */
-const char* exalt_wireless_get_new_passwd(exalt_wireless* w)
+const char* exalt_wireless_get_new_passwd(Exalt_Wireless* w)
 {
     if(!w)
     {
@@ -217,10 +218,10 @@ const char* exalt_wireless_get_new_passwd(exalt_wireless* w)
 
 /**
  * @brief return the driver
- * @param w the exalt_wireless
+ * @param w the Exalt_Wireless
  * @return Return the driver
  */
-char* exalt_wireless_get_driver(exalt_wireless* w)
+char* exalt_wireless_get_driver(Exalt_Wireless* w)
 {
     if(!w)
     {
@@ -232,10 +233,10 @@ char* exalt_wireless_get_driver(exalt_wireless* w)
 
 /**
  * @brief set the new password
- * @param w the exalt_wireless
+ * @param w the Exalt_Wireless
  * @param the new password
  */
-void exalt_wireless_set_new_passwd(exalt_wireless* w,const char* passwd)
+void exalt_wireless_set_new_passwd(Exalt_Wireless* w,const char* passwd)
 {
     if(!w || !passwd)
     {
@@ -256,10 +257,10 @@ void exalt_wireless_set_new_passwd(exalt_wireless* w,const char* passwd)
 
 /**
  * @brief get the new password mode {WEP hexa, WEP plain text, none, WPA ...}
- * @param w the exalt_wireless
+ * @param w the Exalt_Wireless
  * @return the new password mode, -1 if a error occurs
  */
-int exalt_wireless_get_new_passwd_mode(exalt_wireless* w)
+int exalt_wireless_get_new_passwd_mode(Exalt_Wireless* w)
 {
     if(!w)
     {
@@ -271,10 +272,10 @@ int exalt_wireless_get_new_passwd_mode(exalt_wireless* w)
 
 /**
  * @brief get the new mode
- * @param w the exalt_wireless
+ * @param w the Exalt_Wireless
  * @return the new mode, -1 if a error occurs
  */
-int exalt_wireless_get_new_mode(exalt_wireless* w)
+int exalt_wireless_get_new_mode(Exalt_Wireless* w)
 {
     if(!w)
     {
@@ -286,10 +287,10 @@ int exalt_wireless_get_new_mode(exalt_wireless* w)
 
 /**
  * @brief get the new security mode
- * @param w the exalt_wireless
+ * @param w the Exalt_Wireless
  * @return the new security mode, -1 if a error occurs
  */
-int exalt_wireless_get_new_security_mode(exalt_wireless* w)
+int exalt_wireless_get_new_security_mode(Exalt_Wireless* w)
 {
     if(!w)
     {
@@ -303,10 +304,10 @@ int exalt_wireless_get_new_security_mode(exalt_wireless* w)
 
 /**
  * @brief set the new password mode {WEP hexa, WEP plain text, none}
- * @param w the exalt_wireless
+ * @param w the Exalt_Wireless
  * @param passwd_mode the new password mode
  */
-void exalt_wireless_set_new_passwd_mode(exalt_wireless* w,int passwd_mode)
+void exalt_wireless_set_new_passwd_mode(Exalt_Wireless* w,int passwd_mode)
 {
     if(!w)
     {
@@ -318,10 +319,10 @@ void exalt_wireless_set_new_passwd_mode(exalt_wireless* w,int passwd_mode)
 
 /**
  * @brief set the new mode {Ad-hoc, Managed}
- * @param w the exalt_wireless
+ * @param w the Exalt_Wireless
  * @param mode the new mode
  */
-void exalt_wireless_set_new_mode(exalt_wireless* w,int mode)
+void exalt_wireless_set_new_mode(Exalt_Wireless* w,int mode)
 {
     if(!w)
     {
@@ -333,10 +334,10 @@ void exalt_wireless_set_new_mode(exalt_wireless* w,int mode)
 
 /**
  * @brief set the new security mode {Open, Shared}
- * @param w the exalt_wireless
+ * @param w the Exalt_Wireless
  * @param security_mode the new security mode
  */
-void exalt_wireless_set_new_security_mode(exalt_wireless* w,int security_mode)
+void exalt_wireless_set_new_security_mode(Exalt_Wireless* w,int security_mode)
 {
     if(!w)
     {
@@ -349,10 +350,10 @@ void exalt_wireless_set_new_security_mode(exalt_wireless* w,int security_mode)
 
 /*
  * @brief get the ethernet structure
- * @param w the exalt_wireless
+ * @param w the Exalt_Wireless
  * @return Return the exalt_eth structure
  */
-exalt_ethernet* exalt_wireless_get_ethernet(exalt_wireless* w)
+Exalt_Ethernet* exalt_wireless_get_ethernet(Exalt_Wireless* w)
 {
     if(!w)
     {
@@ -368,7 +369,7 @@ exalt_ethernet* exalt_wireless_get_ethernet(exalt_wireless* w)
  * @brief return the wireless networks list
  * @param w the wireless interface
  */
-Ecore_List* exalt_wireless_get_networks_list(exalt_wireless* w)
+Ecore_List* exalt_wireless_get_networks_list(Exalt_Wireless* w)
 {
     if(!w)
     {
@@ -379,11 +380,11 @@ Ecore_List* exalt_wireless_get_networks_list(exalt_wireless* w)
 }
 
 /**
- * @brief return the exalt_ethernet struct
+ * @brief return the Exalt_Ethernet struct
  * @param w the wireless interface
- * @return Return null if fail, else the exalt_ethernet struct
+ * @return Return null if fail, else the Exalt_Ethernet struct
  */
-exalt_ethernet* exalt_wireless_get_eth(exalt_wireless* w)
+Exalt_Ethernet* exalt_wireless_get_eth(Exalt_Wireless* w)
 {
     if(!w)
     {
@@ -394,17 +395,17 @@ exalt_ethernet* exalt_wireless_get_eth(exalt_wireless* w)
 }
 
 /*
- * Set/get functions for exalt_wireless_info
+ * Set/get functions for Exalt_Wireless_Info
  */
 
 
 /**
  * @brief get informations about the nb th wireless network (essid, quality ...)
- * @param w the exalt_wireless
+ * @param w the Exalt_Wireless
  * @param nb the position of the wireless network
  * @return Return informations about the nb th network
  */
-exalt_wireless_info* exalt_wireless_get_networkinfo(exalt_wireless* w, int nb)
+Exalt_Wireless_Info* exalt_wireless_get_networkinfo(Exalt_Wireless* w, int nb)
 {
     if(!w)
     {
@@ -412,24 +413,24 @@ exalt_wireless_info* exalt_wireless_get_networkinfo(exalt_wireless* w, int nb)
         return NULL;
     }
 
-    return EXALT_WIRELESS_INFO(ecore_list_index_goto(w->networks,nb));
+    return Exalt_Wireless_Info(ecore_list_index_goto(w->networks,nb));
 }
 
 
 
 /**
  * @brief get informations about the wireless network named essid
- * @param w the exalt_wireless
+ * @param w the Exalt_Wireless
  * @param essid the essid
  */
-exalt_wireless_info* exalt_wireless_get_networkinfo_by_essid(exalt_wireless* w,char *essid)
+Exalt_Wireless_Info* exalt_wireless_get_networkinfo_by_essid(Exalt_Wireless* w,const char *essid)
 {
     void* data;
-    exalt_wireless_info* wi=NULL;
+    Exalt_Wireless_Info* wi=NULL;
 
-    if(!w)
+    if(!w || !essid)
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"w=%p",w);
+        print_error("ERROR", __FILE__, __LINE__,__func__,"w=%p, essid=%p",w,essid);
         return NULL;
     }
 
@@ -437,7 +438,7 @@ exalt_wireless_info* exalt_wireless_get_networkinfo_by_essid(exalt_wireless* w,c
     data = ecore_list_next(w->networks);
     while(data)
     {
-        wi = EXALT_WIRELESS_INFO(data);
+        wi = Exalt_Wireless_Info(data);
         if(strcmp(essid, exalt_wirelessinfo_get_essid(wi))==0)
             return wi;
 
@@ -458,11 +459,11 @@ exalt_wireless_info* exalt_wireless_get_networkinfo_by_essid(exalt_wireless* w,c
 
 /**
  * @brief start a scan
- * @param eth the exalt_ethernet where scan
+ * @param eth the Exalt_Ethernet where scan
  */
-void exalt_wireless_scan_start(exalt_ethernet* eth)
+void exalt_wireless_scan_start(Exalt_Ethernet* eth)
 {
-    exalt_wireless* w;
+    Exalt_Wireless* w;
 
     if(!eth)
     {
@@ -490,9 +491,9 @@ void exalt_wireless_scan_start(exalt_ethernet* eth)
 /**
  * @brief stop a scan
  */
-void exalt_wireless_scan_stop(exalt_ethernet* eth)
+void exalt_wireless_scan_stop(Exalt_Ethernet* eth)
 {
-    exalt_wireless* w;
+    Exalt_Wireless* w;
 
     w=exalt_eth_get_wireless(eth);
     if(!w)
@@ -515,17 +516,17 @@ void exalt_wireless_scan_stop(exalt_ethernet* eth)
  * @brief launch a wireless scan
  * @param w the wireless card
  */
-int exalt_wireless_scan_wait(exalt_ethernet* eth)
+int exalt_wireless_scan_wait(Exalt_Ethernet* eth)
 {
     int fd;
     wireless_scan_head *context;
     int delay; //in ms
     Ecore_List* l;
     short find;
-    exalt_wireless_info *wi_l;
+    Exalt_Wireless_Info *wi_l;
     void *data_l;
-    exalt_wireless* w;
-    exalt_wireless_info* wi= NULL;
+    Exalt_Wireless* w;
+    Exalt_Wireless_Info* wi= NULL;
 
     w = exalt_eth_get_wireless(eth);
     context=w->context;
@@ -582,7 +583,7 @@ int exalt_wireless_scan_wait(exalt_ethernet* eth)
             find = 0;
             while(data_l && !find)
             {
-                wi_l = EXALT_WIRELESS_INFO(data_l);
+                wi_l = Exalt_Wireless_Info(data_l);
                 if(strcmp(exalt_wirelessinfo_get_essid(wi_l),exalt_wirelessinfo_get_essid(wi))==0)
                     find = 1;
                 else
@@ -624,7 +625,7 @@ int exalt_wireless_scan_wait(exalt_ethernet* eth)
  * @param eth the card
  * @return Return -1 if a error is occurs, 0 if the button is off, 1 if it is on
  */
-short exalt_wireless_radiobutton_ison(exalt_wireless *w)
+short exalt_wireless_radiobutton_ison(Exalt_Wireless *w)
 {
     struct iwreq wrq;
     if(!w)
@@ -650,10 +651,10 @@ short exalt_wireless_radiobutton_ison(exalt_wireless *w)
  * @param eth the card
  * @return Return 1 if the configuration is apply, -1 if a error is occurs
  */
-int exalt_wireless_apply_conf(exalt_wireless *w)
+int exalt_wireless_apply_conf(Exalt_Wireless *w)
 {
     struct wpa_ctrl *ctrl_conn;
-    exalt_ethernet* eth;
+    Exalt_Ethernet* eth;
     int passwd_mode;
     char essid[IW_ESSID_MAX_SIZE+1];
     struct iwreq wrq;
@@ -706,7 +707,7 @@ int exalt_wireless_apply_conf(exalt_wireless *w)
                     wrq.u.data.flags |= IW_ENCODE_DISABLED;
                     break;
                 case EXALT_WIRELESS_ENCRYPTION_WEP_ASCII:
-                    keylen = sprintf(buf,"s:%s",exalt_wireless_get_new_passwd(w));
+                    keylen = sprintf(buf,"s:%s", exalt_wireless_get_new_passwd(w));
                     iw_in_key(buf,key);
                     break;
                 case EXALT_WIRELESS_ENCRYPTION_WEP_HEXA:
@@ -759,6 +760,7 @@ int exalt_wireless_apply_conf(exalt_wireless *w)
 
             break;
         default:
+#ifdef  WPA_SUPPLICANT_COMMAND_PATH
             exalt_conf_save_wpasupplicant(w);
             //reload wpa_supplicant configuration
             ctrl_conn = _exalt_wpa_open_connection(exalt_eth_get_name(eth));
@@ -793,11 +795,11 @@ int exalt_wireless_apply_conf(exalt_wireless *w)
             //close the connection
             wpa_ctrl_close(ctrl_conn);
             ctrl_conn=NULL;
+#else
+            print_error("WARNING", __FILE__, __LINE__,__func__,"Your build of libexalt doesn't support wpa_supplicant");
+#endif
             break;
     }
-    //save the configuration of the current network
-    exalt_conf_wirelessinfo_save(exalt_eth_get_wireless(eth));
-
     return 1;
 }
 
@@ -805,9 +807,9 @@ int exalt_wireless_apply_conf(exalt_wireless *w)
 
 /**
  * @brief Print all informations about the card in stdout
- * @param w the exalt_wireless
+ * @param w the Exalt_Wireless
  */
-void exalt_wireless_printf(exalt_wireless *w)
+void exalt_wireless_printf(Exalt_Wireless *w)
 {
     printf("\t## Connected essid: %s\n",exalt_wireless_get_essid(w));
     printf("\t## Radio button: %s\n",(exalt_wireless_radiobutton_ison(w)>0?"on":"off"));
@@ -818,16 +820,16 @@ void exalt_wireless_printf(exalt_wireless *w)
 
 /**
  * @brief Print a scan result in stdout
- * @param w the exalt_wireless
+ * @param w the Exalt_Wireless
  */
-void exalt_wireless_printf_scan(exalt_wireless *w)
+void exalt_wireless_printf_scan(Exalt_Wireless *w)
 {
     void* data;
     ecore_list_first_goto(w->networks);
     data = ecore_list_next(w->networks);
     while(data)
     {
-        exalt_wireless_info* wi = EXALT_WIRELESS_INFO(data);
+        Exalt_Wireless_Info* wi = Exalt_Wireless_Info(data);
         printf("\n\t\tAddress: %s\n",exalt_wirelessinfo_get_addr(wi));
         printf("\t\tEssid: %s\n",exalt_wirelessinfo_get_essid(wi));
         printf("\t\tKnown: %s\n",(exalt_wirelessinfo_is_known(wi)==1?"yes":"no"));
@@ -914,7 +916,7 @@ int _exalt_wpa_ctrl_command(struct wpa_ctrl *ctrl_conn, char *cmd)
 /**
  * @brief called by _exalt_rtlink_watch_cb when the kernel send a information
  */
-int _exalt_rtlink_essid_change(exalt_wireless *w)
+int _exalt_rtlink_essid_change(Exalt_Wireless *w)
 {
     char* essid, *save_essid;
 
@@ -933,7 +935,7 @@ int _exalt_rtlink_essid_change(exalt_wireless *w)
     {
         _exalt_wireless_set_save_essid(w,exalt_wireless_get_essid(w));
         if(exalt_eth_interfaces.eth_cb)
-            exalt_eth_interfaces.eth_cb(exalt_wireless_get_eth(w),EXALT_WIRELESS_CB_ACTION_ESSIDCHANGE,exalt_eth_interfaces.eth_cb_user_data);
+            exalt_eth_interfaces.eth_cb(exalt_wireless_get_eth(w),exalt_wireless_CB_ACTION_ESSIDCHANGE,exalt_eth_interfaces.eth_cb_user_data);
         return 1;
     }
 
@@ -946,7 +948,7 @@ int _exalt_rtlink_essid_change(exalt_wireless *w)
  * @param essid the new essid
  * @return Returns 1 if the save essid is apply, else -1
  */
-int _exalt_wireless_set_save_essid(exalt_wireless* w,const char* essid)
+int _exalt_wireless_set_save_essid(Exalt_Wireless* w,const char* essid)
 {
     if(!w || !essid)
     {
@@ -964,7 +966,7 @@ int _exalt_wireless_set_save_essid(exalt_wireless* w,const char* essid)
  * @param w the card
  * @return Returns the save essid
  */
-char* _exalt_wireless_get_save_essid(exalt_wireless* w)
+char* _exalt_wireless_get_save_essid(Exalt_Wireless* w)
 {
     if(!w)
     {
@@ -1011,10 +1013,10 @@ int _exalt_wireless_scan(void *data)
     int delay; //in ms
     Ecore_List* l;
     short find;
-    exalt_wireless_info *wi_n,*wi_l;
+    Exalt_Wireless_Info *wi_n,*wi_l;
     void *data_n, *data_l;
-    exalt_wireless_info* wi= NULL;
-    exalt_wireless* w;
+    Exalt_Wireless_Info* wi= NULL;
+    Exalt_Wireless* w;
     char* cpy;
 
     if(!data)
@@ -1022,7 +1024,7 @@ int _exalt_wireless_scan(void *data)
         print_error("ERROR", __FILE__, __LINE__,__func__,"data=%p",data);
         return -1;
     }
-    exalt_ethernet* eth = EXALT_ETHERNET(data);
+    Exalt_Ethernet* eth = Exalt_Ethernet(data);
     w = exalt_eth_get_wireless(eth);
     if(!w)
     {
@@ -1082,7 +1084,7 @@ int _exalt_wireless_scan(void *data)
                     find = 0;
                     while(data_l && !find)
                     {
-                        wi_l = EXALT_WIRELESS_INFO(data_l);
+                        wi_l = Exalt_Wireless_Info(data_l);
                         if(strcmp(exalt_wirelessinfo_get_essid(wi_l),exalt_wirelessinfo_get_essid(wi))==0)
                             find = 1;
                         else
@@ -1117,12 +1119,12 @@ int _exalt_wireless_scan(void *data)
             while(data_l)
             {
                 find = 0;
-                wi_l = EXALT_WIRELESS_INFO(data_l);
+                wi_l = Exalt_Wireless_Info(data_l);
                 ecore_list_first_goto(l);
                 data_n = ecore_list_next(l);
                 while(data_n)
                 {
-                    wi_n = EXALT_WIRELESS_INFO(data_n);
+                    wi_n = Exalt_Wireless_Info(data_n);
                     if(strcmp(exalt_wirelessinfo_get_essid(wi_l),exalt_wirelessinfo_get_essid(wi_n))==0)
                     {
                         //not a new network
@@ -1143,12 +1145,12 @@ int _exalt_wireless_scan(void *data)
             while(data_n)
             {
                 find = 0;
-                wi_n = EXALT_WIRELESS_INFO(data_n);
+                wi_n = Exalt_Wireless_Info(data_n);
                 ecore_list_first_goto(w->networks);
                 data_l = ecore_list_next(w->networks);
                 while(data_l)
                 {
-                    wi_l = EXALT_WIRELESS_INFO(data_l);
+                    wi_l = Exalt_Wireless_Info(data_l);
                     if(strcmp(exalt_wirelessinfo_get_essid(wi_l),exalt_wirelessinfo_get_essid(wi_n))==0)
                     {
                         //not an old network
@@ -1187,14 +1189,14 @@ int _exalt_wireless_scan(void *data)
 }
 
 /**
- * @brief create an ett descriptor for saving a struct exalt_wireless
+ * @brief create an ett descriptor for saving a struct Exalt_Wireless
  * @return Return the descriptor
  */
 Eet_Data_Descriptor * exalt_wireless_edd_new()
 {
     Eet_Data_Descriptor *edd_w;
 
-    edd_w = eet_data_descriptor_new("wireless", sizeof(exalt_wireless),
+    edd_w = eet_data_descriptor_new("wireless", sizeof(Exalt_Wireless),
             evas_list_next,
             evas_list_append,
             evas_list_data,
@@ -1203,12 +1205,12 @@ Eet_Data_Descriptor * exalt_wireless_edd_new()
             evas_hash_add,
             evas_hash_free);
 
-    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_w, exalt_wireless, "essid", new_essid, EET_T_STRING);
-    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_w, exalt_wireless, "passwd", new_passwd, EET_T_STRING);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_w, Exalt_Wireless, "essid", new_essid, EET_T_STRING);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_w, Exalt_Wireless, "passwd", new_passwd, EET_T_STRING);
 
-    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_w, exalt_wireless, "passwd_mode", new_passwd_mode, EET_T_INT);
-    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_w, exalt_wireless, "mode", new_mode, EET_T_INT);
-    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_w, exalt_wireless, "security_mode", new_security_mode, EET_T_INT);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_w, Exalt_Wireless, "passwd_mode", new_passwd_mode, EET_T_INT);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_w, Exalt_Wireless, "mode", new_mode, EET_T_INT);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_w, Exalt_Wireless, "security_mode", new_security_mode, EET_T_INT);
 
     return edd_w;
 }

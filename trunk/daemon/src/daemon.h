@@ -32,15 +32,17 @@ void print_error(const char* type, const char*file, int line, const char* fct, c
 
 int main(int argc, char** argv);
 int setup(E_DBus_Connection *conn);
-exalt_ethernet* dbus_get_eth(DBusMessage* msg);
-exalt_wireless_info* dbus_get_wirelessinfo(DBusMessage* msg);
-exalt_wireless_info* get_wirelessinfo(exalt_ethernet* eth, char* essid);
-void eth_cb(exalt_ethernet* eth, int action, void* data);
-void wireless_scan_cb(exalt_ethernet* eth, Ecore_List* new_networks, Ecore_List* old_networks, void* data);
+Exalt_Ethernet* dbus_get_eth(DBusMessage* msg);
+Exalt_Wireless_Info* dbus_get_wirelessinfo(DBusMessage* msg);
+Exalt_Wireless_Info* get_wirelessinfo(Exalt_Ethernet* eth, char* essid);
+void eth_cb(Exalt_Ethernet* eth, int action, void* data);
+void wireless_scan_cb(Exalt_Ethernet* eth, Ecore_List* new_networks, Ecore_List* old_networks, void* data);
 
 DBusMessage * dbus_cb_is_address(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
 DBusMessage * dbus_cb_is_essid(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
 DBusMessage * dbus_cb_is_passwd(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
+DBusMessage * dbus_cb_wpasupplicant_is_support(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
+DBusMessage * dbus_cb_dhcp_is_support(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
 
 #endif   /* ----- #ifndef DAEMON_INC  ----- */
 

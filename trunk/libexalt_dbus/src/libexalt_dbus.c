@@ -193,6 +193,79 @@ int exalt_dbus_is_essid(const exalt_dbus_conn* conn, const char* essid)
     return res;
 }
 
+int exalt_dbus_wpasupplicant_is_support(const exalt_dbus_conn* conn)
+{
+    DBusPendingCall * ret;
+    DBusMessage *msg;
+    int res;
+
+    if(!conn)
+    {
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"conn=%p",conn);
+        return 0;
+    }
+
+    msg = exalt_dbus_read_call_new("WPASUPPLICANT_IS_SUPPORT");
+    if(!dbus_connection_send_with_reply (conn->conn, msg, &ret, -1))
+    {
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Send Out Of Memory!");
+        dbus_message_unref(msg);
+        return 0;
+    }
+    dbus_message_unref(msg);
+
+    dbus_pending_call_block(ret);
+    msg = dbus_pending_call_steal_reply(ret);
+    if(msg == NULL)
+    {
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"msg=",msg);
+        return 0;
+    }
+    dbus_pending_call_unref(ret);
+
+    //read the response
+    res = exalt_dbus_response_boolean(msg);
+    dbus_message_unref(msg);
+    return res;
+}
+
+int exalt_dbus_dhcp_is_support(const exalt_dbus_conn* conn)
+{
+    DBusPendingCall * ret;
+    DBusMessage *msg;
+    int res;
+
+    if(!conn)
+    {
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"conn=%p",conn);
+        return 0;
+    }
+
+    msg = exalt_dbus_read_call_new("DHCP_IS_SUPPORT");
+    if(!dbus_connection_send_with_reply (conn->conn, msg, &ret, -1))
+    {
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Send Out Of Memory!");
+        dbus_message_unref(msg);
+        return 0;
+    }
+    dbus_message_unref(msg);
+
+    dbus_pending_call_block(ret);
+    msg = dbus_pending_call_steal_reply(ret);
+    if(msg == NULL)
+    {
+        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"msg=",msg);
+        return 0;
+    }
+    dbus_pending_call_unref(ret);
+
+    //read the response
+    res = exalt_dbus_response_boolean(msg);
+    dbus_message_unref(msg);
+    return res;
+}
+
+
 
 int exalt_dbus_is_passwd(const exalt_dbus_conn* conn, const char* passwd, int mode)
 {

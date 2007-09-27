@@ -4,10 +4,10 @@
 #include "libexalt_private.h"
 
 
-exalt_ethernet* _exalt_conf_eet_eth_load(const char* interface);
-int _exalt_conf_eet_eth_save(exalt_ethernet* eth);
-exalt_wireless_info* _exalt_conf_eet_wirelessinfo_load(const char* essid);
-int _exalt_conf_eet_wirelessinfo_save(exalt_wireless_info* wi);
+Exalt_Ethernet* _exalt_conf_eet_eth_load(const char* interface);
+int _exalt_conf_eet_eth_save(Exalt_Ethernet* eth);
+Exalt_Wireless_Info* _exalt_conf_eet_wirelessinfo_load(const char* essid);
+int _exalt_conf_eet_wirelessinfo_save(Exalt_Wireless_Info* wi);
 
 
 
@@ -23,10 +23,10 @@ int _exalt_conf_eet_wirelessinfo_save(exalt_wireless_info* wi);
  * @param w the wireless card
  * @return Return 1 if success, else -1
  */
-int exalt_conf_save_wpasupplicant(exalt_wireless *w)
+int exalt_conf_save_wpasupplicant(Exalt_Wireless *w)
 {
     FILE *fw;
-    exalt_ethernet *eth;
+    Exalt_Ethernet *eth;
     int enc_mode;
 
     if(!w)
@@ -114,10 +114,12 @@ int exalt_conf_save_wpasupplicant(exalt_wireless *w)
  * @param eth the interface
  * @return Return 1 if success, else -1
  */
-int exalt_conf_wirelessinfo_save(exalt_wireless* w)
+int exalt_conf_wirelessinfo_save(Exalt_Wireless* w)
 {
-    exalt_wireless_info* wi = exalt_wireless_get_networkinfo_by_essid(w, exalt_wireless_get_essid(w));
-    exalt_ethernet* eth = exalt_wireless_get_eth(w);
+    Exalt_Wireless_Info* wi = exalt_wireless_get_networkinfo_by_essid(w, exalt_wireless_get_new_essid(w));
+    if(!wi)
+        return 0;
+    Exalt_Ethernet* eth = exalt_wireless_get_eth(w);
 
     exalt_wirelessinfo_set_default_passwd_mode(wi,exalt_wireless_get_new_passwd_mode(w));
     exalt_wirelessinfo_set_default_passwd(wi,exalt_wireless_get_new_passwd(w));
@@ -137,7 +139,7 @@ int exalt_conf_wirelessinfo_save(exalt_wireless* w)
  * @param wi the wireless network
  * @return Return 1 if success, else -1
  */
-exalt_wireless_info* exalt_conf_wirelessinfo_load(const char *essid)
+Exalt_Wireless_Info* exalt_conf_wirelessinfo_load(const char *essid)
 {
     return _exalt_conf_eet_wirelessinfo_load(essid);
 }
@@ -148,7 +150,7 @@ exalt_wireless_info* exalt_conf_wirelessinfo_load(const char *essid)
  * @param eth the card
  * @return Return 1 if success, else 0
  */
-int exalt_conf_save(exalt_ethernet* eth)
+int exalt_conf_save(Exalt_Ethernet* eth)
 {
     exalt_eth_set_new_up(eth,exalt_eth_is_up(eth));
 
@@ -156,7 +158,7 @@ int exalt_conf_save(exalt_ethernet* eth)
 }
 
 
-exalt_ethernet* exalt_conf_load(const char* name)
+Exalt_Ethernet* exalt_conf_load(const char* name)
 {
     return _exalt_conf_eet_eth_load(name);
 }
@@ -168,9 +170,9 @@ exalt_ethernet* exalt_conf_load(const char* name)
 
 /* PRIVATES FUNCTIONS */
 
-exalt_ethernet* _exalt_conf_eet_eth_load(const char* interface)
+Exalt_Ethernet* _exalt_conf_eet_eth_load(const char* interface)
 {
-    exalt_ethernet *data = NULL;
+    Exalt_Ethernet *data = NULL;
     Eet_Data_Descriptor *edd_w, *edd_eth;
     Eet_File *f;
 
@@ -189,7 +191,7 @@ exalt_ethernet* _exalt_conf_eet_eth_load(const char* interface)
     return data;
 }
 
-int _exalt_conf_eet_eth_save(exalt_ethernet* eth)
+int _exalt_conf_eet_eth_save(Exalt_Ethernet* eth)
 {
     Eet_Data_Descriptor *edd_w,* edd_eth;
     Eet_File* f;
@@ -210,9 +212,9 @@ int _exalt_conf_eet_eth_save(exalt_ethernet* eth)
     return res;
 }
 
-exalt_wireless_info* _exalt_conf_eet_wirelessinfo_load(const char* essid)
+Exalt_Wireless_Info* _exalt_conf_eet_wirelessinfo_load(const char* essid)
 {
-    exalt_wireless_info *data = NULL;
+    Exalt_Wireless_Info *data = NULL;
     Eet_Data_Descriptor *edd_wi;
     Eet_File *f;
 
@@ -229,7 +231,7 @@ exalt_wireless_info* _exalt_conf_eet_wirelessinfo_load(const char* essid)
     return data;
 }
 
-int _exalt_conf_eet_wirelessinfo_save(exalt_wireless_info* wi)
+int _exalt_conf_eet_wirelessinfo_save(Exalt_Wireless_Info* wi)
 {
     Eet_Data_Descriptor* edd_wi;
     Eet_File* f;

@@ -53,7 +53,8 @@ short exalt_is_essid(const char* essid);
 short exalt_is_passwd(const char* passwd, int passwd_mode);
 short exalt_is_admin();
 
-
+short exalt_wpasupplicant_is_support();
+short exalt_dhcp_is_support();
 
 
 

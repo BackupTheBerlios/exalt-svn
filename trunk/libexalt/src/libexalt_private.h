@@ -54,7 +54,7 @@ void print_error(const char* type, const char* file, int line,const char* fct, c
 char* exalt_addr_hexa_to_dec(const char* addr);
 short exalt_ioctl(void* argp, int request);
 
-int _exalt_rtlink_essid_change(exalt_wireless *w);
+int _exalt_rtlink_essid_change(Exalt_Wireless *w);
 
 
 Eet_Data_Descriptor * exalt_eth_edd_new(Eet_Data_Descriptor *edd_w);

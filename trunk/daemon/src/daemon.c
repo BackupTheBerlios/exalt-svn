@@ -30,6 +30,10 @@ int setup(E_DBus_Connection *conn)
     e_dbus_interface_method_add(iface, "IS_ESSID", NULL, NULL, dbus_cb_is_essid);
     e_dbus_interface_method_add(iface, "IS_PASSWD", NULL, NULL, dbus_cb_is_passwd);
 
+    e_dbus_interface_method_add(iface, "DHCP_IS_SUPPORT", NULL, NULL, dbus_cb_dhcp_is_support);
+    e_dbus_interface_method_add(iface, "WPASUPPLICANT_IS_SUPPORT", NULL, NULL, dbus_cb_wpasupplicant_is_support);
+
+
     e_dbus_interface_method_add(iface, "IFACE_GET_IP", NULL, NULL, dbus_cb_eth_get_ip);
     e_dbus_interface_method_add(iface, "IFACE_GET_NETMASK", NULL, NULL, dbus_cb_eth_get_netmask);
     e_dbus_interface_method_add(iface, "IFACE_GET_GATEWAY", NULL, NULL, dbus_cb_eth_get_gateway);
@@ -178,7 +182,7 @@ int main(int argc, char** argv)
     return 1;
 }
 
-void eth_cb(exalt_ethernet* eth, int action, void* data)
+void eth_cb(Exalt_Ethernet* eth, int action, void* data)
 {
     E_DBus_Connection *conn;
     DBusMessage* msg;
@@ -190,22 +194,23 @@ void eth_cb(exalt_ethernet* eth, int action, void* data)
     //if a new card appears we apply the configuration
     if(action == EXALT_ETH_CB_ACTION_NEW || action == EXALT_ETH_CB_ACTION_ADD)
     {
-        printf("##### NEW CARD %s\n",exalt_eth_get_name(eth));
         if(exalt_eth_is_new_up(eth))
         {
-            printf("UP\n");
-            exalt_eth_up(eth);
+            if(exalt_eth_is_up(eth))
+            {
+                exalt_eth_apply_conf(eth, NULL, NULL);
+            }
+            else
+                exalt_eth_up(eth);
         }
         else
         {
-            printf("DOWN\n");
             exalt_eth_down(eth);
         }
     }
 
     if(action == EXALT_ETH_CB_ACTION_UP)
     {
-        printf("APPLY CONFIGURARTION\n");
         exalt_eth_apply_conf(eth, NULL, NULL);
     }
 
@@ -243,14 +248,14 @@ void eth_cb(exalt_ethernet* eth, int action, void* data)
     dbus_message_unref(msg);
 }
 
-void wireless_scan_cb(exalt_ethernet* eth,Ecore_List* new_networks, Ecore_List* old_networks, void* data)
+void wireless_scan_cb(Exalt_Ethernet* eth,Ecore_List* new_networks, Ecore_List* old_networks, void* data)
 {
     E_DBus_Connection *conn;
     DBusMessage* msg;
     DBusMessageIter args;
     const char* name;
     const char* essid;
-    exalt_wireless_info *wi;
+    Exalt_Wireless_Info *wi;
     int separator = 0;
 
     Ecore_List* l;
@@ -338,11 +343,11 @@ void wireless_scan_cb(exalt_ethernet* eth,Ecore_List* new_networks, Ecore_List* 
 }
 
 
-exalt_ethernet* dbus_get_eth(DBusMessage* msg)
+Exalt_Ethernet* dbus_get_eth(DBusMessage* msg)
 {
     DBusMessageIter args;
     char* interface= NULL;
-    exalt_ethernet* eth;
+    Exalt_Ethernet* eth;
 
     if(!dbus_message_iter_init(msg, &args))
     {
@@ -367,13 +372,13 @@ exalt_ethernet* dbus_get_eth(DBusMessage* msg)
     return eth;
 }
 
-exalt_wireless_info* dbus_get_wirelessinfo(DBusMessage* msg)
+Exalt_Wireless_Info* dbus_get_wirelessinfo(DBusMessage* msg)
 {
     DBusMessageIter args;
     char* interface = NULL;
-    exalt_ethernet* eth;
+    Exalt_Ethernet* eth;
     char* essid = NULL;
-    exalt_wireless_info* wi;
+    Exalt_Wireless_Info* wi;
 
     if(!dbus_message_iter_init(msg, &args))
     {
@@ -417,10 +422,10 @@ exalt_wireless_info* dbus_get_wirelessinfo(DBusMessage* msg)
     return wi;
 }
 
-exalt_wireless_info* get_wirelessinfo(exalt_ethernet* eth, char* essid)
+Exalt_Wireless_Info* get_wirelessinfo(Exalt_Ethernet* eth, char* essid)
 {
-    exalt_wireless* w;
-    exalt_wireless_info* wi;
+    Exalt_Wireless* w;
+    Exalt_Wireless_Info* wi;
     Ecore_List *l;
     void *data;
 
@@ -442,7 +447,7 @@ exalt_wireless_info* get_wirelessinfo(exalt_ethernet* eth, char* essid)
 
     while( (data=ecore_list_next(l)))
     {
-        wi = EXALT_WIRELESS_INFO(data);
+        wi = Exalt_Wireless_Info(data);
         if( strcmp(essid,exalt_wirelessinfo_get_essid(wi))==0 )
             return wi;
     }
@@ -563,6 +568,45 @@ DBusMessage * dbus_cb_is_passwd(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 
     return reply;
 }
+
+DBusMessage * dbus_cb_dhcp_is_support(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
+{
+    DBusMessage *reply;
+    DBusMessageIter args;
+    int is;
+
+    reply = dbus_message_new_method_return(msg);
+
+    dbus_message_iter_init_append(reply, &args);
+    is = exalt_dhcp_is_support();
+    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_BOOLEAN, &is))
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
+        return reply;
+    }
+
+    return reply;
+}
+
+DBusMessage * dbus_cb_wpasupplicant_is_support(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
+{
+    DBusMessage *reply;
+    DBusMessageIter args;
+    int is;
+
+    reply = dbus_message_new_method_return(msg);
+
+    dbus_message_iter_init_append(reply, &args);
+    is = exalt_wpasupplicant_is_support();
+    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_BOOLEAN, &is))
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
+        return reply;
+    }
+
+    return reply;
+}
+
 
 void print_error(const char* type, const char* file, int line,const char* fct, const char* msg, ...)
 {

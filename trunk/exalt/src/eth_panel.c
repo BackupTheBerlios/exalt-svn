@@ -102,11 +102,6 @@ eth_panel* ethpanel_create(main_window* win)
     etk_progress_bar_pulse_step_set(ETK_PROGRESS_BAR(pnl->pbar), APPLY_PULSE);
     etk_box_append(ETK_BOX(pnl->box_configuration), pnl->hbox_pbar, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
     etk_box_append(ETK_BOX(pnl->hbox_pbar), pnl->pbar, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
-
-
-
-
-
     return pnl;
 }
 
@@ -283,6 +278,10 @@ void ethpanel_disabled_set(eth_panel* pnl)
         etk_widget_disabled_set(pnl->entry_gateway,ETK_TRUE);
         etk_widget_disabled_set(pnl->btn_apply,ETK_TRUE);
     }
+
+
+    if(!exalt_dbus_dhcp_is_support(exalt_conn))
+        etk_widget_disabled_set(pnl->check_dhcp, ETK_TRUE);
 }
 
 void ethpanel_apply_applied_cb(char* interface __UNUSED__, void* data)

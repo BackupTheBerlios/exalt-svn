@@ -4,13 +4,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "libexalt.h"
-
+#include "../config.h"
 
 /** Command to lauch the wpa_supplicant daemon */
-#define COMMAND_WPA "wpa_supplicant -D%s -i%s -c%s -P%s -B"
+#ifdef WPA_SUPPLICANT_COMMAND_PATH
+    #define COMMAND_WPA WPA_SUPPLICANT_COMMAND_PATH " -D%s -i%s -c%s -P%s -B"
+#endif
 
-/** Command to lauch a dhcp */
-#define COMMAND_DHCLIENT "dhclient"
+/** Command to launch a dhcp */
+#ifdef DHCP_COMMAND_PATH
+    #define COMMAND_DHCLIENT DHCP_COMMAND_PATH " %s &> /tmp/exalt_trash"
+#endif
 
 /** Command to get the dns list */
 #define DNS_GET_LIST "grep nameserver /etc/resolv.conf | cut -d' ' -f2"

@@ -22,12 +22,12 @@ DBusMessage * dbus_cb_wireless_scan_wait(E_DBus_Object *obj __UNUSED__, DBusMess
 {
     DBusMessage *reply;
     DBusMessageIter args;
-    exalt_ethernet* eth;
+    Exalt_Ethernet* eth;
     Ecore_List* l;
-    exalt_wireless* w;
+    Exalt_Wireless *w;
     void* data;
     char* essid;
-    exalt_wireless_info* wi;
+    Exalt_Wireless_Info* wi;
     reply = dbus_message_new_method_return(msg);
 
     //search the interface
@@ -45,7 +45,7 @@ DBusMessage * dbus_cb_wireless_scan_wait(E_DBus_Object *obj __UNUSED__, DBusMess
 
     while( (data=ecore_list_next(l)))
     {
-        wi = EXALT_WIRELESS_INFO(data);
+        wi = Exalt_Wireless_Info(data);
         essid = strdup(exalt_wirelessinfo_get_essid(wi));
         if(!essid)
         {
@@ -67,7 +67,7 @@ DBusMessage * dbus_cb_wireless_get_essid(E_DBus_Object *obj __UNUSED__, DBusMess
 {
     DBusMessage *reply;
     DBusMessageIter args;
-    exalt_ethernet* eth;
+    Exalt_Ethernet* eth;
     const char* essid;
 
     reply = dbus_message_new_method_return(msg);
@@ -96,7 +96,7 @@ DBusMessage * dbus_cb_wireless_get_essid(E_DBus_Object *obj __UNUSED__, DBusMess
 DBusMessage * dbus_cb_wireless_scan_start(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
     DBusMessage *reply;
-    exalt_ethernet* eth;
+    Exalt_Ethernet* eth;
     reply = dbus_message_new_method_return(msg);
 
 
@@ -114,7 +114,7 @@ DBusMessage * dbus_cb_wireless_scan_start(E_DBus_Object *obj __UNUSED__, DBusMes
 DBusMessage * dbus_cb_wireless_scan_stop(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
     DBusMessage *reply;
-    exalt_ethernet* eth;
+    Exalt_Ethernet* eth;
     reply = dbus_message_new_method_return(msg);
 
     //search the interface
@@ -133,7 +133,7 @@ DBusMessage * dbus_cb_eth_set_new_essid(E_DBus_Object *obj __UNUSED__, DBusMessa
 {
     DBusMessage *reply;
     DBusMessageIter args;
-    exalt_ethernet* eth;
+    Exalt_Ethernet* eth;
     char* essid;
 
     reply = dbus_message_new_method_return(msg);
@@ -173,7 +173,7 @@ DBusMessage * dbus_cb_eth_set_new_passwd(E_DBus_Object *obj __UNUSED__, DBusMess
 {
     DBusMessage *reply;
     DBusMessageIter args;
-    exalt_ethernet* eth;
+    Exalt_Ethernet* eth;
     char* passwd;
 
     reply = dbus_message_new_method_return(msg);
@@ -207,7 +207,7 @@ DBusMessage * dbus_cb_eth_set_new_passwd_mode(E_DBus_Object *obj __UNUSED__, DBu
 {
     DBusMessage *reply;
     DBusMessageIter args;
-    exalt_ethernet* eth;
+    Exalt_Ethernet* eth;
     int passwd_mode;
 
     reply = dbus_message_new_method_return(msg);
@@ -241,7 +241,7 @@ DBusMessage * dbus_cb_eth_set_new_mode(E_DBus_Object *obj __UNUSED__, DBusMessag
 {
     DBusMessage *reply;
     DBusMessageIter args;
-    exalt_ethernet* eth;
+    Exalt_Ethernet* eth;
     int mode;
 
     reply = dbus_message_new_method_return(msg);
@@ -275,7 +275,7 @@ DBusMessage * dbus_cb_eth_set_new_security_mode(E_DBus_Object *obj __UNUSED__, D
 {
     DBusMessage *reply;
     DBusMessageIter args;
-    exalt_ethernet* eth;
+    Exalt_Ethernet* eth;
     int security_mode;
 
     reply = dbus_message_new_method_return(msg);

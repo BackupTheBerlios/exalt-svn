@@ -18,7 +18,7 @@ Exalt_Ethernets exalt_eth_interfaces;
  */
 short exalt_is_address(const char* ip)
 {
-    exalt_regex *r;
+    Exalt_Regex *r;
     short res;
 
     if(!ip) return 0;
@@ -48,7 +48,7 @@ short exalt_is_essid(const char* essid)
  */
 short exalt_is_passwd(const char* passwd, int passwd_mode)
 {
-    exalt_regex *r;
+    Exalt_Regex *r;
     short res;
     if(passwd_mode == EXALT_WIRELESS_ENCRYPTION_NONE)
         return 1;
@@ -93,4 +93,31 @@ short exalt_is_passwd(const char* passwd, int passwd_mode)
 short exalt_is_admin()
 {
     return exalt_eth_interfaces.admin;
+}
+
+/**
+ * @brief return if libexalt is built with the support of wpa_supplicant
+ * @return Return 1 if yes, else 0
+ */
+short exalt_wpasupplicant_is_support()
+{
+#ifdef WPA_SUPPLICANT_COMMAND_PATH
+    return 1;
+#else
+    return 0;
+#endif
+}
+
+
+/**
+ * @brief return if libexalt is built with the support of dhcp
+ * @return Return 1 if yes, else 0
+ */
+short exalt_dhcp_is_support()
+{
+#ifdef DHCP_COMMAND_PATH
+    return 1;
+#else
+    return 0;
+#endif
 }

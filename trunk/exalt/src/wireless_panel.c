@@ -142,107 +142,110 @@ void wirelesspanel_set_boxbutton(wireless_panel* pnl)
 
 void wirelesspanel_disabled_widget_activate(wireless_panel* pnl)
 {
- 	Etk_Combobox_Item* active_item;
-	int* encryption;
-        int apply = pnl->pulsebar_timer != NULL;
-        int down = !exalt_dbus_eth_is_up(exalt_conn,pnl->interface);
+    Etk_Combobox_Item* active_item;
+    int* encryption;
+    int apply = pnl->pulsebar_timer != NULL;
+    int down = !exalt_dbus_eth_is_up(exalt_conn,pnl->interface);
 
-	if(!pnl)
-	{
-	 	fprintf(stderr,"wireless_disabled_widget_activate(): pnl==null ! \n");
-		return ;
-	}
+    if(!pnl)
+    {
+        fprintf(stderr,"wireless_disabled_widget_activate(): pnl==null ! \n");
+        return ;
+    }
 
-        if(apply)
+    if(apply)
+    {
+        etk_widget_disabled_set(pnl->btn_activate,ETK_TRUE);
+        etk_widget_disabled_set(pnl->btn_disactivate,ETK_TRUE);
+        etk_widget_disabled_set(pnl->scan_list,ETK_TRUE);
+        etk_widget_disabled_set(pnl->entry_conn_essid,ETK_TRUE);
+        etk_widget_disabled_set(pnl->cmbox_encryption,ETK_TRUE);
+        etk_widget_disabled_set(pnl->btn_apply,ETK_TRUE);
+        etk_widget_disabled_set(pnl->entry_conn_pwd,ETK_TRUE);
+        etk_widget_disabled_set(pnl->cmbox_mode,ETK_TRUE);
+        etk_widget_disabled_set(pnl->cmbox_security,ETK_TRUE);
+        etk_widget_disabled_set(pnl->entry_conn_ip,ETK_TRUE);
+        etk_widget_disabled_set(pnl->entry_conn_mask,ETK_TRUE);
+        etk_widget_disabled_set(pnl->entry_conn_gateway,ETK_TRUE);
+        etk_widget_disabled_set(pnl->check_static,ETK_TRUE);
+        etk_widget_disabled_set(pnl->check_dhcp,ETK_TRUE);
+
+        etk_widget_show_all(pnl->hbox_pbar);
+
+        return ;
+    }
+
+    if(down)
+    {
+        etk_widget_disabled_set(pnl->btn_activate,ETK_FALSE);
+        etk_widget_disabled_set(pnl->btn_disactivate,ETK_TRUE);
+        etk_widget_disabled_set(pnl->scan_list,ETK_TRUE);
+        etk_widget_disabled_set(pnl->entry_conn_essid,ETK_TRUE);
+        etk_widget_disabled_set(pnl->cmbox_encryption,ETK_TRUE);
+        etk_widget_disabled_set(pnl->btn_apply,ETK_TRUE);
+        etk_widget_disabled_set(pnl->entry_conn_pwd,ETK_TRUE);
+        etk_widget_disabled_set(pnl->cmbox_mode,ETK_TRUE);
+        etk_widget_disabled_set(pnl->cmbox_security,ETK_TRUE);
+        etk_widget_disabled_set(pnl->entry_conn_ip,ETK_TRUE);
+        etk_widget_disabled_set(pnl->entry_conn_mask,ETK_TRUE);
+        etk_widget_disabled_set(pnl->entry_conn_gateway,ETK_TRUE);
+        etk_widget_disabled_set(pnl->check_static,ETK_TRUE);
+        etk_widget_disabled_set(pnl->check_dhcp,ETK_TRUE);
+
+        return ;
+    }
+
+    etk_widget_disabled_set(pnl->btn_activate,ETK_TRUE);
+    etk_widget_disabled_set(pnl->btn_disactivate,ETK_FALSE);
+    etk_widget_disabled_set(pnl->scan_list,ETK_FALSE);
+    etk_widget_disabled_set(pnl->entry_conn_essid,ETK_FALSE);
+    etk_widget_disabled_set(pnl->cmbox_encryption,ETK_FALSE);
+    etk_widget_disabled_set(pnl->btn_apply,ETK_FALSE);
+    etk_widget_disabled_set(pnl->entry_conn_pwd,ETK_FALSE);
+    etk_widget_disabled_set(pnl->cmbox_mode,ETK_FALSE);
+    etk_widget_disabled_set(pnl->cmbox_security,ETK_FALSE);
+    etk_widget_disabled_set(pnl->entry_conn_ip,ETK_FALSE);
+    etk_widget_disabled_set(pnl->entry_conn_mask,ETK_FALSE);
+    etk_widget_disabled_set(pnl->entry_conn_gateway,ETK_FALSE);
+    etk_widget_disabled_set(pnl->check_static,ETK_FALSE);
+    etk_widget_disabled_set(pnl->check_dhcp,ETK_FALSE);
+
+
+
+    if(!etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(pnl->check_static)))
+    {
+        //dhcp conf
+        etk_widget_disabled_set(pnl->entry_conn_ip,ETK_TRUE);
+        etk_widget_disabled_set(pnl->entry_conn_mask,ETK_TRUE);
+        etk_widget_disabled_set(pnl->entry_conn_gateway,ETK_TRUE);
+    }
+
+    if (!(active_item = etk_combobox_active_item_get(ETK_COMBOBOX(pnl->cmbox_encryption))))
+        return;
+
+    encryption = etk_combobox_item_data_get(active_item);
+
+    if(!apply)
+    {
+        if(encryption && *encryption==EXALT_DBUS_WIRELESS_ENCRYPTION_NONE)
         {
-            etk_widget_disabled_set(pnl->btn_activate,ETK_TRUE);
-            etk_widget_disabled_set(pnl->btn_disactivate,ETK_TRUE);
-            etk_widget_disabled_set(pnl->scan_list,ETK_TRUE);
-            etk_widget_disabled_set(pnl->entry_conn_essid,ETK_TRUE);
-            etk_widget_disabled_set(pnl->cmbox_encryption,ETK_TRUE);
-            etk_widget_disabled_set(pnl->btn_apply,ETK_TRUE);
-            etk_widget_disabled_set(pnl->entry_conn_pwd,ETK_TRUE);
-            etk_widget_disabled_set(pnl->cmbox_mode,ETK_TRUE);
-            etk_widget_disabled_set(pnl->cmbox_security,ETK_TRUE);
-            etk_widget_disabled_set(pnl->entry_conn_ip,ETK_TRUE);
-            etk_widget_disabled_set(pnl->entry_conn_mask,ETK_TRUE);
-            etk_widget_disabled_set(pnl->entry_conn_gateway,ETK_TRUE);
-            etk_widget_disabled_set(pnl->check_static,ETK_TRUE);
-            etk_widget_disabled_set(pnl->check_dhcp,ETK_TRUE);
-
-            etk_widget_show_all(pnl->hbox_pbar);
-
-            return ;
+            etk_widget_disabled_set(pnl->entry_conn_pwd, ETK_TRUE);
+            etk_widget_disabled_set(pnl->cmbox_security, ETK_TRUE);
         }
-
-        if(down)
-        {
-            etk_widget_disabled_set(pnl->btn_activate,ETK_FALSE);
-            etk_widget_disabled_set(pnl->btn_disactivate,ETK_TRUE);
-            etk_widget_disabled_set(pnl->scan_list,ETK_TRUE);
-            etk_widget_disabled_set(pnl->entry_conn_essid,ETK_TRUE);
-            etk_widget_disabled_set(pnl->cmbox_encryption,ETK_TRUE);
-            etk_widget_disabled_set(pnl->btn_apply,ETK_TRUE);
-            etk_widget_disabled_set(pnl->entry_conn_pwd,ETK_TRUE);
-            etk_widget_disabled_set(pnl->cmbox_mode,ETK_TRUE);
-            etk_widget_disabled_set(pnl->cmbox_security,ETK_TRUE);
-            etk_widget_disabled_set(pnl->entry_conn_ip,ETK_TRUE);
-            etk_widget_disabled_set(pnl->entry_conn_mask,ETK_TRUE);
-            etk_widget_disabled_set(pnl->entry_conn_gateway,ETK_TRUE);
-            etk_widget_disabled_set(pnl->check_static,ETK_TRUE);
-            etk_widget_disabled_set(pnl->check_dhcp,ETK_TRUE);
-
-            return ;
-        }
-
-	etk_widget_disabled_set(pnl->btn_activate,ETK_TRUE);
-	etk_widget_disabled_set(pnl->btn_disactivate,ETK_FALSE);
-	etk_widget_disabled_set(pnl->scan_list,ETK_FALSE);
-	etk_widget_disabled_set(pnl->entry_conn_essid,ETK_FALSE);
-	etk_widget_disabled_set(pnl->cmbox_encryption,ETK_FALSE);
-	etk_widget_disabled_set(pnl->btn_apply,ETK_FALSE);
-        etk_widget_disabled_set(pnl->entry_conn_pwd,ETK_FALSE);
-        etk_widget_disabled_set(pnl->cmbox_mode,ETK_FALSE);
-        etk_widget_disabled_set(pnl->cmbox_security,ETK_FALSE);
-        etk_widget_disabled_set(pnl->entry_conn_ip,ETK_FALSE);
-        etk_widget_disabled_set(pnl->entry_conn_mask,ETK_FALSE);
-        etk_widget_disabled_set(pnl->entry_conn_gateway,ETK_FALSE);
-        etk_widget_disabled_set(pnl->check_static,ETK_FALSE);
-        etk_widget_disabled_set(pnl->check_dhcp,ETK_FALSE);
-
-
-
-        if(!etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(pnl->check_static)))
-	{
-		//dhcp conf
-		etk_widget_disabled_set(pnl->entry_conn_ip,ETK_TRUE);
-		etk_widget_disabled_set(pnl->entry_conn_mask,ETK_TRUE);
-		etk_widget_disabled_set(pnl->entry_conn_gateway,ETK_TRUE);
-	}
-
-	if (!(active_item = etk_combobox_active_item_get(ETK_COMBOBOX(pnl->cmbox_encryption))))
-		return;
-
-	encryption = etk_combobox_item_data_get(active_item);
-
-        if(!apply)
-        {
-            if(encryption && *encryption==EXALT_DBUS_WIRELESS_ENCRYPTION_NONE)
-            {
-                etk_widget_disabled_set(pnl->entry_conn_pwd, ETK_TRUE);
-                etk_widget_disabled_set(pnl->cmbox_security, ETK_TRUE);
-            }
-            else if(encryption && (*encryption == EXALT_DBUS_WIRELESS_ENCRYPTION_WPA_PSK_CCMP_ASCII
+        else if(encryption && (*encryption == EXALT_DBUS_WIRELESS_ENCRYPTION_WPA_PSK_CCMP_ASCII
                     || *encryption == EXALT_DBUS_WIRELESS_ENCRYPTION_WPA_PSK_TKIP_ASCII
                     || *encryption == EXALT_DBUS_WIRELESS_ENCRYPTION_WPA2_PSK_CCMP_ASCII
                     || *encryption == EXALT_DBUS_WIRELESS_ENCRYPTION_WPA2_PSK_TKIP_ASCII))
-            {
-                etk_widget_disabled_set(pnl->cmbox_mode, ETK_TRUE);
-                etk_widget_disabled_set(pnl->cmbox_security, ETK_TRUE);
-            }
+        {
+            etk_widget_disabled_set(pnl->cmbox_mode, ETK_TRUE);
+            etk_widget_disabled_set(pnl->cmbox_security, ETK_TRUE);
         }
+    }
 
-        wirelesspanel_textchanged_entry_cb(NULL,pnl);
+    wirelesspanel_textchanged_entry_cb(NULL,pnl);
+
+    if(!exalt_dbus_dhcp_is_support(exalt_conn))
+        etk_widget_disabled_set(pnl->check_dhcp, ETK_TRUE);
 }
 
 void wirelesspanel_hide(wireless_panel* pnl)
@@ -355,15 +358,18 @@ Etk_Widget* wirelesspanel_pageconnection_create(wireless_panel* pnl)
 	etk_combobox_item_data_set_full(item, en_wep_ascii, free);
 	item = etk_combobox_item_append(ETK_COMBOBOX(pnl->cmbox_encryption), WIRELESS_ENCRYPTION_TEXT_WEP_HEXA);
 	etk_combobox_item_data_set_full(item, en_wep_hexa, free);
-	item = etk_combobox_item_append(ETK_COMBOBOX(pnl->cmbox_encryption), WIRELESS_ENCRYPTION_TEXT_WPA_PSK_CCMP_ASCII);
- 	etk_combobox_item_data_set_full(item, en_wpa_psk_ccmp, free);
-	item = etk_combobox_item_append(ETK_COMBOBOX(pnl->cmbox_encryption), WIRELESS_ENCRYPTION_TEXT_WPA_PSK_TKIP_ASCII);
-	etk_combobox_item_data_set_full(item, en_wpa_psk_tkip, free);
-        item = etk_combobox_item_append(ETK_COMBOBOX(pnl->cmbox_encryption), WIRELESS_ENCRYPTION_TEXT_WPA2_PSK_CCMP_ASCII);
- 	etk_combobox_item_data_set_full(item, en_wpa2_psk_ccmp, free);
-	item = etk_combobox_item_append(ETK_COMBOBOX(pnl->cmbox_encryption), WIRELESS_ENCRYPTION_TEXT_WPA2_PSK_TKIP_ASCII);
-	etk_combobox_item_data_set_full(item, en_wpa2_psk_tkip, free);
 
+        if(exalt_dbus_wpasupplicant_is_support(exalt_conn))
+        {
+            item = etk_combobox_item_append(ETK_COMBOBOX(pnl->cmbox_encryption), WIRELESS_ENCRYPTION_TEXT_WPA_PSK_CCMP_ASCII);
+            etk_combobox_item_data_set_full(item, en_wpa_psk_ccmp, free);
+            item = etk_combobox_item_append(ETK_COMBOBOX(pnl->cmbox_encryption), WIRELESS_ENCRYPTION_TEXT_WPA_PSK_TKIP_ASCII);
+            etk_combobox_item_data_set_full(item, en_wpa_psk_tkip, free);
+            item = etk_combobox_item_append(ETK_COMBOBOX(pnl->cmbox_encryption), WIRELESS_ENCRYPTION_TEXT_WPA2_PSK_CCMP_ASCII);
+            etk_combobox_item_data_set_full(item, en_wpa2_psk_ccmp, free);
+            item = etk_combobox_item_append(ETK_COMBOBOX(pnl->cmbox_encryption), WIRELESS_ENCRYPTION_TEXT_WPA2_PSK_TKIP_ASCII);
+            etk_combobox_item_data_set_full(item, en_wpa2_psk_tkip, free);
+        }
 
         etk_combobox_column_add(ETK_COMBOBOX(pnl->cmbox_security), ETK_COMBOBOX_LABEL, 50, ETK_TRUE, 0.5);
 	etk_combobox_build(ETK_COMBOBOX(pnl->cmbox_security));

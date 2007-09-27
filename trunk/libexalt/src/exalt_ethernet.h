@@ -1,16 +1,16 @@
 /** @file exalt_ethernet.h */
-#ifndef ETHERNET_H
-#define ETHERNET_H
+#ifndef EXALT_ETHERNET_H
+#define EXALT_ETHERNET_H
 
 /**
  * @brief informations about a card
  * @structinfo
  */
-typedef struct exalt_ethernet exalt_ethernet;
+typedef struct Exalt_Ethernet Exalt_Ethernet;
 
 /**
  * @defgroup Exalt_Ethernet
- * @brief the exalt_ethernet struct contains all informations about a card.
+ * @brief the Exalt_Ethernet struct contains all informations about a card.
  * @{
  */
 
@@ -51,7 +51,7 @@ typedef struct Exalt_Ethernets Exalt_Ethernets;
 /** when a card is unlink */
 #define EXALT_ETH_CB_ACTION_UNLINK 6
 /** when an essid change */
-#define EXALT_WIRELESS_CB_ACTION_ESSIDCHANGE 7
+#define exalt_wireless_CB_ACTION_ESSIDCHANGE 7
 
 /** when we have a new address */
 #define EXALT_ETH_CB_ACTION_ADDRESS_NEW 9
@@ -60,31 +60,31 @@ typedef struct Exalt_Ethernets Exalt_Ethernets;
 /** when we have a new gateway */
 #define EXALT_ETH_CB_ACTION_GATEWAY_NEW 11
 
-/** cast into an exalt_ethernet* struct */
-#define EXALT_ETHERNET(a) (exalt_ethernet*)a
+/** cast into an Exalt_Ethernet* struct */
+#define Exalt_Ethernet(a) (Exalt_Ethernet*)a
 
 /** callback function used for notifications when a new card is add, new essid ... */
-typedef void (*Exalt_Eth_Cb) (exalt_ethernet* eth, int action, void* user_data);
+typedef void (*Exalt_Eth_Cb) (Exalt_Ethernet* eth, int action, void* user_data);
 
 extern Exalt_Ethernets exalt_eth_interfaces;
 
 /** callback function used for notifications during a scan */
-typedef void (*Exalt_Wifi_Scan_Cb) (exalt_ethernet* eth, Ecore_List* new_networks, Ecore_List* old_networks, void* user_data);
+typedef void (*Exalt_Wifi_Scan_Cb) (Exalt_Ethernet* eth, Ecore_List* new_networks, Ecore_List* old_networks, void* user_data);
 
 /** callback function used for notify than the configuration is applied */
-typedef void (*Exalt_Conf_Applied) (exalt_ethernet* eth, void* data);
+typedef void (*Exalt_Conf_Applied) (Exalt_Ethernet* eth, void* data);
 
 
-exalt_ethernet* exalt_eth_create(const char* name);
+Exalt_Ethernet* exalt_eth_create(const char* name);
 
 int exalt_eth_init();
 int exalt_main();
 void exalt_eth_ethernets_free();
 void exalt_eth_free(void* data);
 
-void exalt_eth_up(exalt_ethernet* eth);
-void exalt_eth_down(exalt_ethernet* eth);
-short exalt_eth_is_up(exalt_ethernet * eth);
+void exalt_eth_up(Exalt_Ethernet* eth);
+void exalt_eth_down(Exalt_Ethernet* eth);
+short exalt_eth_is_up(Exalt_Ethernet * eth);
 
 short exalt_eth_is_ethernet(char* name);
 
@@ -92,42 +92,42 @@ short exalt_eth_is_ethernet(char* name);
 void exalt_eth_printf();
 
 Ecore_List* exalt_eth_get_list();
-exalt_ethernet* exalt_eth_get_ethernet_byname(char* name);
-exalt_ethernet* exalt_eth_get_ethernet_bypos(int pos);
-exalt_ethernet* exalt_eth_get_ethernet_byudi(char* udi);
-exalt_ethernet* exalt_eth_get_ethernet_byifindex(int ifindex);
+Exalt_Ethernet* exalt_eth_get_ethernet_byname(char* name);
+Exalt_Ethernet* exalt_eth_get_ethernet_bypos(int pos);
+Exalt_Ethernet* exalt_eth_get_ethernet_byudi(char* udi);
+Exalt_Ethernet* exalt_eth_get_ethernet_byifindex(int ifindex);
 
 
-short exalt_eth_is_link(exalt_ethernet *eth);
-const char* exalt_eth_get_name(exalt_ethernet* eth);
-char* exalt_eth_get_ip(exalt_ethernet* eth);
-char* exalt_eth_get_netmask(exalt_ethernet* eth);
-char* exalt_eth_get_gateway(exalt_ethernet* eth);
-const char* exalt_eth_get_udi(exalt_ethernet* eth);
-int exalt_eth_get_ifindex(exalt_ethernet* eth);
+short exalt_eth_is_link(Exalt_Ethernet *eth);
+const char* exalt_eth_get_name(Exalt_Ethernet* eth);
+char* exalt_eth_get_ip(Exalt_Ethernet* eth);
+char* exalt_eth_get_netmask(Exalt_Ethernet* eth);
+char* exalt_eth_get_gateway(Exalt_Ethernet* eth);
+const char* exalt_eth_get_udi(Exalt_Ethernet* eth);
+int exalt_eth_get_ifindex(Exalt_Ethernet* eth);
 
-short exalt_eth_is_dhcp(exalt_ethernet * eth);
-short exalt_eth_is_new_dhcp(exalt_ethernet * eth);
-short exalt_eth_is_new_up(exalt_ethernet * eth);
+short exalt_eth_is_dhcp(Exalt_Ethernet * eth);
+short exalt_eth_is_new_dhcp(Exalt_Ethernet * eth);
+short exalt_eth_is_new_up(Exalt_Ethernet * eth);
 
-short exalt_eth_is_wireless(exalt_ethernet* eth);
-exalt_wireless* exalt_eth_get_wireless(exalt_ethernet* eth);
+short exalt_eth_is_wireless(Exalt_Ethernet* eth);
+Exalt_Wireless* exalt_eth_get_wireless(Exalt_Ethernet* eth);
 
 int exalt_eth_set_cb(Exalt_Eth_Cb fct, void* user_data;);
 int exalt_eth_set_scan_cb(Exalt_Wifi_Scan_Cb fct, void* user_data);
 
-int exalt_eth_set_new_ip(exalt_ethernet* eth,const char* ip);
-int exalt_eth_set_new_netmask(exalt_ethernet* eth,const char* netmask);
-int exalt_eth_set_new_gateway(exalt_ethernet* eth,const char* gateway);
-int exalt_eth_set_new_dhcp(exalt_ethernet* eth, short dhcp);
-int exalt_eth_set_new_up(exalt_ethernet* eth, short up);
+int exalt_eth_set_new_ip(Exalt_Ethernet* eth,const char* ip);
+int exalt_eth_set_new_netmask(Exalt_Ethernet* eth,const char* netmask);
+int exalt_eth_set_new_gateway(Exalt_Ethernet* eth,const char* gateway);
+int exalt_eth_set_new_dhcp(Exalt_Ethernet* eth, short dhcp);
+int exalt_eth_set_new_up(Exalt_Ethernet* eth, short up);
 
 
-int exalt_eth_apply_conf(exalt_ethernet* eth, Exalt_Conf_Applied fct, void* user_data);
+int exalt_eth_apply_conf(Exalt_Ethernet* eth, Exalt_Conf_Applied fct, void* user_data);
 
-const char* exalt_eth_get_new_ip(exalt_ethernet* eth);
-const char* exalt_eth_get_new_gateway(exalt_ethernet* eth);
-const char* exalt_eth_get_new_netmask(exalt_ethernet* eth);
+const char* exalt_eth_get_new_ip(Exalt_Ethernet* eth);
+const char* exalt_eth_get_new_gateway(Exalt_Ethernet* eth);
+const char* exalt_eth_get_new_netmask(Exalt_Ethernet* eth);
 
 /** @} */
 

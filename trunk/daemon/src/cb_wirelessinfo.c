@@ -24,7 +24,7 @@ DBusMessage * dbus_cb_wirelessinfo_get_quality(E_DBus_Object *obj __UNUSED__, DB
 {
     DBusMessage *reply;
     DBusMessageIter args;
-    exalt_wireless_info* wi;
+    Exalt_Wireless_Info* wi;
     int quality;
 
     reply = dbus_message_new_method_return(msg);
@@ -49,7 +49,7 @@ DBusMessage * dbus_cb_wirelessinfo_get_addr(E_DBus_Object *obj __UNUSED__, DBusM
 {
     DBusMessage *reply;
     DBusMessageIter args;
-    exalt_wireless_info* wi;
+    Exalt_Wireless_Info* wi;
     const char* addr;
 
     reply = dbus_message_new_method_return(msg);
@@ -79,7 +79,7 @@ DBusMessage * dbus_cb_wirelessinfo_get_protocol(E_DBus_Object *obj __UNUSED__, D
 {
     DBusMessage *reply;
     DBusMessageIter args;
-    exalt_wireless_info* wi;
+    Exalt_Wireless_Info* wi;
     const char* protocol;
 
     reply = dbus_message_new_method_return(msg);
@@ -111,7 +111,7 @@ DBusMessage * dbus_cb_wirelessinfo_get_mode(E_DBus_Object *obj __UNUSED__, DBusM
 {
     DBusMessage *reply;
     DBusMessageIter args;
-    exalt_wireless_info* wi;
+    Exalt_Wireless_Info* wi;
     const char* mode;
 
     reply = dbus_message_new_method_return(msg);
@@ -142,7 +142,7 @@ DBusMessage * dbus_cb_wirelessinfo_get_channel(E_DBus_Object *obj __UNUSED__, DB
 {
     DBusMessage *reply;
     DBusMessageIter args;
-    exalt_wireless_info* wi;
+    Exalt_Wireless_Info* wi;
     const char* channel;
 
     reply = dbus_message_new_method_return(msg);
@@ -173,7 +173,7 @@ DBusMessage * dbus_cb_wirelessinfo_get_bitrates(E_DBus_Object *obj __UNUSED__, D
 {
     DBusMessage *reply;
     DBusMessageIter args;
-    exalt_wireless_info* wi;
+    Exalt_Wireless_Info* wi;
     const char* bitrates;
 
     reply = dbus_message_new_method_return(msg);
@@ -205,7 +205,7 @@ DBusMessage * dbus_cb_wirelessinfo_get_encryption(E_DBus_Object *obj __UNUSED__,
 {
     DBusMessage *reply;
     DBusMessageIter args;
-    exalt_wireless_info* wi;
+    Exalt_Wireless_Info* wi;
     int encryption;
 
     reply = dbus_message_new_method_return(msg);
@@ -230,7 +230,7 @@ DBusMessage * dbus_cb_wirelessinfo_get_signallvl(E_DBus_Object *obj __UNUSED__, 
 {
     DBusMessage *reply;
     DBusMessageIter args;
-    exalt_wireless_info* wi;
+    Exalt_Wireless_Info* wi;
     int signallvl;
 
     reply = dbus_message_new_method_return(msg);
@@ -255,7 +255,7 @@ DBusMessage * dbus_cb_wirelessinfo_get_noiselvl(E_DBus_Object *obj __UNUSED__, D
 {
     DBusMessage *reply;
     DBusMessageIter args;
-    exalt_wireless_info* wi;
+    Exalt_Wireless_Info* wi;
     int noiselvl;
 
     reply = dbus_message_new_method_return(msg);
@@ -282,7 +282,7 @@ DBusMessage * dbus_cb_wirelessinfo_get_default_passwd(E_DBus_Object *obj __UNUSE
 {
     DBusMessage *reply;
     DBusMessageIter args;
-    exalt_wireless_info* wi;
+    Exalt_Wireless_Info* wi;
     const char* default_passwd;
 
     reply = dbus_message_new_method_return(msg);
@@ -312,7 +312,7 @@ DBusMessage * dbus_cb_wirelessinfo_get_default_ip(E_DBus_Object *obj __UNUSED__,
 {
     DBusMessage *reply;
     DBusMessageIter args;
-    exalt_wireless_info* wi;
+    Exalt_Wireless_Info* wi;
     const char* default_ip;
 
     reply = dbus_message_new_method_return(msg);
@@ -342,7 +342,7 @@ DBusMessage * dbus_cb_wirelessinfo_get_default_netmask(E_DBus_Object *obj __UNUS
 {
     DBusMessage *reply;
     DBusMessageIter args;
-    exalt_wireless_info* wi;
+    Exalt_Wireless_Info* wi;
     const char* default_netmask;
 
     reply = dbus_message_new_method_return(msg);
@@ -373,7 +373,7 @@ DBusMessage * dbus_cb_wirelessinfo_get_default_gateway(E_DBus_Object *obj __UNUS
 {
     DBusMessage *reply;
     DBusMessageIter args;
-    exalt_wireless_info* wi;
+    Exalt_Wireless_Info* wi;
     const char* default_gateway;
 
     reply = dbus_message_new_method_return(msg);
@@ -404,7 +404,7 @@ DBusMessage * dbus_cb_wirelessinfo_get_default_passwd_mode(E_DBus_Object *obj __
 {
     DBusMessage *reply;
     DBusMessageIter args;
-    exalt_wireless_info* wi;
+    Exalt_Wireless_Info* wi;
     int passwd_mode;
 
     reply = dbus_message_new_method_return(msg);
@@ -429,7 +429,7 @@ DBusMessage * dbus_cb_wirelessinfo_get_default_security_mode(E_DBus_Object *obj 
 {
     DBusMessage *reply;
     DBusMessageIter args;
-    exalt_wireless_info* wi;
+    Exalt_Wireless_Info* wi;
     int security_mode;
 
     reply = dbus_message_new_method_return(msg);
@@ -454,7 +454,7 @@ DBusMessage * dbus_cb_wirelessinfo_get_default_mode(E_DBus_Object *obj __UNUSED_
 {
     DBusMessage *reply;
     DBusMessageIter args;
-    exalt_wireless_info* wi;
+    Exalt_Wireless_Info* wi;
     int mode;
 
     reply = dbus_message_new_method_return(msg);
@@ -479,7 +479,7 @@ DBusMessage * dbus_cb_wirelessinfo_is_default_dhcp(E_DBus_Object *obj __UNUSED__
 {
     DBusMessage *reply;
     DBusMessageIter args;
-    exalt_wireless_info* wi;
+    Exalt_Wireless_Info* wi;
     int dhcp;
 
     reply = dbus_message_new_method_return(msg);

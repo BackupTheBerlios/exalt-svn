@@ -22,7 +22,7 @@ DBusMessage * dbus_cb_eth_get_eth_list(E_DBus_Object *obj __UNUSED__, DBusMessag
 {
     DBusMessage *reply;
     DBusMessageIter args;
-    exalt_ethernet* eth;
+    Exalt_Ethernet* eth;
     char* interface;
     void* data;
     Ecore_List *interfaces;
@@ -40,7 +40,7 @@ DBusMessage * dbus_cb_eth_get_eth_list(E_DBus_Object *obj __UNUSED__, DBusMessag
     ecore_list_first_goto(interfaces);
     while( (data=ecore_list_next(interfaces)))
     {
-        eth = EXALT_ETHERNET(data);
+        eth = Exalt_Ethernet(data);
         interface = strdup(exalt_eth_get_name(eth));
         if(!interface)
         {
@@ -63,7 +63,7 @@ DBusMessage * dbus_cb_eth_get_ip(E_DBus_Object *obj __UNUSED__, DBusMessage *msg
 {
     DBusMessage *reply;
     DBusMessageIter args;
-    exalt_ethernet* eth;
+    Exalt_Ethernet* eth;
     char* ip;
 
     reply = dbus_message_new_method_return(msg);
@@ -93,7 +93,7 @@ DBusMessage * dbus_cb_eth_get_netmask(E_DBus_Object *obj __UNUSED__, DBusMessage
 {
     DBusMessage *reply;
     DBusMessageIter args;
-    exalt_ethernet* eth;
+    Exalt_Ethernet* eth;
     char* netmask;
 
     reply = dbus_message_new_method_return(msg);
@@ -123,7 +123,7 @@ DBusMessage * dbus_cb_eth_get_gateway(E_DBus_Object *obj __UNUSED__, DBusMessage
 {
     DBusMessage *reply;
     DBusMessageIter args;
-    exalt_ethernet* eth;
+    Exalt_Ethernet* eth;
     char* gateway;
 
     reply = dbus_message_new_method_return(msg);
@@ -153,7 +153,7 @@ DBusMessage * dbus_cb_eth_is_wireless(E_DBus_Object *obj __UNUSED__, DBusMessage
 {
     DBusMessage *reply;
     DBusMessageIter args;
-    exalt_ethernet* eth;
+    Exalt_Ethernet* eth;
     int is;
 
 
@@ -179,7 +179,7 @@ DBusMessage * dbus_cb_eth_is_link(E_DBus_Object *obj __UNUSED__, DBusMessage *ms
 {
     DBusMessage *reply;
     DBusMessageIter args;
-    exalt_ethernet* eth;
+    Exalt_Ethernet* eth;
     int is;
 
 
@@ -205,7 +205,7 @@ DBusMessage * dbus_cb_eth_is_up(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
     DBusMessage *reply;
     DBusMessageIter args;
-    exalt_ethernet* eth;
+    Exalt_Ethernet* eth;
     int is;
 
 
@@ -232,7 +232,7 @@ DBusMessage * dbus_cb_eth_is_dhcp(E_DBus_Object *obj __UNUSED__, DBusMessage *ms
 {
     DBusMessage *reply;
     DBusMessageIter args;
-    exalt_ethernet* eth;
+    Exalt_Ethernet* eth;
     int is;
 
 
@@ -271,7 +271,7 @@ DBusMessage * dbus_cb_eth_is_dhcp(E_DBus_Object *obj __UNUSED__, DBusMessage *ms
 DBusMessage * dbus_cb_eth_up(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
     DBusMessage *reply;
-    exalt_ethernet* eth;
+    Exalt_Ethernet* eth;
 
 
     reply = dbus_message_new_method_return(msg);
@@ -289,7 +289,7 @@ DBusMessage * dbus_cb_eth_up(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 DBusMessage * dbus_cb_eth_down(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
     DBusMessage *reply;
-    exalt_ethernet* eth;
+    Exalt_Ethernet* eth;
 
 
     reply = dbus_message_new_method_return(msg);
@@ -308,7 +308,7 @@ DBusMessage * dbus_cb_eth_set_new_ip(E_DBus_Object *obj __UNUSED__, DBusMessage 
 {
     DBusMessage *reply;
     DBusMessageIter args;
-    exalt_ethernet* eth;
+    Exalt_Ethernet* eth;
     char* ip;
 
     reply = dbus_message_new_method_return(msg);
@@ -348,7 +348,7 @@ DBusMessage * dbus_cb_eth_set_new_netmask(E_DBus_Object *obj __UNUSED__, DBusMes
 {
     DBusMessage *reply;
     DBusMessageIter args;
-    exalt_ethernet* eth;
+    Exalt_Ethernet* eth;
     char* netmask;
 
     reply = dbus_message_new_method_return(msg);
@@ -388,7 +388,7 @@ DBusMessage * dbus_cb_eth_set_new_gateway(E_DBus_Object *obj __UNUSED__, DBusMes
 {
     DBusMessage *reply;
     DBusMessageIter args;
-    exalt_ethernet* eth;
+    Exalt_Ethernet* eth;
     char* gateway;
 
     reply = dbus_message_new_method_return(msg);
@@ -428,7 +428,7 @@ DBusMessage * dbus_cb_eth_set_new_dhcp(E_DBus_Object *obj __UNUSED__, DBusMessag
 {
     DBusMessage *reply;
     DBusMessageIter args;
-    exalt_ethernet* eth;
+    Exalt_Ethernet* eth;
     int dhcp;
 
     reply = dbus_message_new_method_return(msg);
@@ -477,7 +477,7 @@ DBusMessage * dbus_cb_eth_apply_conf(E_DBus_Object *obj __UNUSED__, DBusMessage 
 {
     DBusMessage *reply;
     DBusMessageIter args;
-    exalt_ethernet* eth;
+    Exalt_Ethernet* eth;
 
     reply = dbus_message_new_method_return(msg);
 
@@ -492,7 +492,7 @@ DBusMessage * dbus_cb_eth_apply_conf(E_DBus_Object *obj __UNUSED__, DBusMessage 
     return reply;
 }
 
-void dbus_cb_notify_conf_applied_cb(exalt_ethernet* eth, void* data)
+void dbus_cb_notify_conf_applied_cb(Exalt_Ethernet* eth, void* data)
 {
     E_DBus_Connection *conn;
     DBusMessage* msg;
