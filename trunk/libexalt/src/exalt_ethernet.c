@@ -405,8 +405,9 @@ void exalt_eth_up(Exalt_Ethernet* eth)
 	if( !exalt_ioctl(&ifr, SIOCSIFFLAGS))
 		return ;
 
-	//save the configuration
-	exalt_conf_save(eth);
+        //save the configuration
+        exalt_eth_set_new_up(eth,1);
+        exalt_conf_save(eth);
 }
 
 
@@ -425,6 +426,9 @@ void exalt_eth_down(Exalt_Ethernet* eth)
         return ;
     }
 
+    if(exalt_eth_is_wireless(eth))
+        _exalt_wpa_stop(exalt_eth_get_wireless(eth));
+
     strncpy(ifr.ifr_name,exalt_eth_get_name(eth),sizeof(ifr.ifr_name));
 
     if( !exalt_ioctl(&ifr, SIOCGIFFLAGS))
@@ -435,6 +439,7 @@ void exalt_eth_down(Exalt_Ethernet* eth)
         return ;
 
     //save the configuration
+    exalt_eth_set_new_up(eth,0);
     exalt_conf_save(eth);
 }
 

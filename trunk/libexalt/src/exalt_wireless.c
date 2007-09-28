@@ -681,20 +681,10 @@ int exalt_wireless_apply_conf(Exalt_Wireless *w)
         case EXALT_WIRELESS_ENCRYPTION_NONE:
         case EXALT_WIRELESS_ENCRYPTION_WEP_ASCII:
         case EXALT_WIRELESS_ENCRYPTION_WEP_HEXA:
-            //we need to stop the daemon wpa_supplicant
-            ctrl_conn = _exalt_wpa_open_connection(exalt_eth_get_name(eth));
-            if(ctrl_conn)
-            {
-                _exalt_wpa_ctrl_command(ctrl_conn, "TERMINATE");
-                wpa_ctrl_close(ctrl_conn);
-                ctrl_conn=NULL;
-                //the wpa_supplicant daemon deactivate the card ...
-                while(exalt_eth_is_up(eth))
-                    ;
-                exalt_eth_up(eth);
-            }
-
-            strncpy(wrq.ifr_name, exalt_eth_get_name(eth), sizeof(wrq.ifr_name));
+#ifdef  WPA_SUPPLICANT_COMMAND_PATH
+            _exalt_wpa_stop(w);
+#endif
+                strncpy(wrq.ifr_name, exalt_eth_get_name(eth), sizeof(wrq.ifr_name));
             wrq.u.essid.flags = 0;
             wrq.u.data.length = 0;
             wrq.u.data.pointer = (caddr_t) NULL;
@@ -882,6 +872,35 @@ struct wpa_ctrl * _exalt_wpa_open_connection(const char *ifname)
     return ctrl_conn;
 }
 
+/**
+ * @brief kill a wpa_supplicant daemon if he exist
+ * @param w the wireless card
+ */
+void _exalt_wpa_stop(Exalt_Wireless* w)
+{
+#ifdef  WPA_SUPPLICANT_COMMAND_PATH
+    struct wpa_ctrl *ctrl_conn;
+    Exalt_Ethernet* eth;
+    if (w == NULL)
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__,"w=%p",w);
+        return ;
+    }
+    eth = exalt_wireless_get_eth(w);
+    //we need to stop the daemon wpa_supplicant
+    ctrl_conn = _exalt_wpa_open_connection(exalt_eth_get_name(eth));
+    if(ctrl_conn)
+    {
+        _exalt_wpa_ctrl_command(ctrl_conn, "TERMINATE");
+        wpa_ctrl_close(ctrl_conn);
+        ctrl_conn=NULL;
+        //the wpa_supplicant daemon deactivate the card ...
+        while(exalt_eth_is_up(eth))
+            ;
+        exalt_eth_up(eth);
+    }
+#endif
+}
 
 
 /**

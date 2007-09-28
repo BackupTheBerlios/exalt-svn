@@ -107,7 +107,6 @@ AC_OUTPUT([
 Makefile
 exalt.pc
 src/Makefile
-debian/changelog
 ])
 
 

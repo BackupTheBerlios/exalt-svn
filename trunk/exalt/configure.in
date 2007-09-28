@@ -97,6 +97,5 @@ src/Makefile
 data/Makefile
 data/icons/Makefile
 po/Makefile
-debian/changelog
 ]
 )

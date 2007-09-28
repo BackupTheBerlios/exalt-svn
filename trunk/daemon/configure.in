@@ -99,7 +99,5 @@ Makefile
 src/Makefile
 data/Makefile
 data/dbus/Makefile
-data/init.d/Makefile
-debian/changelog
 ]
 )

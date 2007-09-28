@@ -15,12 +15,7 @@ EXTRA_DIST = \
 AUTHORS \
 COPYING \
 README \
-ABOUT-NLS \
-debian/changelog \
-debian/changelog.in \
-debian/control \
-debian/copyright \
-debian/rules 
+ABOUT-NLS
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = exalt.pc

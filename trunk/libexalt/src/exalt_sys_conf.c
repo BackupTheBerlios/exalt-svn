@@ -152,8 +152,6 @@ Exalt_Wireless_Info* exalt_conf_wirelessinfo_load(const char *essid)
  */
 int exalt_conf_save(Exalt_Ethernet* eth)
 {
-    exalt_eth_set_new_up(eth,exalt_eth_is_up(eth));
-
     return _exalt_conf_eet_eth_save(eth);
 }
 

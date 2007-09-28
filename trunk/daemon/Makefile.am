@@ -15,10 +15,5 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 EXTRA_DIST = README \
 AUTHORS \
 COPYING \
-COPYING-PLAIN \
-debian/changelog \
-debian/changelog.in \
-debian/control \
-debian/copyright \
-debian/rules
+COPYING-PLAIN
 

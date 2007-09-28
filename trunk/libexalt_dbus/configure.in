@@ -74,6 +74,5 @@ AC_OUTPUT([
 Makefile
 exalt_dbus.pc
 src/Makefile
-debian/changelog
 ])
 

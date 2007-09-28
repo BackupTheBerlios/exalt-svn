@@ -57,6 +57,9 @@ short exalt_ioctl(void* argp, int request);
 int _exalt_rtlink_essid_change(Exalt_Wireless *w);
 
 
+void _exalt_wpa_stop(Exalt_Wireless* w);
+
+
 Eet_Data_Descriptor * exalt_eth_edd_new(Eet_Data_Descriptor *edd_w);
 Eet_Data_Descriptor * exalt_wireless_edd_new();
 Eet_Data_Descriptor * exalt_wirelessinfo_edd_new();
