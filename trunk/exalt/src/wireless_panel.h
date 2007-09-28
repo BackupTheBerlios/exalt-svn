@@ -30,7 +30,7 @@ struct _wireless_panel
 	char* interface;
 
 	Etk_Widget *frame;
-	Etk_Widget *box_button_on; //the main frame, list of network, configure ...
+	Etk_Widget *box_main; //the main frame, list of network, configure ...
 
 	//box current configuraton (display essid / ip / mask & gateway)
 	Etk_Widget* lbl_essid;
@@ -76,7 +76,6 @@ void wirelesspanel_show(wireless_panel* pnl);
 void wirelesspanel_hide(wireless_panel* pnl);
 void wirelesspanel_set_eth(wireless_panel* pnl, char* interface);
 void wirelesspanel_load_scan(wireless_panel* pnl);
-void wirelesspanel_set_boxbutton(wireless_panel* pnl);
 
 void wirelesspanel_update_current_conf(wireless_panel* pnl);
 

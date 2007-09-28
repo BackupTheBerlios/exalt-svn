@@ -18,13 +18,13 @@ wireless_panel* wirelesspanel_create(main_window* win)
 	etk_container_add(ETK_CONTAINER(pnl->frame), hbox);
 
 
-	pnl->box_button_on = etk_hbox_new(ETK_FALSE, 5);
+	pnl->box_main = etk_hbox_new(ETK_FALSE, 5);
 
-	etk_box_append(ETK_BOX(hbox), pnl->box_button_on, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+	etk_box_append(ETK_BOX(hbox), pnl->box_main, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
 
 	//box radio button on
-	hbox = pnl->box_button_on;
+	hbox = pnl->box_main;
 
  	//##############################
 	//## btn activate/deactivate ##
@@ -103,41 +103,13 @@ wireless_panel* wirelesspanel_create(main_window* win)
 
 void wirelesspanel_show(wireless_panel* pnl)
 {
-	etk_widget_show_all(pnl->frame);
-	etk_widget_hide(pnl->hbox_pbar);
-}
-
-void wirelesspanel_set_boxbutton(wireless_panel* pnl)
-{
-    if(!pnl)
-    {
-        fprintf(stderr,"wirelesspanel_set_boxbutton(): pnl=null ! \n");
-        return ;
-    }
-
-    if(!pnl->interface)
-    {
-        fprintf(stderr,"wirelesspanel_set_boxbutton(): pnl->interface==null ! \n");
-        return ;
-    }
-
-    if(!exalt_dbus_eth_is_wireless(exalt_conn, pnl->interface))
-    {
-        fprintf(stderr,"wirelesspanel_set_boxbutton(): pnl->eth->wireless==null ! \n");
-        return ;
-    }
-
-    etk_widget_show_all(pnl->box_button_on);
-    etk_widget_hide(pnl->hbox_pbar);
-
     etk_tree_clear (ETK_TREE(pnl->scan_list));
+
     exalt_dbus_wireless_scan_stop(exalt_conn, pnl->interface);
     exalt_dbus_wireless_scan_start(exalt_conn,pnl->interface);
 
-    if(!exalt_dbus_eth_is_up(exalt_conn, pnl->interface))
-        wirelesspanel_disabled_widget_activate(pnl);
-    else
-        wirelesspanel_disabled_widget_activate(pnl);
+    etk_widget_show_all(pnl->frame);
+    etk_widget_hide(pnl->hbox_pbar);
 }
 
 void wirelesspanel_disabled_widget_activate(wireless_panel* pnl)
@@ -266,7 +238,9 @@ void wirelesspanel_set_eth(wireless_panel* pnl, char* interface)
     EXALT_DBUS_FREE(pnl->interface);
     pnl->interface = strdup(interface);
     etk_frame_label_set(ETK_FRAME(pnl->frame),name);
-    wirelesspanel_set_boxbutton(pnl);
+
+    wirelesspanel_disabled_widget_activate(pnl);
+
     wirelesspanel_update_current_conf(pnl);
 }
 
@@ -471,6 +445,7 @@ void wirelesspanel_scan_networks_cb(char* interface, Ecore_List* new_networks, E
         ecore_list_first_goto(new_networks);
 	while( (essid = ecore_list_next(new_networks)))
 	{
+            printf("new network: %s\n",essid);
 	 	etk_tree_row_append(ETK_TREE(pnl->scan_list), NULL,
 					pnl->scan_quality,
 					img[(exalt_dbus_wirelessinfo_get_quality(exalt_conn, interface, essid))/25],NULL,
@@ -492,6 +467,8 @@ void wirelesspanel_scan_networks_cb(char* interface, Ecore_List* new_networks, E
 		Etk_Tree_Row* row = NULL;
 		char* row_name;
 		row = etk_tree_first_row_get(ETK_TREE(pnl->scan_list));
+
+                printf("suppression: %s\n",essid);
 
                 while(row)
 		{

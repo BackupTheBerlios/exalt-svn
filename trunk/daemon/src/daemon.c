@@ -196,7 +196,7 @@ void eth_cb(Exalt_Ethernet* eth, int action, void* data)
     {
         if(exalt_eth_is_new_up(eth))
         {
-            if(exalt_eth_is_up(eth))
+            if(exalt_eth_is_up(eth) && exalt_eth_is_link(eth))
             {
                 exalt_eth_apply_conf(eth, NULL, NULL);
             }
@@ -209,10 +209,10 @@ void eth_cb(Exalt_Ethernet* eth, int action, void* data)
         }
     }
 
-    if(action == EXALT_ETH_CB_ACTION_UP)
-    {
+    if( (action == EXALT_ETH_CB_ACTION_UP && exalt_eth_is_link(eth))
+            || (action == EXALT_ETH_CB_ACTION_LINK && exalt_eth_is_up(eth)) )
         exalt_eth_apply_conf(eth, NULL, NULL);
-    }
+
 
     //send a broadcast
     msg = dbus_message_new_signal(EXALTD_PATH,EXALTD_INTERFACE_READ, "NOTIFY");
