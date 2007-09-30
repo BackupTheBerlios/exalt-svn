@@ -445,7 +445,6 @@ void wirelesspanel_scan_networks_cb(char* interface, Ecore_List* new_networks, E
         ecore_list_first_goto(new_networks);
 	while( (essid = ecore_list_next(new_networks)))
 	{
-            printf("new network: %s\n",essid);
 	 	etk_tree_row_append(ETK_TREE(pnl->scan_list), NULL,
 					pnl->scan_quality,
 					img[(exalt_dbus_wirelessinfo_get_quality(exalt_conn, interface, essid))/25],NULL,
@@ -467,8 +466,6 @@ void wirelesspanel_scan_networks_cb(char* interface, Ecore_List* new_networks, E
 		Etk_Tree_Row* row = NULL;
 		char* row_name;
 		row = etk_tree_first_row_get(ETK_TREE(pnl->scan_list));
-
-                printf("suppression: %s\n",essid);
 
                 while(row)
 		{

@@ -7,8 +7,7 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 		ltconfig ltmain.sh missing mkinstalldirs \
 		stamp-h.in build-stamp configure-stamp depcomp \
 		etk_docs.tar.gz \
-		etk.pc \
-		debian/changelog
+		etk.pc
 
 
 EXTRA_DIST = \

@@ -8,8 +8,7 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 							  install-sh \
                        ltconfig ltmain.sh missing mkinstalldirs depcomp \
                        stamp-h stamp-h.in \
-                       $(MYAPPNAME).c \
-                       debian/changelog
+                       $(MYAPPNAME).c
 
 
 EXTRA_DIST = README \
