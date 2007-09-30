@@ -156,6 +156,15 @@ int main(int argc, char** argv)
     ecore_init();
     exalt_eth_init();
 
+    if(!exalt_is_admin())
+    {
+        print_error("WARNING", __FILE__, __LINE__,__func__, "Please run as root. \n");
+        e_dbus_shutdown();
+        ecore_shutdown();
+        return 1;
+    }
+
+
     conn = e_dbus_bus_get(DBUS_BUS_SYSTEM);
     if(!conn)
     {
@@ -171,9 +180,6 @@ int main(int argc, char** argv)
     exalt_eth_set_scan_cb(wireless_scan_cb,conn);
 
     exalt_main();
-
-    if(!exalt_is_admin())
-        print_error("WARNING", __FILE__, __LINE__,__func__, "The daemon is not run with administrator's right, you can't modify the configuration");
 
     ecore_main_loop_begin();
 
