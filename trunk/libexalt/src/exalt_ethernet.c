@@ -179,8 +179,9 @@ Exalt_Ethernet* exalt_eth_create(const char* name)
         eth->new_netmask = NULL;
         eth->wireless = NULL;
         eth->new_gateway = NULL;
-        eth->new_up=0;
+        eth->new_up=1;
         eth->wireless = NULL;
+        eth->new_dhcp_static = 1;
     }
 
     eth->name = NULL;

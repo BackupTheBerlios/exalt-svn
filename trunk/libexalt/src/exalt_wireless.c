@@ -72,7 +72,7 @@ Exalt_Wireless* exalt_wireless_create(Exalt_Ethernet* eth)
         }
         w -> new_essid = NULL;
         w -> new_passwd = NULL;
-        w -> new_passwd_mode = 0;
+        w -> new_passwd_mode = EXALT_WIRELESS_ENCRYPTION_NONE;
         w -> new_mode = 0;
         w -> new_security_mode = 0;
     }

@@ -8,7 +8,7 @@ typedef struct _Popup Popup;
 #include <libexalt_dbus.h>
 #include "e_mod_gadcon.h"
 #include "e_mod_config.h"
-
+#include <e.h>
 
 struct _Instance
 {

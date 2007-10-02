@@ -87,7 +87,7 @@ fi
 
 
 
-
+requirements="ecore eet ecore-file ehal"
 
 
 PKG_CHECK_MODULES(LIBEXALT, [

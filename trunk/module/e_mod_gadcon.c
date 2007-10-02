@@ -1,6 +1,4 @@
-
 #include "e_mod_gadcon.h"
-short exalt_is_init = 0;
 
 static E_Gadcon_Client *_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style);
 static void _gc_shutdown(E_Gadcon_Client *gcc);

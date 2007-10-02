@@ -57,7 +57,7 @@ dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source Code Directory])
 
-requirements=""
+requirements="ecore edbus"
 
 
 PKG_CHECK_MODULES(LIBEXALT_DBUS, [

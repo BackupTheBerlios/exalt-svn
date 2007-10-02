@@ -4,11 +4,11 @@
 #ifndef E_MOD_EXALT_H
 #define E_MOD_EXALT_H
 
-#include <e.h>
 #include "e_mod_main.h"
 #include "e_mod_gadcon.h"
 #include "e_mod_config.h"
 #include <libexalt_dbus.h>
+#include <e.h>
 
 #define ICONS_ETHERNET_ACTIVATE "/module_exalt/icons/ethernet.png"
 #define ICONS_WIRELESS_ACTIVATE "/module_exalt/icons/wireless.png"

@@ -4,12 +4,11 @@
 #ifndef E_MOD_CONFIG_H
 #define E_MOD_CONFIG_H
 
-#include <e.h>
 #include "e_mod_main.h"
 #include "e_mod_gadcon.h"
 #include "e_mod_config.h"
 #include <libexalt_dbus.h>
-
+#include <e.h>
 
 typedef struct _Config Config;
 

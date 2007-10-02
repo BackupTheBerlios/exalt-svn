@@ -1,4 +1,3 @@
-#include <e.h>
 #include "e_mod_main.h"
 
 static E_Config_DD *conf_edd = NULL;

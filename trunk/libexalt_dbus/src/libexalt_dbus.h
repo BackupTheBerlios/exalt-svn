@@ -19,7 +19,10 @@
 #ifndef  LIBEXALT_DBUS_INC
 #define  LIBEXALT_DBUS_INC
 
+#include <E_DBus.h>
 #include <Ecore_Data.h>
+#include <Ecore_Data.h>
+#include <string.h>
 
 typedef struct _exalt_dbus_conn exalt_dbus_conn;
 typedef struct _exalt_dbus_notify_data exalt_dbus_notify_data;
@@ -30,9 +33,6 @@ typedef void (exalt_notify_cb) (char* eth, int action, void* user_data);
 typedef void (exalt_scan_notify_cb) (char* eth, Ecore_List* new_networks, Ecore_List *old_networks, void* user_data);
 typedef void (exalt_notify_conf_applied_cb) (char* interface, void* user_data);
 
-#include <E_DBus.h>
-#include <Ecore_Data.h>
-#include <string.h>
 #include "define.h"
 #include "exalt_dbus_ethernet.h"
 #include "exalt_dbus_wireless.h"
