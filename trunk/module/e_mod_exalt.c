@@ -431,9 +431,23 @@ void _exalt_interface_cb(void *data, E_Menu *m, E_Menu_Item *mi)
 
     pos = str_istr(exalt_config->cmd,"%i");
     command1 = str_remplace(exalt_config->cmd,pos,strlen("%i"),interface);
-    pos = str_istr(command1,"%w");
-    command2 = str_remplace(command1,pos,strlen("%w"),"");
-    ecore_exe_run(command2,NULL);
+    if(command1)
+    {
+        pos = str_istr(command1,"%w");
+        command2 = str_remplace(command1,pos,strlen("%w"),"");
+    }
+    else
+    {
+        pos = str_istr(exalt_config->cmd,"%w");
+        command2 = str_remplace(exalt_config->cmd,pos,strlen("%w"),"");
+    }
+    if(command2)
+        ecore_exe_run(command2,NULL);
+    else if(command1)
+        ecore_exe_run(command1, NULL);
+    else
+        ecore_exe_run(exalt_config->cmd,NULL);
+
     EXALT_DBUS_FREE(command1);
     EXALT_DBUS_FREE(command2);
 }
@@ -448,12 +462,26 @@ void _exalt_wireless_cb(void *data, E_Menu *m, E_Menu_Item *mi)
 
     if(!info || !exalt_config || !exalt_config->cmd)
         return ;
-
     pos = str_istr(exalt_config->cmd,"%i");
     command1 = str_remplace(exalt_config->cmd,pos,strlen("%i"),info[0]);
-    pos = str_istr(command1,"%w");
-    command2 = str_remplace(command1,pos,strlen("%w"),info[1]);
-    ecore_exe_run(command2,NULL);
+    if(command1)
+    {
+        pos = str_istr(command1,"%w");
+        command2 = str_remplace(command1,pos,strlen("%w"),info[1]);
+    }
+    else
+    {
+        pos = str_istr(exalt_config->cmd,"%w");
+        command2 = str_remplace(exalt_config->cmd,pos,strlen("%w"),info[1]);
+    }
+    if(command2)
+        ecore_exe_run(command2,NULL);
+    else if(command1)
+        ecore_exe_run(command1, NULL);
+    else
+        ecore_exe_run(exalt_config->cmd,NULL);
+
+
     EXALT_DBUS_FREE(command1);
     EXALT_DBUS_FREE(command2);
 }
@@ -501,7 +529,7 @@ int str_istr (const char *cs, const char *ct)
 }
 
 
-char *str_remplace (const char *s, unsigned int start, unsigned int lenght, const char *ct)
+char *str_remplace (const char *s, int start, int lenght, const char *ct)
 {
     char *new_s = NULL;
 
@@ -509,20 +537,19 @@ char *str_remplace (const char *s, unsigned int start, unsigned int lenght, cons
     {
         size_t size = strlen (s);
 
-        new_s = malloc (sizeof (*new_s) * (size - lenght + strlen (ct)));
+        new_s = malloc (sizeof (*new_s) * (size - lenght + strlen (ct) +1));
         if (new_s)
         {
             memcpy (new_s, s, start);
             memcpy (&new_s[start], ct, strlen (ct));
             memcpy (&new_s[start + strlen (ct)], &s[start + lenght], size - lenght - start + 1);
+            return new_s;
         }
         else
             return NULL;
     }
     else
         return NULL;
-
-    return new_s;
 }
 
 

@@ -34,9 +34,9 @@ fi
 dnl Set PACKAGE_BIN_DIR in config.h.
 if test "x${bindir}" = 'xNONE'; then
   if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${ac_default_prefix}/bin", [Installation Directory for User Executables])
+    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${ac_default_prefix}/sbin", [Installation Directory for User Executables])
   else
-    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${prefix}/bin", [Installation Directory for User Executables])
+    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${prefix}/sbin", [Installation Directory for User Executables])
   fi
 else
   AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${bindir}", [Installation Directory for User Executables])
@@ -70,16 +70,6 @@ packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source Code Directory])
 
 
-dnl detecting the Gnu/linux distribution
-dnl C_ARG_WITH(distro, AS_HELP_STRING([--with-distro=DISTRO],[Specify the Linux distribution t
-if test "z$with_distro" = "z"; then
-                AC_CHECK_FILE(/etc/SuSE-release,with_distro="suse")
-                AC_CHECK_FILE(/etc/gentoo-release,with_distro="gentoo")
-                AC_CHECK_FILE(/etc/arch-release,with_distro="archlinux")
-                AC_CHECK_FILE(/etc/debian_version,with_distro="debian")
-fi
-
-with_distro=`echo ${with_distro} | tr '[[:upper:]]' '[[:lower:]]' `
 
 PKG_CHECK_MODULES(EXALT_DAEMON, [
   exalt >= 0.5

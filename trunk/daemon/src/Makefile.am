@@ -4,7 +4,7 @@ AM_CFLAGS = \
 -Wall -W -g -D_GNU_SOURCE @EXALT_DAEMON_CFLAGS@
 
 
-bin_PROGRAMS = exalt-daemon
+sbin_PROGRAMS = exalt-daemon
 
 exalt_daemon_INCLUDES = \
 daemon.h \

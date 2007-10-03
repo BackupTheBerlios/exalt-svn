@@ -36,7 +36,7 @@ static void _exalt_wireless_cb(void *data, E_Menu *m, E_Menu_Item *mi);
 static void _exalt_cb_menu_configure(void *data, E_Menu *m, E_Menu_Item *mi);
 
 int str_istr (const char *cs, const char *ct);
-char *str_remplace (const char *s, unsigned int start, unsigned int lenght, const char *ct);
+char *str_remplace (const char *s, int start, int lenght, const char *ct);
 
 
 

@@ -25,7 +25,7 @@ e_modapi_init(E_Module *m)
     if(!exalt_config)
     {
         exalt_config = E_NEW(Config,1);
-        exalt_config->cmd = strdup("gksu \"exalt -i %i -w %w\"");
+        exalt_config->cmd = strdup("exalt -i %i -w %w");
     }
 
     exalt_config->module = m;

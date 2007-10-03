@@ -13,7 +13,7 @@
 
 /** Command to launch a dhcp */
 #ifdef DHCP_COMMAND_PATH
-    #define COMMAND_DHCLIENT DHCP_COMMAND_PATH " %s &> /tmp/exalt_trash"
+    #define COMMAND_DHCLIENT DHCP_COMMAND_PATH " %s -1 -q"
 #endif
 
 /** Command to get the dns list */
