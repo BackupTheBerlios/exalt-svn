@@ -276,14 +276,14 @@ DBusMessage * dbus_cb_wirelessinfo_get_noiselvl(E_DBus_Object *obj __UNUSED__, D
     return reply;
 }
 
-
-
-DBusMessage * dbus_cb_wirelessinfo_get_default_passwd(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
+DBusMessage * dbus_cb_wirelessinfo_get_default_conn(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
     DBusMessage *reply;
     DBusMessageIter args;
     Exalt_Wireless_Info* wi;
-    const char* default_passwd;
+    Exalt_Connection *c;
+    int i;
+    const char *s;
 
     reply = dbus_message_new_method_return(msg);
 
@@ -292,211 +292,49 @@ DBusMessage * dbus_cb_wirelessinfo_get_default_passwd(E_DBus_Object *obj __UNUSE
     if(!wi)
         return reply;
 
-    dbus_message_iter_init_append(reply, &args);
-    default_passwd = exalt_wirelessinfo_get_default_passwd(wi);
-    if(!default_passwd)
-    {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "default_passwd=%p",default_passwd);
-        return reply;
-    }
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &default_passwd))
-    {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
-        return reply;
-    }
-
-    return reply;
-}
-
-DBusMessage * dbus_cb_wirelessinfo_get_default_ip(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
-{
-    DBusMessage *reply;
-    DBusMessageIter args;
-    Exalt_Wireless_Info* wi;
-    const char* default_ip;
-
-    reply = dbus_message_new_method_return(msg);
-
-    //search the interface
-    wi = dbus_get_wirelessinfo(msg);
-    if(!wi)
-        return reply;
+    //try to load the configuration
+    if(! (c=exalt_wireless_conn_load(CONF_FILE, exalt_wirelessinfo_get_essid(wi))))
+        c = exalt_conn_new();
+    exalt_conn_set_wireless(c,1);
 
     dbus_message_iter_init_append(reply, &args);
-    default_ip = exalt_wirelessinfo_get_default_ip(wi);
-    if(!default_ip)
+    i=exalt_conn_get_mode(c);
+    dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &i);
+    if(!exalt_conn_is_dhcp(c))
     {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "default_ip=%p",default_ip);
-        return reply;
-    }
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &default_ip))
-    {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
-        return reply;
-    }
-
-    return reply;
-}
-
-DBusMessage * dbus_cb_wirelessinfo_get_default_netmask(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
-{
-    DBusMessage *reply;
-    DBusMessageIter args;
-    Exalt_Wireless_Info* wi;
-    const char* default_netmask;
-
-    reply = dbus_message_new_method_return(msg);
-
-    //search the interface
-    wi = dbus_get_wirelessinfo(msg);
-    if(!wi)
-        return reply;
-
-    dbus_message_iter_init_append(reply, &args);
-    default_netmask = exalt_wirelessinfo_get_default_netmask(wi);
-
-    if(!default_netmask)
-    {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "default_netmask=%p",default_netmask);
-        return reply;
-    }
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &default_netmask))
-    {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
-        return reply;
+        s = exalt_conn_get_ip(c);
+        if(!s)
+            s="";
+        dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &s);
+        s = exalt_conn_get_netmask(c);
+        if(!s)
+            s="";
+        dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &s);
+        s = exalt_conn_get_gateway(c);
+        if(!s)
+            s="";
+        dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &s);
     }
 
-    return reply;
-}
-
-DBusMessage * dbus_cb_wirelessinfo_get_default_gateway(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
-{
-    DBusMessage *reply;
-    DBusMessageIter args;
-    Exalt_Wireless_Info* wi;
-    const char* default_gateway;
-
-    reply = dbus_message_new_method_return(msg);
-
-    //search the interface
-    wi = dbus_get_wirelessinfo(msg);
-    if(!wi)
-        return reply;
-
-    dbus_message_iter_init_append(reply, &args);
-    default_gateway = exalt_wirelessinfo_get_default_gateway(wi);
-
-    if(!default_gateway)
+    i=exalt_conn_is_wireless(c);
+    dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &i);
+    if(exalt_conn_is_wireless(c))
     {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "default_gateway=%p",default_gateway);
-        return reply;
+
+        i=exalt_conn_get_encryption_mode(c);
+        dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &i);
+        if(exalt_conn_get_encryption_mode(c)!=EXALT_ENCRYPTION_NONE)
+        {
+            s = exalt_conn_get_key(c);
+            if(!s)
+                s="";
+            dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &s);
+        }
+        i=exalt_conn_get_connection_mode(c);
+        dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &i);
+        i=exalt_conn_get_security_mode(c);
+        dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &i);
     }
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &default_gateway))
-    {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
-        return reply;
-    }
-
-    return reply;
-}
-
-DBusMessage * dbus_cb_wirelessinfo_get_default_passwd_mode(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
-{
-    DBusMessage *reply;
-    DBusMessageIter args;
-    Exalt_Wireless_Info* wi;
-    int passwd_mode;
-
-    reply = dbus_message_new_method_return(msg);
-
-    //search the interface
-    wi = dbus_get_wirelessinfo(msg);
-    if(!wi)
-        return reply;
-
-    dbus_message_iter_init_append(reply, &args);
-    passwd_mode = exalt_wirelessinfo_get_default_passwd_mode(wi);
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &passwd_mode))
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
-        return reply;
-    }
-
-    return reply;
-}
-
-DBusMessage * dbus_cb_wirelessinfo_get_default_security_mode(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
-{
-    DBusMessage *reply;
-    DBusMessageIter args;
-    Exalt_Wireless_Info* wi;
-    int security_mode;
-
-    reply = dbus_message_new_method_return(msg);
-
-    //search the interface
-    wi = dbus_get_wirelessinfo(msg);
-    if(!wi)
-        return reply;
-
-    dbus_message_iter_init_append(reply, &args);
-    security_mode = exalt_wirelessinfo_get_default_security_mode(wi);
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &security_mode))
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
-        return reply;
-    }
-
-    return reply;
-}
-
-DBusMessage * dbus_cb_wirelessinfo_get_default_mode(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
-{
-    DBusMessage *reply;
-    DBusMessageIter args;
-    Exalt_Wireless_Info* wi;
-    int mode;
-
-    reply = dbus_message_new_method_return(msg);
-
-    //search the interface
-    wi = dbus_get_wirelessinfo(msg);
-    if(!wi)
-        return reply;
-
-    dbus_message_iter_init_append(reply, &args);
-    mode = exalt_wirelessinfo_get_default_mode(wi);
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &mode))
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
-        return reply;
-    }
-
-    return reply;
-}
-
-DBusMessage * dbus_cb_wirelessinfo_is_default_dhcp(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
-{
-    DBusMessage *reply;
-    DBusMessageIter args;
-    Exalt_Wireless_Info* wi;
-    int dhcp;
-
-    reply = dbus_message_new_method_return(msg);
-
-    //search the interface
-    wi = dbus_get_wirelessinfo(msg);
-    if(!wi)
-        return reply;
-
-    dbus_message_iter_init_append(reply, &args);
-    dhcp = exalt_wirelessinfo_is_default_dhcp(wi);
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_BOOLEAN, &dhcp))
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
-        return reply;
-    }
-
     return reply;
 }
 

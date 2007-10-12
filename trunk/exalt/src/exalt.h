@@ -5,6 +5,7 @@
 #include <libintl.h>
 #include <locale.h>
 #include <libexalt_dbus.h>
+#include <libexalt.h>
 
 //#define _(STRING)    gettext(STRING)
 

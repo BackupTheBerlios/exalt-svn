@@ -10,14 +10,14 @@ depend() {
 
 start() {
     ebegin "Starting Exalt daemon"
-        start-stop-daemon --start --exec /usr/local/bin/exalt-daemon \
+        start-stop-daemon --start --exec /usr/local/sbin/exalt-daemon \
         --pidfile /var/run/exaltd.pid
         eend $?
 }
 
 stop() {
     ebegin "Stopping Exalt daemon"
-        start-stop-daemon --stop --exec /usr/local/bin/exalt-daemon  \
+        start-stop-daemon --stop --exec /usr/local/sbin/exalt-daemon  \
         --pidfile /var/run/exaltd.pid
         eend $?
 }

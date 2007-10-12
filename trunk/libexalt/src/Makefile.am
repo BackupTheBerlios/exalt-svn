@@ -21,14 +21,14 @@ exalt_dns.h \
 exalt_ethernet.h \
 exalt_sys_conf.h \
 exalt_wireless.h \
-exalt_wireless_info.h
+exalt_wireless_info.h \
+exalt_connection.h
 
 libexalt_la_SOURCES = \
 nettools/proc.c \
 iw/iwlib.c \
 wpa_supplicant/wpa_ctrl.c \
 libexalt.c \
-exalt_command.c \
 exalt_dns.c \
 exalt_ethernet.c \
 exalt_regexp.c \
@@ -37,12 +37,11 @@ exalt_wireless.c \
 exalt_wireless_info.c \
 libexalt_private.c \
 libexalt_private.h \
+exalt_connection.c \
 nettools/proc.h \
 iw/iwlib.h \
 wpa_supplicant/wpa_ctrl.h \
-exalt_command.h \
 exalt_regexp.h \
-exalt_command.h \
 $(EXALTHEADERS)
 
 installed_headersdir = $(prefix)/include/exalt

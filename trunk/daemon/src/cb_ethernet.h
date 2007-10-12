@@ -33,13 +33,9 @@ DBusMessage * dbus_cb_eth_is_dhcp(E_DBus_Object *obj, DBusMessage *msg);
 
 DBusMessage * dbus_cb_eth_up(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
 DBusMessage * dbus_cb_eth_down(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
-DBusMessage * dbus_cb_eth_set_new_ip(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
-DBusMessage * dbus_cb_eth_set_new_netmask(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
-DBusMessage * dbus_cb_eth_set_new_gateway(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
-DBusMessage * dbus_cb_eth_set_new_dhcp(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
 
 
-DBusMessage * dbus_cb_eth_apply_conf(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
-void dbus_cb_notify_conf_applied_cb(Exalt_Ethernet* eth, void* data);
+DBusMessage * dbus_cb_eth_apply_conn(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
+void dbus_cb_notify_conn_applied_cb(Exalt_Ethernet* eth, void* data);
 #endif   /* ----- #ifndef CB_FUNCTIONS_INC  ----- */
 

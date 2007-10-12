@@ -29,6 +29,7 @@
 #define EXALTD_PIDFILE "/var/run/exaltd.pid"
 #define EXALTD_LOGFILE "/var/log/exaltd.log"
 
+#define CONF_FILE "/etc/exaltd.eet"
 
 #endif   /* ----- #ifndef DEFINE_INC  ----- */
 

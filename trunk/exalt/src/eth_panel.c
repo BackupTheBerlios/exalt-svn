@@ -126,7 +126,7 @@ void ethpanel_set_eth(eth_panel* pnl, char* interface)
     char name[100];
     sprintf(name,_("Network card: %s"),interface);
 
-    EXALT_DBUS_FREE(pnl->interface);
+    EXALT_FREE(pnl->interface);
         pnl->interface = strdup(interface);
 
     etk_frame_label_set(ETK_FRAME(pnl->frame),name);
@@ -170,9 +170,9 @@ void ethpanel_textchanged_entry_cb(Etk_Object *object __UNUSED__, void *data)
     gateway = etk_entry_text_get(ETK_ENTRY(pnl->entry_gateway));
     //verify if all entry contains a valid address
     if( etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(pnl->check_dhcp))
-            || (exalt_dbus_is_address(exalt_conn, etk_entry_text_get(ETK_ENTRY(pnl->entry_ip)))
-                && exalt_dbus_is_address(exalt_conn, etk_entry_text_get(ETK_ENTRY(pnl->entry_mask)))
-                && (exalt_dbus_is_address(exalt_conn, gateway) || (gateway && strlen(gateway)==0)) )
+            || (exalt_is_address(etk_entry_text_get(ETK_ENTRY(pnl->entry_ip)))
+                && exalt_is_address(etk_entry_text_get(ETK_ENTRY(pnl->entry_mask)))
+                && (exalt_is_address(gateway) || (gateway && strlen(gateway)==0)) )
       )
         etk_widget_disabled_set(pnl->btn_apply,ETK_FALSE);
     else
@@ -207,11 +207,19 @@ void ethpanel_btn_activate_clicked_cb(void *data)
 
 void ethpanel_btn_apply_clicked_cb(void *data)
 {
+    data=data;
     eth_panel* pnl;
-
+    Exalt_Connection *c;
     if(!data)
     {
         perror("ethpanel_btn_apply_clicked_cb(): data==null ! \n");
+        return ;
+    }
+
+    c = exalt_conn_new();
+    if(!c)
+    {
+        perror("ethpanel_btn_apply_clicked_cb(): c==null ! \n");
         return ;
     }
 
@@ -219,22 +227,22 @@ void ethpanel_btn_apply_clicked_cb(void *data)
 
     if(etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(pnl->check_static)))
     {
-        exalt_dbus_eth_set_new_dhcp(exalt_conn,pnl->interface,EXALT_DBUS_STATIC);
-        //static mode
-        exalt_dbus_eth_set_new_ip(exalt_conn, pnl->interface,etk_entry_text_get(ETK_ENTRY(pnl->entry_ip)));
-        exalt_dbus_eth_set_new_netmask(exalt_conn,pnl->interface,etk_entry_text_get(ETK_ENTRY(pnl->entry_mask)));
-        exalt_dbus_eth_set_new_gateway(exalt_conn,pnl->interface,etk_entry_text_get(ETK_ENTRY(pnl->entry_gateway)));
+        exalt_conn_set_mode(c,EXALT_STATIC);
+        exalt_conn_set_ip(c, etk_entry_text_get(ETK_ENTRY(pnl->entry_ip)));
+        exalt_conn_set_netmask(c,etk_entry_text_get(ETK_ENTRY(pnl->entry_mask)));
+        exalt_conn_set_gateway(c,etk_entry_text_get(ETK_ENTRY(pnl->entry_gateway)));
     }
-    else
-        exalt_dbus_eth_set_new_dhcp(exalt_conn,pnl->interface,EXALT_DBUS_DHCP);
+    //else nothing
+    //because exalt_conn_new is a dhcp connection by default
+
+    if(!exalt_dbus_eth_apply_conn(exalt_conn, pnl->interface,c, ethpanel_apply_applied_cb, pnl))
+        return ;
     etk_widget_show(pnl->hbox_pbar);
-
-    exalt_dbus_eth_apply_conf(exalt_conn,pnl->interface, ethpanel_apply_applied_cb, pnl);
-
     etk_widget_disabled_set(pnl->win->eth_list,ETK_TRUE);
     etk_widget_disabled_set(pnl->btn_disactivate,ETK_TRUE);
     pnl->pulsebar_timer = ecore_timer_add(APPLY_PULSE_TIMER ,ethpanel_apply_pulsebar_timer,pnl);
     ethpanel_disabled_set(pnl);
+
 }
 
 void ethpanel_disabled_set(eth_panel* pnl)
@@ -280,7 +288,7 @@ void ethpanel_disabled_set(eth_panel* pnl)
     }
 
 
-    if(!exalt_dbus_dhcp_is_support(exalt_conn))
+    if(!exalt_dhcp_is_support())
         etk_widget_disabled_set(pnl->check_dhcp, ETK_TRUE);
 }
 

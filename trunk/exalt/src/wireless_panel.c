@@ -199,15 +199,15 @@ void wirelesspanel_disabled_widget_activate(wireless_panel* pnl)
 
     if(!apply)
     {
-        if(encryption && *encryption==EXALT_DBUS_WIRELESS_ENCRYPTION_NONE)
+        if(encryption && *encryption==EXALT_ENCRYPTION_NONE)
         {
             etk_widget_disabled_set(pnl->entry_conn_pwd, ETK_TRUE);
             etk_widget_disabled_set(pnl->cmbox_security, ETK_TRUE);
         }
-        else if(encryption && (*encryption == EXALT_DBUS_WIRELESS_ENCRYPTION_WPA_PSK_CCMP_ASCII
-                    || *encryption == EXALT_DBUS_WIRELESS_ENCRYPTION_WPA_PSK_TKIP_ASCII
-                    || *encryption == EXALT_DBUS_WIRELESS_ENCRYPTION_WPA2_PSK_CCMP_ASCII
-                    || *encryption == EXALT_DBUS_WIRELESS_ENCRYPTION_WPA2_PSK_TKIP_ASCII))
+        else if(encryption && (*encryption == EXALT_ENCRYPTION_WPA_PSK_CCMP_ASCII
+                    || *encryption == EXALT_ENCRYPTION_WPA_PSK_TKIP_ASCII
+                    || *encryption == EXALT_ENCRYPTION_WPA2_PSK_CCMP_ASCII
+                    || *encryption == EXALT_ENCRYPTION_WPA2_PSK_TKIP_ASCII))
         {
             etk_widget_disabled_set(pnl->cmbox_mode, ETK_TRUE);
             etk_widget_disabled_set(pnl->cmbox_security, ETK_TRUE);
@@ -216,7 +216,7 @@ void wirelesspanel_disabled_widget_activate(wireless_panel* pnl)
 
     wirelesspanel_textchanged_entry_cb(NULL,pnl);
 
-    if(!exalt_dbus_dhcp_is_support(exalt_conn))
+    if(!exalt_dhcp_is_support())
         etk_widget_disabled_set(pnl->check_dhcp, ETK_TRUE);
 }
 
@@ -235,7 +235,7 @@ void wirelesspanel_set_eth(wireless_panel* pnl, char* interface)
     }
     char name[100];
     sprintf(name,_("Wireless card: %s"),interface);
-    EXALT_DBUS_FREE(pnl->interface);
+    EXALT_FREE(pnl->interface);
     pnl->interface = strdup(interface);
     etk_frame_label_set(ETK_FRAME(pnl->frame),name);
 
@@ -262,32 +262,32 @@ Etk_Widget* wirelesspanel_pageconnection_create(wireless_panel* pnl)
 	Etk_Widget *table,*label;
 	Etk_Combobox_Item* item;
 	table = etk_table_new(2, 12,ETK_TABLE_NOT_HOMOGENEOUS);
- 	int *en_none = malloc(sizeof(int));
-	*en_none = EXALT_DBUS_WIRELESS_ENCRYPTION_NONE;
-	int *en_wep_ascii = malloc(sizeof(int));
-	*en_wep_ascii = EXALT_DBUS_WIRELESS_ENCRYPTION_WEP_ASCII;
-	int *en_wep_hexa = malloc(sizeof(int));
-	*en_wep_hexa = EXALT_DBUS_WIRELESS_ENCRYPTION_WEP_HEXA;
+ 	Exalt_Enum_Encryption_Mode *en_none = malloc(sizeof(int));
+	*en_none = EXALT_ENCRYPTION_NONE;
+	Exalt_Enum_Encryption_Mode *en_wep_ascii = malloc(sizeof(Exalt_Enum_Encryption_Mode));
+	*en_wep_ascii = EXALT_ENCRYPTION_WEP_ASCII;
+	Exalt_Enum_Encryption_Mode *en_wep_hexa = malloc(sizeof(Exalt_Enum_Encryption_Mode));
+	*en_wep_hexa = EXALT_ENCRYPTION_WEP_HEXA;
 
-        int *en_wpa_psk_ccmp = malloc(sizeof(int));
-	*en_wpa_psk_ccmp = EXALT_DBUS_WIRELESS_ENCRYPTION_WPA_PSK_CCMP_ASCII;
- 	int *en_wpa_psk_tkip = malloc(sizeof(int));
-	*en_wpa_psk_tkip = EXALT_DBUS_WIRELESS_ENCRYPTION_WPA_PSK_TKIP_ASCII;
+        Exalt_Enum_Encryption_Mode *en_wpa_psk_ccmp = malloc(sizeof(Exalt_Enum_Encryption_Mode));
+	*en_wpa_psk_ccmp = EXALT_ENCRYPTION_WPA_PSK_CCMP_ASCII;
+ 	Exalt_Enum_Encryption_Mode *en_wpa_psk_tkip = malloc(sizeof(Exalt_Enum_Encryption_Mode));
+	*en_wpa_psk_tkip = EXALT_ENCRYPTION_WPA_PSK_TKIP_ASCII;
 
-        int *en_wpa2_psk_ccmp = malloc(sizeof(int));
-	*en_wpa2_psk_ccmp = EXALT_DBUS_WIRELESS_ENCRYPTION_WPA2_PSK_CCMP_ASCII;
- 	int *en_wpa2_psk_tkip = malloc(sizeof(int));
-	*en_wpa2_psk_tkip = EXALT_DBUS_WIRELESS_ENCRYPTION_WPA2_PSK_TKIP_ASCII;
+        Exalt_Enum_Encryption_Mode *en_wpa2_psk_ccmp = malloc(sizeof(Exalt_Enum_Encryption_Mode));
+	*en_wpa2_psk_ccmp = EXALT_ENCRYPTION_WPA2_PSK_CCMP_ASCII;
+ 	Exalt_Enum_Encryption_Mode *en_wpa2_psk_tkip = malloc(sizeof(Exalt_Enum_Encryption_Mode));
+	*en_wpa2_psk_tkip = EXALT_ENCRYPTION_WPA2_PSK_TKIP_ASCII;
 
-        int *sec_open = malloc(sizeof(int));
-        *sec_open = EXALT_DBUS_WIRELESS_SECURITY_OPEN;
-        int *sec_shared = malloc(sizeof(int));
-        *sec_shared = EXALT_DBUS_WIRELESS_SECURITY_SHARED;
+        Exalt_Enum_Security_Mode *sec_open = malloc(sizeof(Exalt_Enum_Security_Mode));
+        *sec_open = EXALT_SECURITY_OPEN;
+        Exalt_Enum_Security_Mode *sec_shared = malloc(sizeof(Exalt_Enum_Security_Mode));
+        *sec_shared = EXALT_SECURITY_SHARED;
 
-        int *mode_adhoc = malloc(sizeof(int));
-        *mode_adhoc = EXALT_DBUS_WIRELESS_MODE_ADHOC;
-	int *mode_managed = malloc(sizeof(int));
-        *mode_managed = EXALT_DBUS_WIRELESS_MODE_MANAGED;
+        Exalt_Enum_Connection_Mode *mode_adhoc = malloc(sizeof(Exalt_Enum_Connection_Mode));
+        *mode_adhoc = EXALT_CONNECTION_ADHOC;
+	Exalt_Enum_Connection_Mode *mode_managed = malloc(sizeof(Exalt_Enum_Connection_Mode));
+        *mode_managed = EXALT_CONNECTION_MANAGED;
 
         pnl->entry_conn_essid = etk_entry_new();
 	etk_entry_clear_button_add(ETK_ENTRY(pnl->entry_conn_essid));
@@ -333,7 +333,7 @@ Etk_Widget* wirelesspanel_pageconnection_create(wireless_panel* pnl)
 	item = etk_combobox_item_append(ETK_COMBOBOX(pnl->cmbox_encryption), WIRELESS_ENCRYPTION_TEXT_WEP_HEXA);
 	etk_combobox_item_data_set_full(item, en_wep_hexa, free);
 
-        if(exalt_dbus_wpasupplicant_is_support(exalt_conn))
+        if(exalt_wpasupplicant_is_support())
         {
             item = etk_combobox_item_append(ETK_COMBOBOX(pnl->cmbox_encryption), WIRELESS_ENCRYPTION_TEXT_WPA_PSK_CCMP_ASCII);
             etk_combobox_item_data_set_full(item, en_wpa_psk_ccmp, free);
@@ -540,64 +540,74 @@ void wirelesspanel_cmboxencryption_active_item_changed_cb(Etk_Object *object __U
 
 void wirelesspanel_btn_apply_clicked_cb(void *data)
 {
-	wireless_panel* pnl;
- 	int* encryption;
-        int *mode;
-        int *security;
- 	Etk_Combobox_Item *active_item;
+    data=data;
+    wireless_panel* pnl;
+    int* encryption;
+    int *mode;
+    int *security;
+    Etk_Combobox_Item *active_item;
+    Exalt_Connection *c;
 
-	if(!data)
-	{
-		perror("wirelesspanel_btn_apply_clicked_cb(): data==null ! \n");
-		return ;
-	}
+    if(!data)
+    {
+        perror("wirelesspanel_btn_apply_clicked_cb(): data==null ! \n");
+        return ;
+    }
 
-	pnl = (wireless_panel*)data;
+    c = exalt_conn_new();
+    if(!c)
+    {
+        perror("wirelesspanel_btn_apply_clicked_cb(): c==null ! \n");
+        return ;
+    }
+    exalt_conn_set_wireless(c,1);
 
-	if(etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(pnl->check_static)))
-	{
-		exalt_dbus_eth_set_new_dhcp(exalt_conn, pnl->interface,EXALT_DBUS_STATIC);
-		//static mode
-		exalt_dbus_eth_set_new_ip(exalt_conn,pnl->interface,etk_entry_text_get(ETK_ENTRY(pnl->entry_conn_ip)));
-		exalt_dbus_eth_set_new_netmask(exalt_conn,pnl->interface,etk_entry_text_get(ETK_ENTRY(pnl->entry_conn_mask)));
-		exalt_dbus_eth_set_new_gateway(exalt_conn,pnl->interface,etk_entry_text_get(ETK_ENTRY(pnl->entry_conn_gateway)));
-	}
-	else
-		exalt_dbus_eth_set_new_dhcp(exalt_conn,pnl->interface,EXALT_DBUS_DHCP);
+    pnl = (wireless_panel*)data;
+
+    if(etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(pnl->check_static)))
+    {
+        exalt_conn_set_mode(c,EXALT_STATIC);
+        exalt_conn_set_ip(c,etk_entry_text_get(ETK_ENTRY(pnl->entry_conn_ip)));
+        exalt_conn_set_netmask(c,etk_entry_text_get(ETK_ENTRY(pnl->entry_conn_mask)));
+        exalt_conn_set_gateway(c,etk_entry_text_get(ETK_ENTRY(pnl->entry_conn_gateway)));
+    }
+    //else nothing
+    // the default connection is dhcp
 
 
-	exalt_dbus_wireless_set_new_essid(exalt_conn, pnl->interface ,etk_entry_text_get(ETK_ENTRY(pnl->entry_conn_essid)));
+    exalt_conn_set_essid(c ,etk_entry_text_get(ETK_ENTRY(pnl->entry_conn_essid)));
 
-	//get the passwd mode
-	if ((active_item = etk_combobox_active_item_get(ETK_COMBOBOX(pnl->cmbox_encryption))))
-        {
-            encryption = etk_combobox_item_data_get(active_item);
-            exalt_dbus_wireless_set_new_passwd_mode(exalt_conn, pnl->interface,*encryption);
-	    if(*encryption>EXALT_DBUS_WIRELESS_ENCRYPTION_NONE)
-	 	exalt_dbus_wireless_set_new_passwd(exalt_conn, pnl->interface,etk_entry_text_get(ETK_ENTRY(pnl->entry_conn_pwd)));
-        }
+    //get the passwd mode
+    if ((active_item = etk_combobox_active_item_get(ETK_COMBOBOX(pnl->cmbox_encryption))))
+    {
+        encryption = etk_combobox_item_data_get(active_item);
+        exalt_conn_set_encryption_mode(c,*encryption);
+        if(*encryption!=EXALT_ENCRYPTION_NONE)
+            exalt_conn_set_key(c,etk_entry_text_get(ETK_ENTRY(pnl->entry_conn_pwd)));
+    }
 
-        //get the mode
-	if ((active_item = etk_combobox_active_item_get(ETK_COMBOBOX(pnl->cmbox_mode))))
-        {
-            mode = etk_combobox_item_data_get(active_item);
-	    exalt_dbus_wireless_set_new_mode(exalt_conn, pnl->interface ,*mode);
-        }
-            //get the security mode
-	if ((active_item = etk_combobox_active_item_get(ETK_COMBOBOX(pnl->cmbox_security))))
-        {
-            security = etk_combobox_item_data_get(active_item);
-	    exalt_dbus_wireless_set_new_security_mode(exalt_conn, pnl->interface,*security);
-        }
+    //get the mode
+    if ((active_item = etk_combobox_active_item_get(ETK_COMBOBOX(pnl->cmbox_mode))))
+    {
+        mode = etk_combobox_item_data_get(active_item);
+        exalt_conn_set_connection_mode(c ,*mode);
+    }
+    //get the security mode
+    if ((active_item = etk_combobox_active_item_get(ETK_COMBOBOX(pnl->cmbox_security))))
+    {
+        security = etk_combobox_item_data_get(active_item);
+        exalt_conn_set_security_mode(c,*security);
+    }
 
-        etk_widget_show_all(pnl->hbox_pbar);
-        exalt_dbus_eth_apply_conf(exalt_conn, pnl->interface,wirelesspanel_apply_applied_cb, pnl);
+    if(!exalt_dbus_eth_apply_conn(exalt_conn, pnl->interface,c,wirelesspanel_apply_applied_cb, pnl))
+        return ;
 
-        etk_widget_disabled_set(pnl->win->eth_list,ETK_TRUE);
-	etk_widget_disabled_set(pnl->btn_activate,ETK_TRUE);
-	etk_widget_disabled_set(pnl->btn_apply,ETK_TRUE);
-	pnl->pulsebar_timer = ecore_timer_add(APPLY_PULSE_TIMER ,wirelesspanel_apply_pulsebar_timer,pnl);
-        wirelesspanel_disabled_widget_activate(pnl);
+    etk_widget_show_all(pnl->hbox_pbar);
+    etk_widget_disabled_set(pnl->win->eth_list,ETK_TRUE);
+    etk_widget_disabled_set(pnl->btn_activate,ETK_TRUE);
+    etk_widget_disabled_set(pnl->btn_apply,ETK_TRUE);
+    pnl->pulsebar_timer = ecore_timer_add(APPLY_PULSE_TIMER ,wirelesspanel_apply_pulsebar_timer,pnl);
+    wirelesspanel_disabled_widget_activate(pnl);
 }
 
 
@@ -605,7 +615,7 @@ void wirelesspanel_textchanged_entry_cb(Etk_Object *object __UNUSED__, void *dat
 {
 	wireless_panel* pnl;
 	Etk_Combobox_Item* active_item;
-        int * passwd_mode;
+        Exalt_Enum_Encryption_Mode * encryption_mode;
 	const char* gateway;
 	const char* essid;
         char* interface;
@@ -619,20 +629,22 @@ void wirelesspanel_textchanged_entry_cb(Etk_Object *object __UNUSED__, void *dat
         if(object && ETK_IS_ENTRY(object) && object == ETK_OBJECT(pnl->entry_conn_essid))
         {
             //load the default configuration
-            int *passwd_mode = malloc(sizeof(int));
-            int *security = malloc(sizeof(int));
-            int dhcp;
-            int *mode = malloc(sizeof(int));
+            Exalt_Connection *c;
             Etk_Combobox_Item* item;
+            Exalt_Enum_Security_Mode security_mode;
+            Exalt_Enum_Connection_Mode connection_mode;
+            Exalt_Enum_Encryption_Mode encryption_mode;
+            short dhcp;
 
             //try to find if the essid exist to load the default configuration
             interface = pnl->interface;
             essid = etk_entry_text_get(ETK_ENTRY(pnl->entry_conn_essid));
 
-            *passwd_mode = exalt_dbus_wirelessinfo_get_default_passwd_mode(exalt_conn, interface, essid);
-            *mode = exalt_dbus_wirelessinfo_get_default_mode(exalt_conn, interface, essid);
-            *security = exalt_dbus_wirelessinfo_get_default_security_mode(exalt_conn, interface, essid);
-            dhcp = exalt_dbus_wirelessinfo_is_default_dhcp(exalt_conn, interface, essid);
+            c = exalt_dbus_wirelessinfo_get_default_conn(exalt_conn, interface, essid);
+            encryption_mode = exalt_conn_get_encryption_mode(c);
+            connection_mode = exalt_conn_get_connection_mode(c);
+            security_mode = exalt_conn_get_security_mode(c);
+            dhcp = exalt_conn_is_dhcp(c);
 
             if(dhcp)
             {
@@ -646,23 +658,22 @@ void wirelesspanel_textchanged_entry_cb(Etk_Object *object __UNUSED__, void *dat
             {
                 etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(pnl->check_static),ETK_TRUE);
                 etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(pnl->check_dhcp),ETK_FALSE);
-                etk_entry_text_set(ETK_ENTRY(pnl->entry_conn_ip),exalt_dbus_wirelessinfo_get_default_ip(exalt_conn, interface, essid));
-                etk_entry_text_set(ETK_ENTRY(pnl->entry_conn_gateway),exalt_dbus_wirelessinfo_get_default_gateway(exalt_conn, interface, essid));
-                etk_entry_text_set(ETK_ENTRY(pnl->entry_conn_mask),exalt_dbus_wirelessinfo_get_default_netmask(exalt_conn, interface, essid));
+                etk_entry_text_set(ETK_ENTRY(pnl->entry_conn_ip),exalt_conn_get_ip(c));
+                etk_entry_text_set(ETK_ENTRY(pnl->entry_conn_gateway),exalt_conn_get_gateway(c));
+                etk_entry_text_set(ETK_ENTRY(pnl->entry_conn_mask),exalt_conn_get_netmask(c));
             }
 
-
-            item = exalt_etk_combobox_data_item_get(ETK_COMBOBOX(pnl->cmbox_encryption),passwd_mode);
+            item = exalt_etk_combobox_data_item_get(ETK_COMBOBOX(pnl->cmbox_encryption),&encryption_mode);
             etk_combobox_active_item_set(ETK_COMBOBOX(pnl->cmbox_encryption),item);
 
-            item = exalt_etk_combobox_data_item_get(ETK_COMBOBOX(pnl->cmbox_security),security);
+            item = exalt_etk_combobox_data_item_get(ETK_COMBOBOX(pnl->cmbox_security),&security_mode);
             etk_combobox_active_item_set(ETK_COMBOBOX(pnl->cmbox_security),item);
 
-            item = exalt_etk_combobox_data_item_get(ETK_COMBOBOX(pnl->cmbox_mode),mode);
+            item = exalt_etk_combobox_data_item_get(ETK_COMBOBOX(pnl->cmbox_mode),&connection_mode);
             etk_combobox_active_item_set(ETK_COMBOBOX(pnl->cmbox_mode),item);
 
-            if(*passwd_mode > EXALT_DBUS_WIRELESS_ENCRYPTION_NONE)
-                etk_entry_text_set(ETK_ENTRY(pnl->entry_conn_pwd),exalt_dbus_wirelessinfo_get_default_passwd(exalt_conn, interface, essid));
+            if(encryption_mode != EXALT_ENCRYPTION_NONE)
+                etk_entry_text_set(ETK_ENTRY(pnl->entry_conn_pwd),exalt_conn_get_key(c));
             else
                 etk_entry_clear(ETK_ENTRY(pnl->entry_conn_pwd));
         }
@@ -671,20 +682,19 @@ void wirelesspanel_textchanged_entry_cb(Etk_Object *object __UNUSED__, void *dat
             return;
 
         //get the password mode
-        passwd_mode = etk_combobox_item_data_get(active_item);
-        if(!passwd_mode) { passwd_mode=malloc(sizeof(int)); *passwd_mode=EXALT_DBUS_WIRELESS_ENCRYPTION_NONE; }
+        encryption_mode = etk_combobox_item_data_get(active_item);
+        if(!encryption_mode) { encryption_mode=malloc(sizeof(int)); *encryption_mode=EXALT_ENCRYPTION_NONE; }
 
         //verify if all entry contains a valid address && essid & passwd
         gateway = etk_entry_text_get(ETK_ENTRY(pnl->entry_conn_gateway));
 
-        if( exalt_dbus_is_essid(exalt_conn, essid)
-                && exalt_dbus_is_passwd(exalt_conn, etk_entry_text_get(ETK_ENTRY(pnl->entry_conn_pwd)),*passwd_mode)
-
+        if( exalt_is_essid(essid)
+                && exalt_is_key(etk_entry_text_get(ETK_ENTRY(pnl->entry_conn_pwd)),*encryption_mode)
                 &&(
                     etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(pnl->check_dhcp))
-                    || (exalt_dbus_is_address(exalt_conn, etk_entry_text_get(ETK_ENTRY(pnl->entry_conn_ip)))
-                        && exalt_dbus_is_address(exalt_conn, etk_entry_text_get(ETK_ENTRY(pnl->entry_conn_mask)))
-                        && (exalt_dbus_is_address(exalt_conn, gateway) || (gateway && strlen(gateway)==0 ))
+                    || (exalt_is_address(etk_entry_text_get(ETK_ENTRY(pnl->entry_conn_ip)))
+                        && exalt_is_address(etk_entry_text_get(ETK_ENTRY(pnl->entry_conn_mask)))
+                        && (exalt_is_address(gateway) || (gateway && strlen(gateway)==0 ))
                        )
                   )
           )

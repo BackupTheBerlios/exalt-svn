@@ -32,15 +32,7 @@ DBusMessage * dbus_cb_wirelessinfo_get_signallvl(E_DBus_Object *obj, DBusMessage
 DBusMessage * dbus_cb_wirelessinfo_get_noiselvl(E_DBus_Object *obj, DBusMessage *msg);
 
 
-
-DBusMessage * dbus_cb_wirelessinfo_get_default_passwd(E_DBus_Object *obj, DBusMessage *msg);
-DBusMessage * dbus_cb_wirelessinfo_get_default_ip(E_DBus_Object *obj, DBusMessage *msg);
-DBusMessage * dbus_cb_wirelessinfo_get_default_netmask(E_DBus_Object *obj, DBusMessage *msg);
-DBusMessage * dbus_cb_wirelessinfo_get_default_gateway(E_DBus_Object *obj, DBusMessage *msg);
-DBusMessage * dbus_cb_wirelessinfo_get_default_passwd_mode(E_DBus_Object *obj, DBusMessage *msg);
-DBusMessage * dbus_cb_wirelessinfo_get_default_security_mode(E_DBus_Object *obj, DBusMessage *msg);
-DBusMessage * dbus_cb_wirelessinfo_get_default_mode(E_DBus_Object *obj, DBusMessage *msg);
-DBusMessage * dbus_cb_wirelessinfo_is_default_dhcp(E_DBus_Object *obj, DBusMessage *msg);
+DBusMessage * dbus_cb_wirelessinfo_get_default_conn(E_DBus_Object *obj, DBusMessage *msg);
 
 #endif   /* ----- #ifndef CB_WIRELESSINFO_INC  ----- */
 

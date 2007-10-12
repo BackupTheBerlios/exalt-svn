@@ -11,6 +11,8 @@
  * @{
  */
 
+#define EXALT_RESOLVCONF_FILE "/etc/resolv.conf"
+
 Ecore_List* exalt_dns_get_list();
 
 int exalt_dns_add(const char* dns);

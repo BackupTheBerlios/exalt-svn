@@ -75,6 +75,7 @@ PKG_CHECK_MODULES(EXALT, [
   ehal >= 0.1.0.002
   edbus >= 0.1.0.002
   exalt_dbus >= 0.0.1
+  exalt >= 0.5
   ])
 
 

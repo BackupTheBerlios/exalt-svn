@@ -18,7 +18,7 @@
 #define REGEXP_PROCNNET_GET_NAME " *(.+):"
 
 /** regexp to test if a key is a correct WEP hexadecimal key */
-#define REGEXP_IS_WEP_HEXA "^[0-9A-F]{10}$|^[0-91-F]{26}$"
+#define REGEXP_IS_WEP_HEXA "^[0-9A-F]{10}$|^[0-9A-F]{26}$"
 
 typedef struct Exalt_Regex Exalt_Regex;
 

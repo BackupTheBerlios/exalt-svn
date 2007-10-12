@@ -138,7 +138,7 @@ void exalt_dbus_print_error(const char* type, const char* file, int line,const c
 
 void exalt_dbus_string_free(void* data)
 {
-    EXALT_DBUS_FREE((char*)data);
+    EXALT_FREE(data);
 }
 
 

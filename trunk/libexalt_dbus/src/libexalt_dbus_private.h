@@ -20,7 +20,7 @@
 #define  LIBEXALT_DBUS_PRIVATE_INC
 
 #include "libexalt_dbus.h"
-
+#include <libexalt.h>
 
 
 struct _exalt_dbus_conn
@@ -28,7 +28,7 @@ struct _exalt_dbus_conn
     E_DBus_Connection *e_conn;
     DBusConnection* conn;
     exalt_dbus_notify_data* notify;
-    exalt_dbus_notify_conf_applied_data* notify_conf_applied;
+    exalt_dbus_notify_conn_applied_data* notify_conn_applied;
     exalt_dbus_scan_notify_data* scan_notify;
 };
 
@@ -38,9 +38,9 @@ struct _exalt_dbus_notify_data
     void* user_data;
 };
 
-struct _exalt_dbus_notify_conf_applied_data
+struct _exalt_dbus_notify_conn_applied_data
 {
-    exalt_notify_conf_applied_cb* cb;
+    exalt_notify_conn_applied_cb* cb;
     void* user_data;
 };
 

@@ -19,6 +19,7 @@ typedef struct Exalt_Wireless_Info Exalt_Wireless_Info;
 
 #include "exalt_wireless.h"
 #include "libexalt.h"
+#include "exalt_connection.h"
 
 Exalt_Wireless_Info* exalt_wirelessinfo_create(Exalt_Wireless* w);
 void exalt_wirelessinfo_free(void* data);
@@ -50,31 +51,6 @@ int exalt_wirelessinfo_get_noiselvl(Exalt_Wireless_Info* w);
 
 int exalt_wirelessinfo_is_known(Exalt_Wireless_Info* wi);
 int exalt_wirelessinfo_is_scan(Exalt_Wireless_Info* wi);
-
-
-
-
-
-
-const char* exalt_wirelessinfo_get_default_passwd(Exalt_Wireless_Info* wi);
-void exalt_wirelessinfo_set_default_passwd(Exalt_Wireless_Info* wi,const char* passwd);
-int exalt_wirelessinfo_get_default_passwd_mode(Exalt_Wireless_Info* wi);
-void exalt_wirelessinfo_set_default_passwd_mode(Exalt_Wireless_Info* wi,int passwd_mode);
-int exalt_wirelessinfo_get_default_security_mode(Exalt_Wireless_Info* wi);
-void exalt_wirelessinfo_set_default_security_mode(Exalt_Wireless_Info* wi,int security_mode);
-int exalt_wirelessinfo_get_default_mode(Exalt_Wireless_Info* wi);
-void exalt_wirelessinfo_set_default_mode(Exalt_Wireless_Info* wi,int mode);
-
-const char* exalt_wirelessinfo_get_default_ip(Exalt_Wireless_Info* wi);
-const char* exalt_wirelessinfo_get_default_netmask(Exalt_Wireless_Info* wi);
-const char* exalt_wirelessinfo_get_default_gateway(Exalt_Wireless_Info* wi);
-int exalt_wirelessinfo_set_default_ip(Exalt_Wireless_Info* wi, const char* ip);
-int exalt_wirelessinfo_set_default_netmask(Exalt_Wireless_Info* wi, const char* netmask);
-int exalt_wirelessinfo_set_default_gateway(Exalt_Wireless_Info* wi, const char* gateway);
-
-short exalt_wirelessinfo_is_default_dhcp(Exalt_Wireless_Info* wi);
-int exalt_wirelessinfo_set_default_dhcp(Exalt_Wireless_Info* wi, short dhcp);
-
 
 /** @} */
 

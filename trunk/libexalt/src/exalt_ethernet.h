@@ -23,7 +23,7 @@ typedef struct Exalt_Ethernets Exalt_Ethernets;
 #include "libexalt.h"
 #include "exalt_wireless.h"
 #include "exalt_wireless_info.h"
-
+#include "exalt_connection.h"
 #include <Ecore_Data.h>
 #include <Ecore.h>
 #include <E_Hal.h>
@@ -36,35 +36,39 @@ typedef struct Exalt_Ethernets Exalt_Ethernets;
 
 #include <sys/wait.h>
 
-/** when we load the device list */
-#define EXALT_ETH_CB_ACTION_NEW 0
-/** when we have a new card */
-#define EXALT_ETH_CB_ACTION_ADD 1
-/** when we have a remove card */
-#define EXALT_ETH_CB_ACTION_REMOVE 2
-/** when a known card is up */
-#define EXALT_ETH_CB_ACTION_UP 3
-/** when a known card is down */
-#define EXALT_ETH_CB_ACTION_DOWN 4
-/** when a card is link */
-#define EXALT_ETH_CB_ACTION_LINK 5
-/** when a card is unlink */
-#define EXALT_ETH_CB_ACTION_UNLINK 6
-/** when an essid change */
-#define exalt_wireless_CB_ACTION_ESSIDCHANGE 7
+/** Define the list of notify action */
+typedef enum Exalt_Enum_Action
+{
+    /** when we load the device list */
+    EXALT_ETH_CB_ACTION_NEW ,
+    /** when we have a new card */
+    EXALT_ETH_CB_ACTION_ADD,
+    /** when we have a remove card */
+    EXALT_ETH_CB_ACTION_REMOVE,
+    /** when a known card is up */
+    EXALT_ETH_CB_ACTION_UP ,
+    /** when a known card is down */
+    EXALT_ETH_CB_ACTION_DOWN,
+    /** when a card is link */
+    EXALT_ETH_CB_ACTION_LINK ,
+    /** when a card is unlink */
+    EXALT_ETH_CB_ACTION_UNLINK,
+    /** when an essid change */
+    EXALT_WIRELESS_CB_ACTION_ESSIDCHANGE ,
 
-/** when we have a new address */
-#define EXALT_ETH_CB_ACTION_ADDRESS_NEW 9
-/** when we have a new netmask */
-#define EXALT_ETH_CB_ACTION_NETMASK_NEW 10
-/** when we have a new gateway */
-#define EXALT_ETH_CB_ACTION_GATEWAY_NEW 11
+    /** when we have a new address */
+    EXALT_ETH_CB_ACTION_ADDRESS_NEW ,
+    /** when we have a new netmask */
+    EXALT_ETH_CB_ACTION_NETMASK_NEW ,
+    /** when we have a new gateway */
+    EXALT_ETH_CB_ACTION_GATEWAY_NEW
+} Exalt_Enum_Action;
 
 /** cast into an Exalt_Ethernet* struct */
 #define Exalt_Ethernet(a) (Exalt_Ethernet*)a
 
 /** callback function used for notifications when a new card is add, new essid ... */
-typedef void (*Exalt_Eth_Cb) (Exalt_Ethernet* eth, int action, void* user_data);
+typedef void (*Exalt_Eth_Cb) (Exalt_Ethernet* eth, Exalt_Enum_Action action, void* user_data);
 
 extern Exalt_Ethernets exalt_eth_interfaces;
 
@@ -107,8 +111,6 @@ const char* exalt_eth_get_udi(Exalt_Ethernet* eth);
 int exalt_eth_get_ifindex(Exalt_Ethernet* eth);
 
 short exalt_eth_is_dhcp(Exalt_Ethernet * eth);
-short exalt_eth_is_new_dhcp(Exalt_Ethernet * eth);
-short exalt_eth_is_new_up(Exalt_Ethernet * eth);
 
 short exalt_eth_is_wireless(Exalt_Ethernet* eth);
 Exalt_Wireless* exalt_eth_get_wireless(Exalt_Ethernet* eth);
@@ -116,18 +118,9 @@ Exalt_Wireless* exalt_eth_get_wireless(Exalt_Ethernet* eth);
 int exalt_eth_set_cb(Exalt_Eth_Cb fct, void* user_data;);
 int exalt_eth_set_scan_cb(Exalt_Wifi_Scan_Cb fct, void* user_data);
 
-int exalt_eth_set_new_ip(Exalt_Ethernet* eth,const char* ip);
-int exalt_eth_set_new_netmask(Exalt_Ethernet* eth,const char* netmask);
-int exalt_eth_set_new_gateway(Exalt_Ethernet* eth,const char* gateway);
-int exalt_eth_set_new_dhcp(Exalt_Ethernet* eth, short dhcp);
-int exalt_eth_set_new_up(Exalt_Ethernet* eth, short up);
-
-
-int exalt_eth_apply_conf(Exalt_Ethernet* eth, Exalt_Conf_Applied fct, void* user_data);
-
-const char* exalt_eth_get_new_ip(Exalt_Ethernet* eth);
-const char* exalt_eth_get_new_gateway(Exalt_Ethernet* eth);
-const char* exalt_eth_get_new_netmask(Exalt_Ethernet* eth);
+int exalt_eth_apply_conn(Exalt_Ethernet* eth, Exalt_Connection* c,Exalt_Conf_Applied fct, void* user_data);
+Exalt_Connection* exalt_eth_get_connection(Exalt_Ethernet* eth);
+short exalt_eth_set_connection(Exalt_Ethernet* eth, Exalt_Connection* c);
 
 /** @} */
 

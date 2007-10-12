@@ -7,6 +7,7 @@
  * Private functions headers
  */
 
+short _exalt_eth_set_state(Exalt_Ethernet* eth, Exalt_Enum_State state);
 const char* _exalt_eth_get_save_ip(Exalt_Ethernet* eth);
 const char* _exalt_eth_get_save_gateway(Exalt_Ethernet* eth);
 const char* _exalt_eth_get_save_netmask(Exalt_Ethernet* eth);
@@ -50,10 +51,8 @@ struct Exalt_Ethernet
     char* udi;
     int ifindex;
 
-    char* new_ip;
-    char* new_netmask;
-    char* new_gateway;
-    short new_dhcp_static; //EXALT_DHCP || EXALT_STATIC
+    Exalt_Enum_State state;
+    Exalt_Connection *connection;
     Exalt_Wireless* wireless; //if null, the interface is not wireless
 
     char* _save_ip;
@@ -97,9 +96,9 @@ int exalt_eth_init()
 
     //test if we have the administrator right
     if(getuid()==0)
-        exalt_eth_interfaces.admin = EXALT_TRUE;
+        exalt_eth_interfaces.admin = 1;
     else
-        exalt_eth_interfaces.admin = EXALT_FALSE;
+        exalt_eth_interfaces.admin = 0;
 
         return 1;
 }
@@ -165,24 +164,15 @@ Exalt_Ethernet* exalt_eth_create(const char* name)
     struct iwreq wrq;
     Exalt_Ethernet* eth;
 
-    eth = exalt_conf_load(name);
+    eth = (Exalt_Ethernet*)malloc((unsigned int)sizeof(Exalt_Ethernet));
     if(!eth)
     {
-        eth = (Exalt_Ethernet*)malloc((unsigned int)sizeof(Exalt_Ethernet));
-        if(!eth)
-        {
-            print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p, malloc error",eth);
-            return NULL;
-        }
-
-        eth->new_ip = NULL;
-        eth->new_netmask = NULL;
-        eth->wireless = NULL;
-        eth->new_gateway = NULL;
-        eth->new_up=1;
-        eth->wireless = NULL;
-        eth->new_dhcp_static = 1;
+        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p, malloc error",eth);
+        return NULL;
     }
+
+    eth->state = EXALT_DOWN;
+    eth->connection = NULL;
 
     eth->name = NULL;
     _exalt_eth_set_name(eth,name);
@@ -193,17 +183,11 @@ Exalt_Ethernet* exalt_eth_create(const char* name)
     eth->_save_gateway = NULL;
     eth-> _save_link = 0;
     eth->_save_up = 0;
+    eth->wireless = NULL;
 
     strncpy(wrq.ifr_name, exalt_eth_get_name(eth), sizeof(wrq.ifr_name));
     if(exalt_ioctl(&wrq, SIOCGIWNAME) >= 0)
         eth->wireless = exalt_wireless_create(eth);
-    else
-    {
-        //we can load a card from the conf. file as wireless but it's a wired card
-        //so we need free eth->wireless
-        exalt_wireless_free(eth->wireless);
-        eth->wireless = NULL;
-    }
 
     return eth;
 }
@@ -228,15 +212,15 @@ void exalt_eth_ethernets_free()
 void exalt_eth_free(void *data)
 {
 	Exalt_Ethernet* eth = Exalt_Ethernet(data);
-	EXALT_FREE(eth->name)
-        EXALT_FREE(eth->udi)
-	EXALT_FREE(eth->new_ip)
-		EXALT_FREE(eth->new_netmask)
-		EXALT_FREE(eth->new_gateway)
-                EXALT_FREE(eth->_save_ip)
-                EXALT_FREE(eth->_save_netmask)
-		EXALT_FREE(eth->_save_gateway)
-                if(exalt_eth_is_wireless(eth)) exalt_wireless_free(exalt_eth_get_wireless(eth));
+	EXALT_FREE(eth->name);
+        EXALT_FREE(eth->udi);
+        EXALT_FREE(eth->_save_ip);
+        EXALT_FREE(eth->_save_netmask);
+        EXALT_FREE(eth->_save_gateway);
+        if(eth->connection)
+            exalt_conn_free(eth->connection);
+        if(exalt_eth_is_wireless(eth)) exalt_wireless_free(exalt_eth_get_wireless(eth));
+        EXALT_FREE(eth);
 }
 
 /*
@@ -405,9 +389,6 @@ void exalt_eth_up(Exalt_Ethernet* eth)
 	if( !exalt_ioctl(&ifr, SIOCSIFFLAGS))
 		return ;
 
-        //save the configuration
-        exalt_eth_set_new_up(eth,1);
-        exalt_conf_save(eth);
 }
 
 
@@ -437,10 +418,6 @@ void exalt_eth_down(Exalt_Ethernet* eth)
     ifr.ifr_flags &= ~IFF_UP;
     if( !exalt_ioctl(&ifr, SIOCSIFFLAGS))
         return ;
-
-    //save the configuration
-    exalt_eth_set_new_up(eth,0);
-    exalt_conf_save(eth);
 }
 
 
@@ -564,7 +541,7 @@ Exalt_Ethernet* exalt_eth_get_ethernet_byifindex(int ifindex)
 /**
  * @brief test if an interface is link
  * @param eth the card
- * @return Return EXALT_TRUE if yes, else EXALT_FALSE
+ * @return Return 1 if yes, else 0
  */
 short exalt_eth_is_link(Exalt_Ethernet* eth)
 {
@@ -574,11 +551,11 @@ short exalt_eth_is_link(Exalt_Ethernet* eth)
     if(!eth)
     {
         print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
-        return EXALT_ERROR;
+        return -1;
     }
 
     if(exalt_eth_is_wireless(eth))
-        return EXALT_TRUE;
+        return 1;
 
     strncpy(ifr.ifr_name,exalt_eth_get_name(eth),sizeof(ifr.ifr_name));
     memset(&edata, 0, sizeof(edata));
@@ -588,7 +565,7 @@ short exalt_eth_is_link(Exalt_Ethernet* eth)
     if( (res = exalt_ioctl(&ifr, SIOCETHTOOL))<=-1)
         return res; //if an interface doesn't support SIOCETHTOOL, we return true
 
-    return edata.data ? EXALT_TRUE : EXALT_FALSE;
+    return edata.data ? 1 : 0;
 }
 
 /**
@@ -635,8 +612,39 @@ int exalt_eth_get_ifindex(Exalt_Ethernet* eth)
         return eth->ifindex;
 }
 
+/**
+ * @brief get the connection of the card "eth"
+ * @param eth the card
+ * @return Returns the connection
+ */
+Exalt_Connection* exalt_eth_get_connection(Exalt_Ethernet* eth)
+{
+    if(!eth)
+    {
+        print_error("error", __FILE__, __LINE__,__func__,"eth=%p",eth);
+        return NULL;
+    }
+    return eth->connection;
+}
 
-
+/**
+ * @brief set the connection of the card "eth"
+ * @param eth the card
+ * @param c the connection
+ * @return returns 1 if the connexion is apply, else 0
+ */
+short exalt_eth_set_connection(Exalt_Ethernet* eth, Exalt_Connection* c)
+{
+    if(!eth || !c)
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p c=%p",eth,c);
+        return 0;
+    }
+    if(eth->connection)
+        exalt_conn_free(eth->connection);
+    eth->connection = c;
+    return 1;
+}
 
 /**
  * @brief get the ip address of the card "eth"
@@ -754,92 +762,23 @@ char* exalt_eth_get_gateway(Exalt_Ethernet* eth)
 
 
 /**
- * @brief get the new ip address of the card "eth"
- * @param eth the card
- * @return Returns the ip address
- */
-const char* exalt_eth_get_new_ip(Exalt_Ethernet* eth)
-{
-    if(!eth)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
-        return NULL;
-    }
-    else
-        return eth->new_ip;
-}
-
-/**
- * @brief get the new mask address of the card "eth"
- * @param eth the card
- * @return Returns the ip address
- */
-const char* exalt_eth_get_new_netmask(Exalt_Ethernet* eth)
-{
-    if(!eth)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
-        return NULL;
-    }
-    else
-        return eth->new_netmask;
-}
-
-/**
- * @brief get the new gateway address of the card "eth"
- * @param eth the card
- * @return Returns the ip address
- */
-const char* exalt_eth_get_new_gateway(Exalt_Ethernet* eth)
-{
-    if(!eth)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
-        return NULL;
-    }
-    else
-        return eth->new_gateway;
-}
-
-
-/**
- * @brief get if the card "eth" will uses DHCP or static
- * @param eth the card
- * @return Returns 1 if the card use DHCP, else 0
- */
-short exalt_eth_is_new_dhcp(Exalt_Ethernet* eth)
-{
-	if(eth)
-		return eth->new_dhcp_static == EXALT_DHCP;
-	else
-		return 0;
-}
-
-/**
- * @brief get if the card "eth" will be up or down
- * @param eth the card
- * @return Returns 1 if the card will be up, else 0
- */
-short exalt_eth_is_new_up(Exalt_Ethernet* eth)
-{
-	if(eth)
-		return eth->new_up;
-	else
-		return 0;
-}
-
-
-/**
  * @brief get if the card "eth" use DHCP or static (look the configuration file)
  * @param eth the card
- * @return Returns 1 if the card use DHCP, else 0
+ * @return Returns 1 if the card use DHCP, 0 if static, -1 if unknow
  */
 short exalt_eth_is_dhcp(Exalt_Ethernet* eth)
 {
-	if(eth)
-		return 1;//exalt_sys_conf_is_dhcp(eth);
-	else
-		return EXALT_ERROR;
+    Exalt_Connection *c;
+    if(!eth)
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
+        return -1;
+    }
+
+    if( (c=exalt_eth_get_connection(eth)))
+        return exalt_conn_is_dhcp(c);
+    else
+        return -1;
 }
 
 
@@ -906,121 +845,6 @@ Exalt_Wireless* exalt_eth_get_wireless(Exalt_Ethernet* eth)
 
 
 
-/**
- * @brief set the ip address of the card "eth"
- * @param eth the card
- * @param ip the new ip address
- * @return Returns 1 if the new ip address is apply, 0 if the "ip" doesn't have a correct format else -1
- */
-int exalt_eth_set_new_ip(Exalt_Ethernet* eth, const char* ip)
-{
- 	if(!eth || !ip)
-	{
-	 	print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p ip=%p",eth,ip);
-		return -1;
-	}
-	if(!exalt_is_address(ip))
-	{
-	 	print_error("WARNING", __FILE__, __LINE__,__func__,"ip(%s) is not a valid address",ip);
-		return 0;
-	}
-
-	EXALT_FREE(eth->new_ip)
-	eth->new_ip=strdup(ip);
-	return 1;
-}
-
-
-
-/**
- * @brief set the netmask address of the card "eth"
- * @param eth the card
- * @param netmask the new netmask address
- * @return Returns 1 if the new netmask address is apply, 0 if the "netmask" doesn't have a correct format else -1
- */
-int exalt_eth_set_new_netmask(Exalt_Ethernet* eth, const char* netmask)
-{
-	if(!eth || !netmask)
-	{
-		print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p broadcast=%p",eth,netmask);
-		return -1;
-	}
-	if(!exalt_is_address(netmask))
-	{
-	 	print_error("WARNING", __FILE__, __LINE__,__func__,"broadcast(%s) is not a valid address",netmask);
-		return 0;
-	}
-
-	EXALT_FREE(eth->new_netmask)
-		eth->new_netmask=strdup(netmask);
-	return 1;
-}
-
-
-
-/**
- * @brief set the gateway address of the card "eth"
- * @param eth the card
- * @param gateway the new gateway address
- * @return Returns 1 if the new gateway address is apply, 0 if the "gateway" doesn't have a correct format else -1
- */
-int exalt_eth_set_new_gateway(Exalt_Ethernet* eth, const char* gateway)
-{
-	if(!eth || !gateway)
-	{
-		print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p gateway=%p",eth,gateway);
-		return -1;
-	}
-	if(!exalt_is_address(gateway) && strlen(gateway)>0)
-	{
-		print_error("WARNING", __FILE__, __LINE__,__func__,"broadcast(%s) is not a valid address",gateway);
-		return 0;
-	}
-	EXALT_FREE(eth->new_gateway)
-		eth->new_gateway=strdup(gateway);
-	return 1;
-}
-
-
-
-
-
-
-
-/**
- * @brief set the the dhcp mode of the card "eth"
- * @param eth the card
- * @param dhcp the mode: 1 -> dhcp, 0 -> static
- * @return Returns 1 if the mode is apply, else 0
- */
-int exalt_eth_set_new_dhcp(Exalt_Ethernet* eth, short dhcp)
-{
-    if(!eth)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
-        return -1;
-    }
-    eth->new_dhcp_static=dhcp;
-    return 1;
-}
-
-/**
- * @brief set if the card "eth" is saved as up or not
- * @param eth the card
- * @param up: 1 -> up, 0 -> down
- * @return Returns 1 if success, else 0
- */
-int exalt_eth_set_new_up(Exalt_Ethernet* eth, short up)
-{
-    if(!eth)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
-        return -1;
-    }
-    eth->new_up=up;
-    return 1;
-}
-
 
 /**
  * @brief set the callback function
@@ -1058,69 +882,72 @@ int exalt_eth_set_scan_cb(Exalt_Wifi_Scan_Cb fct, void * user_data)
 
 
 /**
- * @brief apply the configuration for the card "eth"
+ * @brief apply the connection for the card "eth"
  * @param eth the card
+ * @param c the connection
+ * @param fct callback function
+ * @user_data user's data
  * @return Returns 1 if the configuration is apply, else 0
  */
-int exalt_eth_apply_conf(Exalt_Ethernet* eth, Exalt_Conf_Applied fct, void* user_data)
+int exalt_eth_apply_conn(Exalt_Ethernet* eth, Exalt_Connection *c,Exalt_Conf_Applied fct, void* user_data)
 {
-	int res;
- 	struct rtentry rt;
-	struct sockaddr_in sin = { AF_INET };
-	if(!eth)
-	{
-		print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
-		return -1;
-	}
+    int res;
+    struct rtentry rt;
+    struct sockaddr_in sin = { AF_INET };
+    if(!eth || !c)
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p c=%p",eth,c);
+        return -1;
+    }
 
-        exalt_conf_save(eth);
-        //save the configuration of the current network
+    eth->apply_fct_cb = fct;
+    eth->apply_user_data = user_data;
+
+    if(!exalt_conn_is_valid(c))
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__,"The connection is not valid");
+        eth->apply_pid = -1;
+        _exalt_apply_timer(eth);
+        return -1;
+    }
+
+    exalt_eth_set_connection(eth,c);
+
+    eth->apply_pid = fork();
+    if(eth->apply_pid < 0)
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__,"fork failed");
+        eth->apply_pid = -1;
+        _exalt_apply_timer(eth);
+        return -1;
+    }
+    else if(eth->apply_pid == 0)
+    {
         if(exalt_eth_is_wireless(eth))
-            exalt_conf_wirelessinfo_save(exalt_eth_get_wireless(eth));
+            exalt_wireless_apply_conn(exalt_eth_get_wireless(eth));
 
-
-
-        eth->apply_pid = fork();
-        if(eth->apply_pid < 0)
+        //remove old gateway
+        if(exalt_conn_is_dhcp(c) || exalt_is_address(exalt_conn_get_gateway(c)))
         {
-            print_error("ERROR", __FILE__, __LINE__,__func__,"fork failed");
-            return -1;
+            memset((char *) &rt, 0, sizeof(struct rtentry));
+            rt.rt_flags = ( RTF_UP | RTF_GATEWAY );
+            sin.sin_addr.s_addr = inet_addr ("0.0.0.0");
+            rt.rt_dst = *(struct sockaddr *) &sin;
+
+            while (exalt_ioctl(&rt, SIOCDELRT) >=0)
+                ;
         }
-        else if(eth->apply_pid == 0)
-        {
-            if(!exalt_is_admin())
-            {
-                print_error("ERROR", __FILE__, __LINE__,__func__,"you need to be root if you want apply the configuration");
-                return -1;
-            }
+        if(exalt_conn_is_dhcp(c))
+            res = _exalt_eth_apply_dhcp(eth);
+        else
+            res = _exalt_eth_apply_static(eth);
 
-            if(exalt_eth_is_wireless(eth))
-                exalt_wireless_apply_conf(exalt_eth_get_wireless(eth));
+        exit(res);
+    }
 
-            //remove old gateway
-            if(exalt_eth_is_new_dhcp(eth) || exalt_is_address(exalt_eth_get_new_gateway(eth)))
-            {
-                memset((char *) &rt, 0, sizeof(struct rtentry));
-                rt.rt_flags = ( RTF_UP | RTF_GATEWAY );
-                sin.sin_addr.s_addr = inet_addr ("0.0.0.0");
-                rt.rt_dst = *(struct sockaddr *) &sin;
+    eth->apply_timer = ecore_timer_add(1 ,_exalt_apply_timer,eth);
 
-                while (exalt_ioctl(&rt, SIOCDELRT) >=0)
-                    ;
-            }
-            if(exalt_eth_is_new_dhcp(eth))
-                res = _exalt_eth_apply_dhcp(eth);
-            else
-                res = _exalt_eth_apply_static(eth);
-
-            exit(res);
-        }
-
-        eth->apply_fct_cb = fct;
-        eth->apply_user_data = user_data;
-        eth->apply_timer = ecore_timer_add(1 ,_exalt_apply_timer,eth);
-
-	return 1;
+    return 1;
 }
 
 
@@ -1173,6 +1000,38 @@ void exalt_eth_printf()
  */
 
 /**
+ * @brief set the state of a card (need for save)
+ * @param eth the card
+ * @param state the new state
+ * @return Returns 1 if the state is apply, else 0
+ */
+short _exalt_eth_set_state(Exalt_Ethernet* eth, Exalt_Enum_State state)
+{
+    if(!eth)
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
+        return 0;
+    }
+    eth->state = state;
+    return 1;
+}
+
+/**
+ * @brief get the state of a card (need for save)
+ * @param eth the card
+ * @return Returns the state
+ */
+Exalt_Enum_State _exalt_eth_get_state(Exalt_Ethernet* eth)
+{
+    if(!eth)
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
+        return 0;
+    }
+    return eth->state;
+}
+
+/**
  * @brief get the save ip address of the card "eth"
  * @param eth the card
  * @return Returns the ip address
@@ -1223,7 +1082,7 @@ const char* _exalt_eth_get_save_netmask(Exalt_Ethernet* eth)
 /**
  * @brief get the save link stat of the card "eth"
  * @param eth the card
- * @return Returns EXALT_TRUE or EXALT_FALSE
+ * @return Returns 1 or 0
  */
 short _exalt_eth_get_save_link(Exalt_Ethernet* eth)
 {
@@ -1239,7 +1098,7 @@ short _exalt_eth_get_save_link(Exalt_Ethernet* eth)
 /**
  * @brief get the save up stat of the card "eth"
  * @param eth the card
- * @return Returns EXALT_TRUE or EXALT_FALSE
+ * @return Returns 1 or 0
  */
 short _exalt_eth_get_save_up(Exalt_Ethernet* eth)
 {
@@ -1272,7 +1131,7 @@ int _exalt_eth_set_save_ip(Exalt_Ethernet* eth,const char* ip)
 		return 0;
 	}
 
-	EXALT_FREE(eth->_save_ip)
+	EXALT_FREE(eth->_save_ip);
 	eth->_save_ip=strdup(ip);
 	return 1;
 }
@@ -1296,7 +1155,7 @@ int _exalt_eth_set_save_netmask(Exalt_Ethernet* eth,const char* netmask)
 		return 0;
 	}
 
-	EXALT_FREE(eth->_save_netmask)
+	EXALT_FREE(eth->_save_netmask);
 	eth->_save_netmask=strdup(netmask);
 	return 1;
 }
@@ -1320,7 +1179,7 @@ int _exalt_eth_set_save_gateway(Exalt_Ethernet* eth,const char* gateway)
 		return 0;
 	}
 
-	EXALT_FREE(eth->_save_gateway)
+	EXALT_FREE(eth->_save_gateway);
 	eth->_save_gateway=strdup(gateway);
 	return 1;
 }
@@ -1328,7 +1187,7 @@ int _exalt_eth_set_save_gateway(Exalt_Ethernet* eth,const char* gateway)
 /**
  * @brief set the save link state of the card "eth"
  * @param eth the card
- * @param ip the state link (EXALT_TRUE or EXALT_FALSE)
+ * @param link the state link (1 or 0)
  * @return Returns 1 if the new stat is apply,else -1
  */
 int _exalt_eth_set_save_link(Exalt_Ethernet* eth,short link)
@@ -1344,7 +1203,7 @@ int _exalt_eth_set_save_link(Exalt_Ethernet* eth,short link)
 /**
  * @brief set the save up state of the card "eth"
  * @param eth the card
- * @param ip the up state (EXALT_TRUE or EXALT_FALSE)
+ * @param ip the up state (1 or 0)
  * @return Returns 1 if the new state is apply,else -1
  */
 int _exalt_eth_set_save_up(Exalt_Ethernet* eth,short up)
@@ -1369,7 +1228,7 @@ int _exalt_eth_set_name(Exalt_Ethernet* eth, const char* name)
 {
 	if(eth && name)
 	{
-		EXALT_FREE(eth->name)
+		EXALT_FREE(eth->name);
 		eth->name=strdup(name);
 		return 1;
 	}
@@ -1392,7 +1251,7 @@ int _exalt_eth_set_udi(Exalt_Ethernet* eth,const char* udi)
 		return -1;
 	}
 
-	EXALT_FREE(eth->udi)
+	EXALT_FREE(eth->udi);
 	eth->udi=strdup(udi);
 	return 1;
 }
@@ -1492,10 +1351,10 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
                     break;
                 }
 
-                printf("ifmsg: { %d, %d, %d, 0x%x, 0x%x }\n",
-                        ifmsg->ifi_family, ifmsg->ifi_type,
-                        ifmsg->ifi_index, ifmsg->ifi_flags,
-                        ifmsg->ifi_change);
+                //printf("ifmsg: { %d, %d, %d, 0x%x, 0x%x }\n",
+                //        ifmsg->ifi_family, ifmsg->ifi_type,
+                //        ifmsg->ifi_index, ifmsg->ifi_flags,
+                //        ifmsg->ifi_change);
 
                 eth = exalt_eth_get_ethernet_byifindex(ifmsg->ifi_index);
                 if(!eth)
@@ -1505,9 +1364,15 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
                 {
                     _exalt_eth_set_save_up(eth, exalt_eth_is_up(eth));
                     if(exalt_eth_is_up(eth) && exalt_eth_interfaces.eth_cb)
+                    {
+                        _exalt_eth_set_state(eth,EXALT_UP);
                         exalt_eth_interfaces.eth_cb(eth,EXALT_ETH_CB_ACTION_UP,exalt_eth_interfaces.eth_cb_user_data);
+                    }
                     else if(exalt_eth_interfaces.eth_cb)
+                    {
+                        _exalt_eth_set_state(eth,EXALT_DOWN);
                         exalt_eth_interfaces.eth_cb(eth,EXALT_ETH_CB_ACTION_DOWN,exalt_eth_interfaces.eth_cb_user_data);
+                    }
                 }
 
                 if(_exalt_eth_get_save_link(eth) != exalt_eth_is_link(eth))
@@ -1595,7 +1460,7 @@ int _exalt_apply_timer(void *data)
     int status;
 
     res = waitpid(eth->apply_pid,&status,WNOHANG);
-    if(res == 0)
+    if(eth->apply_pid!=-1 && res == 0)
     {
         return 1;
     }
@@ -1618,35 +1483,42 @@ int _exalt_eth_apply_static(Exalt_Ethernet *eth)
 	struct sockaddr_in sin = { AF_INET };
 	struct ifreq ifr;
 	struct rtentry rt;
+        Exalt_Connection *c;
 
 	if(!eth)
 	{
 	 	print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
 		return -1;
 	}
+        c = exalt_eth_get_connection(eth);
+        if(!c)
+	{
+	 	print_error("ERROR", __FILE__, __LINE__,__func__,"c=%p",c);
+		return -1;
+	}
 
  	strncpy(ifr.ifr_name,exalt_eth_get_name(eth),sizeof(ifr.ifr_name));
 
  	//apply the ip
- 	sin.sin_addr.s_addr = inet_addr (exalt_eth_get_new_ip(eth));
+ 	sin.sin_addr.s_addr = inet_addr (exalt_conn_get_ip(c));
 	ifr.ifr_addr = *(struct sockaddr *) &sin;
 	if( exalt_ioctl(&ifr, SIOCSIFADDR) < 0)
 		return -1;
 
 	//apply the netmask
- 	sin.sin_addr.s_addr = inet_addr (exalt_eth_get_new_netmask(eth));
+ 	sin.sin_addr.s_addr = inet_addr (exalt_conn_get_netmask(c));
 	ifr.ifr_addr = *(struct sockaddr *) &sin;
 	if( exalt_ioctl(&ifr, SIOCSIFNETMASK ) < 0)
 	 	return -1;
 
 
-	if(!exalt_eth_get_gateway(eth))
+	if(!exalt_conn_get_gateway(c))
 	 	return 1;
 
 	//apply the default gateway
 	memset((char *) &rt, 0, sizeof(struct rtentry));
  	rt.rt_flags = ( RTF_UP | RTF_GATEWAY );
-	sin.sin_addr.s_addr = inet_addr (exalt_eth_get_new_gateway(eth));
+	sin.sin_addr.s_addr = inet_addr (exalt_conn_get_gateway(c));
 	rt.rt_gateway = *(struct sockaddr *) &sin;
  	sin.sin_addr.s_addr = inet_addr ("0.0.0.0");
 	rt.rt_dst = *(struct sockaddr *) &sin;
@@ -1656,8 +1528,8 @@ int _exalt_eth_apply_static(Exalt_Ethernet *eth)
 	if ( exalt_ioctl(&rt, SIOCADDRT) < 0)
 	    return -1;
 
-        EXALT_FREE(rt.rt_dev)
-	return 1;
+        EXALT_FREE(rt.rt_dev);
+        return 1;
 }
 
 
@@ -1670,9 +1542,9 @@ int _exalt_eth_apply_static(Exalt_Ethernet *eth)
 int _exalt_eth_apply_dhcp(Exalt_Ethernet* eth)
 {
 #ifdef DHCP_COMMAND_PATH
-    FILE* f;
+    Ecore_Exe * exe;
+    int status;
     char command[1024];
-    char buf[1024];
     if(!eth)
     {
         print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
@@ -1680,42 +1552,14 @@ int _exalt_eth_apply_dhcp(Exalt_Ethernet* eth)
     }
 
     sprintf(command,COMMAND_DHCLIENT,exalt_eth_get_name(eth));
-    f = exalt_execute_command(command);
-    while(fgets(buf,1024,f))
-        ;
-    EXALT_PCLOSE(f);
+    exe = ecore_exe_run(command, NULL);
+    waitpid(ecore_exe_pid_get(exe), &status, 0);
+    ecore_exe_free(exe);
 #else
     print_error("WARNING", __FILE__, __LINE__,__func__,"Your build of libexalt doesn't support dhcp");
 #endif
     return 1;
 }
 
-
-
-Eet_Data_Descriptor * exalt_eth_edd_new(Eet_Data_Descriptor *edd_w)
-{
-    Eet_Data_Descriptor *edd_eth;
-
-    edd_eth = eet_data_descriptor_new("ethernet", sizeof(Exalt_Ethernet),
-            evas_list_next,
-            evas_list_append,
-            evas_list_data,
-            evas_list_free,
-            evas_hash_foreach,
-            evas_hash_add,
-            evas_hash_free);
-
-    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_eth, Exalt_Ethernet, "up", new_up, EET_T_SHORT);
-
-    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_eth, Exalt_Ethernet, "ip", new_ip, EET_T_STRING);
-    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_eth, Exalt_Ethernet, "netmask", new_netmask, EET_T_STRING);
-    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_eth, Exalt_Ethernet, "gateway", new_gateway, EET_T_STRING);
-
-    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_eth, Exalt_Ethernet, "dhcp", new_dhcp_static, EET_T_SHORT);
-
-    EET_DATA_DESCRIPTOR_ADD_SUB(edd_eth, Exalt_Ethernet, "wireless", wireless, edd_w);
-
-    return edd_eth;
-}
 
 

@@ -32,17 +32,11 @@ int exalt_dbus_eth_is_up(const exalt_dbus_conn* conn, const char* eth);
 int exalt_dbus_eth_is_dhcp(const exalt_dbus_conn* conn, const char* eth);
 
 
-void exalt_dbus_eth_set_new_ip(const exalt_dbus_conn* conn, const char* eth, const char* ip);
-void exalt_dbus_eth_set_new_netmask(const exalt_dbus_conn* conn, const char* eth, const char* netmask);
-void exalt_dbus_eth_set_new_gateway(const exalt_dbus_conn* conn, const char* eth, const char* ip);
-void exalt_dbus_eth_set_new_dhcp(const exalt_dbus_conn* conn, const char* eth, short dhcp);
-
-
 void exalt_dbus_eth_up(const exalt_dbus_conn* conn, const char* eth);
 void exalt_dbus_eth_down(const exalt_dbus_conn* conn, const char* eth);
 
-void exalt_dbus_eth_apply_conf(exalt_dbus_conn* conn, const char* eth, exalt_notify_conf_applied_cb, void* user_data);
-void _exalt_dbus_notify_conf_applied(void *data, DBusMessage *msg);
+int exalt_dbus_eth_apply_conn(exalt_dbus_conn* conn, const char* eth,Exalt_Connection*c , exalt_notify_conn_applied_cb, void* user_data);
+void _exalt_dbus_notify_conn_applied(void *data, DBusMessage *msg);
 
 #endif   /* ----- #ifndef EXALT_DBUS_ETHERNET_INC  ----- */
 

@@ -448,8 +448,8 @@ void _exalt_interface_cb(void *data, E_Menu *m, E_Menu_Item *mi)
     else
         ecore_exe_run(exalt_config->cmd,NULL);
 
-    EXALT_DBUS_FREE(command1);
-    EXALT_DBUS_FREE(command2);
+    EXALT_FREE(command1);
+    EXALT_FREE(command2);
 }
 
 void _exalt_wireless_cb(void *data, E_Menu *m, E_Menu_Item *mi)
@@ -482,8 +482,8 @@ void _exalt_wireless_cb(void *data, E_Menu *m, E_Menu_Item *mi)
         ecore_exe_run(exalt_config->cmd,NULL);
 
 
-    EXALT_DBUS_FREE(command1);
-    EXALT_DBUS_FREE(command2);
+    EXALT_FREE(command1);
+    EXALT_FREE(command2);
 }
 
 void _exalt_notify_cb(char* interface, int action, void* user_data)

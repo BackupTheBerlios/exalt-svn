@@ -4,6 +4,7 @@
 #include <Etk.h>
 #include <stdio.h>
 #include <pthread.h>
+#include <libexalt.h>
 
 typedef struct _wireless_panel wireless_panel;
 

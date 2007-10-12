@@ -48,8 +48,8 @@ static void _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
  	if(!exalt_config) return;
 	exalt_config->config_dialog = NULL;
-	EXALT_DBUS_FREE(cfdata->cmd);
-	EXALT_DBUS_FREE(cfdata);
+	EXALT_FREE(cfdata->cmd);
+	EXALT_FREE(cfdata);
 }
 
 static Evas_Object * _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
@@ -63,7 +63,7 @@ static Evas_Object * _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_C
 	e_widget_framelist_object_append(of, ob);
 	ob = e_widget_label_add(evas, _("%w: the wireless network essid"));
 	e_widget_framelist_object_append(of, ob);
-	ob = e_widget_entry_add(evas, &(cfdata->cmd));
+	ob = e_widget_entry_add(evas, &(cfdata->cmd),NULL,NULL,NULL);
 	e_widget_framelist_object_append(of, ob);
 	e_widget_list_object_append(o, of, 1, 1, 0.5);
 

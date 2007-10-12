@@ -18,10 +18,6 @@
 #include <Eet.h>
 #include <Evas.h>
 
-/** the configuration file of Exalt */
-#define EXALT_CONF_FILE_EET PACKAGE_DATA_DIR "/exalt.conf.eet"
-
-
 /** the location with the file configuration of wpa_supplicant */
 #define EXALT_WPA_CONF_FILE_DIR "/etc/wpa_supplicant"
 /** the location of the wpa_supplicant configuration file */
@@ -36,14 +32,16 @@
                         "fast_reauth=1\n"
 
 
-int exalt_conf_wirelessinfo_save(Exalt_Wireless* w);
-Exalt_Wireless_Info* exalt_conf_wirelessinfo_load(const char*essid);
+
+int exalt_wireless_conn_save(const char* file, Exalt_Connection* c);
+Exalt_Connection* exalt_wireless_conn_load(const char* file, const char *essid);
 
 int exalt_conf_save_wpasupplicant(Exalt_Wireless *w);
 
-int exalt_conf_save(Exalt_Ethernet* eth);
-Exalt_Ethernet* exalt_conf_load(const char* name);
-
+int exalt_eth_save(const char* file, Exalt_Ethernet* eth);
+Exalt_Enum_State exalt_eth_state_load(const char* file, const char* name);
+Exalt_Connection *exalt_eth_conn_load(const char* file, const char* name);
+char* exalt_eth_driver_load(const char* file, const char* name);
 #endif
 
 /** @} */

@@ -23,15 +23,16 @@
 #include <Ecore_Data.h>
 #include <Ecore_Data.h>
 #include <string.h>
+#include <libexalt.h>
 
 typedef struct _exalt_dbus_conn exalt_dbus_conn;
 typedef struct _exalt_dbus_notify_data exalt_dbus_notify_data;
-typedef struct _exalt_dbus_notify_conf_applied_data exalt_dbus_notify_conf_applied_data;
+typedef struct _exalt_dbus_notify_conn_applied_data exalt_dbus_notify_conn_applied_data;
 typedef struct _exalt_dbus_scan_notify_data exalt_dbus_scan_notify_data;
 
 typedef void (exalt_notify_cb) (char* eth, int action, void* user_data);
 typedef void (exalt_scan_notify_cb) (char* eth, Ecore_List* new_networks, Ecore_List *old_networks, void* user_data);
-typedef void (exalt_notify_conf_applied_cb) (char* interface, void* user_data);
+typedef void (exalt_notify_conn_applied_cb) (char* interface, void* user_data);
 
 #include "define.h"
 #include "exalt_dbus_ethernet.h"
@@ -44,10 +45,6 @@ void exalt_dbus_shutdown();
 exalt_dbus_conn*  exalt_dbus_connect();
 void exalt_dbus_notify_set(exalt_dbus_conn* conn, exalt_notify_cb* cb, void* user_data);
 void exalt_dbus_scan_notify_set(exalt_dbus_conn* conn, exalt_scan_notify_cb* cb, void* user_data);
-
-int exalt_dbus_is_address(const exalt_dbus_conn* conn, const char* address);
-int exalt_dbus_is_essid(const exalt_dbus_conn* conn, const char* essid);
-int exalt_dbus_is_passwd(const exalt_dbus_conn* conn, const char* passwd, int mode);
 
 int exalt_dbus_wpasupplicant_is_support(const exalt_dbus_conn* conn);
 int exalt_dbus_dhcp_is_support(const exalt_dbus_conn* conn);

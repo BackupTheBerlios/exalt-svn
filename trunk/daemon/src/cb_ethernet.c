@@ -50,7 +50,7 @@ DBusMessage * dbus_cb_eth_get_eth_list(E_DBus_Object *obj __UNUSED__, DBusMessag
         if (!interface || !dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &interface))
         {
             print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
-            EXALT_FREE(interface)
+            EXALT_FREE(interface);
             return reply;
         }
     }
@@ -254,20 +254,6 @@ DBusMessage * dbus_cb_eth_is_dhcp(E_DBus_Object *obj __UNUSED__, DBusMessage *ms
     return reply;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 DBusMessage * dbus_cb_eth_up(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
     DBusMessage *reply;
@@ -304,161 +290,6 @@ DBusMessage * dbus_cb_eth_down(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
     return reply;
 }
 
-DBusMessage * dbus_cb_eth_set_new_ip(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
-{
-    DBusMessage *reply;
-    DBusMessageIter args;
-    Exalt_Ethernet* eth;
-    char* ip;
-
-    reply = dbus_message_new_method_return(msg);
-
-    //search the interface
-    eth = dbus_get_eth(msg);
-    if(!eth)
-        return reply;
-
-    //get the new ip
-    if(!dbus_message_iter_init(msg, &args))
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "no argument");
-        return reply;
-    }
-    dbus_message_iter_next(&args);
-    if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a string");
-        return reply;
-    }
-    else
-        dbus_message_iter_get_basic(&args, &ip);
-
-    if(!exalt_is_address(ip))
-    {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "The address (%s) is not an ip address",ip);
-        return reply;
-    }
-
-    exalt_eth_set_new_ip(eth,ip);
-
-    return reply;
-}
-
-DBusMessage * dbus_cb_eth_set_new_netmask(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
-{
-    DBusMessage *reply;
-    DBusMessageIter args;
-    Exalt_Ethernet* eth;
-    char* netmask;
-
-    reply = dbus_message_new_method_return(msg);
-
-    //search the interface
-    eth = dbus_get_eth(msg);
-    if(!eth)
-        return reply;
-
-    //get the new netmask
-    if(!dbus_message_iter_init(msg, &args))
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "no argument");
-        return reply;
-    }
-    dbus_message_iter_next(&args);
-    if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a string");
-        return reply;
-    }
-    else
-        dbus_message_iter_get_basic(&args, &netmask);
-
-    if(!exalt_is_address(netmask))
-    {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "The address (%s) is not an netmask address",netmask);
-        return reply;
-    }
-
-    exalt_eth_set_new_netmask(eth,netmask);
-
-    return reply;
-}
-
-DBusMessage * dbus_cb_eth_set_new_gateway(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
-{
-    DBusMessage *reply;
-    DBusMessageIter args;
-    Exalt_Ethernet* eth;
-    char* gateway;
-
-    reply = dbus_message_new_method_return(msg);
-
-    //search the interface
-    eth = dbus_get_eth(msg);
-    if(!eth)
-        return reply;
-
-    //get the new gateway
-    if(!dbus_message_iter_init(msg, &args))
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "no argument");
-        return reply;
-    }
-    dbus_message_iter_next(&args);
-    if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a string");
-        return reply;
-    }
-    else
-        dbus_message_iter_get_basic(&args, &gateway);
-
-    if(!exalt_is_address(gateway))
-    {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "The address (%s) is not an gateway address",gateway);
-        return reply;
-    }
-
-    exalt_eth_set_new_gateway(eth,gateway);
-
-    return reply;
-}
-
-DBusMessage * dbus_cb_eth_set_new_dhcp(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
-{
-    DBusMessage *reply;
-    DBusMessageIter args;
-    Exalt_Ethernet* eth;
-    int dhcp;
-
-    reply = dbus_message_new_method_return(msg);
-
-    //search the interface
-    eth = dbus_get_eth(msg);
-    if(!eth)
-        return reply;
-
-    //get the new dhcp
-    if(!dbus_message_iter_init(msg, &args))
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "no argument");
-        return reply;
-    }
-
-    dbus_message_iter_next(&args);
-    if (DBUS_TYPE_BOOLEAN != dbus_message_iter_get_arg_type(&args))
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a boolean");
-        return reply;
-    }
-    else
-        dbus_message_iter_get_basic(&args, &dhcp);
-
-    exalt_eth_set_new_dhcp(eth,dhcp);
-
-    return reply;
-}
-
 struct E_DBus_Object
 {
     E_DBus_Connection *conn;
@@ -473,26 +304,157 @@ struct E_DBus_Object
     void *data;
 };
 
-DBusMessage * dbus_cb_eth_apply_conf(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
+DBusMessage * dbus_cb_eth_apply_conn(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
     DBusMessage *reply;
     DBusMessageIter args;
     Exalt_Ethernet* eth;
-
+    Exalt_Connection* c;
     reply = dbus_message_new_method_return(msg);
+    int i;
+    char* s;
 
-    eth= dbus_get_eth(msg);
+    c = exalt_conn_new();
+    if(!c)
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "c=%p",c);
+        return reply;
+    }
+
+    eth = dbus_get_eth(msg);
 
     if(!eth)
         return reply;
 
-    dbus_message_iter_init_append(reply, &args);
-    exalt_eth_apply_conf(eth, dbus_cb_notify_conf_applied_cb, obj->conn);
+    //retrieve the connection
+    if(!dbus_message_iter_init(msg, &args))
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "no argument");
+        return reply;
+    }
+    dbus_message_iter_next(&args);
+    if (DBUS_TYPE_INT32 != dbus_message_iter_get_arg_type(&args))
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a int");
+        return reply;
+    }
+    else
+        dbus_message_iter_get_basic(&args, &i);
+    exalt_conn_set_mode(c,i);
+    dbus_message_iter_next(&args);
+
+    if(!exalt_conn_is_dhcp(c))
+    {
+        if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
+        {
+            print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a string");
+            return reply;
+        }
+        else
+            dbus_message_iter_get_basic(&args, &s);
+        exalt_conn_set_ip(c,s);
+        dbus_message_iter_next(&args);
+
+        if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
+        {
+            print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a string");
+            return reply;
+        }
+        else
+            dbus_message_iter_get_basic(&args, &s);
+        exalt_conn_set_netmask(c,s);
+        dbus_message_iter_next(&args);
+
+        if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
+        {
+            print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a string");
+            return reply;
+        }
+        else
+            dbus_message_iter_get_basic(&args, &s);
+        exalt_conn_set_gateway(c,s);
+        dbus_message_iter_next(&args);
+    }
+
+    if (DBUS_TYPE_INT32 != dbus_message_iter_get_arg_type(&args))
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a int");
+        return reply;
+    }
+    else
+        dbus_message_iter_get_basic(&args, &i);
+    exalt_conn_set_wireless(c,i);
+    dbus_message_iter_next(&args);
+
+    if(exalt_conn_is_wireless(c))
+    {
+        if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
+        {
+            print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a string");
+            return reply;
+        }
+        else
+            dbus_message_iter_get_basic(&args, &s);
+        exalt_conn_set_essid(c,s);
+        dbus_message_iter_next(&args);
+
+
+        if (DBUS_TYPE_INT32 != dbus_message_iter_get_arg_type(&args))
+        {
+            print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a int");
+            return reply;
+        }
+        else
+            dbus_message_iter_get_basic(&args, &i);
+        exalt_conn_set_encryption_mode(c,i);
+        dbus_message_iter_next(&args);
+
+        if(exalt_conn_get_encryption_mode(c)!= EXALT_ENCRYPTION_NONE)
+        {
+            if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
+            {
+                print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a string");
+                return reply;
+            }
+            else
+                dbus_message_iter_get_basic(&args, &s);
+            exalt_conn_set_key(c,s);
+            dbus_message_iter_next(&args);
+        }
+
+        if (DBUS_TYPE_INT32 != dbus_message_iter_get_arg_type(&args))
+        {
+            print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a int");
+            return reply;
+        }
+        else
+            dbus_message_iter_get_basic(&args, &i);
+        exalt_conn_set_connection_mode(c,i);
+        dbus_message_iter_next(&args);
+
+
+        if (DBUS_TYPE_INT32 != dbus_message_iter_get_arg_type(&args))
+        {
+            print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a int");
+            return reply;
+        }
+        else
+            dbus_message_iter_get_basic(&args, &i);
+        exalt_conn_set_security_mode(c,i);
+        dbus_message_iter_next(&args);
+    }
+
+    exalt_eth_apply_conn(eth, c, dbus_cb_notify_conn_applied_cb, obj->conn);
+
+    //if it's a wireless connection
+    //we save the configuration for the essid
+    if(exalt_conn_is_wireless(c))
+        exalt_wireless_conn_save(CONF_FILE, c);
 
     return reply;
 }
 
-void dbus_cb_notify_conf_applied_cb(Exalt_Ethernet* eth, void* data)
+void dbus_cb_notify_conn_applied_cb(Exalt_Ethernet* eth, void* data)
 {
     E_DBus_Connection *conn;
     DBusMessage* msg;
@@ -501,8 +463,11 @@ void dbus_cb_notify_conf_applied_cb(Exalt_Ethernet* eth, void* data)
 
     conn = (E_DBus_Connection*) data;
 
+    //save the configuration
+    exalt_eth_save(CONF_FILE, eth);
+
     //send a broadcast
-    msg = dbus_message_new_signal(EXALTD_PATH,EXALTD_INTERFACE_READ, "NOTIFY_CONF_APPLIED");
+    msg = dbus_message_new_signal(EXALTD_PATH,EXALTD_INTERFACE_READ, "NOTIFY_CONN_APPLIED");
     if(!msg)
     {
         print_error("ERROR", __FILE__, __LINE__,__func__, "msg=%p",msg);

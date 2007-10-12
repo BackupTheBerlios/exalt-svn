@@ -19,12 +19,12 @@
 #ifndef  LIBEXALT_PRIVATE_INC
 #define  LIBEXALT_PRIVATE_INC
 
+#include "../config.h"
 #include "libexalt.h"
 #include <string.h>
 #include "nettools/proc.h"
 #include "iw/iwlib.h"
 #include "wpa_supplicant/wpa_ctrl.h"
-#include "exalt_command.h"
 #include "exalt_regexp.h"
 #include <Eet.h>
 
@@ -47,6 +47,16 @@ struct Exalt_Ethernets
 };
 
 
+/** Command to launch a dhcp */
+#ifdef DHCP_COMMAND_PATH
+    #define COMMAND_DHCLIENT DHCP_COMMAND_PATH " %s -1 -q"
+#endif
+/** Command to lauch the wpa_supplicant daemon */
+#ifdef WPA_SUPPLICANT_COMMAND_PATH
+    #define COMMAND_WPA WPA_SUPPLICANT_COMMAND_PATH " -D%s -i%s -c%s -P%s -B"
+#endif
+
+
 
 
 char *str_remove (const char *s, const char *ct);
@@ -59,10 +69,8 @@ int _exalt_rtlink_essid_change(Exalt_Wireless *w);
 
 void _exalt_wpa_stop(Exalt_Wireless* w);
 
+Exalt_Enum_State _exalt_eth_get_state(Exalt_Ethernet* eth);
 
-Eet_Data_Descriptor * exalt_eth_edd_new(Eet_Data_Descriptor *edd_w);
-Eet_Data_Descriptor * exalt_wireless_edd_new();
-Eet_Data_Descriptor * exalt_wirelessinfo_edd_new();
 
 #endif   /* ----- #ifndef LIBEXALT_PRIVATE_INC  ----- */
 

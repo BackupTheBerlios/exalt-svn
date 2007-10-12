@@ -38,12 +38,6 @@ Exalt_Wireless_Info* get_wirelessinfo(Exalt_Ethernet* eth, char* essid);
 void eth_cb(Exalt_Ethernet* eth, int action, void* data);
 void wireless_scan_cb(Exalt_Ethernet* eth, Ecore_List* new_networks, Ecore_List* old_networks, void* data);
 
-DBusMessage * dbus_cb_is_address(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
-DBusMessage * dbus_cb_is_essid(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
-DBusMessage * dbus_cb_is_passwd(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
-DBusMessage * dbus_cb_wpasupplicant_is_support(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
-DBusMessage * dbus_cb_dhcp_is_support(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
-
 #endif   /* ----- #ifndef DAEMON_INC  ----- */
 
 
