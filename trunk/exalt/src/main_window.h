@@ -33,7 +33,7 @@ void mainwindow_add_interface(char* interface, main_window* win);
 Etk_Bool mainWindow_free(main_window** win);
 Etk_Bool mainWindow_close(Etk_Object *object, void *data);
 
-void mainwindow_notify_cb(char* interface, int action, void* user_data);
+void mainwindow_notify_cb(char* interface, Exalt_Enum_Action action, void* user_data);
 void mainWindow_ethList_row_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data);
 Etk_Tree_Row * mainwindow_findrow(main_window* win, char* interface);
 

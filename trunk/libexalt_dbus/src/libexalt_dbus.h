@@ -30,7 +30,7 @@ typedef struct _exalt_dbus_notify_data exalt_dbus_notify_data;
 typedef struct _exalt_dbus_notify_conn_applied_data exalt_dbus_notify_conn_applied_data;
 typedef struct _exalt_dbus_scan_notify_data exalt_dbus_scan_notify_data;
 
-typedef void (exalt_notify_cb) (char* eth, int action, void* user_data);
+typedef void (exalt_notify_cb) (char* eth, Exalt_Enum_Action action, void* user_data);
 typedef void (exalt_scan_notify_cb) (char* eth, Ecore_List* new_networks, Ecore_List *old_networks, void* user_data);
 typedef void (exalt_notify_conn_applied_cb) (char* interface, void* user_data);
 

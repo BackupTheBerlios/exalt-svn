@@ -163,7 +163,7 @@ int main(int argc, char** argv)
     return 1;
 }
 
-void eth_cb(Exalt_Ethernet* eth, int action, void* data)
+void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
 {
     E_DBus_Connection *conn;
     DBusMessage* msg;

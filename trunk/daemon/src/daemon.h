@@ -35,7 +35,7 @@ int setup(E_DBus_Connection *conn);
 Exalt_Ethernet* dbus_get_eth(DBusMessage* msg);
 Exalt_Wireless_Info* dbus_get_wirelessinfo(DBusMessage* msg);
 Exalt_Wireless_Info* get_wirelessinfo(Exalt_Ethernet* eth, char* essid);
-void eth_cb(Exalt_Ethernet* eth, int action, void* data);
+void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data);
 void wireless_scan_cb(Exalt_Ethernet* eth, Ecore_List* new_networks, Ecore_List* old_networks, void* data);
 
 #endif   /* ----- #ifndef DAEMON_INC  ----- */

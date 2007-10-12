@@ -91,7 +91,7 @@ Etk_Bool mainWindow_close(Etk_Object *object __UNUSED__, void *data)
     exit(1);
 }
 
-void mainwindow_notify_cb(char* interface, int action, void* user_data)
+void mainwindow_notify_cb(char* interface, Exalt_Enum_Action action, void* user_data)
 {
     char wireless_img[] = PACKAGE_DATA_DIR ICONS_WIRELESS_ACTIVATE;
     char wireless_img_not_activate[] = PACKAGE_DATA_DIR ICONS_WIRELESS_NOT_ACTIVATE;
