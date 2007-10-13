@@ -202,7 +202,6 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
 
     if( action == EXALT_ETH_CB_ACTION_UP || action == EXALT_ETH_CB_ACTION_DOWN)
         exalt_eth_save(CONF_FILE, eth);
-
     //send a broadcast
     msg = dbus_message_new_signal(EXALTD_PATH,EXALTD_INTERFACE_READ, "NOTIFY");
     if(!msg)
@@ -210,6 +209,7 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
         print_error("ERROR", __FILE__, __LINE__,__func__, "msg=%p",msg);
         return ;
     }
+
 
     name = exalt_eth_get_name(eth);
 

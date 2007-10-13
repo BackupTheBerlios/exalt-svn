@@ -172,8 +172,9 @@ int exalt_eth_save(const char* file, Exalt_Ethernet* eth)
     s.connection = exalt_eth_get_connection(eth);
     if(exalt_eth_is_wireless(eth))
         s.driver = exalt_wireless_get_driver(exalt_eth_get_wireless(eth));
-
-    return _exalt_eet_eth_save(file, &s, exalt_eth_get_name(eth));
+    else
+        s.driver = NULL;
+     return _exalt_eet_eth_save(file, &s, exalt_eth_get_name(eth));
 }
 
 
