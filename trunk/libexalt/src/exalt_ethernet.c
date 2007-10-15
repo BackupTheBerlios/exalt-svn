@@ -1363,16 +1363,11 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
                 if(_exalt_eth_get_save_up(eth) != exalt_eth_is_up(eth))
                 {
                     _exalt_eth_set_save_up(eth, exalt_eth_is_up(eth));
+                    _exalt_eth_set_state(eth,exalt_eth_is_up(eth));
                     if(exalt_eth_is_up(eth) && exalt_eth_interfaces.eth_cb)
-                    {
-                        _exalt_eth_set_state(eth,EXALT_UP);
                         exalt_eth_interfaces.eth_cb(eth,EXALT_ETH_CB_ACTION_UP,exalt_eth_interfaces.eth_cb_user_data);
-                    }
                     else if(exalt_eth_interfaces.eth_cb)
-                    {
-                        _exalt_eth_set_state(eth,EXALT_DOWN);
                         exalt_eth_interfaces.eth_cb(eth,EXALT_ETH_CB_ACTION_DOWN,exalt_eth_interfaces.eth_cb_user_data);
-                    }
                 }
 
                 if(_exalt_eth_get_save_link(eth) != exalt_eth_is_link(eth))

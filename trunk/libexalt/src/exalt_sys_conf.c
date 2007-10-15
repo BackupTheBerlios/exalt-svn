@@ -239,7 +239,7 @@ Exalt_Eth_Save* _exalt_eet_eth_load(const char* file, const char* interface)
 
     f = eet_open(file, EET_FILE_MODE_READ);
     if(!f)
-        f = eet_open(file, EET_FILE_MODE_WRITE);
+        return NULL;
 
     data = eet_data_read(f, edd, interface);
 
@@ -278,7 +278,7 @@ Exalt_Connection* _exalt_eet_wireless_conn_load(const char*file, const char* ess
 
     f = eet_open(file, EET_FILE_MODE_READ);
     if(!f)
-        f = eet_open(file, EET_FILE_MODE_WRITE);
+        return NULL;
 
     data = eet_data_read(f, edd, essid);
 
