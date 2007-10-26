@@ -92,7 +92,6 @@ wireless_panel* wirelesspanel_create(main_window* win)
 	etk_table_attach_default(ETK_TABLE(table), pnl->lbl_gateway, 1, 1, 3, 3);
 
 
-
 	pnl->box_connection = wirelesspanel_pageconnection_create(pnl);
  	etk_box_append(ETK_BOX(hbox), pnl->box_connection, ETK_BOX_START, ETK_BOX_NONE , 0);
 
@@ -314,15 +313,6 @@ Etk_Widget* wirelesspanel_pageconnection_create(wireless_panel* pnl)
 
 
 
-	etk_signal_connect("text-changed",ETK_OBJECT(pnl->entry_conn_essid),ETK_CALLBACK(wirelesspanel_textchanged_entry_cb),pnl);
-	etk_signal_connect("text-changed",ETK_OBJECT(pnl->entry_conn_pwd),ETK_CALLBACK(wirelesspanel_textchanged_entry_cb),pnl);
-	etk_signal_connect("text-changed",ETK_OBJECT(pnl->entry_conn_ip),ETK_CALLBACK(wirelesspanel_textchanged_entry_cb),pnl);
-	etk_signal_connect("text-changed",ETK_OBJECT(pnl->entry_conn_mask),ETK_CALLBACK(wirelesspanel_textchanged_entry_cb),pnl);
-	etk_signal_connect("text-changed",ETK_OBJECT(pnl->entry_conn_gateway),ETK_CALLBACK(wirelesspanel_textchanged_entry_cb),pnl);
-	etk_signal_connect("toggled", ETK_OBJECT(pnl->check_static),ETK_CALLBACK(wirelesspanel_set_static_dhcp_clicked_cb), pnl);
-	etk_signal_connect("toggled", ETK_OBJECT(pnl->check_dhcp),ETK_CALLBACK(wirelesspanel_set_static_dhcp_clicked_cb), pnl);
-	etk_signal_connect("active-item-changed", ETK_OBJECT(pnl->cmbox_encryption), ETK_CALLBACK(wirelesspanel_cmboxencryption_active_item_changed_cb), pnl);
-
 
 	etk_combobox_column_add(ETK_COMBOBOX(pnl->cmbox_encryption), ETK_COMBOBOX_LABEL, 50, ETK_TRUE, 0.5);
 	etk_combobox_build(ETK_COMBOBOX(pnl->cmbox_encryption));
@@ -361,7 +351,6 @@ Etk_Widget* wirelesspanel_pageconnection_create(wireless_panel* pnl)
         etk_signal_connect_swapped("clicked", ETK_OBJECT(pnl->btn_apply),ETK_CALLBACK(wirelesspanel_btn_apply_clicked_cb), pnl);
 
 
-
 	label = etk_label_new(_("Essid: "));
 	etk_table_attach(ETK_TABLE(table), label, 0, 0, 0, 0, 0, 0, ETK_TABLE_HFILL);
 	etk_table_attach_default(ETK_TABLE(table), pnl->entry_conn_essid, 1, 1, 0, 0);
@@ -383,7 +372,6 @@ Etk_Widget* wirelesspanel_pageconnection_create(wireless_panel* pnl)
 	etk_table_attach_default(ETK_TABLE(table), pnl->cmbox_security, 1, 1, 4, 4);
 
 
-
 	etk_table_attach(ETK_TABLE(table), pnl->check_static,0, 0, 5, 5, 0, 0, ETK_TABLE_HFILL);
 	etk_table_attach_default(ETK_TABLE(table), pnl->check_dhcp, 1, 1, 5, 5);
 
@@ -402,6 +390,15 @@ Etk_Widget* wirelesspanel_pageconnection_create(wireless_panel* pnl)
 
 	etk_table_attach(ETK_TABLE(table), pnl->btn_apply, 0, 0, 9, 9, 0, 0, ETK_TABLE_HFILL);
 	etk_table_attach_default(ETK_TABLE(table), pnl->hbox_pbar, 1, 1, 9, 9);
+
+        etk_signal_connect("text-changed",ETK_OBJECT(pnl->entry_conn_essid),ETK_CALLBACK(wirelesspanel_textchanged_entry_cb),pnl);
+        etk_signal_connect("text-changed",ETK_OBJECT(pnl->entry_conn_pwd),ETK_CALLBACK(wirelesspanel_textchanged_entry_cb),pnl);
+        etk_signal_connect("text-changed",ETK_OBJECT(pnl->entry_conn_ip),ETK_CALLBACK(wirelesspanel_textchanged_entry_cb),pnl);
+	etk_signal_connect("text-changed",ETK_OBJECT(pnl->entry_conn_mask),ETK_CALLBACK(wirelesspanel_textchanged_entry_cb),pnl);
+	etk_signal_connect("text-changed",ETK_OBJECT(pnl->entry_conn_gateway),ETK_CALLBACK(wirelesspanel_textchanged_entry_cb),pnl);
+	etk_signal_connect("toggled", ETK_OBJECT(pnl->check_static),ETK_CALLBACK(wirelesspanel_set_static_dhcp_clicked_cb), pnl);
+	etk_signal_connect("toggled", ETK_OBJECT(pnl->check_dhcp),ETK_CALLBACK(wirelesspanel_set_static_dhcp_clicked_cb), pnl);
+	etk_signal_connect("active-item-changed", ETK_OBJECT(pnl->cmbox_encryption), ETK_CALLBACK(wirelesspanel_cmboxencryption_active_item_changed_cb), pnl);
 
 
 

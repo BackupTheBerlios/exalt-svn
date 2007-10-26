@@ -186,6 +186,7 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
         else
             exalt_conn_set_wireless(c, 0);
 
+
         if(not_c || exalt_eth_state_load(CONF_FILE, exalt_eth_get_name(eth)) == EXALT_UP)
         {
             if(exalt_eth_is_up(eth) && exalt_eth_is_link(eth))
@@ -195,13 +196,11 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
             }
             else
             {
-                exalt_eth_set_connection(eth, c);
                 exalt_eth_up(eth);
             }
         }
         else
         {
-            exalt_eth_set_connection(eth, c);
             exalt_eth_down(eth);
         }
     }
@@ -216,6 +215,7 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
             exalt_conn_set_wireless(c, 1);
         else
             exalt_conn_set_wireless(c, 0);
+
         exalt_eth_apply_conn(eth, c, NULL, NULL);
         exalt_eth_save(CONF_FILE,eth);
     }

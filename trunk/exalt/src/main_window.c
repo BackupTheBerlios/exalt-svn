@@ -60,6 +60,7 @@ main_window* mainwindow_create()
     win->wireless_panel = wirelesspanel_create(win);
     etk_box_append(ETK_BOX(hbox),win->wireless_panel->frame , ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
+
     //load the current interfaces
     exalt_dbus_notify_set(exalt_conn, mainwindow_notify_cb, win);
 

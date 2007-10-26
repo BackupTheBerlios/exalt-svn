@@ -289,11 +289,9 @@ DBusMessage * dbus_cb_wirelessinfo_get_default_conn(E_DBus_Object *obj __UNUSED_
 
     //search the interface
     wi = dbus_get_wirelessinfo(msg);
-    if(!wi)
-        return reply;
 
     //try to load the configuration
-    if(! (c=exalt_wireless_conn_load(CONF_FILE, exalt_wirelessinfo_get_essid(wi))))
+    if(!wi || ! (c=exalt_wireless_conn_load(CONF_FILE, exalt_wirelessinfo_get_essid(wi))))
         c = exalt_conn_new();
     exalt_conn_set_wireless(c,1);
 
@@ -320,7 +318,6 @@ DBusMessage * dbus_cb_wirelessinfo_get_default_conn(E_DBus_Object *obj __UNUSED_
     dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &i);
     if(exalt_conn_is_wireless(c))
     {
-
         i=exalt_conn_get_encryption_mode(c);
         dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &i);
         if(exalt_conn_get_encryption_mode(c)!=EXALT_ENCRYPTION_NONE)

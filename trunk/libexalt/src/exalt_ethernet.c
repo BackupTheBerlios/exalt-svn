@@ -189,6 +189,10 @@ Exalt_Ethernet* exalt_eth_create(const char* name)
     if(exalt_ioctl(&wrq, SIOCGIWNAME) >= 0)
         eth->wireless = exalt_wireless_create(eth);
 
+    //now update the state
+    if(exalt_eth_is_up(eth))
+        _exalt_eth_set_state(eth,EXALT_UP);
+
     return eth;
 }
 
@@ -388,7 +392,6 @@ void exalt_eth_up(Exalt_Ethernet* eth)
  	ifr.ifr_flags |= IFF_UP;
 	if( !exalt_ioctl(&ifr, SIOCSIFFLAGS))
 		return ;
-
 }
 
 
