@@ -30,7 +30,6 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
                 "modules/exalt/main"))
         edje_object_file_set(inst->o_button, buf, "e/modules/exalt/main");
 
-
     gcc = e_gadcon_client_new(gc, name, id, style, inst->o_button);
     gcc->data = inst;
     inst->gcc = gcc;

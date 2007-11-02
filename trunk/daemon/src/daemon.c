@@ -129,7 +129,7 @@ int main(int argc, char** argv)
 
     e_dbus_init();
     ecore_init();
-    exalt_eth_init();
+    exalt_init();
 
     if(!exalt_is_admin())
     {
@@ -191,7 +191,7 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
         {
             if(exalt_eth_is_up(eth) && exalt_eth_is_link(eth))
             {
-                exalt_eth_apply_conn(eth, c, NULL, NULL);
+                exalt_eth_apply_conn(eth, c);
                 exalt_eth_save(CONF_FILE,eth);
             }
             else
@@ -216,7 +216,7 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
         else
             exalt_conn_set_wireless(c, 0);
 
-        exalt_eth_apply_conn(eth, c, NULL, NULL);
+        exalt_eth_apply_conn(eth, c);
         exalt_eth_save(CONF_FILE,eth);
     }
 

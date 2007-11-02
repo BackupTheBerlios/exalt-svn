@@ -159,6 +159,13 @@ void mainwindow_notify_cb(char* interface, Exalt_Enum_Action action, void* user_
         if(wpnl->interface && interface && strcmp(wpnl->interface, interface) == 0)
             wirelesspanel_set_eth(wpnl,interface);
     }
+    else if(action == EXALT_ETH_CB_ACTION_CONN_APPLY_DONE)
+    {
+        if(exalt_dbus_eth_is_wireless(exalt_conn, interface))
+            wirelesspanel_conn_apply_done(win->wireless_panel);
+        else
+            ethpanel_conn_apply_done(win->eth_panel);
+    }
 }
 
 void mainwindow_add_interface(char* interface, main_window* win)

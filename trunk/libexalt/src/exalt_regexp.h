@@ -37,7 +37,7 @@ struct Exalt_Regex
 };
 
 
-Exalt_Regex* exalt_regex_create(const char* str_request, const char* str_regex,short debug);
+Exalt_Regex* exalt_regex_new(const char* str_request, const char* str_regex,short debug);
 void exalt_regex_set_request(Exalt_Regex* r,const char* str_request);
 void exalt_regex_set_regex(Exalt_Regex* r,const char* str_regex);
 void exalt_regex_set_debug(Exalt_Regex *r, short debug);

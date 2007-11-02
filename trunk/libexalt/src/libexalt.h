@@ -41,6 +41,8 @@
  * @{
  */
 
+int exalt_init();
+int exalt_main();
 
 
 short exalt_is_address(const char* ip);

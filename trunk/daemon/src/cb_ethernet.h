@@ -36,6 +36,5 @@ DBusMessage * dbus_cb_eth_down(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
 
 
 DBusMessage * dbus_cb_eth_apply_conn(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
-void dbus_cb_notify_conn_applied_cb(Exalt_Ethernet* eth, void* data);
 #endif   /* ----- #ifndef CB_FUNCTIONS_INC  ----- */
 

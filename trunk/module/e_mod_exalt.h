@@ -21,7 +21,7 @@
 #define ICONS_QUALITY_LESS_75 "/module_exalt/icons/quality_75-.png"
 
 void _cb_mouse_down (void *data, Evas * e, Evas_Object * obj,void *event_info);
-void _popup_show(Instance *inst, char* interface, int action);
+void _popup_show(Instance *inst, char* interface, Exalt_Enum_Action action);
 int _popup_timer_cb(void* data);
 
 static void _menu_cb_post(void *data, E_Menu *m);

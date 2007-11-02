@@ -1,18 +1,68 @@
 images
 {
-   image: "exalt_icon.png" COMP;
-   image: "data/icons/ethernet.png" COMP;
-   image: "data/icons/wireless.png" COMP;
-   image: "data/icons/ethernet_not_activate.png" COMP;
-   image: "data/icons/wireless_not_activate.png" COMP;
+image: "exalt.png" COMP;
+image: "exalt_anim_1.png" COMP;
+image: "exalt_anim_2.png" COMP;
+image: "exalt_anim_3.png" COMP;
+image: "exalt_anim_4.png" COMP;
+image: "exalt_anim_5.png" COMP;
+image: "exalt_anim_6.png" COMP;
+image: "exalt_anim_7.png" COMP;
+image: "exalt_anim_8.png" COMP;
+image: "exalt_anim_9.png" COMP;
+image: "exalt_anim_10.png" COMP;
+image: "exalt_anim_11.png" COMP;
+image: "exalt_anim_12.png" COMP;
+image: "exalt_anim_13.png" COMP;
+image: "exalt_anim_14.png" COMP;
+image: "exalt_anim_15.png" COMP;
+image: "exalt_anim_16.png" COMP;
+image: "exalt_anim_17.png" COMP;
+image: "exalt_anim_18.png" COMP;
+image: "exalt_anim_19.png" COMP;
+image: "exalt_anim_20.png" COMP;
+image: "exalt_anim_21.png" COMP;
+image: "exalt_anim_22.png" COMP;
+image: "exalt_anim_23.png" COMP;
+image: "exalt_anim_24.png" COMP;
+image: "exalt_anim_25.png" COMP;
+image: "exalt_anim_26.png" COMP;
+image: "exalt_anim_27.png" COMP;
+image: "exalt_anim_28.png" COMP;
+image: "exalt_anim_29.png" COMP;
+image: "exalt_anim_30.png" COMP;
+image: "exalt_anim_31.png" COMP;
+image: "exalt_anim_32.png" COMP;
+image: "exalt_anim_33.png" COMP;
+image: "exalt_anim_34.png" COMP;
+image: "exalt_anim_35.png" COMP;
+image: "exalt_anim_36.png" COMP;
+image: "exalt_anim_37.png" COMP;
+image: "exalt_anim_38.png" COMP;
+image: "exalt_anim_39.png" COMP;
+image: "exalt_anim_40.png" COMP;
+image: "exalt_anim_41.png" COMP;
+image: "exalt_anim_42.png" COMP;
+image: "exalt_anim_43.png" COMP;
+image: "exalt_anim_44.png" COMP;
+image: "exalt_anim_45.png" COMP;
+image: "exalt_anim_46.png" COMP;
+image: "exalt_anim_47.png" COMP;
+image: "exalt_anim_48.png" COMP;
+image: "exalt_anim_49.png" COMP;
+image: "exalt_anim_50.png" COMP;
+image: "data/icons/ethernet.png" COMP;
+image: "data/icons/wireless.png" COMP;
+image: "data/icons/ethernet_not_activate.png" COMP;
+image: "data/icons/wireless_not_activate.png" COMP;
 }
 
 fonts
 {
-    font: "fonts/Vera.ttf" "Edje-Vera";
-    font: "fonts/VeraBd.ttf" "Edje-Vera-Bold";
-    font: "fonts/VeraMono.ttf" "Edje-Vera-Mono";
-    font: "fonts/VeraMoBd.ttf" "Edje-Vera-Mono-Bold";
+font: "fonts/Vera.ttf" "Edje-Vera";
+font: "fonts/VeraBd.ttf" "Edje-Vera-Bold";
+font: "fonts/VeraMono.ttf" "Edje-Vera-Mono";
+font: "fonts/VeraMoBd.ttf" "Edje-Vera-Mono-Bold";
 }
 
 styles
@@ -28,39 +78,224 @@ styles
 
 collections
 {
-   group
-     {
-	name: "e/modules/exalt/main";
-	max: 128 128;
-	parts
-	  {
-	     part
-	       {
-		  name: "icon";
-		  type: IMAGE;
-		  description
-		    {
-		       state: "default" 0.0;
-		       aspect_preference: BOTH;
-		       aspect: 1 1;
-		       rel1
-			 {
-			    relative: 0.0 0.0;
-			    offset: 0 0;
-			 }
-		       rel2
-			 {
-			    relative: 1.0 1.0;
-			    offset: 0 0;
-			 }
-		       image
-			 {
-			    normal: "exalt_icon.png";
-			 }
-		    }
-	       }
-	  }
-     }
+    group
+    {
+        name: "e/modules/exalt/main";
+        max: 128 128;
+        parts
+        {
+            part
+            {
+                name: "icon";
+                type: IMAGE;
+                description
+                {
+                    state: "default" 0.0;
+                    aspect_preference: BOTH;
+                    aspect: 1.0 1.0;
+                    image
+                    {
+                        normal: "exalt.png";
+                    }
+                }
+                #define img(id) \
+                description \
+                {\
+                    state: "exalt_anim_"id 0.0;\
+                    inherit: "default" 0.0;\
+                    image.normal: "exalt_anim_"id".png";\
+                }
+                img("1");
+                img("2");
+                img("3");
+                img("4");
+                img("5");
+                img("6");
+                img("7");
+                img("8");
+                img("9");
+                img("10");
+                img("11");
+                img("12");
+                img("13");
+                img("14");
+                img("15");
+                img("16");
+                img("17");
+                img("18");
+                img("19");
+                img("20");
+                img("21");
+                img("22");
+                img("23");
+                img("24");
+                img("25");
+                img("26");
+                img("27");
+                img("28");
+                img("29");
+                img("30");
+                img("31");
+                img("32");
+                img("33");
+                img("34");
+                img("35");
+                img("36");
+                img("37");
+                img("38");
+                img("39");
+                img("40");
+                img("41");
+                img("42");
+                img("43");
+                img("44");
+                img("45");
+                img("46");
+                img("47");
+                img("48");
+                img("49");
+                img("50");
+
+            }
+            program
+            {
+                name, "stop_animate";
+                source, "exalt";
+                signal, "e,icon,conf,stop";
+                action, ACTION_STOP;
+                #define tg(id) \
+                    target, "animate_"id;
+                tg(1);
+                tg(2);
+                tg(3);
+                tg(4);
+                tg(5);
+                tg(6);
+                tg(7);
+                tg(8);
+                tg(9);
+                tg(10);
+                tg(11);
+                tg(12);
+                tg(13);
+                tg(14);
+                tg(15);
+                tg(16);
+                tg(17);
+                tg(18);
+                tg(19);
+                tg(20);
+                tg(21);
+                tg(22);
+                tg(23);
+                tg(24);
+                tg(25);
+                tg(26);
+                tg(27);
+                tg(28);
+                tg(29);
+                tg(30);
+                tg(31);
+                tg(32);
+                tg(33);
+                tg(34);
+                tg(35);
+                tg(36);
+                tg(37);
+                tg(38);
+                tg(39);
+                tg(40);
+                tg(41);
+                tg(42);
+                tg(43);
+                tg(44);
+                tg(45);
+                tg(46);
+                tg(47);
+                tg(48);
+                tg(49);
+                tg(50);
+                after, "no_animate";
+            }
+            program
+            {
+                    name, "no_animate";
+                    signal, "emit";
+                    action, STATE_SET "default" 0.0;
+                    transition, LINEAR 0.0;
+                    target, "icon";
+            }
+            program
+            {
+                    name, "animate_1";
+                    signal, "e,icon,conf,start";
+                    source, "exalt";
+                    action, STATE_SET "exalt_anim_1" 0.0;
+                    transition, LINEAR 0.07;
+                    after, "animate_2";
+                    target, "icon";
+            }
+            #define pr(id, id2, t)\
+            program \
+            {\
+                    name, "animate_"id;\
+                    signal, "emit";\
+                    action, STATE_SET "exalt_anim_"id 0.0;\
+                    transition, LINEAR t;\
+                    after, "animate_"id2;\
+                    target, "icon";\
+            }
+            pr(2,3, 0.07);
+            pr(3,4, 0.07);
+            pr(4,5, 0.07);
+            pr(5,6, 0.07);
+            pr(6,7, 0.07);
+            pr(7,8, 0.07);
+            pr(8,9, 0.07);
+            pr(9,10, 0.07);
+            pr(10,11, 0.07);
+            pr(11,12, 0.07);
+            pr(12,13, 0.07);
+            pr(13,14, 0.07);
+            pr(14,15, 0.07);
+            pr(15,16, 0.07);
+            pr(16,17, 0.07);
+            pr(17,18, 0.07);
+            pr(18,19, 0.07);
+            pr(19,20, 0.07);
+            pr(20,21, 0.07);
+            pr(21,22, 0.07);
+            pr(22,23, 0.07);
+            pr(23,24, 0.07);
+            pr(24,25, 0.07);
+            pr(25,26, 0.07);
+            pr(26,27, 0.07);
+            pr(27,28, 0.07);
+            pr(28,29, 0.07);
+            pr(29,30, 0.07);
+            pr(30,31, 0.07);
+            pr(31,32, 0.07);
+            pr(32,33, 0.07);
+            pr(33,34, 0.07);
+            pr(34,35, 0.07);
+            pr(35,36, 0.07);
+            pr(36,37, 0.07);
+            pr(37,38, 0.07);
+            pr(38,39, 0.07);
+            pr(39,40, 0.07);
+            pr(40,41, 0.07);
+            pr(41,42, 0.07);
+            pr(42,43, 0.07);
+            pr(43,44, 0.07);
+            pr(44,45, 0.07);
+            pr(45,46, 0.07);
+            pr(46,47, 0.07);
+            pr(47,48, 0.07);
+            pr(48,49, 0.07);
+            pr(49,50, 0.4);
+            pr(50,1, 0.4);
+        }
+    }
     group
     {
         name: "e/modules/exalt/popup";
@@ -227,6 +462,5 @@ collections
             target: "icon";
         }
     }
-
 } /* end collections */
 

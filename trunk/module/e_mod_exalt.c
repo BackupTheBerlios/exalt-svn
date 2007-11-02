@@ -101,7 +101,7 @@ void _cb_mouse_down (void *data, Evas * e, Evas_Object * obj,void *event_info)
 	}
 }
 
-void _popup_show(Instance *inst, char* interface, int action)
+void _popup_show(Instance *inst, char* interface, Exalt_Enum_Action action)
 {
 	E_Container *con;
 	Evas_Object *bg;
@@ -124,8 +124,17 @@ void _popup_show(Instance *inst, char* interface, int action)
 		case EXALT_ETH_CB_ACTION_LINK:
 		case EXALT_ETH_CB_ACTION_UNLINK:
 		case EXALT_WIRELESS_CB_ACTION_ESSIDCHANGE:
+                    break;
 		case EXALT_ETH_CB_ACTION_ADDRESS_NEW:
-			break;
+                    if(strcmp(exalt_dbus_eth_get_ip(conn,interface),"0.0.0.0") == 0)
+                        return ;
+                    break;
+                case EXALT_ETH_CB_ACTION_CONN_APPLY_START:
+                    edje_object_signal_emit(inst->o_button, "e,icon,conf,start", "exalt");
+                    return;
+                case EXALT_ETH_CB_ACTION_CONN_APPLY_DONE:
+                    edje_object_signal_emit(inst->o_button, "e,icon,conf,stop", "exalt");
+		    return;
 		default:
 			return ;
 	}
@@ -166,7 +175,7 @@ void _popup_show(Instance *inst, char* interface, int action)
 		case EXALT_ETH_CB_ACTION_ADDRESS_NEW:
 			snprintf(buf, sizeof(buf), _("New address: <info>%s</info>"), exalt_dbus_eth_get_ip(conn,interface));
 			break;
-		default:
+                default:
 			return ;
 	}
 

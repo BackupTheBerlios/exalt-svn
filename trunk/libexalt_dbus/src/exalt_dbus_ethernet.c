@@ -436,8 +436,7 @@ void exalt_dbus_eth_down(const exalt_dbus_conn* conn, const char* eth)
     dbus_message_unref(msg);
 }
 
-
-int exalt_dbus_eth_apply_conn(exalt_dbus_conn* conn, const char* eth, Exalt_Connection* c, exalt_notify_conn_applied_cb cb, void* user_data)
+int exalt_dbus_eth_apply_conn(exalt_dbus_conn* conn, const char* eth, Exalt_Connection* c)
 {
     DBusPendingCall * ret;
     DBusMessage *msg;
@@ -456,24 +455,6 @@ int exalt_dbus_eth_apply_conn(exalt_dbus_conn* conn, const char* eth, Exalt_Conn
         exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"The connection is not valid\n");
         return 0;
     }
-
-    //first, we starting to wait the response
-    if(!conn->notify_conn_applied)
-    {
-        conn -> notify_conn_applied = malloc(sizeof(exalt_dbus_notify_conn_applied_data));
-        conn -> notify_conn_applied -> cb = cb;
-        conn -> notify_conn_applied -> user_data = user_data;
-
-        e_dbus_signal_handler_add(conn->e_conn, EXALTD_SERVICE, EXALTD_PATH,
-                EXALTD_INTERFACE_READ, "NOTIFY_CONN_APPLIED",
-                _exalt_dbus_notify_conn_applied, conn);
-    }
-    else
-    {
-        conn -> notify_conn_applied -> cb = cb;
-        conn -> notify_conn_applied -> user_data = user_data;
-    }
-
 
     msg = exalt_dbus_write_call_new("IFACE_APPLY_CONN");
     dbus_message_iter_init_append(msg, &args);
@@ -553,28 +534,3 @@ int exalt_dbus_eth_apply_conn(exalt_dbus_conn* conn, const char* eth, Exalt_Conn
     return 1;
 }
 
-void _exalt_dbus_notify_conn_applied(void *data, DBusMessage *msg)
-{
-    DBusMessageIter args;
-    char* eth;
-    exalt_dbus_conn *conn;
-
-    conn = (exalt_dbus_conn*)data;
-
-    if(!dbus_message_iter_init(msg, &args))
-    {
-        exalt_dbus_print_error("ERROR", __FILE__, __LINE__,__func__, "no argument");
-        return ;
-    }
-    if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
-    {
-        exalt_dbus_print_error("ERROR", __FILE__, __LINE__,__func__, "the first argument is not a string");
-        return ;
-    }
-
-    dbus_message_iter_get_basic(&args, &eth);
-    eth = strdup(eth);
-
-    if(conn->notify_conn_applied->cb)
-        conn->notify_conn_applied->cb(eth,conn->notify_conn_applied->user_data);
-}

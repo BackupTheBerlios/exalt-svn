@@ -596,7 +596,7 @@ void wirelesspanel_btn_apply_clicked_cb(void *data)
         exalt_conn_set_security_mode(c,*security);
     }
 
-    if(!exalt_dbus_eth_apply_conn(exalt_conn, pnl->interface,c,wirelesspanel_apply_applied_cb, pnl))
+    if(!exalt_dbus_eth_apply_conn(exalt_conn, pnl->interface,c))
         return ;
 
     etk_widget_show_all(pnl->hbox_pbar);
@@ -701,15 +701,10 @@ void wirelesspanel_textchanged_entry_cb(Etk_Object *object __UNUSED__, void *dat
 }
 
 
-void wirelesspanel_apply_applied_cb(char* interface __UNUSED__,void* data)
+void wirelesspanel_conn_apply_done(wireless_panel* pnl)
 {
-    wireless_panel* pnl;
-
-    pnl = (wireless_panel*) data;
-
     DELETE_TIMER(pnl->pulsebar_timer)
-
-        wirelesspanel_disabled_widget_activate(pnl);
+    wirelesspanel_disabled_widget_activate(pnl);
     etk_widget_disabled_set(pnl->win->eth_list,ETK_FALSE);
     etk_widget_hide_all(pnl->pbar);
 }

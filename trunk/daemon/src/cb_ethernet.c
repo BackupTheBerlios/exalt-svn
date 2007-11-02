@@ -444,7 +444,7 @@ DBusMessage * dbus_cb_eth_apply_conn(E_DBus_Object *obj __UNUSED__, DBusMessage 
         dbus_message_iter_next(&args);
     }
 
-    exalt_eth_apply_conn(eth, c, dbus_cb_notify_conn_applied_cb, obj->conn);
+    exalt_eth_apply_conn(eth, c);
 
     //if it's a wireless connection
     //we save the configuration for the essid
@@ -453,44 +453,3 @@ DBusMessage * dbus_cb_eth_apply_conn(E_DBus_Object *obj __UNUSED__, DBusMessage 
 
     return reply;
 }
-
-void dbus_cb_notify_conn_applied_cb(Exalt_Ethernet* eth, void* data)
-{
-    E_DBus_Connection *conn;
-    DBusMessage* msg;
-    DBusMessageIter args;
-    const char* name;
-
-    conn = (E_DBus_Connection*) data;
-
-    //save the configuration
-    exalt_eth_save(CONF_FILE, eth);
-
-    //send a broadcast
-    msg = dbus_message_new_signal(EXALTD_PATH,EXALTD_INTERFACE_READ, "NOTIFY_CONN_APPLIED");
-    if(!msg)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "msg=%p",msg);
-        return ;
-    }
-
-    name = exalt_eth_get_name(eth);
-
-    if(!name)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "name=%p",name);
-        dbus_message_unref(msg);
-        return ;
-    }
-
-    dbus_message_iter_init_append(msg, &args);
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &name))
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
-        dbus_message_unref(msg);
-        return ;
-    }
-    e_dbus_message_send(conn, msg, NULL, 3,NULL);
-    dbus_message_unref(msg);
-}
-

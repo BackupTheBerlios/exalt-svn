@@ -95,7 +95,7 @@ void wirelesspanel_textchanged_entry_cb(Etk_Object *object, void *data);
 
 
 int wirelesspanel_apply_pulsebar_timer(void* data);
-void wirelesspanel_apply_applied_cb(char* interface, void* data);
+void wirelesspanel_conn_apply_done(wireless_panel* pnl);
 
 Etk_Combobox_Item * exalt_etk_combobox_data_item_get (Etk_Combobox *combobox, void *data);
 

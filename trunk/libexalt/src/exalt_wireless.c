@@ -48,19 +48,19 @@ struct Exalt_Wireless
  * @brief create a new Exalt_Wireless
  * @return Returns the new Exalt_Wireless struct
  */
-Exalt_Wireless* exalt_wireless_create(Exalt_Ethernet* eth)
+Exalt_Wireless* exalt_wireless_new(Exalt_Ethernet* eth)
 {
     Exalt_Wireless *w;
     if(!eth)
     {
-        fprintf(stderr,"exalt_wireless_create(): eth==null! \n");
+        fprintf(stderr,"exalt_wireless_new(): eth==null! \n");
         return NULL;
     }
 
     w = (Exalt_Wireless*)malloc((unsigned int)sizeof(Exalt_Wireless));
     if(!w)
     {
-        fprintf(stderr,"exalt_wireless_create(): w==null, malloc error\n");
+        fprintf(stderr,"exalt_wireless_new(): w==null, malloc error\n");
         return NULL;
     }
 

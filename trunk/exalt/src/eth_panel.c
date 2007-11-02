@@ -235,7 +235,7 @@ void ethpanel_btn_apply_clicked_cb(void *data)
     //else nothing
     //because exalt_conn_new is a dhcp connection by default
 
-    if(!exalt_dbus_eth_apply_conn(exalt_conn, pnl->interface,c, ethpanel_apply_applied_cb, pnl))
+    if(!exalt_dbus_eth_apply_conn(exalt_conn, pnl->interface,c))
         return ;
     etk_widget_show(pnl->hbox_pbar);
     etk_widget_disabled_set(pnl->win->eth_list,ETK_TRUE);
@@ -292,11 +292,8 @@ void ethpanel_disabled_set(eth_panel* pnl)
         etk_widget_disabled_set(pnl->check_dhcp, ETK_TRUE);
 }
 
-void ethpanel_apply_applied_cb(char* interface __UNUSED__, void* data)
+void ethpanel_conn_apply_done(eth_panel* pnl)
 {
-    eth_panel* pnl;
-    pnl = (eth_panel*) data;
-
     etk_widget_hide(pnl->hbox_pbar);
     DELETE_TIMER(pnl->pulsebar_timer);
     etk_widget_disabled_set(pnl->win->eth_list,ETK_FALSE);

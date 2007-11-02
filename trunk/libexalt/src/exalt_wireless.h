@@ -24,7 +24,7 @@ typedef struct Exalt_Wireless Exalt_Wireless;
 #include <stdio.h>
 
 
-Exalt_Wireless* exalt_wireless_create(Exalt_Ethernet* eth);
+Exalt_Wireless* exalt_wireless_new(Exalt_Ethernet* eth);
 void exalt_wireless_free(Exalt_Wireless* w);
 
 char* exalt_wireless_get_driver(Exalt_Wireless* w);

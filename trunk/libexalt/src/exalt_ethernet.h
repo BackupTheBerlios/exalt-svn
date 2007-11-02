@@ -61,7 +61,13 @@ typedef enum Exalt_Enum_Action
     /** when we have a new netmask */
     EXALT_ETH_CB_ACTION_NETMASK_NEW ,
     /** when we have a new gateway */
-    EXALT_ETH_CB_ACTION_GATEWAY_NEW
+    EXALT_ETH_CB_ACTION_GATEWAY_NEW,
+
+
+    /** when we start applying a connection */
+    EXALT_ETH_CB_ACTION_CONN_APPLY_START,
+    /** when the connection is applied */
+    EXALT_ETH_CB_ACTION_CONN_APPLY_DONE
 } Exalt_Enum_Action;
 
 /** cast into an Exalt_Ethernet* struct */
@@ -79,10 +85,8 @@ typedef void (*Exalt_Wifi_Scan_Cb) (Exalt_Ethernet* eth, Ecore_List* new_network
 typedef void (*Exalt_Conf_Applied) (Exalt_Ethernet* eth, void* data);
 
 
-Exalt_Ethernet* exalt_eth_create(const char* name);
+Exalt_Ethernet* exalt_eth_new(const char* name);
 
-int exalt_eth_init();
-int exalt_main();
 void exalt_eth_ethernets_free();
 void exalt_eth_free(void* data);
 
@@ -118,7 +122,7 @@ Exalt_Wireless* exalt_eth_get_wireless(Exalt_Ethernet* eth);
 int exalt_eth_set_cb(Exalt_Eth_Cb fct, void* user_data;);
 int exalt_eth_set_scan_cb(Exalt_Wifi_Scan_Cb fct, void* user_data);
 
-int exalt_eth_apply_conn(Exalt_Ethernet* eth, Exalt_Connection* c,Exalt_Conf_Applied fct, void* user_data);
+int exalt_eth_apply_conn(Exalt_Ethernet* eth, Exalt_Connection* c);
 Exalt_Connection* exalt_eth_get_connection(Exalt_Ethernet* eth);
 short exalt_eth_set_connection(Exalt_Ethernet* eth, Exalt_Connection* c);
 

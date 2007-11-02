@@ -35,7 +35,7 @@ int exalt_dbus_eth_is_dhcp(const exalt_dbus_conn* conn, const char* eth);
 void exalt_dbus_eth_up(const exalt_dbus_conn* conn, const char* eth);
 void exalt_dbus_eth_down(const exalt_dbus_conn* conn, const char* eth);
 
-int exalt_dbus_eth_apply_conn(exalt_dbus_conn* conn, const char* eth,Exalt_Connection*c , exalt_notify_conn_applied_cb, void* user_data);
+int exalt_dbus_eth_apply_conn(exalt_dbus_conn* conn, const char* eth,Exalt_Connection*c);
 void _exalt_dbus_notify_conn_applied(void *data, DBusMessage *msg);
 
 #endif   /* ----- #ifndef EXALT_DBUS_ETHERNET_INC  ----- */

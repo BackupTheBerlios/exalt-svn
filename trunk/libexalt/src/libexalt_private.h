@@ -57,6 +57,11 @@ struct Exalt_Ethernets
 #endif
 
 
+//define in exalt_ethernet.c but use in libexalt.c
+void _exalt_cb_signal_device_added(void *data, DBusMessage *msg);
+void _exalt_cb_signal_device_removed(void *data, DBusMessage *msg);
+void _exalt_cb_find_device_by_capability_net(void *user_data, void *reply_data, DBusError *error);
+int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler);
 
 
 char *str_remove (const char *s, const char *ct);

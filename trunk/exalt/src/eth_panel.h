@@ -54,7 +54,7 @@ void ethpanel_disabled_set(eth_panel* pnl);
 void ethpanel_set_static_dhcp_clicked_cb(Etk_Object *object, void *data);
 void ethpanel_textchanged_entry_cb(Etk_Object *object, void *data);
 void ethpanel_btn_apply_clicked_cb(void *data);
-void ethpanel_apply_applied_cb(char* interface, void* data);
+void ethpanel_conn_apply_done(eth_panel* pnl);
 int ethpanel_apply_pulsebar_timer(void* data);
 void ethpanel_btn_disactivate_clicked_cb(void *data);
 void ethpanel_btn_activate_clicked_cb(void *data);

@@ -12,7 +12,7 @@
  * @debug 1 if you want use the debug mode, else 0
  * @return Return a Exalt_Regex structure
  */
-Exalt_Regex* exalt_regex_create(const char* str_request, const char* str_regex, short debug)
+Exalt_Regex* exalt_regex_new(const char* str_request, const char* str_regex, short debug)
 {
     Exalt_Regex *r = (Exalt_Regex*)malloc((unsigned int)sizeof(Exalt_Regex));
 
