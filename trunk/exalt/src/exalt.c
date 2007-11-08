@@ -12,7 +12,7 @@ int main(int argc,char**argv)
  	int opt_i = 0;
 	int opt_w = 0;
 
-	if (!etk_init(&argc, &argv))
+	if (!etk_init(argc, argv))
         {
             print_error("ERROR", __FILE__, __LINE__,__func__,"Can not init ETK");
             return 1;

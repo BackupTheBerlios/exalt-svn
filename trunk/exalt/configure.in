@@ -76,6 +76,7 @@ PKG_CHECK_MODULES(EXALT, [
   edbus >= 0.1.0.002
   exalt_dbus >= 0.0.1
   exalt >= 0.5
+  ecore >= 0.9.9.037
   ])
 
 
