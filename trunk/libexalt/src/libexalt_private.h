@@ -27,6 +27,8 @@
 #include "wpa_supplicant/wpa_ctrl.h"
 #include "exalt_regexp.h"
 #include <Eet.h>
+#include <E_DBus.h>
+#include "exalt_ethernet.h"
 
 struct Exalt_Ethernets
 {

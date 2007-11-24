@@ -22,7 +22,8 @@ exalt_ethernet.h \
 exalt_sys_conf.h \
 exalt_wireless.h \
 exalt_wireless_info.h \
-exalt_connection.h
+exalt_connection.h \
+exalt_vpnc.h
 
 libexalt_la_SOURCES = \
 nettools/proc.c \
@@ -35,6 +36,7 @@ exalt_regexp.c \
 exalt_sys_conf.c \
 exalt_wireless.c \
 exalt_wireless_info.c \
+exalt_vpnc.c \
 libexalt_private.c \
 libexalt_private.h \
 exalt_connection.c \

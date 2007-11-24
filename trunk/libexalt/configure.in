@@ -71,6 +71,32 @@ if test "$wpa_supplicant" = "none"; then
 else
     AC_DEFINE_UNQUOTED(WPA_SUPPLICANT_COMMAND_PATH, "${wpa_supplicant}", [Path of wpa_supplicant])
     have_wpa_supplicant="yes"
+    AC_DEFINE_UNQUOTED(HAVE_WPA_SUPPLICANT, "${have_wpa_supplicant}", [have wpa_supplicant support])
+fi
+
+if test "z$vpnc" = "z"; then
+    AC_PATH_PROG(vpnc, vpnc, none)
+fi
+if test "$vpnc" = "none"; then
+    have_vpnc="no"
+else
+    AC_DEFINE_UNQUOTED(VPNC_COMMAND_PATH, "${vpnc}", [Path of vpnc])
+    have_vpnc="yes"
+fi
+
+if test "z$vpnc_disconnect" = "z"; then
+    AC_PATH_PROG(vpnc_disconnect, vpnc_disconnect, none)
+fi
+if test "$vpnc_disconnect" = "none"; then
+    have_vpnc="no"
+else
+    AC_DEFINE_UNQUOTED(VPNC_DISONNECT_COMMAND_PATH, "${vpnc_disconnect}", [Path of vpnc_disconnect])
+    if test  "$vpnc" = "none"; then
+        have_vpnc="no"
+    else
+        have_vpnc="yes"
+        AC_DEFINE_UNQUOTED(HAVE_VPNC, "${have_vpnc}", [have vpnc support])
+    fi
 fi
 
 
@@ -83,6 +109,7 @@ if test "$dhcp" = "none"; then
 else
     have_dhcp="yes"
     AC_DEFINE_UNQUOTED(DHCP_COMMAND_PATH, "${dhcp}", [Path of a dhcp command])
+    AC_DEFINE_UNQUOTED(HAVE_DHCP, "${have_dhcp}", [have dhcp support])
 fi
 
 
@@ -124,6 +151,7 @@ echo "Configuration Options Summary:"
 echo
 echo "  wpa_supplicant support.........: $have_wpa_supplicant ($wpa_supplicant)"
 echo "  dhcp support...................: $have_dhcp ($dhcp)"
+echo "  vpnc support...................: $have_vpnc ($vpnc, $vpnc_disconnect)"
 echo
 echo "  Installation Path..............: $prefix"
 echo

@@ -158,7 +158,7 @@ short exalt_conn_is_valid(Exalt_Connection* c)
     if(!exalt_conn_is_dhcp(c))
     {
         if(!exalt_is_address(exalt_conn_get_ip(c))
-                || !exalt_is_address(exalt_conn_get_gateway(c))
+                || (exalt_conn_get_gateway(c)!=  NULL && !exalt_is_address(exalt_conn_get_gateway(c)))
                 || !exalt_is_address(exalt_conn_get_netmask(c)))
             valid = 0;
     }

@@ -19,9 +19,10 @@ struct _Instance
 
 struct _Popup
 {
-   E_Popup *win;
-   Evas_Object *o_bg;
-   Ecore_Timer* timer;
+    E_Popup *win;
+    Evas_Object *o_bg;
+    Evas_Object *o_content;
+    Ecore_Timer* timer;
 };
 
 EAPI extern E_Module_Api e_modapi;

@@ -34,6 +34,7 @@
 #include "exalt_dns.h"
 #include "exalt_sys_conf.h"
 #include "exalt_connection.h"
+#include "exalt_vpnc.h"
 
 /**
  * @defgroup Exalt_General

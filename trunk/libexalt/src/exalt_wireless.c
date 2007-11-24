@@ -494,7 +494,7 @@ int exalt_wireless_apply_conn(Exalt_Wireless *w)
         case EXALT_ENCRYPTION_NONE:
         case EXALT_ENCRYPTION_WEP_ASCII:
         case EXALT_ENCRYPTION_WEP_HEXA:
-#ifdef  WPA_SUPPLICANT_COMMAND_PATH
+#ifdef  HAVE_WPA_SUPPLICANT
             _exalt_wpa_stop(w);
 #endif
             strncpy(wrq.ifr_name, exalt_eth_get_name(eth), sizeof(wrq.ifr_name));
@@ -565,7 +565,7 @@ int exalt_wireless_apply_conn(Exalt_Wireless *w)
 
             break;
         default:
-#ifdef  WPA_SUPPLICANT_COMMAND_PATH
+#ifdef  HAVE_WPA_SUPPLICANT
             exalt_conf_save_wpasupplicant(w);
             //reload wpa_supplicant configuration
             ctrl_conn = _exalt_wpa_open_connection(exalt_eth_get_name(eth));
@@ -688,12 +688,12 @@ struct wpa_ctrl * _exalt_wpa_open_connection(const char *ifname)
 }
 
 /**
- * @brief kill a wpa_supplicant daemon if he exist
+ * @brief kill a wpa_supplicant daemon if he exists
  * @param w the wireless card
  */
 void _exalt_wpa_stop(Exalt_Wireless* w)
 {
-#ifdef  WPA_SUPPLICANT_COMMAND_PATH
+#ifdef  HAVE_WPA_SUPPLICANT
     struct wpa_ctrl *ctrl_conn;
     Exalt_Ethernet* eth;
     if (w == NULL)

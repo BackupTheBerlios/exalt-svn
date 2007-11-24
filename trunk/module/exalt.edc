@@ -309,7 +309,7 @@ collections
                 description
                 {
                     state: "default" 0.0;
-                    color: 255 255 255 255;
+                    color: 255 255 255 0;
                     min: 145 65;
                 }
             }

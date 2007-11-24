@@ -181,7 +181,7 @@ short exalt_is_admin()
  */
 short exalt_wpasupplicant_is_support()
 {
-#ifdef WPA_SUPPLICANT_COMMAND_PATH
+#ifdef HAVE_WPA_SUPPLICANT
     return 1;
 #else
     return 0;
@@ -195,7 +195,21 @@ short exalt_wpasupplicant_is_support()
  */
 short exalt_dhcp_is_support()
 {
-#ifdef DHCP_COMMAND_PATH
+#ifdef HAVE_DHCP
+    return 1;
+#else
+    return 0;
+#endif
+}
+
+
+/**
+ * @brief return if libexalt is built with the support of vpnc
+ * @return Return 1 if yes, else 0
+ */
+short exalt_vpnc_is_support()
+{
+#ifdef HAVE_VPNC
     return 1;
 #else
     return 0;

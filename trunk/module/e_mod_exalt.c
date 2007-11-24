@@ -104,7 +104,7 @@ void _cb_mouse_down (void *data, Evas * e, Evas_Object * obj,void *event_info)
 void _popup_show(Instance *inst, char* interface, Exalt_Enum_Action action)
 {
 	E_Container *con;
-	Evas_Object *bg;
+	Evas_Object *bg,*content;
 	Evas_Coord cx, cy, cw, ch;
 	Evas_Coord ox, oy, ow, oh;
 	Evas_List *l;
@@ -143,10 +143,13 @@ void _popup_show(Instance *inst, char* interface, Exalt_Enum_Action action)
 	snprintf(buf, sizeof(buf), "%s/exalt.edj", e_module_dir_get(exalt_config->module));
 	con = e_container_current_get(e_manager_current_get());
 	popup->win = e_popup_new(e_zone_current_get(con), 0, 0, 0, 0);
-	bg = edje_object_add(popup->win->evas);
+        bg = edje_object_add(popup->win->evas);
+	content = edje_object_add(popup->win->evas);
 
-	if (!e_theme_edje_object_set(bg, "base/theme/modules","e/modules/exalt/popup"))
-		edje_object_file_set(bg, buf, "e/modules/exalt/popup");
+        e_theme_edje_object_set(bg, "base/theme/menus","e/widgets/menu/default/background");
+
+        if (!e_theme_edje_object_set(content, "base/theme/modules","e/modules/exalt/popup"))
+          	edje_object_file_set(content, buf, "e/modules/exalt/popup");
 
 
 	switch(action)
@@ -179,29 +182,35 @@ void _popup_show(Instance *inst, char* interface, Exalt_Enum_Action action)
 			return ;
 	}
 
-	edje_object_part_text_set(bg, "e.text", buf);
+	edje_object_part_text_set(content, "e.text", buf);
 
 	snprintf(buf,sizeof(buf), interface);
-	edje_object_part_text_set(bg, "e.text.interface_name", buf);
+	edje_object_part_text_set(content, "e.text.interface_name", buf);
 
 	if(exalt_dbus_eth_is_wireless(conn,interface))
 	{
 		if(exalt_dbus_eth_is_up(conn,interface))
-			edje_object_signal_emit(bg, "e,state,wireless,up", "exalt");
+			edje_object_signal_emit(content, "e,state,wireless,up", "exalt");
 		else
-			edje_object_signal_emit(bg, "e,state,wireless,down", "exalt");
+			edje_object_signal_emit(content, "e,state,wireless,down", "exalt");
 	}
 	else if(exalt_dbus_eth_is_up(conn,interface) && exalt_dbus_eth_is_link(conn,interface))
-		edje_object_signal_emit(bg, "e,state,ethernet,up", "exalt");
+		edje_object_signal_emit(content, "e,state,ethernet,up", "exalt");
 	else
-		edje_object_signal_emit(bg, "e,state,ethernet,down", "exalt");
+		edje_object_signal_emit(content, "e,state,ethernet,down", "exalt");
 
-	evas_object_show(bg);
+	evas_object_show(content);
 
-	edje_object_size_min_calc(bg, &ww, &wh);
-	evas_object_move(bg, 0, 0);
+	edje_object_size_min_calc(content, &ww, &wh);
+	evas_object_move(content, 0, 0);
+	evas_object_resize(content, ww, wh);
+        evas_object_move(bg, 0, 0);
 	evas_object_resize(bg, ww, wh);
-	popup->o_bg = bg;
+        evas_object_show(bg);
+        evas_object_show(content);
+
+	popup->o_content = content;
+        popup->o_bg = bg;
 
 	// Begin Butt Ugly hack for shelf "layer"/position changes
 	cx = cy = cw = ch = -1;
@@ -293,6 +302,7 @@ int _popup_timer_cb(void* data)
 	Popup* popup = (Popup*)data;
 
 	evas_object_del(popup->o_bg);
+        evas_object_del(popup->o_content);
 	e_object_del(E_OBJECT(popup->win));
 	E_FREE(popup);
 	return 0;

@@ -119,7 +119,7 @@ Exalt_Ethernet* exalt_eth_new(const char* name)
  */
 void exalt_eth_ethernets_free()
 {
-    e_dbus_connection_unref(exalt_eth_interfaces.dbus_conn);
+    e_dbus_connection_close(exalt_eth_interfaces.dbus_conn);
     ecore_list_destroy(exalt_eth_interfaces.ethernets);
 }
 
@@ -1454,7 +1454,7 @@ int _exalt_eth_apply_static(Exalt_Ethernet *eth)
  */
 int _exalt_eth_apply_dhcp(Exalt_Ethernet* eth)
 {
-#ifdef DHCP_COMMAND_PATH
+#ifdef HAVE_DHCP
     Ecore_Exe * exe;
     int status;
     char command[1024];
