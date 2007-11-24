@@ -33,14 +33,13 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-build_triplet = i686-pc-linux-gnu
-host_triplet = i686-pc-linux-gnu
-target_triplet = i686-pc-linux-gnu
+build_triplet = x86_64-unknown-linux-gnu
+host_triplet = x86_64-unknown-linux-gnu
+target_triplet = x86_64-unknown-linux-gnu
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
-	$(srcdir)/Makefile.in $(top_srcdir)/configure \
-	$(top_srcdir)/debian/changelog.in ABOUT-NLS AUTHORS COPYING \
-	ChangeLog INSTALL NEWS config.guess config.rpath config.sub \
-	depcomp install-sh ltmain.sh missing
+	$(srcdir)/Makefile.in $(top_srcdir)/configure ABOUT-NLS \
+	AUTHORS COPYING ChangeLog INSTALL NEWS config.guess \
+	config.rpath config.sub depcomp install-sh ltmain.sh missing
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.in
@@ -50,7 +49,7 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno configure.status.lineno
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/src/config.h
-CONFIG_CLEAN_FILES = debian/changelog
+CONFIG_CLEAN_FILES =
 SOURCES =
 DIST_SOURCES =
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
@@ -73,15 +72,15 @@ DIST_ARCHIVES = $(distdir).tar.gz
 GZIP_ENV = --best
 distuninstallcheck_listfiles = find . -type f -print
 distcleancheck_listfiles = find . -type f -print
-ACLOCAL = ${SHELL} /home/watchwolf/Projects/C/exalt_svn/trunk/exalt/missing --run aclocal-1.9
+ACLOCAL = ${SHELL} /home/watchwolf/Projects/C/exalt_svn/exalt/exalt/missing --run aclocal-1.9
 ALL_LINGUAS = fr
 AMDEP_FALSE = #
 AMDEP_TRUE = 
-AMTAR = ${SHELL} /home/watchwolf/Projects/C/exalt_svn/trunk/exalt/missing --run tar
+AMTAR = ${SHELL} /home/watchwolf/Projects/C/exalt_svn/exalt/exalt/missing --run tar
 AR = ar
-AUTOCONF = ${SHELL} /home/watchwolf/Projects/C/exalt_svn/trunk/exalt/missing --run autoconf
-AUTOHEADER = ${SHELL} /home/watchwolf/Projects/C/exalt_svn/trunk/exalt/missing --run autoheader
-AUTOMAKE = ${SHELL} /home/watchwolf/Projects/C/exalt_svn/trunk/exalt/missing --run automake-1.9
+AUTOCONF = ${SHELL} /home/watchwolf/Projects/C/exalt_svn/exalt/exalt/missing --run autoconf
+AUTOHEADER = ${SHELL} /home/watchwolf/Projects/C/exalt_svn/exalt/exalt/missing --run autoheader
+AUTOMAKE = ${SHELL} /home/watchwolf/Projects/C/exalt_svn/exalt/exalt/missing --run automake-1.9
 AWK = gawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
@@ -101,8 +100,8 @@ ECHO_C =
 ECHO_N = -n
 ECHO_T = 
 EGREP = /bin/grep -E
-EXALT_CFLAGS = -I/usr/local/include -I/usr/local/include/etk -I/usr/local/include/exalt -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include  
-EXALT_LIBS = -L/usr/local/lib -letk -lecore_file -ledje -lecore_x -levas -lexalt -lehal -ledbus -lecore -ldbus-1  
+EXALT_CFLAGS = -I/usr/local/include -I/usr/local/include/exalt_dbus -I/usr/local/include/exalt -I/usr/include/etk -I/usr/include/dbus-1.0 -I/usr/lib64/dbus-1.0/include  
+EXALT_LIBS = -L/usr/local/lib -L/usr/lib -letk -lecore_evas -lecore_imf_evas -ledje -lecore_x -lecore_imf -levas -lexalt_dbus -lexalt -leet -lecore_file -lehal -lcurl -ledbus -ldbus-1 -lecore  
 EXEEXT = 
 F77 = gfortran
 FFLAGS = -g -O2
@@ -125,7 +124,7 @@ LN_S = ln -s
 LTLIBICONV = -liconv
 LTLIBINTL = 
 LTLIBOBJS = 
-MAKEINFO = ${SHELL} /home/watchwolf/Projects/C/exalt_svn/trunk/exalt/missing --run makeinfo
+MAKEINFO = ${SHELL} /home/watchwolf/Projects/C/exalt_svn/exalt/exalt/missing --run makeinfo
 MSGFMT = /usr/bin/msgfmt
 MSGFMT_015 = /usr/bin/msgfmt
 MSGMERGE = /usr/bin/msgmerge
@@ -161,25 +160,25 @@ am__quote =
 am__tar = ${AMTAR} chof - "$$tardir"
 am__untar = ${AMTAR} xf -
 bindir = ${exec_prefix}/bin
-build = i686-pc-linux-gnu
+build = x86_64-unknown-linux-gnu
 build_alias = 
-build_cpu = i686
+build_cpu = x86_64
 build_os = linux-gnu
-build_vendor = pc
+build_vendor = unknown
 datadir = ${datarootdir}
 datarootdir = ${prefix}/share
 docdir = ${datarootdir}/doc/${PACKAGE}
 dvidir = ${docdir}
 exec_prefix = ${prefix}
-host = i686-pc-linux-gnu
+host = x86_64-unknown-linux-gnu
 host_alias = 
-host_cpu = i686
+host_cpu = x86_64
 host_os = linux-gnu
-host_vendor = pc
+host_vendor = unknown
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = /home/watchwolf/Projects/C/exalt_svn/trunk/exalt/install-sh
+install_sh = /home/watchwolf/Projects/C/exalt_svn/exalt/exalt/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -194,11 +193,11 @@ psdir = ${docdir}
 sbindir = ${exec_prefix}/sbin
 sharedstatedir = ${prefix}/com
 sysconfdir = ${prefix}/etc
-target = i686-pc-linux-gnu
+target = x86_64-unknown-linux-gnu
 target_alias = 
-target_cpu = i686
+target_cpu = x86_64
 target_os = linux-gnu
-target_vendor = pc
+target_vendor = unknown
 MYAPPNAME = exalt
 SUBDIRS = src data po
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
@@ -206,18 +205,12 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 							  install-sh \
                        ltconfig ltmain.sh missing mkinstalldirs depcomp \
                        stamp-h stamp-h.in \
-                       $(MYAPPNAME).c \
-                       debian/changelog
+                       $(MYAPPNAME).c
 
 EXTRA_DIST = README \
 AUTHORS \
 COPYING \
-COPYING-PLAIN \
-debian/changelog \
-debian/changelog.in \
-debian/control \
-debian/copyright \
-debian/rules
+COPYING-PLAIN
 
 all: all-recursive
 
@@ -255,8 +248,6 @@ $(top_srcdir)/configure:  $(am__configure_deps)
 	cd $(srcdir) && $(AUTOCONF)
 $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	cd $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
-debian/changelog: $(top_builddir)/config.status $(top_srcdir)/debian/changelog.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -403,7 +394,6 @@ distclean-tags:
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
 	mkdir $(distdir)
-	$(mkdir_p) $(distdir)/debian
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \

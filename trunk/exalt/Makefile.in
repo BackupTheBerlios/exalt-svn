@@ -37,10 +37,9 @@ build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
-	$(srcdir)/Makefile.in $(top_srcdir)/configure \
-	$(top_srcdir)/debian/changelog.in ABOUT-NLS AUTHORS COPYING \
-	ChangeLog INSTALL NEWS config.guess config.rpath config.sub \
-	depcomp install-sh ltmain.sh missing
+	$(srcdir)/Makefile.in $(top_srcdir)/configure ABOUT-NLS \
+	AUTHORS COPYING ChangeLog INSTALL NEWS config.guess \
+	config.rpath config.sub depcomp install-sh ltmain.sh missing
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.in
@@ -50,7 +49,7 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno configure.status.lineno
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/src/config.h
-CONFIG_CLEAN_FILES = debian/changelog
+CONFIG_CLEAN_FILES =
 SOURCES =
 DIST_SOURCES =
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
@@ -206,18 +205,12 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 							  install-sh \
                        ltconfig ltmain.sh missing mkinstalldirs depcomp \
                        stamp-h stamp-h.in \
-                       $(MYAPPNAME).c \
-                       debian/changelog
+                       $(MYAPPNAME).c
 
 EXTRA_DIST = README \
 AUTHORS \
 COPYING \
-COPYING-PLAIN \
-debian/changelog \
-debian/changelog.in \
-debian/control \
-debian/copyright \
-debian/rules
+COPYING-PLAIN
 
 all: all-recursive
 
@@ -255,8 +248,6 @@ $(top_srcdir)/configure:  $(am__configure_deps)
 	cd $(srcdir) && $(AUTOCONF)
 $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	cd $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
-debian/changelog: $(top_builddir)/config.status $(top_srcdir)/debian/changelog.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -403,7 +394,6 @@ distclean-tags:
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
 	mkdir $(distdir)
-	$(mkdir_p) $(distdir)/debian
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \

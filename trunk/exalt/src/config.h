@@ -75,7 +75,7 @@
 #define PACKAGE_NAME ""
 
 /* Source Code Directory */
-#define PACKAGE_SOURCE_DIR "/home/watchwolf/Projects/C/exalt_svn/trunk/exalt"
+#define PACKAGE_SOURCE_DIR "/home/watchwolf/Projects/C/exalt_svn/exalt/exalt"
 
 /* Define to the full name and version of this package. */
 #define PACKAGE_STRING ""

@@ -34,9 +34,9 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-build_triplet = i686-pc-linux-gnu
-host_triplet = i686-pc-linux-gnu
-target_triplet = i686-pc-linux-gnu
+build_triplet = x86_64-unknown-linux-gnu
+host_triplet = x86_64-unknown-linux-gnu
+target_triplet = x86_64-unknown-linux-gnu
 bin_PROGRAMS = exalt$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
@@ -53,8 +53,7 @@ binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_exalt_OBJECTS = exalt.$(OBJEXT) main_window.$(OBJEXT) \
 	eth_panel.$(OBJEXT) general_panel.$(OBJEXT) \
-	wireless_panel.$(OBJEXT) info_panel.$(OBJEXT) \
-	about_panel.$(OBJEXT)
+	wireless_panel.$(OBJEXT) about_panel.$(OBJEXT)
 exalt_OBJECTS = $(am_exalt_OBJECTS)
 exalt_DEPENDENCIES =
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I.
@@ -73,15 +72,15 @@ DIST_SOURCES = $(exalt_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-ACLOCAL = ${SHELL} /home/watchwolf/Projects/C/exalt_svn/trunk/exalt/missing --run aclocal-1.9
+ACLOCAL = ${SHELL} /home/watchwolf/Projects/C/exalt_svn/exalt/exalt/missing --run aclocal-1.9
 ALL_LINGUAS = fr
 AMDEP_FALSE = #
 AMDEP_TRUE = 
-AMTAR = ${SHELL} /home/watchwolf/Projects/C/exalt_svn/trunk/exalt/missing --run tar
+AMTAR = ${SHELL} /home/watchwolf/Projects/C/exalt_svn/exalt/exalt/missing --run tar
 AR = ar
-AUTOCONF = ${SHELL} /home/watchwolf/Projects/C/exalt_svn/trunk/exalt/missing --run autoconf
-AUTOHEADER = ${SHELL} /home/watchwolf/Projects/C/exalt_svn/trunk/exalt/missing --run autoheader
-AUTOMAKE = ${SHELL} /home/watchwolf/Projects/C/exalt_svn/trunk/exalt/missing --run automake-1.9
+AUTOCONF = ${SHELL} /home/watchwolf/Projects/C/exalt_svn/exalt/exalt/missing --run autoconf
+AUTOHEADER = ${SHELL} /home/watchwolf/Projects/C/exalt_svn/exalt/exalt/missing --run autoheader
+AUTOMAKE = ${SHELL} /home/watchwolf/Projects/C/exalt_svn/exalt/exalt/missing --run automake-1.9
 AWK = gawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
@@ -101,8 +100,8 @@ ECHO_C =
 ECHO_N = -n
 ECHO_T = 
 EGREP = /bin/grep -E
-EXALT_CFLAGS = -I/usr/local/include -I/usr/local/include/etk -I/usr/local/include/exalt -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include  
-EXALT_LIBS = -L/usr/local/lib -letk -lecore_file -ledje -lecore_x -levas -lexalt -lehal -ledbus -lecore -ldbus-1  
+EXALT_CFLAGS = -I/usr/local/include -I/usr/local/include/exalt_dbus -I/usr/local/include/exalt -I/usr/include/etk -I/usr/include/dbus-1.0 -I/usr/lib64/dbus-1.0/include  
+EXALT_LIBS = -L/usr/local/lib -L/usr/lib -letk -lecore_evas -lecore_imf_evas -ledje -lecore_x -lecore_imf -levas -lexalt_dbus -lexalt -leet -lecore_file -lehal -lcurl -ledbus -ldbus-1 -lecore  
 EXEEXT = 
 F77 = gfortran
 FFLAGS = -g -O2
@@ -125,7 +124,7 @@ LN_S = ln -s
 LTLIBICONV = -liconv
 LTLIBINTL = 
 LTLIBOBJS = 
-MAKEINFO = ${SHELL} /home/watchwolf/Projects/C/exalt_svn/trunk/exalt/missing --run makeinfo
+MAKEINFO = ${SHELL} /home/watchwolf/Projects/C/exalt_svn/exalt/exalt/missing --run makeinfo
 MSGFMT = /usr/bin/msgfmt
 MSGFMT_015 = /usr/bin/msgfmt
 MSGMERGE = /usr/bin/msgmerge
@@ -161,25 +160,25 @@ am__quote =
 am__tar = ${AMTAR} chof - "$$tardir"
 am__untar = ${AMTAR} xf -
 bindir = ${exec_prefix}/bin
-build = i686-pc-linux-gnu
+build = x86_64-unknown-linux-gnu
 build_alias = 
-build_cpu = i686
+build_cpu = x86_64
 build_os = linux-gnu
-build_vendor = pc
+build_vendor = unknown
 datadir = ${datarootdir}
 datarootdir = ${prefix}/share
 docdir = ${datarootdir}/doc/${PACKAGE}
 dvidir = ${docdir}
 exec_prefix = ${prefix}
-host = i686-pc-linux-gnu
+host = x86_64-unknown-linux-gnu
 host_alias = 
-host_cpu = i686
+host_cpu = x86_64
 host_os = linux-gnu
-host_vendor = pc
+host_vendor = unknown
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = /home/watchwolf/Projects/C/exalt_svn/trunk/exalt/install-sh
+install_sh = /home/watchwolf/Projects/C/exalt_svn/exalt/exalt/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -194,13 +193,13 @@ psdir = ${docdir}
 sbindir = ${exec_prefix}/sbin
 sharedstatedir = ${prefix}/com
 sysconfdir = ${prefix}/etc
-target = i686-pc-linux-gnu
+target = x86_64-unknown-linux-gnu
 target_alias = 
-target_cpu = i686
+target_cpu = x86_64
 target_os = linux-gnu
-target_vendor = pc
+target_vendor = unknown
 AM_CFLAGS = \
--Wall -W -g -D_GNU_SOURCE -I/usr/local/include -I/usr/local/include/etk -I/usr/local/include/exalt -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include  
+-Wall -W -g -D_GNU_SOURCE -I/usr/local/include -I/usr/local/include/exalt_dbus -I/usr/local/include/exalt -I/usr/include/etk -I/usr/include/dbus-1.0 -I/usr/lib64/dbus-1.0/include  
 
 exalt_INCLUDES = \
 exalt.h            \
@@ -208,7 +207,6 @@ main_window.h        \
 eth_panel.h     \
 general_panel.h     \
 wireless_panel.h \
-info_panel.h \
 about_panel.h
 
 exalt_SOURCES = \
@@ -217,11 +215,10 @@ main_window.c        \
 eth_panel.c     \
 general_panel.c     \
 wireless_panel.c \
-info_panel.c \
 about_panel.c
 
 exalt_LDFLAGS = -export-dynamic
-exalt_LDADD = -L/usr/local/lib -letk -lecore_file -ledje -lecore_x -levas -lexalt -lehal -ledbus -lecore -ldbus-1  
+exalt_LDADD = -L/usr/local/lib -L/usr/lib -letk -lecore_evas -lecore_imf_evas -ledje -lecore_x -lecore_imf -levas -lexalt_dbus -lexalt -leet -lecore_file -lehal -lcurl -ledbus -ldbus-1 -lecore  
 MAINTAINERCLEANFILES = Makefile.in
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -316,7 +313,6 @@ include ./$(DEPDIR)/about_panel.Po
 include ./$(DEPDIR)/eth_panel.Po
 include ./$(DEPDIR)/exalt.Po
 include ./$(DEPDIR)/general_panel.Po
-include ./$(DEPDIR)/info_panel.Po
 include ./$(DEPDIR)/main_window.Po
 include ./$(DEPDIR)/wireless_panel.Po
 
