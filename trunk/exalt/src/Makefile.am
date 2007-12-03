@@ -12,7 +12,8 @@ main_window.h        \
 eth_panel.h     \
 general_panel.h     \
 wireless_panel.h \
-about_panel.h
+about_panel.h \
+boot_panel.h
 
 exalt_SOURCES = \
 exalt.c \
@@ -20,7 +21,8 @@ main_window.c        \
 eth_panel.c     \
 general_panel.c     \
 wireless_panel.c \
-about_panel.c
+about_panel.c \
+boot_panel.c
 
 exalt_LDFLAGS = @DLLDFLAGS@
 exalt_LDADD = @EXALT_LIBS@

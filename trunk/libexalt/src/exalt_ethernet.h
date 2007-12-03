@@ -107,8 +107,8 @@ Exalt_Ethernet* exalt_eth_get_ethernet_byifindex(int ifindex);
 
 
 short exalt_eth_is_link(Exalt_Ethernet *eth);
-const char* exalt_eth_get_name(Exalt_Ethernet* eth);
-char* exalt_eth_get_ip(Exalt_Ethernet* eth);
+const char* exalt_eth_get_name(const Exalt_Ethernet* eth);
+char* exalt_eth_get_ip(const Exalt_Ethernet* eth);
 char* exalt_eth_get_netmask(Exalt_Ethernet* eth);
 char* exalt_eth_get_gateway(Exalt_Ethernet* eth);
 const char* exalt_eth_get_udi(Exalt_Ethernet* eth);

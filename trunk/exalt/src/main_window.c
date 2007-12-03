@@ -4,7 +4,7 @@
 main_window* mainwindow_create()
 {
     main_window* win;
-    Etk_Widget *hbox,*scroll;
+    Etk_Widget *hbox,*scroll,*vbox;
     Ecore_List* interfaces;
     char* interface;
 
@@ -15,13 +15,17 @@ main_window* mainwindow_create()
     etk_window_wmclass_set(ETK_WINDOW(win->win),"Exalt_network_manager","Exalt_network_manager");
     etk_signal_connect("delete-event", ETK_OBJECT(win->win), ETK_CALLBACK( mainWindow_close), win);
 
-    etk_window_resize(ETK_WINDOW(win->win), 623,268);
+    etk_window_resize(ETK_WINDOW(win->win), 640,320);
 
     hbox = etk_hbox_new(ETK_FALSE, 5);
     etk_container_add(ETK_CONTAINER(win->win), hbox);
 
+    vbox = etk_vbox_new(ETK_FALSE, 5);
+    etk_box_append(ETK_BOX(hbox), vbox, ETK_BOX_START, ETK_BOX_FILL, 0);
+
+
     scroll = etk_scrolled_view_new ();
-    etk_box_append(ETK_BOX(hbox), scroll, ETK_BOX_START, ETK_BOX_FILL, 0);
+    etk_box_append(ETK_BOX(vbox), scroll, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
     etk_widget_show(scroll);
 
     win->eth_list = etk_tree_new();
@@ -38,6 +42,13 @@ main_window* mainwindow_create()
 
     etk_signal_connect("row-clicked", ETK_OBJECT(win->eth_list),ETK_CALLBACK(mainWindow_ethList_row_clicked_cb), win);
 
+    //bouton to switch in advanced/basic mode
+    win->advanced_mode = 0;
+    win->btn_mode = etk_button_new_with_label(_("Advanced"));
+    etk_box_append(ETK_BOX(vbox), win->btn_mode, ETK_BOX_START, ETK_BOX_FILL, 0);
+    etk_signal_connect("clicked", ETK_OBJECT(win->btn_mode),ETK_CALLBACK(mainwindow_btn_mode_clicked_cb), win);
+
+
     //add the about panel in the list
     etk_tree_row_append(ETK_TREE(win->eth_list), NULL,
             win->eth_col0,PACKAGE_DATA_DIR ICONS_ABOUT,NULL,_("About") , NULL);
@@ -51,6 +62,10 @@ main_window* mainwindow_create()
 
     etk_widget_show_all(win->win);
 
+    win->boot_panel = bootpanel_create();
+    etk_box_append(ETK_BOX(hbox),win->boot_panel->frame , ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+
+
     win->general_panel = generalpanel_create();
     etk_box_append(ETK_BOX(hbox),win->general_panel->frame , ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
@@ -60,7 +75,6 @@ main_window* mainwindow_create()
     win->wireless_panel = wirelesspanel_create(win);
     etk_box_append(ETK_BOX(hbox),win->wireless_panel->frame , ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
-
     //load the current interfaces
     exalt_dbus_notify_set(exalt_conn, mainwindow_notify_cb, win);
 
@@ -68,6 +82,7 @@ main_window* mainwindow_create()
     ecore_list_first_goto(interfaces);
     while ((interface = ecore_list_next(interfaces)))
         mainwindow_add_interface(interface, win);
+
 
     return win;
 }
@@ -267,7 +282,18 @@ void mainWindow_ethList_row_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, Et
         ethpanel_hide(win->eth_panel);
         generalpanel_show(win->general_panel);
         aboutpanel_hide(win->about_panel);
+        bootpanel_hide(win->boot_panel);
+
     }
+    else if(strcmp(row_name,_("Boot process")) == 0 )
+    {
+        wirelesspanel_hide(win->wireless_panel);
+        ethpanel_hide(win->eth_panel);
+        bootpanel_show(win->boot_panel);
+        generalpanel_hide(win->general_panel);
+        aboutpanel_hide(win->about_panel);
+    }
+
     else
     {
         if(!exalt_dbus_eth_is_wireless(exalt_conn, row_name))
@@ -276,6 +302,7 @@ void mainWindow_ethList_row_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, Et
             wirelesspanel_hide(win->wireless_panel);
             generalpanel_hide(win->general_panel);
             aboutpanel_hide(win->about_panel);
+            bootpanel_hide(win->boot_panel);
             ethpanel_show(win->eth_panel);
         }
         else
@@ -284,8 +311,42 @@ void mainWindow_ethList_row_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, Et
             ethpanel_hide(win->eth_panel);
             generalpanel_hide(win->general_panel);
             wirelesspanel_show(win->wireless_panel);
+            bootpanel_hide(win->boot_panel);
             aboutpanel_hide(win->about_panel);
         }
     }
 }
+
+void mainwindow_btn_mode_clicked_cb(Etk_Object *object , void *data)
+{
+    main_window* win = (main_window*) data;
+    Etk_Widget* btn = ETK_WIDGET(object);
+    Etk_Tree_Row* row;
+
+    win->advanced_mode = !win->advanced_mode;
+
+    if(win->advanced_mode)
+    {
+        etk_button_label_set(ETK_BUTTON(btn),_("Basic"));
+
+        //add the row about the boot process in the  thirth position
+        row = etk_tree_first_row_get(ETK_TREE(win->eth_list));
+        row = etk_tree_row_next_get(row);
+        etk_tree_row_insert(ETK_TREE(win->eth_list), NULL, row,
+                win->eth_col0,PACKAGE_DATA_DIR ICONS_NETWORK_CONFIG,NULL,_("Boot process") , NULL);
+
+    }
+    else
+    {
+        etk_button_label_set(ETK_BUTTON(btn),_("Advanced"));
+
+
+        //remove the boot process row
+        row = etk_tree_first_row_get(ETK_TREE(win->eth_list));
+        row = etk_tree_row_next_get(row);
+        row = etk_tree_row_next_get(row);
+        etk_tree_row_delete(row);
+    }
+}
+
 

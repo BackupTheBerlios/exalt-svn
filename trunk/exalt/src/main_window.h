@@ -13,6 +13,7 @@ typedef struct _main_window main_window;
 #include "wireless_panel.h"
 #include "general_panel.h"
 #include "about_panel.h"
+#include "boot_panel.h"
 
 struct _main_window
 {
@@ -20,11 +21,15 @@ struct _main_window
 
 	Etk_Widget* eth_list;
 	Etk_Tree_Col* eth_col0;
+        Etk_Widget* btn_mode;
 
 	eth_panel* eth_panel;
 	wireless_panel* wireless_panel;
 	general_panel* general_panel;
         about_panel* about_panel;
+        boot_panel *boot_panel;
+
+        int advanced_mode;
 };
 
 main_window* mainwindow_create();
@@ -36,6 +41,7 @@ Etk_Bool mainWindow_close(Etk_Object *object, void *data);
 void mainwindow_notify_cb(char* interface, Exalt_Enum_Action action, void* user_data);
 void mainWindow_ethList_row_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data);
 Etk_Tree_Row * mainwindow_findrow(main_window* win, char* interface);
+void mainwindow_btn_mode_clicked_cb(Etk_Object *object , void *data);
 
 
 #endif

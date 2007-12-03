@@ -492,7 +492,7 @@ short exalt_eth_is_link(Exalt_Ethernet* eth)
  * @param eth the card
  * @return Returns the name
  */
-const char* exalt_eth_get_name(Exalt_Ethernet* eth)
+const char* exalt_eth_get_name(const Exalt_Ethernet* eth)
 {
     if(!eth)
     {
@@ -570,7 +570,7 @@ short exalt_eth_set_connection(Exalt_Ethernet* eth, Exalt_Connection* c)
  * @param eth the card
  * @return Returns the ip address
  */
-char* exalt_eth_get_ip(Exalt_Ethernet* eth)
+char* exalt_eth_get_ip(const Exalt_Ethernet* eth)
 {
     struct sockaddr_in sin = { AF_INET };
     struct ifreq ifr;

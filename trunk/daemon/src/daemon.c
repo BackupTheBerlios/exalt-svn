@@ -78,6 +78,9 @@ int main(int argc, char** argv)
 {
     E_DBus_Connection *conn;
     int daemon = 1;
+    FILE *fp;
+    int size;
+    char buf[PATH_MAX];
 
     argc--;
     argv++;
@@ -100,22 +103,6 @@ int main(int argc, char** argv)
 
     if(daemon)
     {
-        if(fork()!=0)
-            exit(0);
-
-        //create the pid file
-        FILE *fp;
-        int size;
-        char buf[PATH_MAX];
-        size = snprintf(buf, PATH_MAX, "%d\n", getpid());
-        if ((fp = fopen(EXALTD_PIDFILE, "w+")))
-        {
-            fwrite(buf, sizeof(char), size, fp);
-            fclose(fp);
-        }
-        else
-            print_error("WARNING", __FILE__, __LINE__,__func__, "Can not create the pid file: %s\n", EXALTD_PIDFILE);
-
         //redirect stderr and stdout >> /var/log/exald.log
         remove(EXALTD_LOGFILE);
         if ((fp = fopen(EXALTD_LOGFILE, "w+")))
@@ -127,7 +114,7 @@ int main(int argc, char** argv)
             print_error("WARNING", __FILE__, __LINE__,__func__, "Can not create the log file: %s\n",EXALTD_LOGFILE);
     }
 
-    e_dbus_init();
+        e_dbus_init();
     ecore_init();
     exalt_init();
 
@@ -155,6 +142,36 @@ int main(int argc, char** argv)
     exalt_eth_set_scan_cb(wireless_scan_cb,conn);
 
     exalt_main();
+
+    if(daemon)
+    {
+        //if we need waiting 1 or more card
+        waiting_card_list = NULL;
+        waiting_card_timer = NULL;
+        waiting_card_load(CONF_FILE);
+        if ( waiting_card_list )
+        {
+            //start the timer for the timeout
+            int timeout = 0;
+            waiting_card_timer = ecore_timer_add(5, waiting_card_stop, &timeout);;
+            ecore_main_loop_begin();
+        }
+
+        //all waiting card are set (or timeout)
+        //we create the child and then quit
+        if(fork()!=0)
+            exit(0);
+
+        //create the pid file
+        size = snprintf(buf, PATH_MAX, "%d\n", getpid());
+        if ((fp = fopen(EXALTD_PIDFILE, "w+")))
+        {
+            fwrite(buf, sizeof(char), size, fp);
+            fclose(fp);
+        }
+        else
+            print_error("WARNING", __FILE__, __LINE__,__func__, "Can not create the pid file: %s\n", EXALTD_PIDFILE);
+    }
 
     ecore_main_loop_begin();
 
@@ -255,6 +272,18 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
     }
     e_dbus_message_send(conn, msg, NULL, 3,NULL);
     dbus_message_unref(msg);
+
+    //waiting card
+    if(waiting_card_list && waiting_card_is(eth) && action == EXALT_ETH_CB_ACTION_ADDRESS_NEW && strcmp(exalt_eth_get_ip(eth), "0.0.0.0")!=0 )
+    {
+        waiting_card_remove(eth);
+        if(waiting_card_is_done())
+        {
+            //stop the timeout
+            int no_timeout = 1;
+            waiting_card_stop(&no_timeout);
+        }
+    }
 }
 
 void wireless_scan_cb(Exalt_Ethernet* eth,Ecore_List* new_networks, Ecore_List* old_networks, void* data)
@@ -475,3 +504,82 @@ void print_error(const char* type, const char* file, int line,const char* fct, c
     va_end(ap);
 }
 
+
+
+int waiting_card_is(const Exalt_Ethernet* eth)
+{
+    char* name;
+    int find = 0;
+    ecore_list_first_goto(waiting_card_list);
+    while(!find && (name = ecore_list_next(waiting_card_list)))
+    {
+        if(strcmp(exalt_eth_get_name(eth),name) == 0)
+            find = 1;
+    }
+    return find;
+}
+
+void waiting_card_remove(const Exalt_Ethernet* eth)
+{
+    //remove the card if the list
+    char* name;
+    int find = 0;
+
+    ecore_list_first_goto(waiting_card_list);
+    while(!find && (name = ecore_list_next(waiting_card_list)))
+    {
+        if( strcmp(exalt_eth_get_name(eth),name) == 0)
+            find = 1;
+    }
+
+    if(!find)
+        //the card is not in the list
+        return ;
+
+    ecore_list_index_goto(waiting_card_list,ecore_list_index(waiting_card_list) -1);
+    ecore_list_remove(waiting_card_list);
+
+    printf("Waiting card done: %s %s\n",exalt_eth_get_name(eth),exalt_eth_get_ip(eth));
+}
+
+void waiting_card_load(const char* file)
+{
+    char* name;
+    waiting_card_list = ecore_list_new();
+    ecore_list_append(waiting_card_list,"eth0");
+    ecore_list_append(waiting_card_list,"eth10");
+
+    printf("file: %s\n",file);
+
+    ecore_list_first_goto(waiting_card_list);
+    while( (name = ecore_list_next(waiting_card_list)) )
+        printf("Waiting the card: %s\n",name);
+
+    if(ecore_list_empty_is(waiting_card_list))
+        EXALT_CLEAR_LIST(waiting_card_list);
+
+}
+
+int waiting_card_is_done()
+{
+    char* name;
+    ecore_list_first_goto(waiting_card_list);
+    while (( name= ecore_list_next(waiting_card_list)))
+        if(exalt_eth_get_ethernet_byname(name))
+            return 0;
+
+    return 1;
+}
+
+int waiting_card_stop(void* data)
+{
+    if( (*(int*)data) ==0)
+        printf("Timeout, continue boot process ...\n");
+    else
+        printf("All waiting card done, continue boot process ...\n");
+
+    EXALT_DELETE_TIMER(waiting_card_timer);
+    EXALT_CLEAR_LIST(waiting_card_list);
+    ecore_main_loop_quit();
+    return 0;
+}
