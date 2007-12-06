@@ -13,6 +13,7 @@ struct about_panel
 
 about_panel* aboutpanel_create();
 void aboutpanel_show(about_panel* pnl);
+
 void aboutpanel_hide(about_panel* pnl);
 
 
