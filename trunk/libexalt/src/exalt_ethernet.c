@@ -825,7 +825,7 @@ int exalt_eth_apply_conn(Exalt_Ethernet* eth, Exalt_Connection *c)
         return -1;
     }
 
-    //apply done
+    //apply start
     if(exalt_eth_interfaces.eth_cb)
         exalt_eth_interfaces.eth_cb(eth,EXALT_ETH_CB_ACTION_CONN_APPLY_START,exalt_eth_interfaces.eth_cb_user_data);
 

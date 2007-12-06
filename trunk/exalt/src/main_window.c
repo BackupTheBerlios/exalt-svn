@@ -15,7 +15,7 @@ main_window* mainwindow_create()
     etk_window_wmclass_set(ETK_WINDOW(win->win),"Exalt_network_manager","Exalt_network_manager");
     etk_signal_connect("delete-event", ETK_OBJECT(win->win), ETK_CALLBACK( mainWindow_close), win);
 
-    etk_window_resize(ETK_WINDOW(win->win), 640,320);
+    etk_window_resize(ETK_WINDOW(win->win), 650,340);
 
     hbox = etk_hbox_new(ETK_FALSE, 5);
     etk_container_add(ETK_CONTAINER(win->win), hbox);
@@ -271,6 +271,7 @@ void mainWindow_ethList_row_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, Et
 
     if(strcmp(row_name,_("About")) == 0 )
     {
+        bootpanel_hide(win->boot_panel);
         wirelesspanel_hide(win->wireless_panel);
         ethpanel_hide(win->eth_panel);
         generalpanel_hide(win->general_panel);
@@ -347,6 +348,9 @@ void mainwindow_btn_mode_clicked_cb(Etk_Object *object , void *data)
         row = etk_tree_row_next_get(row);
         etk_tree_row_delete(row);
     }
+
+    //update the wireless panel
+    wirelesspanel_update_advanced_mode(win->wireless_panel);
 }
 
 

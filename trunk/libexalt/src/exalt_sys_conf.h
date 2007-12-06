@@ -18,7 +18,7 @@
 #include <Eet.h>
 #include <Evas.h>
 
-/** the location with the file configuration of wpa_supplicant */
+/** the directory of the file configuration of wpa_supplicant */
 #define EXALT_WPA_CONF_FILE_DIR "/etc/wpa_supplicant"
 /** the location of the wpa_supplicant configuration file */
 #define EXALT_WPA_CONF_FILE  EXALT_WPA_CONF_FILE_DIR "/wpa_supplicant.conf"
@@ -39,9 +39,9 @@ Exalt_Connection* exalt_wireless_conn_load(const char* file, const char *essid);
 int exalt_conf_save_wpasupplicant(Exalt_Wireless *w);
 
 int exalt_eth_save(const char* file, Exalt_Ethernet* eth);
-Exalt_Enum_State exalt_eth_state_load(const char* file, const char* name);
-Exalt_Connection *exalt_eth_conn_load(const char* file, const char* name);
-char* exalt_eth_driver_load(const char* file, const char* name);
+Exalt_Enum_State exalt_eth_state_load(const char* file, const char* udi);
+Exalt_Connection *exalt_eth_conn_load(const char* file, const char* udi);
+char* exalt_eth_driver_load(const char* file, const char* udi);
 #endif
 
 /** @} */

@@ -25,6 +25,7 @@ int _exalt_wpa_ctrl_command(struct wpa_ctrl *ctrl, char *cmd);
 struct Exalt_Wireless
 {
     Exalt_Ethernet* eth;
+    char* wpasupplicant_driver;
 
     Ecore_List* networks;
 
@@ -66,6 +67,7 @@ Exalt_Wireless* exalt_wireless_new(Exalt_Ethernet* eth)
 
     w -> eth = eth;
 
+    w->wpasupplicant_driver = NULL;
     w -> _save_essid = NULL;
     _exalt_wireless_set_save_essid(w,exalt_wireless_get_essid(w));
 
@@ -146,20 +148,37 @@ char* exalt_wireless_get_essid(Exalt_Wireless* w)
         return "";
 }
 
+/**
+ * @brief set the driver used by wpa_supplicant
+ * @param w the Exalt_Wireless
+ * @param driver the driver (wext ...)
+ * @return 1 if the driver is set, else 0
+ */
+int exalt_wireless_set_wpasupplicant_driver(Exalt_Wireless* w, const char* driver)
+{
+    if(!w || !driver)
+    {
+        print_error("ERROR", __FILE__, __LINE__,__func__,"w=%p driver==%p",w,driver);
+        return 0;
+    }
+    EXALT_FREE(w->wpasupplicant_driver);
+    w->wpasupplicant_driver = strdup(driver);
+    return 1;
+}
 
 /**
- * @brief return the driver
+ * @brief return the driver used by wpa_supplicant
  * @param w the Exalt_Wireless
  * @return Return the driver
  */
-char* exalt_wireless_get_driver(Exalt_Wireless* w)
+char* exalt_wireless_get_wpasupplicant_driver(Exalt_Wireless* w)
 {
     if(!w)
     {
         print_error("ERROR", __FILE__, __LINE__,__func__,"w=%p",w);
         return NULL;
     }
-    return "wext";//exalt_sys_conf_get_driver(w);
+    return w->wpasupplicant_driver;
 }
 
 /*
@@ -568,6 +587,8 @@ int exalt_wireless_apply_conn(Exalt_Wireless *w)
 #ifdef  HAVE_WPA_SUPPLICANT
             exalt_conf_save_wpasupplicant(w);
             //reload wpa_supplicant configuration
+            //we stop the current instance, because maybe we want use a different driver
+            _exalt_wpa_stop(w);
             ctrl_conn = _exalt_wpa_open_connection(exalt_eth_get_name(eth));
             if(!ctrl_conn)
             {
@@ -575,10 +596,11 @@ int exalt_wireless_apply_conn(Exalt_Wireless *w)
                 Ecore_Exe *exe;
                 print_error("WARNING", __FILE__, __LINE__,__func__,"Could not connect to wpa_supplicant, try to launch it");
                 sprintf(buf,COMMAND_WPA,
-                        exalt_wireless_get_driver(exalt_eth_get_wireless(eth)),
+                        exalt_wireless_get_wpasupplicant_driver(exalt_eth_get_wireless(eth)),
                         exalt_eth_get_name(eth),
                         EXALT_WPA_CONF_FILE,
                         EXALT_WPA_INTERFACE_DIR);
+                //printf("%s\n",buf);
                 exe = ecore_exe_run(buf, NULL);
                 waitpid(ecore_exe_pid_get(exe), &status, 0);
                 ecore_exe_free(exe);
@@ -702,7 +724,7 @@ void _exalt_wpa_stop(Exalt_Wireless* w)
         return ;
     }
     eth = exalt_wireless_get_eth(w);
-    //we need to stop the daemon wpa_supplicant
+
     ctrl_conn = _exalt_wpa_open_connection(exalt_eth_get_name(eth));
     if(ctrl_conn)
     {

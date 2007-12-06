@@ -171,16 +171,17 @@ int exalt_eth_save(const char* file, Exalt_Ethernet* eth)
     s.state = _exalt_eth_get_state(eth);
     s.connection = exalt_eth_get_connection(eth);
     if(exalt_eth_is_wireless(eth))
-        s.driver = exalt_wireless_get_driver(exalt_eth_get_wireless(eth));
+        s.driver = exalt_wireless_get_wpasupplicant_driver(exalt_eth_get_wireless(eth));
     else
-        s.driver = NULL;
-     return _exalt_eet_eth_save(file, &s, exalt_eth_get_name(eth));
+        s.driver = "wext";
+
+     return _exalt_eet_eth_save(file, &s, exalt_eth_get_udi(eth));
 }
 
 
-Exalt_Enum_State exalt_eth_state_load(const char* file, const char* name)
+Exalt_Enum_State exalt_eth_state_load(const char* file, const char* udi)
 {
-    Exalt_Eth_Save *s = _exalt_eet_eth_load(file, name);
+    Exalt_Eth_Save *s = _exalt_eet_eth_load(file, udi);
     if(!s)
         return 0;
     else
@@ -193,24 +194,24 @@ Exalt_Enum_State exalt_eth_state_load(const char* file, const char* name)
     }
 }
 
-char* exalt_eth_driver_load(const char* file, const char* name)
+char* exalt_eth_driver_load(const char* file, const char* udi)
 {
-    Exalt_Eth_Save *s = _exalt_eet_eth_load(file, name);
+    Exalt_Eth_Save *s = _exalt_eet_eth_load(file,  udi);
     if(!s)
         return 0;
     else
     {
         char* driver = s->driver;
-        EXALT_FREE(s);
         exalt_conn_free(s->connection);
+        EXALT_FREE(s);
         return driver;
     }
 }
 
 
-Exalt_Connection* exalt_eth_conn_load(const char* file, const char* name)
+Exalt_Connection* exalt_eth_conn_load(const char* file, const char* udi)
 {
-    Exalt_Eth_Save *s = _exalt_eet_eth_load(file, name);
+    Exalt_Eth_Save *s = _exalt_eet_eth_load(file, udi);
     if(!s)
         return 0;
     else
@@ -229,7 +230,7 @@ Exalt_Connection* exalt_eth_conn_load(const char* file, const char* name)
 
 /* PRIVATES FUNCTIONS */
 
-Exalt_Eth_Save* _exalt_eet_eth_load(const char* file, const char* interface)
+Exalt_Eth_Save* _exalt_eet_eth_load(const char* file, const char* udi)
 {
     Exalt_Eth_Save *data = NULL;
     Eet_Data_Descriptor *edd;
@@ -241,7 +242,7 @@ Exalt_Eth_Save* _exalt_eet_eth_load(const char* file, const char* interface)
     if(!f)
         return NULL;
 
-    data = eet_data_read(f, edd, interface);
+    data = eet_data_read(f, edd, udi);
 
     eet_close(f);
     eet_data_descriptor_free(edd);

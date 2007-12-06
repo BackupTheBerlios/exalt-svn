@@ -27,7 +27,8 @@ typedef struct Exalt_Wireless Exalt_Wireless;
 Exalt_Wireless* exalt_wireless_new(Exalt_Ethernet* eth);
 void exalt_wireless_free(Exalt_Wireless* w);
 
-char* exalt_wireless_get_driver(Exalt_Wireless* w);
+int exalt_wireless_set_wpasupplicant_driver(Exalt_Wireless* w, const char* driver);
+char* exalt_wireless_get_wpasupplicant_driver(Exalt_Wireless* w);
 
 void exalt_wireless_scan_start(Exalt_Ethernet* eth);
 void exalt_wireless_scan_stop(Exalt_Ethernet* eth);

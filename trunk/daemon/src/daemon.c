@@ -41,6 +41,8 @@ int setup(E_DBus_Connection *conn)
     e_dbus_interface_method_add(iface, "IFACE_SCAN_START", NULL, NULL, dbus_cb_wireless_scan_start);
     e_dbus_interface_method_add(iface, "IFACE_SCAN_STOP", NULL, NULL, dbus_cb_wireless_scan_stop);
     e_dbus_interface_method_add(iface, "IFACE_SCAN_WAIT", NULL, NULL, dbus_cb_wireless_scan_wait);
+    e_dbus_interface_method_add(iface, "IFACE_GET_WPASUPPLICANT_DRIVER", NULL, NULL, dbus_cb_wireless_get_wpasupplicant_driver);
+
 
     e_dbus_interface_method_add(iface, "NETWORK_GET_QUALITY", NULL, NULL, dbus_cb_wirelessinfo_get_quality);
     e_dbus_interface_method_add(iface, "NETWORK_GET_ADDR", NULL, NULL, dbus_cb_wirelessinfo_get_addr);
@@ -62,9 +64,12 @@ int setup(E_DBus_Connection *conn)
     e_dbus_interface_method_add(iface, "IFACE_UP", NULL, NULL, dbus_cb_eth_up);
     e_dbus_interface_method_add(iface, "IFACE_DOWN", NULL, NULL, dbus_cb_eth_down);
 
+    e_dbus_interface_method_add(iface, "IFACE_SET_WPASUPPLICANT_DRIVER", NULL, NULL, dbus_cb_wireless_set_wpasupplicant_driver);
+
     e_dbus_interface_method_add(iface, "DNS_ADD", NULL, NULL, dbus_cb_dns_add);
     e_dbus_interface_method_add(iface, "DNS_REPLACE", NULL, NULL, dbus_cb_dns_replace);
     e_dbus_interface_method_add(iface, "DNS_DELETE", NULL, NULL, dbus_cb_dns_delete);
+
 
     e_dbus_interface_method_add(iface, "IFACE_APPLY_CONN", NULL, NULL, dbus_cb_eth_apply_conn);
 
@@ -191,30 +196,46 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
 
     if(action == EXALT_ETH_CB_ACTION_NEW || action == EXALT_ETH_CB_ACTION_ADD)
     {
-        Exalt_Connection *c = exalt_eth_conn_load(CONF_FILE, exalt_eth_get_name(eth));
+        //first we load the driver if eth is a wireless connection
+        if(exalt_eth_is_wireless(eth))
+        {
+            Exalt_Wireless* w = exalt_eth_get_wireless(eth);
+            exalt_wireless_set_wpasupplicant_driver(w,exalt_eth_driver_load(CONF_FILE,exalt_eth_get_udi(eth)));
+        }
+
+        //apply or not apply a connection ?
+        //load a connection
+        //if no connection is load, we create one
+        //if we didn't have a connection or if the card is save as "up"
+        //  if is not up
+        //      we up the card
+        //  we wait than the card is up (with a timeout of 5 ms)
+        //  if the card is link
+        //      we apply the connection
+        //else
+        //  we down the card
+
+        Exalt_Connection *c = exalt_eth_conn_load(CONF_FILE, exalt_eth_get_udi(eth));
         short not_c = 0;
         if(!c)
         {
             c = exalt_conn_new();
             not_c = 1;
         }
-        if(exalt_eth_is_wireless(eth))
-            exalt_conn_set_wireless(c, 1);
-        else
-            exalt_conn_set_wireless(c, 0);
 
-
-        if(not_c || exalt_eth_state_load(CONF_FILE, exalt_eth_get_name(eth)) == EXALT_UP)
+        if(not_c || exalt_eth_state_load(CONF_FILE, exalt_eth_get_udi(eth)) == EXALT_UP)
         {
-            if(exalt_eth_is_up(eth) && exalt_eth_is_link(eth))
-            {
-                exalt_eth_apply_conn(eth, c);
-                exalt_eth_save(CONF_FILE,eth);
-            }
-            else
-            {
+            int i =0;
+            if(!exalt_eth_is_up(eth))
                 exalt_eth_up(eth);
+            while(!exalt_eth_is_up(eth) && i<10)
+            {
+                usleep(500);
+                i++;
             }
+
+            if(exalt_eth_is_link(eth))
+                exalt_eth_apply_conn(eth, c);
         }
         else
         {
@@ -222,8 +243,7 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
         }
     }
 
-    if( (action == EXALT_ETH_CB_ACTION_UP && exalt_eth_is_link(eth))
-            || (action == EXALT_ETH_CB_ACTION_LINK && exalt_eth_is_up(eth)) )
+    if (action == EXALT_ETH_CB_ACTION_LINK && exalt_eth_is_up(eth))
     {
         Exalt_Connection *c = exalt_eth_conn_load(CONF_FILE, exalt_eth_get_name(eth));
         if(!c)
@@ -239,6 +259,14 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
 
     if( action == EXALT_ETH_CB_ACTION_UP || action == EXALT_ETH_CB_ACTION_DOWN)
         exalt_eth_save(CONF_FILE, eth);
+
+
+    if( action==EXALT_ETH_CB_ACTION_CONN_APPLY_DONE)
+    {
+        //save the configuration
+        exalt_eth_save(CONF_FILE, eth);
+    }
+
     //send a broadcast
     msg = dbus_message_new_signal(EXALTD_PATH,EXALTD_INTERFACE_READ, "NOTIFY");
     if(!msg)
@@ -249,7 +277,6 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
 
 
     name = exalt_eth_get_name(eth);
-
     if(!name)
     {
         print_error("ERROR", __FILE__, __LINE__,__func__, "name=%p",name);
@@ -505,7 +532,6 @@ void print_error(const char* type, const char* file, int line,const char* fct, c
 }
 
 
-
 int waiting_card_is(const Exalt_Ethernet* eth)
 {
     char* name;
@@ -546,8 +572,8 @@ void waiting_card_load(const char* file)
 {
     char* name;
     waiting_card_list = ecore_list_new();
-    ecore_list_append(waiting_card_list,"eth0");
-    ecore_list_append(waiting_card_list,"eth10");
+ //   ecore_list_append(waiting_card_list,"eth0");
+ //   ecore_list_append(waiting_card_list,"eth10");
 
     printf("file: %s\n",file);
 
@@ -557,7 +583,6 @@ void waiting_card_load(const char* file)
 
     if(ecore_list_empty_is(waiting_card_list))
         EXALT_CLEAR_LIST(waiting_card_list);
-
 }
 
 int waiting_card_is_done()

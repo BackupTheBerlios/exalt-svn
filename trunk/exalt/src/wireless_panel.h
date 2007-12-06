@@ -31,7 +31,6 @@ struct _wireless_panel
 	char* interface;
 
 	Etk_Widget *frame;
-	Etk_Widget *box_main; //the main frame, list of network, configure ...
 
 	//box current configuraton (display essid / ip / mask & gateway)
 	Etk_Widget* lbl_essid;
@@ -52,7 +51,9 @@ struct _wireless_panel
 
 	//network connection
 	Etk_Widget *box_connection;
-	Etk_Widget *entry_conn_essid;
+        Etk_Widget *cmbox_driver;
+        Etk_Widget *lbl_driver;
+        Etk_Widget *entry_conn_essid;
 	Etk_Widget *entry_conn_pwd;
 	Etk_Widget *entry_conn_ip;
 	Etk_Widget *entry_conn_mask;
@@ -92,6 +93,7 @@ void wirelesspanel_set_static_dhcp_clicked_cb(Etk_Object *object, void *data);
 void wirelesspanel_cmboxencryption_active_item_changed_cb(Etk_Object *object, void *data);
 void wirelesspanel_btn_apply_clicked_cb(void *data);
 void wirelesspanel_textchanged_entry_cb(Etk_Object *object, void *data);
+void wirelesspanel_cmboxdriver_active_item_changed_cb(Etk_Object *object __UNUSED__, void *data);
 
 
 int wirelesspanel_apply_pulsebar_timer(void* data);
@@ -99,6 +101,7 @@ void wirelesspanel_conn_apply_done(wireless_panel* pnl);
 
 Etk_Combobox_Item * exalt_etk_combobox_data_item_get (Etk_Combobox *combobox, void *data);
 
+void wirelesspanel_update_advanced_mode(wireless_panel *pnl);
 
 #endif
 
