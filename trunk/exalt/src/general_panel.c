@@ -73,6 +73,14 @@ void generalpanel_load_dns_list(general_panel* pnl)
                 ecore_list_destroy(l);
 }
 
+void generalpanel_free(general_panel** pnl)
+{
+    if(pnl && *pnl)
+    {
+        EXALT_FREE((*pnl)->select_dns);
+        EXALT_FREE(*pnl);
+    }
+}
 
 void generalpanel_show(general_panel* pnl)
 {

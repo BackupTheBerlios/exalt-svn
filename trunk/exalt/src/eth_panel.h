@@ -47,6 +47,7 @@ struct _eth_panel
 
 eth_panel* ethpanel_create(main_window* win);
 void ethpanel_show(eth_panel* pnl);
+void ethpanel_free(eth_panel** pnl);
 void ethpanel_hide(eth_panel* pnl);
 void ethpanel_set_eth(eth_panel* pnl, char* interface);
 void ethpanel_disabled_set(eth_panel* pnl);

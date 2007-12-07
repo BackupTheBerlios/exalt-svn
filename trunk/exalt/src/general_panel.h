@@ -13,7 +13,7 @@ typedef struct _general_panel general_panel;
 struct _general_panel
 {
 	Etk_Widget *frame;
-	
+
 	Etk_Widget *dns_list;
 	Etk_Tree_Col* dns_col;
 	Etk_Widget* hbox_dns_conf;
@@ -25,6 +25,7 @@ struct _general_panel
 };
 
 general_panel* generalpanel_create();
+void generalpanel_free(general_panel** pnl);
 void generalpanel_show(general_panel* pnl);
 void generalpanel_hide(general_panel* pnl);
 

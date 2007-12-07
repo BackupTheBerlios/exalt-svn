@@ -105,6 +105,16 @@ eth_panel* ethpanel_create(main_window* win)
     return pnl;
 }
 
+void ethpanel_free(eth_panel** pnl)
+{
+    if(pnl && *pnl)
+    {
+        EXALT_FREE((*pnl)->interface);
+        EXALT_DELETE_TIMER((*pnl)->pulsebar_timer);
+        EXALT_FREE(*pnl);
+    }
+}
+
 void ethpanel_show(eth_panel* pnl)
 {
     etk_widget_show_all(pnl->frame);
@@ -118,21 +128,31 @@ void ethpanel_hide(eth_panel* pnl)
 
 void ethpanel_set_eth(eth_panel* pnl, char* interface)
 {
+    char name[100];
+    char *str;
+
     if(!pnl || !interface)
     {
         print_error("ERROR", __FILE__, __LINE__,__func__,"pnl=%p and interface=%p",pnl,interface);
         return ;
     }
-    char name[100];
     sprintf(name,_("Network card: %s"),interface);
 
     EXALT_FREE(pnl->interface);
-        pnl->interface = strdup(interface);
+    pnl->interface = strdup(interface);
 
     etk_frame_label_set(ETK_FRAME(pnl->frame),name);
-    etk_entry_text_set(ETK_ENTRY(pnl->entry_ip),exalt_dbus_eth_get_ip(exalt_conn,interface));
-    etk_entry_text_set(ETK_ENTRY(pnl->entry_mask),exalt_dbus_eth_get_netmask(exalt_conn, interface));
-    etk_entry_text_set(ETK_ENTRY(pnl->entry_gateway),exalt_dbus_eth_get_gateway(exalt_conn, interface));
+    str = exalt_dbus_eth_get_ip(exalt_conn,interface);
+    etk_entry_text_set(ETK_ENTRY(pnl->entry_ip),str);
+    EXALT_FREE(str);
+
+    str = exalt_dbus_eth_get_netmask(exalt_conn, interface);
+    etk_entry_text_set(ETK_ENTRY(pnl->entry_mask),str);
+    EXALT_FREE(str);
+
+    str = exalt_dbus_eth_get_gateway(exalt_conn, interface);
+    etk_entry_text_set(ETK_ENTRY(pnl->entry_gateway),str);
+    EXALT_FREE(str);
 
     if(exalt_dbus_eth_is_dhcp(exalt_conn, interface))
         etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(pnl->check_dhcp),ETK_TRUE);
@@ -242,7 +262,7 @@ void ethpanel_btn_apply_clicked_cb(void *data)
     etk_widget_disabled_set(pnl->btn_disactivate,ETK_TRUE);
     pnl->pulsebar_timer = ecore_timer_add(APPLY_PULSE_TIMER ,ethpanel_apply_pulsebar_timer,pnl);
     ethpanel_disabled_set(pnl);
-
+    exalt_conn_free(c);
 }
 
 void ethpanel_disabled_set(eth_panel* pnl)

@@ -30,6 +30,12 @@ boot_panel* bootpanel_create()
     return boot_pnl;
 }
 
+void bootpanel_free(boot_panel** pnl)
+{
+    if(pnl)
+        EXALT_FREE(*pnl);
+}
+
 
 void bootpanel_show(boot_panel* pnl)
 {

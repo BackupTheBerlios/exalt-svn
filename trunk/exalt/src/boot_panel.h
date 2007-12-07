@@ -32,6 +32,7 @@ struct boot_panel
 boot_panel* bootpanel_create();
 void bootpanel_show(boot_panel* pnl);
 void bootpanel_hide(boot_panel* pnl);
+void bootpanel_free(boot_panel** pnl);
 
 
 

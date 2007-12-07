@@ -83,7 +83,7 @@ main_window* mainwindow_create()
     while ((interface = ecore_list_next(interfaces)))
         mainwindow_add_interface(interface, win);
 
-
+    ecore_list_destroy(interfaces);
     return win;
 }
 
@@ -92,19 +92,24 @@ Etk_Bool mainWindow_free(main_window** win)
     if(win && *win)
     {
         etk_object_destroy(ETK_OBJECT((*win)->win));
-        win = NULL;
+        ethpanel_free(&((*win)->eth_panel));
+        wirelesspanel_free(&((*win)->wireless_panel));
+        generalpanel_free(&((*win)->general_panel));
+        aboutpanel_free(&((*win)->about_panel));
+        bootpanel_free(&((*win)->boot_panel));
+
+        EXALT_FREE(*win);
+        *win = NULL;
         return 1;
     }
     else
         return 0;
 }
 
-Etk_Bool mainWindow_close(Etk_Object *object __UNUSED__, void *data)
+Etk_Bool mainWindow_close(Etk_Object *object __UNUSED__, void *data __UNUSED__)
 {
-    main_window* win = (main_window*)data;
-    exalt_dbus_wireless_scan_stop(exalt_conn, win->wireless_panel->interface);
-    etk_object_destroy(ETK_OBJECT(win->win));
-    exit(1);
+    ecore_main_loop_quit();
+    return ETK_TRUE;
 }
 
 void mainwindow_notify_cb(char* interface, Exalt_Enum_Action action, void* user_data)

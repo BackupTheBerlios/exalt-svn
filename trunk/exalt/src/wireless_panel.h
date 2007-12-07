@@ -74,6 +74,7 @@ struct _wireless_panel
 void wirelesspanel_scan_networks_cb(char* interface, Ecore_List* new_networks, Ecore_List* old_networks, void* data);
 
 wireless_panel* wirelesspanel_create(main_window* win);
+void wirelesspanel_free(wireless_panel** pnl);
 void wirelesspanel_show(wireless_panel* pnl);
 void wirelesspanel_hide(wireless_panel* pnl);
 void wirelesspanel_set_eth(wireless_panel* pnl, char* interface);

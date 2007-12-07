@@ -62,7 +62,16 @@ int main(int argc,char**argv)
 
 	etk_main();
 
-	return 1;
+        exalt_dbus_wireless_scan_stop(exalt_conn, win->wireless_panel->interface);
+        mainWindow_free(&win);
+
+        if(exalt_conn)
+        exalt_dbus_free(&exalt_conn);
+
+        exalt_dbus_shutdown();
+
+        etk_shutdown();
+        return 1;
 }
 
 

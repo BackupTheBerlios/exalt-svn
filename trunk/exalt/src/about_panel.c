@@ -25,6 +25,12 @@ about_panel* aboutpanel_create()
     return about_pnl;
 }
 
+void aboutpanel_free(about_panel** pnl)
+{
+    if(pnl)
+        EXALT_FREE(*pnl);
+}
+
 
 void aboutpanel_show(about_panel* pnl)
 {

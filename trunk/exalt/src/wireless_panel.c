@@ -90,6 +90,16 @@ wireless_panel* wirelesspanel_create(main_window* win)
     return pnl;
 }
 
+void wirelesspanel_free(wireless_panel** pnl)
+{
+    if(pnl && *pnl)
+    {
+        EXALT_FREE((*pnl)->interface);
+        EXALT_DELETE_TIMER((*pnl)->pulsebar_timer);
+        EXALT_FREE(*pnl);
+    }
+}
+
 void wirelesspanel_show(wireless_panel* pnl)
 {
     etk_tree_clear (ETK_TREE(pnl->scan_list));
@@ -253,19 +263,33 @@ void wirelesspanel_set_eth(wireless_panel* pnl, char* interface)
 
 void wirelesspanel_update_current_conf(wireless_panel* pnl)
 {
+    char* str;
     if(!pnl)
     {
         fprintf(stderr,"wirelesspanel_update_current_conf(): pnl==null! \n");
         return ;
     }
-    etk_label_set(ETK_LABEL(pnl->lbl_essid), exalt_dbus_wireless_get_essid(exalt_conn, pnl->interface));
-    etk_label_set(ETK_LABEL(pnl->lbl_ip), exalt_dbus_eth_get_ip(exalt_conn, pnl->interface));
-    etk_label_set(ETK_LABEL(pnl->lbl_mask), exalt_dbus_eth_get_netmask(exalt_conn,pnl->interface));
-    etk_label_set(ETK_LABEL(pnl->lbl_gateway), exalt_dbus_eth_get_gateway(exalt_conn, pnl->interface));
+    str = exalt_dbus_wireless_get_essid(exalt_conn, pnl->interface);
+    etk_label_set(ETK_LABEL(pnl->lbl_essid), str);
+    EXALT_FREE(str);
 
+    str = exalt_dbus_eth_get_ip(exalt_conn, pnl->interface);
+    etk_label_set(ETK_LABEL(pnl->lbl_ip), str);
+    EXALT_FREE(str);
+
+    str = exalt_dbus_eth_get_netmask(exalt_conn,pnl->interface);
+    etk_label_set(ETK_LABEL(pnl->lbl_mask), str);
+    EXALT_FREE(str);
+
+    str = exalt_dbus_eth_get_gateway(exalt_conn, pnl->interface);
+    etk_label_set(ETK_LABEL(pnl->lbl_gateway), str);
+    EXALT_FREE(str);
+
+    str = exalt_dbus_wireless_get_wpasupplicant_driver(exalt_conn,pnl->interface);
     etk_entry_text_set(
             ETK_ENTRY(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(pnl->cmbox_driver)))
-            ,exalt_dbus_wireless_get_wpasupplicant_driver(exalt_conn,pnl->interface));
+            ,(str?str:""));
+    EXALT_FREE(str);
 }
 
 Etk_Widget* wirelesspanel_pageconnection_create(wireless_panel* pnl)
@@ -658,6 +682,8 @@ void wirelesspanel_btn_apply_clicked_cb(void *data)
     etk_widget_disabled_set(pnl->btn_apply,ETK_TRUE);
     pnl->pulsebar_timer = ecore_timer_add(APPLY_PULSE_TIMER ,wirelesspanel_apply_pulsebar_timer,pnl);
     wirelesspanel_disabled_widget_activate(pnl);
+
+    exalt_conn_free(c);
 }
 
 
@@ -726,6 +752,8 @@ void wirelesspanel_textchanged_entry_cb(Etk_Object *object __UNUSED__, void *dat
             etk_entry_text_set(ETK_ENTRY(pnl->entry_conn_pwd),exalt_conn_get_key(c));
         else
             etk_entry_clear(ETK_ENTRY(pnl->entry_conn_pwd));
+
+        exalt_conn_free(c);
     }
 
     if (!(active_item = etk_combobox_active_item_get(ETK_COMBOBOX(pnl->cmbox_encryption))))
