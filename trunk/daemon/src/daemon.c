@@ -191,6 +191,7 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
     DBusMessage* msg;
     DBusMessageIter args;
     const char* name;
+    char* str;
 
     conn = (E_DBus_Connection*) data;
 
@@ -200,7 +201,9 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
         if(exalt_eth_is_wireless(eth))
         {
             Exalt_Wireless* w = exalt_eth_get_wireless(eth);
-            exalt_wireless_set_wpasupplicant_driver(w,exalt_eth_driver_load(CONF_FILE,exalt_eth_get_udi(eth)));
+            str = exalt_eth_driver_load(CONF_FILE,exalt_eth_get_udi(eth));
+            exalt_wireless_set_wpasupplicant_driver(w,str);
+            EXALT_FREE(str);
         }
 
         //apply or not apply a connection ?

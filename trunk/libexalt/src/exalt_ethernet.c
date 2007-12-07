@@ -178,6 +178,7 @@ void _exalt_cb_net_properties(void *data, void *reply_data, DBusError *error)
     E_Hal_Properties *ret = reply_data;
     int err = 0;
     Exalt_Ethernet* eth;
+    char* str;
 
     if (dbus_error_is_set(error))
     {
@@ -185,13 +186,29 @@ void _exalt_cb_net_properties(void *data, void *reply_data, DBusError *error)
         return ;
     }
 
-    eth = exalt_eth_new(e_hal_property_string_get(ret,"net.interface", &err));
-    _exalt_eth_set_udi(eth,e_hal_property_string_get(ret,"info.udi", &err));
+    str = e_hal_property_string_get(ret,"net.interface", &err);
+    eth = exalt_eth_new(str);
+    EXALT_FREE(str);
+
+    str = e_hal_property_string_get(ret,"info.udi", &err);
+    _exalt_eth_set_udi(eth,str);
+    EXALT_FREE(str);
+
     _exalt_eth_set_ifindex(eth,e_hal_property_int_get(ret,"net.linux.ifindex", &err));
 
-    _exalt_eth_set_save_ip(eth,exalt_eth_get_ip(eth));
-    _exalt_eth_set_save_netmask(eth,exalt_eth_get_netmask(eth));
-    _exalt_eth_set_save_gateway(eth,exalt_eth_get_gateway(eth));
+    str = exalt_eth_get_ip(eth);
+    _exalt_eth_set_save_ip(eth,str);
+    //if we free, exalt segafult in this free:/
+    EXALT_FREE(str);
+
+    str = exalt_eth_get_netmask(eth);
+    _exalt_eth_set_save_netmask(eth,str);
+    EXALT_FREE(str);
+
+    str = exalt_eth_get_gateway(eth);
+    _exalt_eth_set_save_gateway(eth,str);
+    EXALT_FREE(str);
+
     _exalt_eth_set_save_link(eth, exalt_eth_is_link(eth));
     _exalt_eth_set_save_up(eth, exalt_eth_is_up(eth));
 
@@ -229,6 +246,8 @@ void _exalt_cb_find_device_by_capability_net(void *user_data, void *reply_data, 
     {
         e_hal_device_get_all_properties(exalt_eth_interfaces.dbus_conn, device, _exalt_cb_net_properties, action);
     }
+
+    EXALT_FREE(action);
 }
 
 /**
@@ -589,7 +608,7 @@ char* exalt_eth_get_ip(const Exalt_Ethernet* eth)
 
     sin = *(struct sockaddr_in*) &ifr.ifr_addr;
 
-    return inet_ntoa(sin.sin_addr);
+    return strdup(inet_ntoa(sin.sin_addr));
 }
 
 
@@ -616,7 +635,7 @@ char* exalt_eth_get_netmask(Exalt_Ethernet* eth)
         return NULL;
 
     sin = *(struct sockaddr_in*) &ifr.ifr_addr;
-    return inet_ntoa(sin.sin_addr);
+    return strdup(inet_ntoa(sin.sin_addr));
 }
 
 
@@ -673,10 +692,11 @@ char* exalt_eth_get_gateway(Exalt_Ethernet* eth)
             find = 1;
     }
     fclose(f);
+    EXALT_FREE(fmt);
     if(find)
-        return strdup(exalt_addr_hexa_to_dec(gate_addr));
+        return exalt_addr_hexa_to_dec(gate_addr);
     else
-        return "0.0.0.0";
+        return strdup("0.0.0.0");
 }
 
 
@@ -1242,9 +1262,10 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
     Exalt_Ethernet* eth;
     void* data_l;
     Ecore_List* l;
+    char* str;
 
 
-    fd = *((int *)data);
+    fd = exalt_eth_interfaces.rtlink_sock;
 
     bin = recvmsg(fd, &msg, 0);
     if(bin < 0)
@@ -1350,13 +1371,15 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
                 while(data_l)
                 {
                     eth = Exalt_Ethernet(data_l);
-                    if(strcmp(_exalt_eth_get_save_gateway(eth),exalt_eth_get_gateway(eth)) != 0)
+                    str = exalt_eth_get_gateway(eth);
+                    if(strcmp(_exalt_eth_get_save_gateway(eth),str ) != 0)
                     {
-                        _exalt_eth_set_save_gateway(eth, exalt_eth_get_gateway(eth));
+                        _exalt_eth_set_save_gateway(eth, str);
                         if(exalt_eth_interfaces.eth_cb)
                             exalt_eth_interfaces.eth_cb(eth,EXALT_ETH_CB_ACTION_GATEWAY_NEW,exalt_eth_interfaces.eth_cb_user_data);
                     }
-
+                    //free -> segfault
+                    EXALT_FREE(str);
                     data_l = ecore_list_next(l);
                 }
                 break;

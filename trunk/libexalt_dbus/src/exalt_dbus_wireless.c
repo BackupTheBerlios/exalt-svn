@@ -175,7 +175,7 @@ char* exalt_dbus_wireless_get_essid(const exalt_dbus_conn* conn, const char* eth
     dbus_pending_call_unref(ret);
 
     //read the response
-    res = exalt_dbus_response_string(msg);
+    res = strdup(exalt_dbus_response_string(msg));
     dbus_message_unref(msg);
     return res;
 }
@@ -186,6 +186,7 @@ char* exalt_dbus_wireless_get_wpasupplicant_driver(const exalt_dbus_conn* conn, 
     DBusMessage *msg;
     DBusMessageIter args;
     char* res;
+    const char* str;
 
     if(!conn || !eth)
     {
@@ -218,7 +219,8 @@ char* exalt_dbus_wireless_get_wpasupplicant_driver(const exalt_dbus_conn* conn, 
     dbus_pending_call_unref(ret);
 
     //read the response
-    res = exalt_dbus_response_string(msg);
+    str = exalt_dbus_response_string(msg);
+    EXALT_STRDUP(res,str);
     dbus_message_unref(msg);
     return res;
 }
@@ -228,7 +230,6 @@ int exalt_dbus_wireless_set_wpasupplicant_driver(const exalt_dbus_conn* conn, co
     DBusPendingCall * ret;
     DBusMessage *msg;
     DBusMessageIter args;
-    char* res;
 
     if(!conn || !eth)
     {

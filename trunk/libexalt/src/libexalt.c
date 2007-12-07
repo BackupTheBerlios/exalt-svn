@@ -44,7 +44,6 @@ int exalt_init()
  */
 int exalt_main()
 {
-    int *fd = malloc(sizeof(int));
     struct sockaddr_nl addr;
 
     if(exalt_eth_interfaces.is_launch>0)
@@ -70,18 +69,18 @@ int exalt_main()
     addr.nl_family = AF_NETLINK;
     addr.nl_groups = RTMGRP_LINK | RTMGRP_IPV4_IFADDR | RTMGRP_IPV4_ROUTE | RTMGRP_NOTIFY;
 
-    *fd = socket(AF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
-    if(*fd < 0) {
+    exalt_eth_interfaces.rtlink_sock = socket(AF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
+    if(exalt_eth_interfaces.rtlink_sock < 0) {
         perror("socket()");
         return -1;
     }
 
-    if(bind(*fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
+    if(bind(exalt_eth_interfaces.rtlink_sock, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
         perror("bind()");
         return -1;
     }
 
-    exalt_eth_interfaces.rtlink_watch = ecore_main_fd_handler_add(*fd, ECORE_FD_READ,_exalt_rtlink_watch_cb, fd,NULL,NULL);
+    exalt_eth_interfaces.rtlink_watch = ecore_main_fd_handler_add(exalt_eth_interfaces.rtlink_sock, ECORE_FD_READ,_exalt_rtlink_watch_cb, NULL,NULL,NULL);
 
     exalt_eth_interfaces.is_launch = 1;
 

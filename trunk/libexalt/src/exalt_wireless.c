@@ -52,6 +52,8 @@ struct Exalt_Wireless
 Exalt_Wireless* exalt_wireless_new(Exalt_Ethernet* eth)
 {
     Exalt_Wireless *w;
+    char* str;
+
     if(!eth)
     {
         fprintf(stderr,"exalt_wireless_new(): eth==null! \n");
@@ -69,7 +71,10 @@ Exalt_Wireless* exalt_wireless_new(Exalt_Ethernet* eth)
 
     w->wpasupplicant_driver = NULL;
     w -> _save_essid = NULL;
-    _exalt_wireless_set_save_essid(w,exalt_wireless_get_essid(w));
+
+    str = exalt_wireless_get_essid(w);
+    _exalt_wireless_set_save_essid(w,str);
+    EXALT_FREE(str);
 
     //init networks list
     w -> networks = ecore_list_new();
@@ -82,6 +87,8 @@ Exalt_Wireless* exalt_wireless_new(Exalt_Ethernet* eth)
     w->scan_fd = iw_sockets_open();
     w->scan_cb_timer = NULL;
 
+    //default driver
+    EXALT_STRDUP(w->wpasupplicant_driver,"wext");
     return w;
 }
 
@@ -101,6 +108,7 @@ void exalt_wireless_free(Exalt_Wireless* w)
     ecore_list_destroy(w->networks);
 
     EXALT_FREE(w->_save_essid);
+    EXALT_FREE(w->wpasupplicant_driver);
     EXALT_CLOSE(w->scan_fd);
     EXALT_DELETE_TIMER(w->scan_cb_timer);
     EXALT_FREE(w);
@@ -792,9 +800,11 @@ int _exalt_rtlink_essid_change(Exalt_Wireless *w)
         _exalt_wireless_set_save_essid(w,exalt_wireless_get_essid(w));
         if(exalt_eth_interfaces.eth_cb)
             exalt_eth_interfaces.eth_cb(exalt_wireless_get_eth(w),EXALT_WIRELESS_CB_ACTION_ESSIDCHANGE,exalt_eth_interfaces.eth_cb_user_data);
+        EXALT_FREE(essid);
         return 1;
     }
 
+    EXALT_FREE(essid);
     return 0;
 }
 

@@ -40,7 +40,16 @@ exalt_dbus_conn* exalt_dbus_connect()
     conn->conn = dbus_bus_get(DBUS_BUS_SYSTEM, &err);
     conn->e_conn = e_dbus_connection_setup(conn->conn);
     conn->notify=NULL;
+    conn->scan_notify=NULL;
     return conn;
+}
+
+void exalt_dbus_free(exalt_dbus_conn** conn)
+{
+    e_dbus_connection_close((*conn)->e_conn);
+    EXALT_FREE((*conn)->notify);
+    EXALT_FREE((*conn)->scan_notify);
+    EXALT_FREE(*conn);
 }
 
 void exalt_dbus_shutdown()
@@ -200,7 +209,6 @@ void _exalt_dbus_notify(void *data, DBusMessage *msg)
     }
 
     dbus_message_iter_get_basic(&args, &eth);
-    eth = strdup(eth);
 
     dbus_message_iter_next(&args);
     if (DBUS_TYPE_UINT32 != dbus_message_iter_get_arg_type(&args))

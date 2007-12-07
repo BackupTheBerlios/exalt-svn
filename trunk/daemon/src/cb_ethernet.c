@@ -23,7 +23,7 @@ DBusMessage * dbus_cb_eth_get_eth_list(E_DBus_Object *obj __UNUSED__, DBusMessag
     DBusMessage *reply;
     DBusMessageIter args;
     Exalt_Ethernet* eth;
-    char* interface;
+    const char* interface;
     void* data;
     Ecore_List *interfaces;
 
@@ -41,7 +41,7 @@ DBusMessage * dbus_cb_eth_get_eth_list(E_DBus_Object *obj __UNUSED__, DBusMessag
     while( (data=ecore_list_next(interfaces)))
     {
         eth = Exalt_Ethernet(data);
-        interface = strdup(exalt_eth_get_name(eth));
+        interface = exalt_eth_get_name(eth);
         if(!interface)
         {
             print_error("WARNING", __FILE__, __LINE__,__func__, "interface=%p",interface);
@@ -50,7 +50,6 @@ DBusMessage * dbus_cb_eth_get_eth_list(E_DBus_Object *obj __UNUSED__, DBusMessag
         if (!interface || !dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &interface))
         {
             print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
-            EXALT_FREE(interface);
             return reply;
         }
     }
@@ -83,9 +82,10 @@ DBusMessage * dbus_cb_eth_get_ip(E_DBus_Object *obj __UNUSED__, DBusMessage *msg
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &ip))
     {
         print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
+        EXALT_FREE(ip);
         return reply;
     }
-
+    EXALT_FREE(ip);
     return reply;
 }
 
@@ -113,9 +113,11 @@ DBusMessage * dbus_cb_eth_get_netmask(E_DBus_Object *obj __UNUSED__, DBusMessage
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &netmask))
     {
         print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
+        EXALT_FREE(netmask);
         return reply;
     }
 
+    EXALT_FREE(netmask);
     return reply;
 }
 
@@ -143,9 +145,12 @@ DBusMessage * dbus_cb_eth_get_gateway(E_DBus_Object *obj __UNUSED__, DBusMessage
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &gateway))
     {
         print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
+        EXALT_FREE(gateway);
         return reply;
     }
 
+    //free -> segfault
+    EXALT_FREE(gateway);
     return reply;
 }
 

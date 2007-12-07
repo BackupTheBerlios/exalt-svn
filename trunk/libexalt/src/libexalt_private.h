@@ -36,10 +36,13 @@ struct Exalt_Ethernets
 
     int we_version;
 
+
     short admin;
     short is_launch ;
     E_DBus_Connection *dbus_conn;
     Ecore_Fd_Handler *rtlink_watch;
+    int rtlink_sock;
+
 
     Exalt_Eth_Cb eth_cb;
     void * eth_cb_user_data;

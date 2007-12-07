@@ -163,10 +163,12 @@ int exalt_regex_execute(Exalt_Regex* r)
 		else
             	{
 		    print_error("ERROR", __FILE__, __LINE__,__func__, "Memoire insuffisante");
+                    EXALT_FREE(pmatch);
 		    return 0;
             	}
             }
 
+            EXALT_FREE(pmatch);
 	    return 1;
 	}
         else if (match == REG_NOMATCH)
@@ -177,6 +179,7 @@ int exalt_regex_execute(Exalt_Regex* r)
 					"str_request: %s"
 					"str_regex: %s\n\n", r->str_request,r->str_regex);
 	    }
+            EXALT_FREE(pmatch);
 	    return 0;
         }
         else
@@ -191,10 +194,12 @@ int exalt_regex_execute(Exalt_Regex* r)
                	regerror (err, &preg, text, size);
                	print_error("ERROR", __FILE__, __LINE__,__func__, "%s\n", text);
                	free (text);
+                EXALT_FREE(pmatch);
 		return 0;
             }
             else
             {
+                EXALT_FREE(pmatch);
                	return 0;
             }
         }
@@ -202,6 +207,7 @@ int exalt_regex_execute(Exalt_Regex* r)
     else
     {
         print_error("ERROR", __FILE__, __LINE__,__func__, "regcomp error");
+        EXALT_FREE(pmatch);
         return 0;
     }
 }

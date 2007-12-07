@@ -85,7 +85,7 @@ int exalt_dbus_wirelessinfo_get_encryption(const exalt_dbus_conn* conn, const ch
         return -1;
     }
 
-     if(!dbus_connection_send_with_reply (conn->conn, msg, &ret, -1))
+    if(!dbus_connection_send_with_reply (conn->conn, msg, &ret, -1))
     {
         exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Send Out Of Memory!");
         dbus_message_unref(msg);
@@ -135,7 +135,7 @@ int exalt_dbus_wirelessinfo_get_signallvl(const exalt_dbus_conn* conn, const cha
         return -1;
     }
 
-     if(!dbus_connection_send_with_reply (conn->conn, msg, &ret, -1))
+    if(!dbus_connection_send_with_reply (conn->conn, msg, &ret, -1))
     {
         exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Send Out Of Memory!");
         dbus_message_unref(msg);
@@ -185,7 +185,7 @@ int exalt_dbus_wirelessinfo_get_noiselvl(const exalt_dbus_conn* conn, const char
         return -1;
     }
 
-     if(!dbus_connection_send_with_reply (conn->conn, msg, &ret, -1))
+    if(!dbus_connection_send_with_reply (conn->conn, msg, &ret, -1))
     {
         exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Send Out Of Memory!");
         dbus_message_unref(msg);
@@ -235,7 +235,7 @@ char* exalt_dbus_wirelessinfo_get_addr(const exalt_dbus_conn* conn, const char* 
         return NULL;
     }
 
-     if(!dbus_connection_send_with_reply (conn->conn, msg, &ret, -1))
+    if(!dbus_connection_send_with_reply (conn->conn, msg, &ret, -1))
     {
         exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Send Out Of Memory!");
         dbus_message_unref(msg);
@@ -253,7 +253,7 @@ char* exalt_dbus_wirelessinfo_get_addr(const exalt_dbus_conn* conn, const char* 
     dbus_pending_call_unref(ret);
 
     //read the response
-    res = exalt_dbus_response_string(msg);
+    res = strdup(exalt_dbus_response_string(msg));
     dbus_message_unref(msg);
     return res;
 }
@@ -285,7 +285,7 @@ char* exalt_dbus_wirelessinfo_get_protocol(const exalt_dbus_conn* conn, const ch
         return NULL;
     }
 
-     if(!dbus_connection_send_with_reply (conn->conn, msg, &ret, -1))
+    if(!dbus_connection_send_with_reply (conn->conn, msg, &ret, -1))
     {
         exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Send Out Of Memory!");
         dbus_message_unref(msg);
@@ -303,7 +303,7 @@ char* exalt_dbus_wirelessinfo_get_protocol(const exalt_dbus_conn* conn, const ch
     dbus_pending_call_unref(ret);
 
     //read the response
-    res = exalt_dbus_response_string(msg);
+    res = strdup(exalt_dbus_response_string(msg));
     dbus_message_unref(msg);
     return res;
 }
@@ -335,7 +335,7 @@ char* exalt_dbus_wirelessinfo_get_mode(const exalt_dbus_conn* conn, const char* 
         return NULL;
     }
 
-     if(!dbus_connection_send_with_reply (conn->conn, msg, &ret, -1))
+    if(!dbus_connection_send_with_reply (conn->conn, msg, &ret, -1))
     {
         exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Send Out Of Memory!");
         dbus_message_unref(msg);
@@ -353,7 +353,7 @@ char* exalt_dbus_wirelessinfo_get_mode(const exalt_dbus_conn* conn, const char* 
     dbus_pending_call_unref(ret);
 
     //read the response
-    res = exalt_dbus_response_string(msg);
+    res = strdup(exalt_dbus_response_string(msg));
     dbus_message_unref(msg);
     return res;
 }
@@ -385,7 +385,7 @@ char* exalt_dbus_wirelessinfo_get_channel(const exalt_dbus_conn* conn, const cha
         return NULL;
     }
 
-     if(!dbus_connection_send_with_reply (conn->conn, msg, &ret, -1))
+    if(!dbus_connection_send_with_reply (conn->conn, msg, &ret, -1))
     {
         exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Send Out Of Memory!");
         dbus_message_unref(msg);
@@ -403,7 +403,7 @@ char* exalt_dbus_wirelessinfo_get_channel(const exalt_dbus_conn* conn, const cha
     dbus_pending_call_unref(ret);
 
     //read the response
-    res = exalt_dbus_response_string(msg);
+    res = strdup(exalt_dbus_response_string(msg));
     dbus_message_unref(msg);
     return res;
 }
@@ -435,7 +435,7 @@ char* exalt_dbus_wirelessinfo_get_bitrates(const exalt_dbus_conn* conn, const ch
         return NULL;
     }
 
-     if(!dbus_connection_send_with_reply (conn->conn, msg, &ret, -1))
+    if(!dbus_connection_send_with_reply (conn->conn, msg, &ret, -1))
     {
         exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Send Out Of Memory!");
         dbus_message_unref(msg);
@@ -453,7 +453,7 @@ char* exalt_dbus_wirelessinfo_get_bitrates(const exalt_dbus_conn* conn, const ch
     dbus_pending_call_unref(ret);
 
     //read the response
-    res = exalt_dbus_response_string(msg);
+    res = strdup(exalt_dbus_response_string(msg));
     dbus_message_unref(msg);
     return res;
 }
@@ -488,7 +488,7 @@ Exalt_Connection * exalt_dbus_wirelessinfo_get_default_conn(const exalt_dbus_con
         return NULL;
     }
 
-     if(!dbus_connection_send_with_reply (conn->conn, msg, &ret, -1))
+    if(!dbus_connection_send_with_reply (conn->conn, msg, &ret, -1))
     {
         exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Send Out Of Memory!");
         dbus_message_unref(msg);
@@ -510,11 +510,15 @@ Exalt_Connection * exalt_dbus_wirelessinfo_get_default_conn(const exalt_dbus_con
     if(!dbus_message_iter_init(msg, &args))
     {
         exalt_dbus_print_error("ERROR", __FILE__, __LINE__,__func__, "no argument");
+        dbus_message_unref(msg);
+        exalt_conn_free(c);
         return NULL;
     }
     if (DBUS_TYPE_INT32 != dbus_message_iter_get_arg_type(&args))
     {
         exalt_dbus_print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a int");
+        dbus_message_unref(msg);
+        exalt_conn_free(c);
         return NULL;
     }
     else
@@ -527,6 +531,8 @@ Exalt_Connection * exalt_dbus_wirelessinfo_get_default_conn(const exalt_dbus_con
         if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
         {
             exalt_dbus_print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a string");
+            dbus_message_unref(msg);
+            exalt_conn_free(c);
             return NULL;
         }
         else
@@ -537,6 +543,8 @@ Exalt_Connection * exalt_dbus_wirelessinfo_get_default_conn(const exalt_dbus_con
         if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
         {
             exalt_dbus_print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a string");
+            dbus_message_unref(msg);
+            exalt_conn_free(c);
             return NULL;
         }
         else
@@ -547,6 +555,8 @@ Exalt_Connection * exalt_dbus_wirelessinfo_get_default_conn(const exalt_dbus_con
         if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
         {
             exalt_dbus_print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a string");
+            dbus_message_unref(msg);
+            exalt_conn_free(c);
             return NULL;
         }
         else
@@ -558,6 +568,8 @@ Exalt_Connection * exalt_dbus_wirelessinfo_get_default_conn(const exalt_dbus_con
     if (DBUS_TYPE_INT32 != dbus_message_iter_get_arg_type(&args))
     {
         exalt_dbus_print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a int");
+        dbus_message_unref(msg);
+        exalt_conn_free(c);
         return NULL;
     }
     else
@@ -570,6 +582,8 @@ Exalt_Connection * exalt_dbus_wirelessinfo_get_default_conn(const exalt_dbus_con
         if (DBUS_TYPE_INT32 != dbus_message_iter_get_arg_type(&args))
         {
             exalt_dbus_print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a int");
+            dbus_message_unref(msg);
+            exalt_conn_free(c);
             return NULL;
         }
         else
@@ -582,6 +596,8 @@ Exalt_Connection * exalt_dbus_wirelessinfo_get_default_conn(const exalt_dbus_con
             if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
             {
                 exalt_dbus_print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a string");
+                dbus_message_unref(msg);
+                exalt_conn_free(c);
                 return NULL;
             }
             else
@@ -593,6 +609,8 @@ Exalt_Connection * exalt_dbus_wirelessinfo_get_default_conn(const exalt_dbus_con
         if (DBUS_TYPE_INT32 != dbus_message_iter_get_arg_type(&args))
         {
             exalt_dbus_print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a int");
+            dbus_message_unref(msg);
+            exalt_conn_free(c);
             return NULL;
         }
         else
@@ -604,6 +622,8 @@ Exalt_Connection * exalt_dbus_wirelessinfo_get_default_conn(const exalt_dbus_con
         if (DBUS_TYPE_INT32 != dbus_message_iter_get_arg_type(&args))
         {
             exalt_dbus_print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a int");
+            dbus_message_unref(msg);
+            exalt_conn_free(c);
             return NULL;
         }
         else

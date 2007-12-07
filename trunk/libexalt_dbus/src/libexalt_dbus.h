@@ -41,6 +41,7 @@ typedef void (exalt_notify_conn_applied_cb) (char* interface, void* user_data);
 #include "exalt_dbus_dns.h"
 
 void exalt_dbus_init();
+void exalt_dbus_free(exalt_dbus_conn** conn);
 void exalt_dbus_shutdown();
 exalt_dbus_conn*  exalt_dbus_connect();
 void exalt_dbus_notify_set(exalt_dbus_conn* conn, exalt_notify_cb* cb, void* user_data);

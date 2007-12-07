@@ -19,7 +19,7 @@
 #include "libexalt_dbus_private.h"
 
 
-char* exalt_dbus_response_string(DBusMessage *msg)
+const char* exalt_dbus_response_string(DBusMessage *msg)
 {
     DBusMessageIter args;
     char* res;
@@ -37,7 +37,7 @@ char* exalt_dbus_response_string(DBusMessage *msg)
     else
     {
         dbus_message_iter_get_basic(&args, &res);
-        return strdup(res);
+        return res;
     }
 }
 

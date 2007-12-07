@@ -68,7 +68,7 @@ DBusMessage * dbus_cb_wireless_get_essid(E_DBus_Object *obj __UNUSED__, DBusMess
     DBusMessage *reply;
     DBusMessageIter args;
     Exalt_Ethernet* eth;
-    const char* essid;
+    char* essid;
 
     reply = dbus_message_new_method_return(msg);
 
@@ -87,8 +87,10 @@ DBusMessage * dbus_cb_wireless_get_essid(E_DBus_Object *obj __UNUSED__, DBusMess
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid))
     {
         print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
+        EXALT_FREE(essid);
         return reply;
     }
+    EXALT_FREE(essid);
     return reply;
 }
 
@@ -156,7 +158,6 @@ DBusMessage * dbus_cb_wireless_set_wpasupplicant_driver(E_DBus_Object *obj __UNU
         return reply;
     }
 
-    printf("oki\n");
     exalt_wireless_set_wpasupplicant_driver(exalt_eth_get_wireless(eth),driver);
 
     return reply;

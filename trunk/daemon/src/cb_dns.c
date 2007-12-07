@@ -41,9 +41,11 @@ DBusMessage * dbus_cb_dns_get_list(E_DBus_Object *obj __UNUSED__, DBusMessage *m
         if (!dns || !dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &dns))
         {
             print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
+            ecore_list_destroy(dnss);
             return reply;
         }
     }
+    ecore_list_destroy(dnss);
     return reply;
 }
 
