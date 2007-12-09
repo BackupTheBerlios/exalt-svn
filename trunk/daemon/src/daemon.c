@@ -228,16 +228,17 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
 
         if(not_c || exalt_eth_state_load(CONF_FILE, exalt_eth_get_udi(eth)) == EXALT_UP)
         {
-            int i =0;
+            int i = 0;
             if(!exalt_eth_is_up(eth))
                 exalt_eth_up(eth);
             while(!exalt_eth_is_up(eth) && i<10)
             {
+                printf("WAIT\n");
                 usleep(500);
                 i++;
             }
 
-            if(exalt_eth_is_link(eth))
+            if(exalt_eth_is_link(eth) && exalt_eth_is_up(eth))
                 exalt_eth_apply_conn(eth, c);
         }
         else

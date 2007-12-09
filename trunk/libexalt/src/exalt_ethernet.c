@@ -198,7 +198,6 @@ void _exalt_cb_net_properties(void *data, void *reply_data, DBusError *error)
 
     str = exalt_eth_get_ip(eth);
     _exalt_eth_set_save_ip(eth,str);
-    //if we free, exalt segafult in this free:/
     EXALT_FREE(str);
 
     str = exalt_eth_get_netmask(eth);
@@ -247,7 +246,7 @@ void _exalt_cb_find_device_by_capability_net(void *user_data, void *reply_data, 
         e_hal_device_get_all_properties(exalt_eth_interfaces.dbus_conn, device, _exalt_cb_net_properties, action);
     }
 
-    EXALT_FREE(action);
+    //EXALT_FREE(action);
 }
 
 /**
@@ -1339,20 +1338,23 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
                 if(!eth)
                     break;
 
-                if(strcmp(_exalt_eth_get_save_ip(eth),exalt_eth_get_ip(eth)) != 0)
+                str = exalt_eth_get_ip(eth);
+                if(strcmp(_exalt_eth_get_save_ip(eth),str) != 0)
                 {
-                    _exalt_eth_set_save_ip(eth, exalt_eth_get_ip(eth));
+                    _exalt_eth_set_save_ip(eth, str);
                     if(exalt_eth_interfaces.eth_cb)
                         exalt_eth_interfaces.eth_cb(eth,EXALT_ETH_CB_ACTION_ADDRESS_NEW,exalt_eth_interfaces.eth_cb_user_data);
                 }
+                EXALT_FREE(str);
 
-                if(strcmp(_exalt_eth_get_save_netmask(eth),exalt_eth_get_netmask(eth)) != 0)
+                str = exalt_eth_get_netmask(eth);
+                if(strcmp(_exalt_eth_get_save_netmask(eth),str) != 0)
                 {
-                    _exalt_eth_set_save_netmask(eth, exalt_eth_get_netmask(eth));
+                    _exalt_eth_set_save_netmask(eth, str);
                     if(exalt_eth_interfaces.eth_cb)
                         exalt_eth_interfaces.eth_cb(eth,EXALT_ETH_CB_ACTION_NETMASK_NEW,exalt_eth_interfaces.eth_cb_user_data);
                 }
-
+                EXALT_FREE(str);
             case RTM_NEWROUTE:
             case RTM_DELROUTE:
                 ifroute = NLMSG_DATA(nh);
@@ -1378,7 +1380,6 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
                         if(exalt_eth_interfaces.eth_cb)
                             exalt_eth_interfaces.eth_cb(eth,EXALT_ETH_CB_ACTION_GATEWAY_NEW,exalt_eth_interfaces.eth_cb_user_data);
                     }
-                    //free -> segfault
                     EXALT_FREE(str);
                     data_l = ecore_list_next(l);
                 }
