@@ -30,6 +30,51 @@
 #include <E_DBus.h>
 #include "exalt_ethernet.h"
 
+#define EXALT_ASSERT(test) \
+    do\
+    {\
+        if(!(test))\
+        {\
+            print_error("ERROR", __FILE__,__func__,"%s failed",#test);\
+        }\
+    }while(0)
+
+
+
+#define EXALT_ASSERT_QUIT(test) \
+    do\
+    {\
+        if(!(test))\
+        {\
+            print_error("ERROR", __FILE__,__func__,"%s failed",#test);\
+            return 0;\
+        }\
+    }while(0)
+
+#define EXALT_ASSERT_QUIT_VOID(test) \
+    do\
+    {\
+        if(!(test))\
+        {\
+            print_error("ERROR", __FILE__,__func__,"%s failed",#test);\
+            return ;\
+        }\
+    }while(0)
+
+
+
+#define EXALT_ASSERT_ADV(test, instr, ...) \
+    do \
+    { \
+        if(!(test))\
+        {\
+            print_error("ERROR", __FILE__,__func__, __VA_ARGS__ );\
+            instr; \
+        }\
+    }while(0)
+
+
+
 struct Exalt_Ethernets
 {
     Ecore_List* ethernets;
@@ -55,7 +100,9 @@ struct Exalt_Ethernets
 /** Command to launch a dhcp */
 #ifdef DHCP_COMMAND_PATH
     #define COMMAND_DHCLIENT DHCP_COMMAND_PATH " %s -1 -q"
+    #define DHCLIENT_PID_FILE "/var/run/dhcp/dhclient.pid"
 #endif
+
 /** Command to lauch the wpa_supplicant daemon */
 #ifdef WPA_SUPPLICANT_COMMAND_PATH
     #define COMMAND_WPA WPA_SUPPLICANT_COMMAND_PATH " -D%s -i%s -c%s -P%s -B"
@@ -70,7 +117,7 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler);
 
 
 char *str_remove (const char *s, const char *ct);
-void print_error(const char* type, const char* file, int line,const char* fct, const char* msg, ...);
+void print_error(const char* type, const char* file,const char* fct, const char* msg, ...);
 char* exalt_addr_hexa_to_dec(const char* addr);
 short exalt_ioctl(void* argp, int request);
 

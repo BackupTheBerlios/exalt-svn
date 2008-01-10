@@ -49,12 +49,12 @@ DBusMessage * dbus_cb_wireless_scan_wait(E_DBus_Object *obj __UNUSED__, DBusMess
         essid = strdup(exalt_wirelessinfo_get_essid(wi));
         if(!essid)
         {
-            print_error("WARNING", __FILE__, __LINE__,__func__, "essid=%p",essid);
+            print_error("WARNING", __FILE__,__func__, "essid=%p",essid);
             return reply;
         }
         if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid))
         {
-            print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
+            print_error("ERROR", __FILE__,__func__, "Out Of Memory");
             EXALT_FREE(essid);
             return reply;
         }
@@ -81,12 +81,12 @@ DBusMessage * dbus_cb_wireless_get_essid(E_DBus_Object *obj __UNUSED__, DBusMess
     essid = exalt_wireless_get_essid(exalt_eth_get_wireless(eth));
     if(!essid)
     {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "essid=%p",essid);
+        print_error("WARNING", __FILE__,__func__, "essid=%p",essid);
         return reply;
     }
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid))
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
+        print_error("ERROR", __FILE__,__func__, "Out Of Memory");
         EXALT_FREE(essid);
         return reply;
     }
@@ -112,12 +112,12 @@ DBusMessage * dbus_cb_wireless_get_wpasupplicant_driver(E_DBus_Object *obj __UNU
     driver = exalt_wireless_get_wpasupplicant_driver(exalt_eth_get_wireless(eth));
     if(!driver)
     {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "driver=%p",driver);
+        print_error("WARNING", __FILE__,__func__, "driver=%p",driver);
         return reply;
     }
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &driver))
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
+        print_error("ERROR", __FILE__,__func__, "Out Of Memory");
         return reply;
     }
     return reply;
@@ -140,21 +140,21 @@ DBusMessage * dbus_cb_wireless_set_wpasupplicant_driver(E_DBus_Object *obj __UNU
     //retrieve the driver
     if(!dbus_message_iter_init(msg, &args))
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "no argument");
+        print_error("ERROR", __FILE__,__func__, "no argument");
         return reply;
     }
 
     dbus_message_iter_next(&args);
     if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a int");
+        print_error("ERROR", __FILE__,__func__, "Argument is not a int");
         return reply;
     }
     else
         dbus_message_iter_get_basic(&args, &driver);
     if(!exalt_eth_is_wireless(eth))
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "Thec ard is not a wireless card");
+        print_error("ERROR", __FILE__,__func__, "Thec ard is not a wireless card");
         return reply;
     }
 

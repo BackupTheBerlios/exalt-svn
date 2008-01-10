@@ -253,7 +253,7 @@ char* exalt_dbus_wirelessinfo_get_addr(const exalt_dbus_conn* conn, const char* 
     dbus_pending_call_unref(ret);
 
     //read the response
-    res = strdup(exalt_dbus_response_string(msg));
+    EXALT_STRDUP(res , exalt_dbus_response_string(msg));
     dbus_message_unref(msg);
     return res;
 }
@@ -303,7 +303,7 @@ char* exalt_dbus_wirelessinfo_get_protocol(const exalt_dbus_conn* conn, const ch
     dbus_pending_call_unref(ret);
 
     //read the response
-    res = strdup(exalt_dbus_response_string(msg));
+    EXALT_STRDUP(res , exalt_dbus_response_string(msg));
     dbus_message_unref(msg);
     return res;
 }
@@ -353,7 +353,7 @@ char* exalt_dbus_wirelessinfo_get_mode(const exalt_dbus_conn* conn, const char* 
     dbus_pending_call_unref(ret);
 
     //read the response
-    res = strdup(exalt_dbus_response_string(msg));
+    EXALT_STRDUP(res , exalt_dbus_response_string(msg));
     dbus_message_unref(msg);
     return res;
 }
@@ -403,7 +403,7 @@ char* exalt_dbus_wirelessinfo_get_channel(const exalt_dbus_conn* conn, const cha
     dbus_pending_call_unref(ret);
 
     //read the response
-    res = strdup(exalt_dbus_response_string(msg));
+    EXALT_STRDUP(res , exalt_dbus_response_string(msg));
     dbus_message_unref(msg);
     return res;
 }
@@ -453,7 +453,7 @@ char* exalt_dbus_wirelessinfo_get_bitrates(const exalt_dbus_conn* conn, const ch
     dbus_pending_call_unref(ret);
 
     //read the response
-    res = strdup(exalt_dbus_response_string(msg));
+    EXALT_STRDUP(res , exalt_dbus_response_string(msg));
     dbus_message_unref(msg);
     return res;
 }

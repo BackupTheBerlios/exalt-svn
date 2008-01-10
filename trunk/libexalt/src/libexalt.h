@@ -10,7 +10,7 @@
 #define EXALT_CLOSE(p) do {if(p>=0){close(p); p=0;} }while(0)
 #define EXALT_FCLOSE(p) do {if(p>=0){fclose(p); p=NULL;} }while(0)
 #define EXALT_CLEAR_LIST(p) do {if(p){ecore_list_clear(p); p=NULL;} }while(0)
-#define EXALT_STRDUP(a,b) do { char* str = b; if(str){ a=strdup(str);} else {a=NULL;}}while(0)
+#define EXALT_STRDUP(a,b) do { const char* str99 = b; if(str99){ a=strdup(str99);} else {a=NULL;}}while(0)
 
 #define EXALT_PATH_PROCNET_DEV "/proc/net/dev"
 #define EXALT_PATH_ROUTE "/proc/net/route"

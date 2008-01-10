@@ -26,14 +26,13 @@ struct _main_window
 	eth_panel* eth_panel;
 	wireless_panel* wireless_panel;
 	general_panel* general_panel;
-        about_panel* about_panel;
-        boot_panel *boot_panel;
 
         int advanced_mode;
 };
 
 main_window* mainwindow_create();
 void mainwindow_add_interface(char* interface, main_window* win);
+void mainwindow_remove_interface(char* interface, main_window* win);
 
 Etk_Bool mainWindow_free(main_window** win);
 Etk_Bool mainWindow_close(Etk_Object *object, void *data);

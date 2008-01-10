@@ -58,7 +58,7 @@ char* exalt_dbus_eth_get_ip(const exalt_dbus_conn* conn, const char* eth)
 
     dbus_pending_call_unref(ret);
     //read the response
-    res = strdup(exalt_dbus_response_string(msg));
+    EXALT_STRDUP(res , exalt_dbus_response_string(msg));
     dbus_message_unref(msg);
     return res;
 }
@@ -101,7 +101,7 @@ char* exalt_dbus_eth_get_netmask(const exalt_dbus_conn* conn, const char* eth)
     dbus_pending_call_unref(ret);
 
     //read the response
-    res = strdup(exalt_dbus_response_string(msg));
+    EXALT_STRDUP(res , exalt_dbus_response_string(msg));
     dbus_message_unref(msg);
     return res;
 }
@@ -144,7 +144,7 @@ char* exalt_dbus_eth_get_gateway(const exalt_dbus_conn* conn, const char* eth)
     dbus_pending_call_unref(ret);
 
     //read the response
-    res = strdup(exalt_dbus_response_string(msg));
+    EXALT_STRDUP(res , exalt_dbus_response_string(msg));
     dbus_message_unref(msg);
     return res;
 }

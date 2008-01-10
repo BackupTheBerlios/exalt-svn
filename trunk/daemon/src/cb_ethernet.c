@@ -33,7 +33,7 @@ DBusMessage * dbus_cb_eth_get_eth_list(E_DBus_Object *obj __UNUSED__, DBusMessag
     interfaces = exalt_eth_get_list();
     if(!interfaces)
     {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "interfaces=%p",interfaces);
+        print_error("WARNING", __FILE__,__func__, "interfaces=%p",interfaces);
         return reply;
     }
 
@@ -44,12 +44,12 @@ DBusMessage * dbus_cb_eth_get_eth_list(E_DBus_Object *obj __UNUSED__, DBusMessag
         interface = exalt_eth_get_name(eth);
         if(!interface)
         {
-            print_error("WARNING", __FILE__, __LINE__,__func__, "interface=%p",interface);
+            print_error("WARNING", __FILE__,__func__, "interface=%p",interface);
             return reply;
         }
         if (!interface || !dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &interface))
         {
-            print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
+            print_error("ERROR", __FILE__,__func__, "Out Of Memory");
             return reply;
         }
     }
@@ -76,12 +76,12 @@ DBusMessage * dbus_cb_eth_get_ip(E_DBus_Object *obj __UNUSED__, DBusMessage *msg
     ip = exalt_eth_get_ip(eth);
     if(!ip)
     {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "ip=%p",ip);
+        print_error("WARNING", __FILE__,__func__, "ip=%p",ip);
         return reply;
     }
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &ip))
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
+        print_error("ERROR", __FILE__,__func__, "Out Of Memory");
         EXALT_FREE(ip);
         return reply;
     }
@@ -107,12 +107,12 @@ DBusMessage * dbus_cb_eth_get_netmask(E_DBus_Object *obj __UNUSED__, DBusMessage
     netmask = exalt_eth_get_netmask(eth);
     if(!netmask)
     {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "netmask=%p",netmask);
+        print_error("WARNING", __FILE__,__func__, "netmask=%p",netmask);
         return reply;
     }
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &netmask))
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
+        print_error("ERROR", __FILE__,__func__, "Out Of Memory");
         EXALT_FREE(netmask);
         return reply;
     }
@@ -139,12 +139,12 @@ DBusMessage * dbus_cb_eth_get_gateway(E_DBus_Object *obj __UNUSED__, DBusMessage
     gateway = exalt_eth_get_gateway(eth);
     if(!gateway)
     {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "gateway=%p",gateway);
+        print_error("WARNING", __FILE__,__func__, "gateway=%p",gateway);
         return reply;
     }
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &gateway))
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
+        print_error("ERROR", __FILE__,__func__, "Out Of Memory");
         EXALT_FREE(gateway);
         return reply;
     }
@@ -173,7 +173,7 @@ DBusMessage * dbus_cb_eth_is_wireless(E_DBus_Object *obj __UNUSED__, DBusMessage
     is = exalt_eth_is_wireless(eth);
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_BOOLEAN, &is))
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
+        print_error("ERROR", __FILE__,__func__, "Out Of Memory");
         return reply;
     }
 
@@ -199,7 +199,7 @@ DBusMessage * dbus_cb_eth_is_link(E_DBus_Object *obj __UNUSED__, DBusMessage *ms
     is = exalt_eth_is_link(eth);
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_BOOLEAN, &is))
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
+        print_error("ERROR", __FILE__,__func__, "Out Of Memory");
         return reply;
     }
 
@@ -225,7 +225,7 @@ DBusMessage * dbus_cb_eth_is_up(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
     is = exalt_eth_is_up(eth);
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_BOOLEAN, &is))
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
+        print_error("ERROR", __FILE__,__func__, "Out Of Memory");
         return reply;
     }
 
@@ -252,7 +252,7 @@ DBusMessage * dbus_cb_eth_is_dhcp(E_DBus_Object *obj __UNUSED__, DBusMessage *ms
     is = exalt_eth_is_dhcp(eth);
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_BOOLEAN, &is))
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
+        print_error("ERROR", __FILE__,__func__, "Out Of Memory");
         return reply;
     }
 
@@ -295,20 +295,6 @@ DBusMessage * dbus_cb_eth_down(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
     return reply;
 }
 
-struct E_DBus_Object
-{
-    E_DBus_Connection *conn;
-    char *path;
-    Ecore_List *interfaces;
-    char *introspection_data;
-    int introspection_dirty;
-
-    E_DBus_Object_Property_Get_Cb cb_property_get;
-    E_DBus_Object_Property_Set_Cb cb_property_set;
-
-    void *data;
-};
-
 DBusMessage * dbus_cb_eth_apply_conn(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
     DBusMessage *reply;
@@ -322,7 +308,7 @@ DBusMessage * dbus_cb_eth_apply_conn(E_DBus_Object *obj __UNUSED__, DBusMessage 
     c = exalt_conn_new();
     if(!c)
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "c=%p",c);
+        print_error("ERROR", __FILE__,__func__, "c=%p",c);
         return reply;
     }
 
@@ -334,13 +320,13 @@ DBusMessage * dbus_cb_eth_apply_conn(E_DBus_Object *obj __UNUSED__, DBusMessage 
     //retrieve the connection
     if(!dbus_message_iter_init(msg, &args))
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "no argument");
+        print_error("ERROR", __FILE__,__func__, "no argument");
         return reply;
     }
     dbus_message_iter_next(&args);
     if (DBUS_TYPE_INT32 != dbus_message_iter_get_arg_type(&args))
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a int");
+        print_error("ERROR", __FILE__,__func__, "Argument is not a int");
         return reply;
     }
     else
@@ -352,7 +338,7 @@ DBusMessage * dbus_cb_eth_apply_conn(E_DBus_Object *obj __UNUSED__, DBusMessage 
     {
         if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
         {
-            print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a string");
+            print_error("ERROR", __FILE__,__func__, "Argument is not a string");
             return reply;
         }
         else
@@ -362,7 +348,7 @@ DBusMessage * dbus_cb_eth_apply_conn(E_DBus_Object *obj __UNUSED__, DBusMessage 
 
         if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
         {
-            print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a string");
+            print_error("ERROR", __FILE__,__func__, "Argument is not a string");
             return reply;
         }
         else
@@ -372,7 +358,7 @@ DBusMessage * dbus_cb_eth_apply_conn(E_DBus_Object *obj __UNUSED__, DBusMessage 
 
         if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
         {
-            print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a string");
+            print_error("ERROR", __FILE__,__func__, "Argument is not a string");
             return reply;
         }
         else
@@ -383,7 +369,7 @@ DBusMessage * dbus_cb_eth_apply_conn(E_DBus_Object *obj __UNUSED__, DBusMessage 
 
     if (DBUS_TYPE_INT32 != dbus_message_iter_get_arg_type(&args))
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a int");
+        print_error("ERROR", __FILE__,__func__, "Argument is not a int");
         return reply;
     }
     else
@@ -395,7 +381,7 @@ DBusMessage * dbus_cb_eth_apply_conn(E_DBus_Object *obj __UNUSED__, DBusMessage 
     {
         if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
         {
-            print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a string");
+            print_error("ERROR", __FILE__,__func__, "Argument is not a string");
             return reply;
         }
         else
@@ -406,7 +392,7 @@ DBusMessage * dbus_cb_eth_apply_conn(E_DBus_Object *obj __UNUSED__, DBusMessage 
 
         if (DBUS_TYPE_INT32 != dbus_message_iter_get_arg_type(&args))
         {
-            print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a int");
+            print_error("ERROR", __FILE__,__func__, "Argument is not a int");
             return reply;
         }
         else
@@ -418,7 +404,7 @@ DBusMessage * dbus_cb_eth_apply_conn(E_DBus_Object *obj __UNUSED__, DBusMessage 
         {
             if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
             {
-                print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a string");
+                print_error("ERROR", __FILE__,__func__, "Argument is not a string");
                 return reply;
             }
             else
@@ -429,7 +415,7 @@ DBusMessage * dbus_cb_eth_apply_conn(E_DBus_Object *obj __UNUSED__, DBusMessage 
 
         if (DBUS_TYPE_INT32 != dbus_message_iter_get_arg_type(&args))
         {
-            print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a int");
+            print_error("ERROR", __FILE__,__func__, "Argument is not a int");
             return reply;
         }
         else
@@ -440,7 +426,7 @@ DBusMessage * dbus_cb_eth_apply_conn(E_DBus_Object *obj __UNUSED__, DBusMessage 
 
         if (DBUS_TYPE_INT32 != dbus_message_iter_get_arg_type(&args))
         {
-            print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a int");
+            print_error("ERROR", __FILE__,__func__, "Argument is not a int");
             return reply;
         }
         else

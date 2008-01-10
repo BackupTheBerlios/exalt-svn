@@ -21,11 +21,7 @@ Ecore_List* exalt_dns_get_list()
     Ecore_List* l;
 
     f = fopen(EXALT_RESOLVCONF_FILE, "ro");
-    if(!f)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"Can't open the file: %s\n", EXALT_RESOLVCONF_FILE);
-        return NULL;
-    }
+   EXALT_ASSERT_QUIT(f!=NULL);
 
     l = ecore_list_new();
     l->free_func = free;
@@ -55,24 +51,11 @@ int exalt_dns_add(const char* dns)
 {
     char buf[1024];
     FILE* f;
-    if(!dns)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"dns=%p", dns);
-        return 0;
-    }
-
-    if(!exalt_is_address(dns))
-    {
-        print_error("WARNING", __FILE__, __LINE__,__func__,"dns(%s) is not a valid address",dns);
-        return 0;
-    }
+ EXALT_ASSERT_QUIT(dns!=NULL);
+EXALT_ASSERT_QUIT(exalt_is_address(dns));
 
     f = fopen(EXALT_RESOLVCONF_FILE, "a");
-    if(!f)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"Can't open the file: %s\n", EXALT_RESOLVCONF_FILE);
-        return 0;
-    }
+  EXALT_ASSERT_QUIT(f!=NULL);
 
     sprintf(buf,"nameserver %s\n", dns);
     fwrite( buf, sizeof(char), strlen(buf), f);
@@ -92,22 +75,15 @@ int exalt_dns_delete(const char* dns)
 {
     char buf[1024], buf2[1024];
     FILE* fw, *fr;
-    if(!dns)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"dns=%p", dns);
-        return -1;
-    }
+    EXALT_ASSERT_QUIT(dns!=NULL);
 
     ecore_file_cp(EXALT_RESOLVCONF_FILE, EXALT_TEMP_FILE);
 
-    fw = fopen(EXALT_RESOLVCONF_FILE, "w");
     fr = fopen(EXALT_TEMP_FILE, "ro");
+    EXALT_ASSERT_QUIT(fr!=NULL);
 
-    if(!fw || !fr)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"Can't open one of these file: %s %s\n", EXALT_RESOLVCONF_FILE, EXALT_TEMP_FILE);
-        return 0;
-    }
+    fw = fopen(EXALT_RESOLVCONF_FILE, "w");
+    EXALT_ASSERT_ADV(fw!=NULL,EXALT_FCLOSE(fr);return 0,"f!=NULL failed");
 
     sprintf(buf,"nameserver %s\n",dns);
     while(fgets(buf2,1024,fr))
@@ -132,28 +108,16 @@ int exalt_dns_replace(const char* old_dns, const char* new_dns)
     char buf[1024], buf2[1024], buf3[1024];;
     FILE* fw, *fr;
 
-    if(!old_dns || !new_dns)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"old_dns=%p  new_dns=%p",old_dns, new_dns);
-        return -1;
-    }
-
-    if(!exalt_is_address(new_dns))
-    {
-        print_error("WARNING", __FILE__, __LINE__,__func__,"dns(%s) is not a valid address",new_dns);
-        return -1;
-    }
+    EXALT_ASSERT_QUIT(old_dns!=NULL);
+    EXALT_ASSERT_QUIT(new_dns!=NULL);
+    EXALT_ASSERT_QUIT(exalt_is_address(new_dns));
 
     ecore_file_cp(EXALT_RESOLVCONF_FILE, EXALT_TEMP_FILE);
+    fr = fopen(EXALT_TEMP_FILE, "ro");
+    EXALT_ASSERT_QUIT(fr!=NULL);
 
     fw = fopen(EXALT_RESOLVCONF_FILE, "w");
-    fr = fopen(EXALT_TEMP_FILE, "ro");
-
-    if(!fw || !fr)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"Can't open one of these file: %s %s\n", EXALT_RESOLVCONF_FILE, EXALT_TEMP_FILE);
-        return 0;
-    }
+    EXALT_ASSERT_ADV(fw!=NULL,EXALT_FCLOSE(fr);return 0,"f!=NULL failed");
 
     sprintf(buf,"nameserver %s\n",old_dns);
     sprintf(buf3,"nameserver %s\n",new_dns);

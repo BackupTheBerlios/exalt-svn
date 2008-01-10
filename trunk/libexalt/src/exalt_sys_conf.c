@@ -29,7 +29,7 @@ int _exalt_eet_wireless_conn_save(const char* file,Exalt_Connection* c);
 /**
  * @brief save the wpa_supplicant configuration for a wireless interface
  * @param w the wireless card
- * @return Return 1 if success, else -1
+ * @return Return 1 if success, else -0
  */
 int exalt_conf_save_wpasupplicant(Exalt_Wireless *w)
 {
@@ -38,37 +38,19 @@ int exalt_conf_save_wpasupplicant(Exalt_Wireless *w)
     Exalt_Connection *c;
     int enc_mode;
 
-    if(!w)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"w=%p",w);
-        return -1;
-    }
+    EXALT_ASSERT_QUIT(w!=NULL);
+
     eth = exalt_wireless_get_eth(w);
     c = exalt_eth_get_connection(eth);
-    if(!c)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"c=%p",c);
-        return -1;
-    }
-
-    if(!exalt_conn_is_valid(c)||!exalt_conn_is_wireless(c))
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"The connection is not valid\n");
-        return -1;
-    }
-
+    EXALT_ASSERT_QUIT(exalt_conn_is_valid(c));
+    EXALT_ASSERT_QUIT(exalt_conn_is_wireless(c));
 
     //its more easy to recreate a new file
     //so we don't modify the old file, just delete it :)
     remove(EXALT_WPA_CONF_FILE);
 
     //recreate the file
-    if(ecore_file_mkpath(EXALT_WPA_CONF_FILE_DIR) == 0)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"error can't create the WPA conf file");
-        return -1;
-    }
-
+    EXALT_ASSERT_QUIT(ecore_file_mkpath(EXALT_WPA_CONF_FILE_DIR) != 0);
 
     //save the new configuration
     fw = fopen(EXALT_WPA_CONF_FILE,"w");
@@ -133,11 +115,7 @@ int exalt_conf_save_wpasupplicant(Exalt_Wireless *w)
  */
 int exalt_wireless_conn_save(const char* file, Exalt_Connection* c)
 {
-    if(!c)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"c=%p",c);
-        return -1;
-    }
+    EXALT_ASSERT_QUIT(c!=NULL);
     return _exalt_eet_wireless_conn_save(file, c);
 }
 
@@ -162,11 +140,7 @@ int exalt_eth_save(const char* file, Exalt_Ethernet* eth)
 {
     Exalt_Eth_Save s;
 
-    if(!eth)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
-        return 0;
-    }
+    EXALT_ASSERT_QUIT(eth!=NULL);
 
     s.state = _exalt_eth_get_state(eth);
     s.connection = exalt_eth_get_connection(eth);
@@ -175,52 +149,41 @@ int exalt_eth_save(const char* file, Exalt_Ethernet* eth)
     else
         s.driver = "wext";
 
-     return _exalt_eet_eth_save(file, &s, exalt_eth_get_udi(eth));
+    return _exalt_eet_eth_save(file, &s, exalt_eth_get_udi(eth));
 }
 
 
 Exalt_Enum_State exalt_eth_state_load(const char* file, const char* udi)
 {
     Exalt_Eth_Save *s = _exalt_eet_eth_load(file, udi);
-    if(!s)
-        return 0;
-    else
-    {
-        Exalt_Enum_State st = s->state;
-        EXALT_FREE(s->driver);
-        exalt_conn_free(s->connection);
-        EXALT_FREE(s);
-        return st;
-    }
+    EXALT_ASSERT_QUIT(s!=NULL);
+
+    Exalt_Enum_State st = s->state;
+    EXALT_FREE(s->driver);
+    exalt_conn_free(s->connection);
+    EXALT_FREE(s);
+    return st;
 }
 
 char* exalt_eth_driver_load(const char* file, const char* udi)
 {
     Exalt_Eth_Save *s = _exalt_eet_eth_load(file,  udi);
-    if(!s)
-        return 0;
-    else
-    {
-        char* driver = s->driver;
-        exalt_conn_free(s->connection);
-        EXALT_FREE(s);
-        return driver;
-    }
+    EXALT_ASSERT_QUIT(s!=NULL);
+    char* driver = s->driver;
+    exalt_conn_free(s->connection);
+    EXALT_FREE(s);
+    return driver;
 }
 
 
 Exalt_Connection* exalt_eth_conn_load(const char* file, const char* udi)
 {
     Exalt_Eth_Save *s = _exalt_eet_eth_load(file, udi);
-    if(!s)
-        return 0;
-    else
-    {
-        Exalt_Connection *c = s->connection;
-        EXALT_FREE(s->driver);
-        EXALT_FREE(s);
-        return c;
-    }
+    EXALT_ASSERT_QUIT(s!=NULL);
+    Exalt_Connection *c = s->connection;
+    EXALT_FREE(s->driver);
+    EXALT_FREE(s);
+    return c;
 }
 
 
@@ -239,8 +202,7 @@ Exalt_Eth_Save* _exalt_eet_eth_load(const char* file, const char* udi)
     edd = _exalt_eth_save_edd_new();
 
     f = eet_open(file, EET_FILE_MODE_READ);
-    if(!f)
-        return NULL;
+    EXALT_ASSERT_QUIT(f!=NULL);
 
     data = eet_data_read(f, edd, udi);
 
@@ -260,8 +222,7 @@ int _exalt_eet_eth_save(const char* file, Exalt_Eth_Save* s, const char* interfa
     if(!f)
         f = eet_open(file, EET_FILE_MODE_WRITE);
     res=eet_data_write(f, edd,interface, s, 0);
-    if(!res)
-        print_error("ERROR", __FILE__, __LINE__,__func__,"Can not save the configuration file (%s) f=%p,  edd=%p", file,f, edd);
+    EXALT_ASSERT(res!=0);
 
     eet_close(f);
     eet_data_descriptor_free(edd);
@@ -278,8 +239,7 @@ Exalt_Connection* _exalt_eet_wireless_conn_load(const char*file, const char* ess
     edd = exalt_conn_edd_new();
 
     f = eet_open(file, EET_FILE_MODE_READ);
-    if(!f)
-        return NULL;
+    EXALT_ASSERT_QUIT(f!=NULL);
 
     data = eet_data_read(f, edd, essid);
 
@@ -299,8 +259,7 @@ int _exalt_eet_wireless_conn_save(const char*file, Exalt_Connection* c)
     if(!f)
         f = eet_open(file, EET_FILE_MODE_WRITE);
     res=eet_data_write(f, edd,exalt_conn_get_essid(c), c, 0);
-    if(!res)
-        print_error("ERROR", __FILE__, __LINE__,__func__,"Can not save the configuration file (%s) f=%p, edd_wi=%p", file,f, edd);
+    EXALT_ASSERT(res!=0);
 
     eet_close(f);
     eet_data_descriptor_free(edd);

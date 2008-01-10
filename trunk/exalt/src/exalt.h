@@ -43,6 +43,7 @@ void print_error(const char* type, const char* file, int line,const char* fct, c
 #include "wireless_panel.h"
 #include "general_panel.h"
 #include "boot_panel.h"
+#include "dns_panel.h"
 
 #endif
 

@@ -67,7 +67,10 @@ typedef enum Exalt_Enum_Action
     /** when we start applying a connection */
     EXALT_ETH_CB_ACTION_CONN_APPLY_START,
     /** when the connection is applied */
-    EXALT_ETH_CB_ACTION_CONN_APPLY_DONE
+    EXALT_ETH_CB_ACTION_CONN_APPLY_DONE,
+
+    /** when we configure if we want wait (or not) that the card is init during the boot process (only use by the daemon exaltd) */
+    EXALTD_ETH_CB_WAITINGBOOT_CHANGE
 } Exalt_Enum_Action;
 
 /** cast into an Exalt_Ethernet* struct */
@@ -100,9 +103,9 @@ short exalt_eth_is_ethernet(char* name);
 void exalt_eth_printf();
 
 Ecore_List* exalt_eth_get_list();
-Exalt_Ethernet* exalt_eth_get_ethernet_byname(char* name);
+Exalt_Ethernet* exalt_eth_get_ethernet_byname(const char* name);
 Exalt_Ethernet* exalt_eth_get_ethernet_bypos(int pos);
-Exalt_Ethernet* exalt_eth_get_ethernet_byudi(char* udi);
+Exalt_Ethernet* exalt_eth_get_ethernet_byudi(const char* udi);
 Exalt_Ethernet* exalt_eth_get_ethernet_byifindex(int ifindex);
 
 

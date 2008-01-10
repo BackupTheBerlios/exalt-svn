@@ -58,6 +58,9 @@ int setup(E_DBus_Connection *conn)
 
     e_dbus_interface_method_add(iface, "DNS_GET_LIST", NULL, NULL, dbus_cb_dns_get_list);
 
+    e_dbus_interface_method_add(iface, "BOOTPROCESS_IFACE_IS", NULL, NULL, dbus_cb_bootprocess_iface_is);
+
+
     e_dbus_object_interface_attach(obj, iface);
 
     iface = e_dbus_interface_new(EXALTD_INTERFACE_WRITE);
@@ -70,8 +73,10 @@ int setup(E_DBus_Connection *conn)
     e_dbus_interface_method_add(iface, "DNS_REPLACE", NULL, NULL, dbus_cb_dns_replace);
     e_dbus_interface_method_add(iface, "DNS_DELETE", NULL, NULL, dbus_cb_dns_delete);
 
-
     e_dbus_interface_method_add(iface, "IFACE_APPLY_CONN", NULL, NULL, dbus_cb_eth_apply_conn);
+
+    e_dbus_interface_method_add(iface, "BOOTPROCESS_IFACE_ADD", NULL, NULL, dbus_cb_bootprocess_iface_add);
+    e_dbus_interface_method_add(iface, "BOOTPROCESS_IFACE_REMOVE", NULL, NULL, dbus_cb_bootprocess_iface_remove);
 
     e_dbus_object_interface_attach(obj, iface);
 
@@ -81,7 +86,6 @@ int setup(E_DBus_Connection *conn)
 
 int main(int argc, char** argv)
 {
-    E_DBus_Connection *conn;
     int daemon = 1;
     FILE *fp;
     int size;
@@ -116,52 +120,58 @@ int main(int argc, char** argv)
             stdout = fp;
         }
         else
-            print_error("WARNING", __FILE__, __LINE__,__func__, "Can not create the log file: %s\n",EXALTD_LOGFILE);
+            print_error("WARNING", __FILE__,__func__, "Can not create the log file: %s\n",EXALTD_LOGFILE);
     }
 
-        e_dbus_init();
+    e_dbus_init();
     ecore_init();
     exalt_init();
 
     if(!exalt_is_admin())
     {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "Please run as root. \n");
+        print_error("WARNING", __FILE__,__func__, "Please run as root. \n");
         e_dbus_shutdown();
         ecore_shutdown();
         return 1;
     }
 
 
-    conn = e_dbus_bus_get(DBUS_BUS_SYSTEM);
-    if(!conn)
+    exaltd_conn = e_dbus_bus_get(DBUS_BUS_SYSTEM);
+    if(!exaltd_conn)
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "main(): can not connect to DBUS, maybe the daemon is not launch ?\n");
+        print_error("ERROR", __FILE__,__func__, "main(): can not exaltd_connect to DBUS, maybe the daemon is not launch ?\n");
         e_dbus_shutdown();
         ecore_shutdown();
         return -1;
     }
 
-    setup(conn);
+    setup(exaltd_conn);
 
-    exalt_eth_set_cb(eth_cb,conn);
-    exalt_eth_set_scan_cb(wireless_scan_cb,conn);
+    exalt_eth_set_cb(eth_cb,exaltd_conn);
+    exalt_eth_set_scan_cb(wireless_scan_cb,exaltd_conn);
 
     exalt_main();
 
     if(daemon)
     {
         //if we need waiting 1 or more card
-        waiting_card_list = NULL;
-        waiting_card_timer = NULL;
-        waiting_card_load(CONF_FILE);
-        if ( waiting_card_list )
+        waiting_iface_list = NULL;
+        waiting_iface_timer = NULL;
+        waiting_iface_list = waiting_iface_load(CONF_FILE);
+        if ( waiting_iface_list->l )
         {
             //start the timer for the timeout
-            int timeout = 0;
-            waiting_card_timer = ecore_timer_add(5, waiting_card_stop, &timeout);;
+            waiting_iface_timer = ecore_timer_add(waiting_iface_list->timeout, waiting_iface_stop, waiting_iface_list);
             ecore_main_loop_begin();
-        }
 
+            waiting_iface_list = NULL;
+            waiting_iface_timer = NULL;
+
+        }
+        else
+        {
+            EXALT_FREE(waiting_iface_list);
+        }
         //all waiting card are set (or timeout)
         //we create the child and then quit
         if(fork()!=0)
@@ -175,7 +185,7 @@ int main(int argc, char** argv)
             fclose(fp);
         }
         else
-            print_error("WARNING", __FILE__, __LINE__,__func__, "Can not create the pid file: %s\n", EXALTD_PIDFILE);
+            print_error("WARNING", __FILE__,__func__, "Can not create the pid file: %s\n", EXALTD_PIDFILE);
     }
 
     ecore_main_loop_begin();
@@ -233,7 +243,6 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
                 exalt_eth_up(eth);
             while(!exalt_eth_is_up(eth) && i<10)
             {
-                printf("WAIT\n");
                 usleep(500);
                 i++;
             }
@@ -271,11 +280,31 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
         exalt_eth_save(CONF_FILE, eth);
     }
 
+
+
+    //waiting card
+    if(!waiting_iface_is_done(waiting_iface_list) && waiting_iface_is(waiting_iface_list, eth) && action == EXALT_ETH_CB_ACTION_ADDRESS_NEW )
+    {
+        const char *ip = exalt_eth_get_ip(eth);
+
+        if(ip && strcmp(ip,"0.0.0.0") != 0)
+        {
+            waiting_iface_done(waiting_iface_list, eth);
+            if(waiting_iface_is_done(waiting_iface_list))
+            {
+                //stop the timeout
+                EXALT_DELETE_TIMER(waiting_iface_timer);
+                waiting_iface_stop(waiting_iface_list);
+            }
+        }
+    }
+
+
     //send a broadcast
     msg = dbus_message_new_signal(EXALTD_PATH,EXALTD_INTERFACE_READ, "NOTIFY");
     if(!msg)
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "msg=%p",msg);
+        print_error("ERROR", __FILE__,__func__, "msg=%p",msg);
         return ;
     }
 
@@ -283,7 +312,7 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
     name = exalt_eth_get_name(eth);
     if(!name)
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "name=%p",name);
+        print_error("ERROR", __FILE__,__func__, "name=%p",name);
         dbus_message_unref(msg);
         return ;
     }
@@ -291,30 +320,18 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
     dbus_message_iter_init_append(msg, &args);
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &name))
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
+        print_error("ERROR", __FILE__,__func__, "Out Of Memory");
         dbus_message_unref(msg);
         return ;
     }
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_UINT32, &action))
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
+        print_error("ERROR", __FILE__,__func__, "Out Of Memory");
         dbus_message_unref(msg);
         return ;
     }
     e_dbus_message_send(conn, msg, NULL, 3,NULL);
     dbus_message_unref(msg);
-
-    //waiting card
-    if(waiting_card_list && waiting_card_is(eth) && action == EXALT_ETH_CB_ACTION_ADDRESS_NEW && strcmp(exalt_eth_get_ip(eth), "0.0.0.0")!=0 )
-    {
-        waiting_card_remove(eth);
-        if(waiting_card_is_done())
-        {
-            //stop the timeout
-            int no_timeout = 1;
-            waiting_card_stop(&no_timeout);
-        }
-    }
 }
 
 void wireless_scan_cb(Exalt_Ethernet* eth,Ecore_List* new_networks, Ecore_List* old_networks, void* data)
@@ -331,7 +348,7 @@ void wireless_scan_cb(Exalt_Ethernet* eth,Ecore_List* new_networks, Ecore_List* 
 
     if(!new_networks || !old_networks || !data)
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "new_networks=%p, old_networks=%p, data=%p",new_networks, old_networks, data);
+        print_error("ERROR", __FILE__,__func__, "new_networks=%p, old_networks=%p, data=%p",new_networks, old_networks, data);
         return ;
     }
 
@@ -341,21 +358,21 @@ void wireless_scan_cb(Exalt_Ethernet* eth,Ecore_List* new_networks, Ecore_List* 
     msg = dbus_message_new_signal(EXALTD_PATH,EXALTD_INTERFACE_READ, "SCAN_NOTIFY");
     if(!msg)
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "msg=%p",msg);
+        print_error("ERROR", __FILE__,__func__, "msg=%p",msg);
         return ;
     }
 
     name = exalt_eth_get_name(eth);
     if(!name)
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "name=%p",name);
+        print_error("ERROR", __FILE__,__func__, "name=%p",name);
         dbus_message_unref(msg);
         return ;
     }
     dbus_message_iter_init_append(msg, &args);
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &name))
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
+        print_error("ERROR", __FILE__,__func__, "Out Of Memory");
         dbus_message_unref(msg);
         return ;
     }
@@ -367,14 +384,14 @@ void wireless_scan_cb(Exalt_Ethernet* eth,Ecore_List* new_networks, Ecore_List* 
         essid = exalt_wirelessinfo_get_essid(wi);
         if(!essid)
         {
-            print_error("ERROR", __FILE__, __LINE__,__func__, "essid=%p",essid);
+            print_error("ERROR", __FILE__,__func__, "essid=%p",essid);
             dbus_message_unref(msg);
             return ;
         }
 
         if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid))
         {
-            print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
+            print_error("ERROR", __FILE__,__func__, "Out Of Memory");
             dbus_message_unref(msg);
             return ;
         }
@@ -382,7 +399,7 @@ void wireless_scan_cb(Exalt_Ethernet* eth,Ecore_List* new_networks, Ecore_List* 
 
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &separator))
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
+        print_error("ERROR", __FILE__,__func__, "Out Of Memory");
         dbus_message_unref(msg);
         return ;
     }
@@ -394,14 +411,14 @@ void wireless_scan_cb(Exalt_Ethernet* eth,Ecore_List* new_networks, Ecore_List* 
         essid = exalt_wirelessinfo_get_essid(wi);
         if(!essid)
         {
-            print_error("ERROR", __FILE__, __LINE__,__func__, "essid=%p",essid);
+            print_error("ERROR", __FILE__,__func__, "essid=%p",essid);
             dbus_message_unref(msg);
             return ;
         }
 
         if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid))
         {
-            print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
+            print_error("ERROR", __FILE__,__func__, "Out Of Memory");
             dbus_message_unref(msg);
             return ;
         }
@@ -420,12 +437,12 @@ Exalt_Ethernet* dbus_get_eth(DBusMessage* msg)
 
     if(!dbus_message_iter_init(msg, &args))
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "no argument");
+        print_error("ERROR", __FILE__,__func__, "no argument");
         return NULL;
     }
     if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a string");
+        print_error("ERROR", __FILE__,__func__, "Argument is not a string");
         return NULL;
     }
     else
@@ -435,7 +452,7 @@ Exalt_Ethernet* dbus_get_eth(DBusMessage* msg)
     eth = exalt_eth_get_ethernet_byname(interface);
     if(!eth)
     {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "the interface %s doesn't exist\n",interface);
+        print_error("WARNING", __FILE__,__func__, "the interface %s doesn't exist\n",interface);
         return NULL;
     }
     return eth;
@@ -451,13 +468,13 @@ Exalt_Wireless_Info* dbus_get_wirelessinfo(DBusMessage* msg)
 
     if(!dbus_message_iter_init(msg, &args))
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "no argument");
+        print_error("ERROR", __FILE__,__func__, "no argument");
         return NULL;
     }
 
     if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a string");
+        print_error("ERROR", __FILE__,__func__, "Argument is not a string");
         return NULL;
     }
     else
@@ -467,14 +484,14 @@ Exalt_Wireless_Info* dbus_get_wirelessinfo(DBusMessage* msg)
     eth = exalt_eth_get_ethernet_byname(interface);
     if(!eth)
     {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "the interface %s doesn't exist\n",interface);
+        print_error("WARNING", __FILE__,__func__, "the interface %s doesn't exist\n",interface);
         return NULL;
     }
 
     dbus_message_iter_next(&args);
     if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a string");
+        print_error("ERROR", __FILE__,__func__, "Argument is not a string");
         return NULL;
     }
     else
@@ -484,7 +501,7 @@ Exalt_Wireless_Info* dbus_get_wirelessinfo(DBusMessage* msg)
     wi = get_wirelessinfo(eth,essid);
     if(!wi)
     {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "the network %s doesn't exist\n",essid);
+        print_error("WARNING", __FILE__,__func__, "the network %s doesn't exist\n",essid);
         return NULL;
     }
 
@@ -500,13 +517,13 @@ Exalt_Wireless_Info* get_wirelessinfo(Exalt_Ethernet* eth, char* essid)
 
     if(!eth || !essid)
     {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "eth==%p essid=%p",eth,essid);
+        print_error("WARNING", __FILE__,__func__, "eth==%p essid=%p",eth,essid);
         return NULL;
     }
 
     if(!exalt_eth_is_wireless(eth))
     {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "The card %s is not a wireless card",exalt_eth_get_name(eth));
+        print_error("WARNING", __FILE__,__func__, "The card %s is not a wireless card",exalt_eth_get_name(eth));
         return NULL;
     }
     w = exalt_eth_get_wireless(eth);
@@ -524,11 +541,11 @@ Exalt_Wireless_Info* get_wirelessinfo(Exalt_Ethernet* eth, char* essid)
 }
 
 
-void print_error(const char* type, const char* file, int line,const char* fct, const char* msg, ...)
+void print_error(const char* type, const char* file,const char* fct, const char* msg, ...)
 {
     va_list ap;
     va_start(ap,msg);
-    fprintf(stderr,"EXALTD:%s (%d)%s: %s\n",type,line,file,fct);
+    fprintf(stderr,"EXALTD:%s %s: %s\n",type,file,fct);
     fprintf(stderr,"\t");
     vfprintf(stderr,msg,ap);
     fprintf(stderr,"\n\n");
@@ -536,79 +553,3 @@ void print_error(const char* type, const char* file, int line,const char* fct, c
 }
 
 
-int waiting_card_is(const Exalt_Ethernet* eth)
-{
-    char* name;
-    int find = 0;
-    ecore_list_first_goto(waiting_card_list);
-    while(!find && (name = ecore_list_next(waiting_card_list)))
-    {
-        if(strcmp(exalt_eth_get_name(eth),name) == 0)
-            find = 1;
-    }
-    return find;
-}
-
-void waiting_card_remove(const Exalt_Ethernet* eth)
-{
-    //remove the card if the list
-    char* name;
-    int find = 0;
-
-    ecore_list_first_goto(waiting_card_list);
-    while(!find && (name = ecore_list_next(waiting_card_list)))
-    {
-        if( strcmp(exalt_eth_get_name(eth),name) == 0)
-            find = 1;
-    }
-
-    if(!find)
-        //the card is not in the list
-        return ;
-
-    ecore_list_index_goto(waiting_card_list,ecore_list_index(waiting_card_list) -1);
-    ecore_list_remove(waiting_card_list);
-
-    printf("Waiting card done: %s %s\n",exalt_eth_get_name(eth),exalt_eth_get_ip(eth));
-}
-
-void waiting_card_load(const char* file)
-{
-    char* name;
-    waiting_card_list = ecore_list_new();
- //   ecore_list_append(waiting_card_list,"eth0");
- //   ecore_list_append(waiting_card_list,"eth10");
-
-    printf("file: %s\n",file);
-
-    ecore_list_first_goto(waiting_card_list);
-    while( (name = ecore_list_next(waiting_card_list)) )
-        printf("Waiting the card: %s\n",name);
-
-    if(ecore_list_empty_is(waiting_card_list))
-        EXALT_CLEAR_LIST(waiting_card_list);
-}
-
-int waiting_card_is_done()
-{
-    char* name;
-    ecore_list_first_goto(waiting_card_list);
-    while (( name= ecore_list_next(waiting_card_list)))
-        if(exalt_eth_get_ethernet_byname(name))
-            return 0;
-
-    return 1;
-}
-
-int waiting_card_stop(void* data)
-{
-    if( (*(int*)data) ==0)
-        printf("Timeout, continue boot process ...\n");
-    else
-        printf("All waiting card done, continue boot process ...\n");
-
-    EXALT_DELETE_TIMER(waiting_card_timer);
-    EXALT_CLEAR_LIST(waiting_card_list);
-    ecore_main_loop_quit();
-    return 0;
-}

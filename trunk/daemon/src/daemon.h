@@ -27,11 +27,15 @@
 #include "cb_wireless.h"
 #include "cb_wirelessinfo.h"
 #include "cb_dns.h"
+#include "boot_process.h"
+#include "cb_bootprocess.h"
 
-Ecore_List* waiting_card_list;
-Ecore_Timer* waiting_card_timer;
+/*
+ * @brief The dbus connection of the daemon
+ */
+E_DBus_Connection* exaltd_conn;
 
-void print_error(const char* type, const char*file, int line, const char* fct, const char* msg, ...);
+void print_error(const char* type, const char*file,  const char* fct, const char* msg, ...);
 
 int main(int argc, char** argv);
 int setup(E_DBus_Connection *conn);
@@ -40,12 +44,6 @@ Exalt_Wireless_Info* dbus_get_wirelessinfo(DBusMessage* msg);
 Exalt_Wireless_Info* get_wirelessinfo(Exalt_Ethernet* eth, char* essid);
 void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data);
 void wireless_scan_cb(Exalt_Ethernet* eth, Ecore_List* new_networks, Ecore_List* old_networks, void* data);
-
-void waiting_card_load(const char* file);
-int waiting_card_is(const Exalt_Ethernet* eth);
-void waiting_card_remove(const Exalt_Ethernet* eth);
-int waiting_card_is_done();
-int waiting_card_stop(void* data);
 
 
 #endif   /* ----- #ifndef DAEMON_INC  ----- */

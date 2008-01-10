@@ -38,7 +38,7 @@ DBusMessage * dbus_cb_wirelessinfo_get_quality(E_DBus_Object *obj __UNUSED__, DB
     quality = exalt_wirelessinfo_get_quality(wi);
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &quality))
     {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "Out Of Memory");
+        print_error("WARNING", __FILE__,__func__, "Out Of Memory");
         return reply;
     }
 
@@ -63,12 +63,12 @@ DBusMessage * dbus_cb_wirelessinfo_get_addr(E_DBus_Object *obj __UNUSED__, DBusM
     addr = exalt_wirelessinfo_get_addr(wi);
    if(!addr)
     {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "addr=%p",addr);
+        print_error("WARNING", __FILE__,__func__, "addr=%p",addr);
         return reply;
     }
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &addr))
     {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        print_error("ERROR", __FILE__,__func__,"Out Of Memory!");
         return reply;
     }
 
@@ -94,12 +94,12 @@ DBusMessage * dbus_cb_wirelessinfo_get_protocol(E_DBus_Object *obj __UNUSED__, D
 
   if(!protocol)
     {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "protocol=%p",protocol);
+        print_error("WARNING", __FILE__,__func__, "protocol=%p",protocol);
         return reply;
     }
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &protocol))
     {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        print_error("ERROR", __FILE__,__func__,"Out Of Memory!");
         return reply;
     }
 
@@ -126,12 +126,12 @@ DBusMessage * dbus_cb_wirelessinfo_get_mode(E_DBus_Object *obj __UNUSED__, DBusM
 
       if(!mode)
     {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "mode=%p",mode);
+        print_error("WARNING", __FILE__,__func__, "mode=%p",mode);
         return reply;
     }
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &mode))
     {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        print_error("ERROR", __FILE__,__func__,"Out Of Memory!");
         return reply;
     }
 
@@ -157,12 +157,12 @@ DBusMessage * dbus_cb_wirelessinfo_get_channel(E_DBus_Object *obj __UNUSED__, DB
 
     if(!channel)
     {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "channel=%p",channel);
+        print_error("WARNING", __FILE__,__func__, "channel=%p",channel);
         return reply;
     }
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &channel))
     {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        print_error("ERROR", __FILE__,__func__,"Out Of Memory!");
         return reply;
     }
 
@@ -188,12 +188,12 @@ DBusMessage * dbus_cb_wirelessinfo_get_bitrates(E_DBus_Object *obj __UNUSED__, D
 
     if(!bitrates)
     {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "bitrates=%p",bitrates);
+        print_error("WARNING", __FILE__,__func__, "bitrates=%p",bitrates);
         return reply;
     }
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &bitrates))
     {
-        print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
+        print_error("ERROR", __FILE__,__func__,"Out Of Memory!");
         return reply;
     }
 
@@ -219,7 +219,7 @@ DBusMessage * dbus_cb_wirelessinfo_get_encryption(E_DBus_Object *obj __UNUSED__,
     encryption = exalt_wirelessinfo_get_encryption(wi);
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &encryption))
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
+        print_error("ERROR", __FILE__,__func__, "Out Of Memory");
         return reply;
     }
 
@@ -244,7 +244,7 @@ DBusMessage * dbus_cb_wirelessinfo_get_signallvl(E_DBus_Object *obj __UNUSED__, 
     signallvl = exalt_wirelessinfo_get_signallvl(wi);
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &signallvl))
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
+        print_error("ERROR", __FILE__,__func__, "Out Of Memory");
         return reply;
     }
 
@@ -269,7 +269,7 @@ DBusMessage * dbus_cb_wirelessinfo_get_noiselvl(E_DBus_Object *obj __UNUSED__, D
     noiselvl = exalt_wirelessinfo_get_noiselvl(wi);
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &noiselvl))
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
+        print_error("ERROR", __FILE__,__func__, "Out Of Memory");
         return reply;
     }
 

@@ -154,18 +154,10 @@ int exalt_regex_execute(Exalt_Regex* r)
             	int end = pmatch[i].rm_eo;
             	size_t size = end - start;
 
-		r->res[i] = (char*)malloc (sizeof (char) * (size + 1));
-            	if (r->res[i])
-            	{
-		    strncpy (r->res[i], &(r->str_request[start]), size);
-               	    r->res[i][size] = '\0';
-            	}
-		else
-            	{
-		    print_error("ERROR", __FILE__, __LINE__,__func__, "Memoire insuffisante");
-                    EXALT_FREE(pmatch);
-		    return 0;
-            	}
+                r->res[i] = (char*)malloc (sizeof (char) * (size + 1));
+                EXALT_ASSERT_ADV(r->res[i],EXALT_FREE(pmatch);return 0,"r->res[i] failed");
+                strncpy (r->res[i], &(r->str_request[start]), size);
+                r->res[i][size] = '\0';
             }
 
             EXALT_FREE(pmatch);
@@ -175,7 +167,7 @@ int exalt_regex_execute(Exalt_Regex* r)
         {
 	    if(r->debug)
 	    {
-            	print_error("ERROR", __FILE__, __LINE__,__func__, "no match found"
+            	print_error("ERROR", __FILE__,__func__, "no match found"
 					"str_request: %s"
 					"str_regex: %s\n\n", r->str_request,r->str_regex);
 	    }
@@ -192,7 +184,7 @@ int exalt_regex_execute(Exalt_Regex* r)
             if (text)
             {
                	regerror (err, &preg, text, size);
-               	print_error("ERROR", __FILE__, __LINE__,__func__, "%s\n", text);
+               	print_error("ERROR", __FILE__,__func__, "%s\n", text);
                	free (text);
                 EXALT_FREE(pmatch);
 		return 0;
@@ -206,7 +198,7 @@ int exalt_regex_execute(Exalt_Regex* r)
     }
     else
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "regcomp error");
+        print_error("ERROR", __FILE__, __func__, "regcomp error");
         EXALT_FREE(pmatch);
         return 0;
     }

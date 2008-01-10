@@ -81,11 +81,7 @@ Exalt_Ethernet* exalt_eth_new(const char* name)
     Exalt_Ethernet* eth;
 
     eth = (Exalt_Ethernet*)malloc((unsigned int)sizeof(Exalt_Ethernet));
-    if(!eth)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p, malloc error",eth);
-        return NULL;
-    }
+    EXALT_ASSERT_QUIT(eth!=NULL);
 
     eth->state = EXALT_DOWN;
     eth->connection = NULL;
@@ -102,7 +98,7 @@ Exalt_Ethernet* exalt_eth_new(const char* name)
     eth->wireless = NULL;
 
     strncpy(wrq.ifr_name, exalt_eth_get_name(eth), sizeof(wrq.ifr_name));
-    if(exalt_ioctl(&wrq, SIOCGIWNAME) >= 0)
+    if(exalt_ioctl(&wrq, SIOCGIWNAME))
         eth->wireless = exalt_wireless_new(eth);
 
     //now update the state
@@ -158,12 +154,8 @@ void _exalt_cb_is_net(void *user_data, void *reply_data, DBusError *error)
     int *action = malloc(sizeof(int));
     *action = EXALT_ETH_CB_ACTION_ADD;
 
-    if (dbus_error_is_set(error))
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"dbus error");
-        dbus_error_free(error);
-        return ;
-    }
+
+    EXALT_ASSERT_QUIT_VOID(!dbus_error_is_set(error));
 
     if (ret && ret->boolean)
         e_hal_device_get_all_properties(exalt_eth_interfaces.dbus_conn, udi, _exalt_cb_net_properties, action);
@@ -180,11 +172,7 @@ void _exalt_cb_net_properties(void *data, void *reply_data, DBusError *error)
     Exalt_Ethernet* eth;
     char* str;
 
-    if (dbus_error_is_set(error))
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"dbus error");
-        return ;
-    }
+    EXALT_ASSERT_QUIT_VOID(!dbus_error_is_set(error));
 
     str = e_hal_property_string_get(ret,"net.interface", &err);
     eth = exalt_eth_new(str);
@@ -229,17 +217,10 @@ void _exalt_cb_find_device_by_capability_net(void *user_data, void *reply_data, 
     int *action = malloc(sizeof(int));
     *action = EXALT_ETH_CB_ACTION_NEW;
 
-    if (!ret || !ret->strings)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"ret=%p",ret);
-        return ;
-    }
-    if (dbus_error_is_set(error))
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"dbus error");
-        dbus_error_free(error);
-        return ;
-    }
+    EXALT_ASSERT_QUIT_VOID(ret!=NULL);
+    EXALT_ASSERT_QUIT_VOID(ret->strings!=NULL);
+    EXALT_ASSERT_QUIT_VOID(!dbus_error_is_set(error));
+
     ecore_list_first_goto(ret->strings);
     while ((device = ecore_list_next(ret->strings)))
     {
@@ -285,11 +266,7 @@ short exalt_eth_is_ethernet(char* name)
 {
     struct ifreq ifr;
 
-    if(!name)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"name=%p",name);
-        return -1;
-    }
+    EXALT_ASSERT_QUIT(name!=NULL);
 
     strncpy(ifr.ifr_name,name,sizeof(ifr.ifr_name));
     if(!exalt_ioctl(&ifr, SIOCGIFHWADDR))
@@ -312,11 +289,7 @@ void exalt_eth_up(Exalt_Ethernet* eth)
 {
     struct ifreq ifr;
 
-    if(!eth)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
-        return ;
-    }
+    EXALT_ASSERT_QUIT_VOID(eth!=NULL);
 
     strncpy(ifr.ifr_name,exalt_eth_get_name(eth),sizeof(ifr.ifr_name));
 
@@ -338,11 +311,7 @@ void exalt_eth_down(Exalt_Ethernet* eth)
 {
     struct ifreq ifr;
 
-    if(!eth)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
-        return ;
-    }
+    EXALT_ASSERT_QUIT_VOID(eth!=NULL);
 
     if(exalt_eth_is_wireless(eth))
         _exalt_wpa_stop(exalt_eth_get_wireless(eth));
@@ -394,16 +363,12 @@ Exalt_Ethernet* exalt_eth_get_ethernet_bypos(int pos)
  * @param name the name
  * @return Returns the card
  */
-Exalt_Ethernet* exalt_eth_get_ethernet_byname(char* name)
+Exalt_Ethernet* exalt_eth_get_ethernet_byname(const char* name)
 {
     void *data;
     Exalt_Ethernet* eth;
 
-    if(!name)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"name=%p",name);
-        return NULL;
-    }
+    EXALT_ASSERT_QUIT(name!=NULL);
 
     ecore_list_first_goto(exalt_eth_interfaces.ethernets);
     data = ecore_list_next(exalt_eth_interfaces.ethernets);
@@ -424,16 +389,12 @@ Exalt_Ethernet* exalt_eth_get_ethernet_byname(char* name)
  * @param udi the udi
  * @return Returns the card
  */
-Exalt_Ethernet* exalt_eth_get_ethernet_byudi(char* udi)
+Exalt_Ethernet* exalt_eth_get_ethernet_byudi(const char* udi)
 {
     void *data;
     Exalt_Ethernet* eth;
 
-    if(!udi)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"udi=%p",udi);
-        return NULL;
-    }
+    EXALT_ASSERT_QUIT(udi!=NULL);
 
     ecore_list_first_goto(exalt_eth_interfaces.ethernets);
     data = ecore_list_next(exalt_eth_interfaces.ethernets);
@@ -485,11 +446,9 @@ short exalt_eth_is_link(Exalt_Ethernet* eth)
     struct ifreq ifr;
     struct ethtool_value edata;
     int res;
-    if(!eth)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
-        return -1;
-    }
+
+
+    EXALT_ASSERT_QUIT(eth!=NULL);
 
     if(exalt_eth_is_wireless(eth))
         return 1;
@@ -499,7 +458,7 @@ short exalt_eth_is_link(Exalt_Ethernet* eth)
     edata.cmd = ETHTOOL_GLINK;
     ifr.ifr_data = (caddr_t)&edata;
 
-    if( (res = exalt_ioctl(&ifr, SIOCETHTOOL))<=-1)
+    if( !(res = exalt_ioctl(&ifr, SIOCETHTOOL)))
         return res; //if an interface doesn't support SIOCETHTOOL, we return true
 
     return edata.data ? 1 : 0;
@@ -512,11 +471,8 @@ short exalt_eth_is_link(Exalt_Ethernet* eth)
  */
 const char* exalt_eth_get_name(const Exalt_Ethernet* eth)
 {
-    if(!eth)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
-        return NULL;
-    }
+    EXALT_ASSERT_QUIT(eth!=NULL);
+
     return eth->name;
 }
 
@@ -527,11 +483,7 @@ const char* exalt_eth_get_name(const Exalt_Ethernet* eth)
  */
 const char* exalt_eth_get_udi(Exalt_Ethernet* eth)
 {
-    if(!eth)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
-        return NULL;
-    }
+    EXALT_ASSERT_QUIT(eth!=NULL);
     return eth->udi;
 }
 /**
@@ -541,11 +493,7 @@ const char* exalt_eth_get_udi(Exalt_Ethernet* eth)
  */
 int exalt_eth_get_ifindex(Exalt_Ethernet* eth)
 {
-    if(!eth)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
-        return -1;
-    }
+    EXALT_ASSERT_QUIT(eth!=NULL);
     return eth->ifindex;
 }
 
@@ -556,11 +504,7 @@ int exalt_eth_get_ifindex(Exalt_Ethernet* eth)
  */
 Exalt_Connection* exalt_eth_get_connection(Exalt_Ethernet* eth)
 {
-    if(!eth)
-    {
-        print_error("error", __FILE__, __LINE__,__func__,"eth=%p",eth);
-        return NULL;
-    }
+    EXALT_ASSERT_QUIT(eth!=NULL);
     return eth->connection;
 }
 
@@ -572,11 +516,9 @@ Exalt_Connection* exalt_eth_get_connection(Exalt_Ethernet* eth)
  */
 short exalt_eth_set_connection(Exalt_Ethernet* eth, Exalt_Connection* c)
 {
-    if(!eth || !c)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p c=%p",eth,c);
-        return 0;
-    }
+    EXALT_ASSERT_QUIT(eth!=NULL);
+    EXALT_ASSERT_QUIT(c!=NULL);
+
     if(eth->connection)
         exalt_conn_free(eth->connection);
     eth->connection = c;
@@ -593,11 +535,7 @@ char* exalt_eth_get_ip(const Exalt_Ethernet* eth)
     struct sockaddr_in sin = { AF_INET };
     struct ifreq ifr;
 
-    if(!eth)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
-        return NULL;
-    }
+    EXALT_ASSERT_QUIT(eth!=NULL);
 
     strncpy(ifr.ifr_name,exalt_eth_get_name(eth),sizeof(ifr.ifr_name));
     ifr.ifr_addr = *(struct sockaddr *) &sin;
@@ -622,11 +560,7 @@ char* exalt_eth_get_netmask(Exalt_Ethernet* eth)
     struct sockaddr_in sin = { AF_INET };
     struct ifreq ifr;
 
-    if(!eth)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
-        return NULL;
-    }
+    EXALT_ASSERT_QUIT(eth!=NULL);
 
     strncpy(ifr.ifr_name,exalt_eth_get_name(eth),sizeof(ifr.ifr_name));
     ifr.ifr_addr = *(struct sockaddr *) &sin;
@@ -655,18 +589,10 @@ char* exalt_eth_get_gateway(Exalt_Ethernet* eth)
     char mask_addr[128];
     short find = 0;
 
-    if(!eth)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
-        return NULL;
-    }
+    EXALT_ASSERT_QUIT(eth!=NULL);
 
     f = fopen(EXALT_PATH_ROUTE,"r");
-    if(!f)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"failed to open: %s",EXALT_PATH_ROUTE);
-        return NULL;
-    }
+    EXALT_ASSERT_QUIT(f!=NULL);
     fmt = proc_gen_fmt(EXALT_PATH_ROUTE, 0, f,
             "Iface", "%16s",
             "Destination", "%128s",
@@ -695,7 +621,7 @@ char* exalt_eth_get_gateway(Exalt_Ethernet* eth)
     if(find)
         return exalt_addr_hexa_to_dec(gate_addr);
     else
-        return strdup("0.0.0.0");
+        return NULL;
 }
 
 
@@ -707,11 +633,7 @@ char* exalt_eth_get_gateway(Exalt_Ethernet* eth)
 short exalt_eth_is_dhcp(Exalt_Ethernet* eth)
 {
     Exalt_Connection *c;
-    if(!eth)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
-        return -1;
-    }
+    EXALT_ASSERT_QUIT(eth!=NULL);
 
     if( (c=exalt_eth_get_connection(eth)))
         return exalt_conn_is_dhcp(c);
@@ -730,23 +652,19 @@ short exalt_eth_is_up(Exalt_Ethernet* eth)
 {
     struct ifreq ifr;
 
-    if(!eth)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
-        return -1;
-    }
+    EXALT_ASSERT_QUIT(eth!=NULL);
 
     strncpy(ifr.ifr_name,exalt_eth_get_name(eth),sizeof(ifr.ifr_name));
 
     if( !exalt_ioctl(&ifr,SIOCGIFFLAGS) )
-        return -1;
+        return 0;
 
     if( (ifr.ifr_flags & IFF_UP))
         return 1;
     else if( !(ifr.ifr_flags & IFF_UP))
         return 0;
     else
-        return -1;
+        return 0;
 }
 
 
@@ -758,12 +676,8 @@ short exalt_eth_is_up(Exalt_Ethernet* eth)
  */
 short exalt_eth_is_wireless(Exalt_Ethernet* eth)
 {
-    if(eth)
-    {
-        return eth->wireless != NULL;
-    }
-    else
-        return 0;
+    EXALT_ASSERT_QUIT(eth!=NULL);
+    return eth->wireless != NULL;
 }
 
 
@@ -775,10 +689,8 @@ short exalt_eth_is_wireless(Exalt_Ethernet* eth)
  */
 Exalt_Wireless* exalt_eth_get_wireless(Exalt_Ethernet* eth)
 {
-    if(eth)
-        return eth->wireless;
-    else
-        return NULL;
+    EXALT_ASSERT_QUIT(eth!=NULL);
+    return eth->wireless;
 }
 
 
@@ -830,19 +742,9 @@ int exalt_eth_apply_conn(Exalt_Ethernet* eth, Exalt_Connection *c)
     int res;
     struct rtentry rt;
     struct sockaddr_in sin = { AF_INET };
-    if(!eth || !c)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p c=%p",eth,c);
-        return -1;
-    }
 
-    if(!exalt_conn_is_valid(c))
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"The connection is not valid");
-        eth->apply_pid = -1;
-        _exalt_apply_timer(eth);
-        return -1;
-    }
+    EXALT_ASSERT_QUIT(eth!=NULL);
+    EXALT_ASSERT_ADV(exalt_conn_is_valid(c),eth->apply_pid = -1; _exalt_apply_timer(eth), "exalt_conn_is_valid(c) failed");
 
     //apply start
     if(exalt_eth_interfaces.eth_cb)
@@ -851,14 +753,8 @@ int exalt_eth_apply_conn(Exalt_Ethernet* eth, Exalt_Connection *c)
     exalt_eth_set_connection(eth,c);
 
     eth->apply_pid = fork();
-    if(eth->apply_pid < 0)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"fork failed");
-        eth->apply_pid = -1;
-        _exalt_apply_timer(eth);
-        return -1;
-    }
-    else if(eth->apply_pid == 0)
+    EXALT_ASSERT_ADV(eth->apply_pid>=0,eth->apply_pid = -1; _exalt_apply_timer(eth), "exalt_conn_is_valid(c) failed");
+    if(eth->apply_pid == 0)
     {
         if(exalt_eth_is_wireless(eth))
             exalt_wireless_apply_conn(exalt_eth_get_wireless(eth));
@@ -871,8 +767,8 @@ int exalt_eth_apply_conn(Exalt_Ethernet* eth, Exalt_Connection *c)
             sin.sin_addr.s_addr = inet_addr ("0.0.0.0");
             rt.rt_dst = *(struct sockaddr *) &sin;
 
-            while (exalt_ioctl(&rt, SIOCDELRT) >=0)
-                ;
+            while (exalt_ioctl(&rt, SIOCDELRT))
+                usleep(100);
         }
         if(exalt_conn_is_dhcp(c))
             res = _exalt_eth_apply_dhcp(eth);
@@ -944,11 +840,7 @@ void exalt_eth_printf()
  */
 short _exalt_eth_set_state(Exalt_Ethernet* eth, Exalt_Enum_State state)
 {
-    if(!eth)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
-        return 0;
-    }
+    EXALT_ASSERT_QUIT(eth!=NULL);
     eth->state = state;
     return 1;
 }
@@ -960,11 +852,7 @@ short _exalt_eth_set_state(Exalt_Ethernet* eth, Exalt_Enum_State state)
  */
 Exalt_Enum_State _exalt_eth_get_state(Exalt_Ethernet* eth)
 {
-    if(!eth)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
-        return 0;
-    }
+    EXALT_ASSERT_QUIT(eth!=NULL);
     return eth->state;
 }
 
@@ -975,13 +863,8 @@ Exalt_Enum_State _exalt_eth_get_state(Exalt_Ethernet* eth)
  */
 const char* _exalt_eth_get_save_ip(Exalt_Ethernet* eth)
 {
-    if(!eth)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
-        return NULL;
-    }
-    else
-        return eth->_save_ip;
+    EXALT_ASSERT_QUIT(eth!=NULL);
+    return eth->_save_ip;
 }
 
 /**
@@ -991,13 +874,8 @@ const char* _exalt_eth_get_save_ip(Exalt_Ethernet* eth)
  */
 const char* _exalt_eth_get_save_gateway(Exalt_Ethernet* eth)
 {
-    if(!eth)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
-        return NULL;
-    }
-    else
-        return eth->_save_gateway;
+    EXALT_ASSERT_QUIT(eth!=NULL);
+    return eth->_save_gateway;
 }
 
 /**
@@ -1007,13 +885,8 @@ const char* _exalt_eth_get_save_gateway(Exalt_Ethernet* eth)
  */
 const char* _exalt_eth_get_save_netmask(Exalt_Ethernet* eth)
 {
-    if(!eth)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
-        return NULL;
-    }
-    else
-        return eth->_save_netmask;
+    EXALT_ASSERT_QUIT(eth!=NULL);
+    return eth->_save_netmask;
 }
 
 /**
@@ -1023,13 +896,8 @@ const char* _exalt_eth_get_save_netmask(Exalt_Ethernet* eth)
  */
 short _exalt_eth_get_save_link(Exalt_Ethernet* eth)
 {
-    if(!eth)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
-        return -1;
-    }
-    else
-        return eth->_save_link;
+    EXALT_ASSERT_QUIT(eth!=NULL);
+    return eth->_save_link;
 }
 
 /**
@@ -1039,13 +907,8 @@ short _exalt_eth_get_save_link(Exalt_Ethernet* eth)
  */
 short _exalt_eth_get_save_up(Exalt_Ethernet* eth)
 {
-    if(!eth)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
-        return -1;
-    }
-    else
-        return eth->_save_up;
+    EXALT_ASSERT_QUIT(eth!=NULL);
+    return eth->_save_up;
 }
 
 
@@ -1057,19 +920,12 @@ short _exalt_eth_get_save_up(Exalt_Ethernet* eth)
  */
 int _exalt_eth_set_save_ip(Exalt_Ethernet* eth,const char* ip)
 {
-    if(!eth || !ip)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p ip=%p",eth,ip);
-        return -1;
-    }
-    if(!exalt_is_address(ip))
-    {
-        print_error("WARNING", __FILE__, __LINE__,__func__,"ip(%s) is not a valid address",ip);
-        return 0;
-    }
+    EXALT_ASSERT_QUIT(eth!=NULL);
+    EXALT_ASSERT_QUIT(exalt_is_address(ip) || ip==NULL);
 
     EXALT_FREE(eth->_save_ip);
-    eth->_save_ip=strdup(ip);
+    if(ip)
+        eth->_save_ip=strdup(ip);
     return 1;
 }
 
@@ -1081,19 +937,12 @@ int _exalt_eth_set_save_ip(Exalt_Ethernet* eth,const char* ip)
  */
 int _exalt_eth_set_save_netmask(Exalt_Ethernet* eth,const char* netmask)
 {
-    if(!eth || !netmask)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"eth==%p netmask==%p",eth,netmask);
-        return -1;
-    }
-    if(!exalt_is_address(netmask))
-    {
-        print_error("WARNING", __FILE__, __LINE__,__func__,"netmask(%s) is not a valid netmask",netmask);
-        return 0;
-    }
+    EXALT_ASSERT_QUIT(eth!=NULL);
+    EXALT_ASSERT_QUIT(exalt_is_address(netmask) || netmask==NULL);
 
     EXALT_FREE(eth->_save_netmask);
-    eth->_save_netmask=strdup(netmask);
+    if(netmask)
+        eth->_save_netmask=strdup(netmask);
     return 1;
 }
 
@@ -1101,23 +950,16 @@ int _exalt_eth_set_save_netmask(Exalt_Ethernet* eth,const char* netmask)
  * @brief set the save gateway of the card "eth"
  * @param eth the card
  * @param ip the new gateway
- * @return Returns 1 if the new gateway is apply, 0 if the gateway doesn't have a correct format else -1
+ * @return Returns 1 if the new gateway is apply, else 0
  */
 int _exalt_eth_set_save_gateway(Exalt_Ethernet* eth,const char* gateway)
 {
-    if(!eth || !gateway)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p gateway=%p",eth,gateway);
-        return -1;
-    }
-    if(!exalt_is_address(gateway))
-    {
-        print_error("WARNING", __FILE__, __LINE__,__func__,"gateway(%s) is not a valid address",gateway);
-        return 0;
-    }
+    EXALT_ASSERT_QUIT(eth!=NULL);
+    EXALT_ASSERT_QUIT(exalt_is_address(gateway) || gateway==NULL);
 
     EXALT_FREE(eth->_save_gateway);
-    eth->_save_gateway=strdup(gateway);
+    if(gateway)
+        eth->_save_gateway=strdup(gateway);
     return 1;
 }
 
@@ -1129,11 +971,7 @@ int _exalt_eth_set_save_gateway(Exalt_Ethernet* eth,const char* gateway)
  */
 int _exalt_eth_set_save_link(Exalt_Ethernet* eth,short link)
 {
-    if(!eth )
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
-        return -1;
-    }
+    EXALT_ASSERT_QUIT(eth!=NULL);
     eth->_save_link=link;
     return 1;
 }
@@ -1145,11 +983,7 @@ int _exalt_eth_set_save_link(Exalt_Ethernet* eth,short link)
  */
 int _exalt_eth_set_save_up(Exalt_Ethernet* eth,short up)
 {
-    if(!eth )
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
-        return -1;
-    }
+    EXALT_ASSERT_QUIT(eth!=NULL);
     eth->_save_up=up;
     return 1;
 }
@@ -1163,14 +997,12 @@ int _exalt_eth_set_save_up(Exalt_Ethernet* eth,short up)
  */
 int _exalt_eth_set_name(Exalt_Ethernet* eth, const char* name)
 {
-    if(eth && name)
-    {
-        EXALT_FREE(eth->name);
-        eth->name=strdup(name);
-        return 1;
-    }
-    else
-        return 0;
+    EXALT_ASSERT_QUIT(eth!=NULL);
+    EXALT_ASSERT_QUIT(name!=NULL);
+
+    EXALT_FREE(eth->name);
+    eth->name=strdup(name);
+    return 1;
 }
 
 
@@ -1182,11 +1014,8 @@ int _exalt_eth_set_name(Exalt_Ethernet* eth, const char* name)
  */
 int _exalt_eth_set_udi(Exalt_Ethernet* eth,const char* udi)
 {
-    if(!eth || !udi)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p udi=%p",eth,udi);
-        return -1;
-    }
+    EXALT_ASSERT_QUIT(eth!=NULL);
+    EXALT_ASSERT_QUIT(udi!=NULL);
 
     EXALT_FREE(eth->udi);
     eth->udi=strdup(udi);
@@ -1201,11 +1030,7 @@ int _exalt_eth_set_udi(Exalt_Ethernet* eth,const char* udi)
  */
 int _exalt_eth_set_ifindex(Exalt_Ethernet* eth,int ifindex)
 {
-    if(!eth )
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
-        return -1;
-    }
+    EXALT_ASSERT_QUIT(eth!=NULL);
     eth->ifindex=ifindex;
     return 1;
 }
@@ -1262,16 +1087,13 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
     void* data_l;
     Ecore_List* l;
     char* str;
+    const char* str2;
 
 
     fd = exalt_eth_interfaces.rtlink_sock;
 
     bin = recvmsg(fd, &msg, 0);
-    if(bin < 0)
-    {
-        perror("_exalt_rtlink_watch_cb(): recvmsg()");
-        return -1;
-    }
+    EXALT_ASSERT_QUIT(bin>=0);
 
     for(nh = (struct nlmsghdr *)buf; NLMSG_OK(nh, bin);
             nh = NLMSG_NEXT(nh, bin))
@@ -1282,12 +1104,9 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
             case RTM_DELLINK:
                 ifmsg = NLMSG_DATA(nh);
                 rtlen = RTM_PAYLOAD(nh);
-                if(rtlen < sizeof(struct ifinfomsg))
-                {
-                    print_error("ERROR", __FILE__, __LINE__,__func__,"Bad rtnetlink packet (%d < %d)", rtlen,
-                            sizeof(struct ifinfomsg));
-                    break;
-                }
+                EXALT_ASSERT_ADV(rtlen>=sizeof(struct ifinfomsg),break,
+                        "Bad rtnetlink packet (%d < %d)", rtlen,
+                        sizeof(struct ifinfomsg));
 
                 //printf("ifmsg: { %d, %d, %d, 0x%x, 0x%x }\n",
                 //        ifmsg->ifi_family, ifmsg->ifi_type,
@@ -1327,19 +1146,19 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
             case RTM_DELADDR:
                 ifaddr = NLMSG_DATA(nh);
                 rtlen = RTM_PAYLOAD(nh);
-                if(rtlen < sizeof(struct ifaddrmsg))
-                {
-                    print_error("ERROR", __FILE__, __LINE__,__func__,"Bad rtnetlink packet (%d < %d)", rtlen,
-                            sizeof(struct ifaddrmsg));
-                    break;
-                }
+                EXALT_ASSERT_ADV(rtlen>=sizeof(struct ifaddrmsg),break,
+                        "Bad rtnetlink packet (%d < %d)", rtlen,
+                        sizeof(struct ifaddrmsg));
 
                 eth = exalt_eth_get_ethernet_byifindex(ifaddr->ifa_index);
                 if(!eth)
                     break;
 
                 str = exalt_eth_get_ip(eth);
-                if(strcmp(_exalt_eth_get_save_ip(eth),str) != 0)
+                str2 = _exalt_eth_get_save_ip(eth);
+                if((!str && str2)
+                        || (str && !str2)
+                        || (str && str2 && strcmp(str2,str) != 0))
                 {
                     _exalt_eth_set_save_ip(eth, str);
                     if(exalt_eth_interfaces.eth_cb)
@@ -1348,7 +1167,10 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
                 EXALT_FREE(str);
 
                 str = exalt_eth_get_netmask(eth);
-                if(strcmp(_exalt_eth_get_save_netmask(eth),str) != 0)
+                str2 = _exalt_eth_get_save_netmask(eth);
+                if((!str && str2)
+                        || (str && !str2)
+                        || (str && str2 && strcmp(str2,str) != 0))
                 {
                     _exalt_eth_set_save_netmask(eth, str);
                     if(exalt_eth_interfaces.eth_cb)
@@ -1359,12 +1181,9 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
             case RTM_DELROUTE:
                 ifroute = NLMSG_DATA(nh);
                 rtlen = RTM_PAYLOAD(nh);
-                if(rtlen < sizeof(struct rtmsg))
-                {
-                    print_error("ERROR", __FILE__, __LINE__,__func__,"Bad rtnetlink packet (%d < %d)", rtlen,
-                            sizeof(struct rtmsg));
-                    break;
-                }
+                EXALT_ASSERT_ADV(rtlen>=sizeof(struct rtmsg),break,
+                        "Bad rtnetlink packet (%d < %d)", rtlen,
+                        sizeof(struct rtmsg));
 
                 //test for each interface if the route has been modified
                 l = exalt_eth_get_list();
@@ -1374,7 +1193,10 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
                 {
                     eth = Exalt_Ethernet(data_l);
                     str = exalt_eth_get_gateway(eth);
-                    if(strcmp(_exalt_eth_get_save_gateway(eth),str ) != 0)
+                    str2 = _exalt_eth_get_save_gateway(eth);
+                    if((!str && str2)
+                            || (str && !str2)
+                            || (str && str2 &&strcmp(str2,str ) != 0))
                     {
                         _exalt_eth_set_save_gateway(eth, str);
                         if(exalt_eth_interfaces.eth_cb)
@@ -1422,30 +1244,22 @@ int _exalt_eth_apply_static(Exalt_Ethernet *eth)
     struct rtentry rt;
     Exalt_Connection *c;
 
-    if(!eth)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
-        return -1;
-    }
+    EXALT_ASSERT_QUIT(eth!=NULL);
     c = exalt_eth_get_connection(eth);
-    if(!c)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"c=%p",c);
-        return -1;
-    }
+    EXALT_ASSERT_QUIT(c!=NULL);
 
     strncpy(ifr.ifr_name,exalt_eth_get_name(eth),sizeof(ifr.ifr_name));
 
     //apply the ip
     sin.sin_addr.s_addr = inet_addr (exalt_conn_get_ip(c));
     ifr.ifr_addr = *(struct sockaddr *) &sin;
-    if( exalt_ioctl(&ifr, SIOCSIFADDR) < 0)
+    if( !exalt_ioctl(&ifr, SIOCSIFADDR) )
         return -1;
 
     //apply the netmask
     sin.sin_addr.s_addr = inet_addr (exalt_conn_get_netmask(c));
     ifr.ifr_addr = *(struct sockaddr *) &sin;
-    if( exalt_ioctl(&ifr, SIOCSIFNETMASK ) < 0)
+    if( !exalt_ioctl(&ifr, SIOCSIFNETMASK ) )
         return -1;
 
 
@@ -1462,7 +1276,7 @@ int _exalt_eth_apply_static(Exalt_Ethernet *eth)
     rt.rt_metric = 2001;
     rt.rt_dev = strdup(exalt_eth_get_name(eth));
 
-    if ( exalt_ioctl(&rt, SIOCADDRT) < 0)
+    if ( !exalt_ioctl(&rt, SIOCADDRT))
         return -1;
 
     EXALT_FREE(rt.rt_dev);
@@ -1482,20 +1296,29 @@ int _exalt_eth_apply_dhcp(Exalt_Ethernet* eth)
     Ecore_Exe * exe;
     int status;
     char command[1024];
-    if(!eth)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"eth=%p",eth);
-        return -1;
-    }
+    FILE* f;
+    char buf[1024];
+    pid_t pid;
+
+    EXALT_ASSERT_QUIT(eth!=NULL);
 
     sprintf(command,COMMAND_DHCLIENT,exalt_eth_get_name(eth));
     exe = ecore_exe_run(command, NULL);
     waitpid(ecore_exe_pid_get(exe), &status, 0);
     ecore_exe_free(exe);
-#else
-    print_error("WARNING", __FILE__, __LINE__,__func__,"Your build of libexalt doesn't support dhcp");
-#endif
+
+    //dhclient create a background process, we don't need it, we kill it.
+    f = fopen(DHCLIENT_PID_FILE,"r");
+    EXALT_ASSERT_QUIT(f!=NULL);
+    fgets(buf,1024,f);
+    pid = atoi(buf);
+    kill(pid,SIGKILL);
+    fclose(f);
+
     return 1;
+#else
+    EXALT_ASSERT_ADV(0,return 0,"Your build of libexalt doesn't support dhcp");
+#endif
 }
 
 

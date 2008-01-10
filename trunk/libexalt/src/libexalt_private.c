@@ -22,16 +22,15 @@
  * @brief print a error
  * @param type: WARNING OR ERROR
  * @param file the file
- * @param line the line number
  * @param fct the function
  * @param msg the message
  * @param ... a list of params
  */
-void print_error(const char* type, const char* file, int line,const char* fct, const char* msg, ...)
+void print_error(const char* type, const char* file,const char* fct, const char* msg, ...)
 {
     va_list ap;
     va_start(ap,msg);
-    fprintf(stderr,"LIBEXALT:%s (%d)%s: %s\n",type,line,file,fct);
+    fprintf(stderr,"LIBEXALT:%s %s: %s\n",type,file,fct);
     fprintf(stderr,"\t");
     vfprintf(stderr,msg,ap);
     fprintf(stderr,"\n\n");
@@ -42,7 +41,7 @@ void print_error(const char* type, const char* file, int line,const char* fct, c
  * @brief execute a ioctl call
  * @param argp the strucuture with data (struct ifreq, rtentry, iwreq)
  * @param request the request key (SIOCGIWNAME ...)
- * @return Return 1 if ok, else -1
+ * @return Return 1 if ok, else 0
  */
 short exalt_ioctl(void* argp, int request)
 {
@@ -51,37 +50,19 @@ short exalt_ioctl(void* argp, int request)
     //edit param: SIOCSIFFLAGS SIOCSIFFLAGS SIOCDELRT SIOCSIFADDR SIOCSIFNETMASK SIOCADDRT SIOCETHTOOL
     //read param: SIOCGIWNAME SIOCGIWESSID SIOCGIWNAME SIOCGIFFLAGS SIOCGIFADDR SIOCGIFNETMASK SIOCGIFHWADDR
 
-
-    if(!exalt_is_admin() &&
+    EXALT_ASSERT_QUIT(!
+            (!exalt_is_admin() &&
             ( request == SIOCSIFFLAGS || request == SIOCSIFFLAGS
               || request == SIOCDELRT || request == SIOCSIFADDR
               || request == SIOCSIFNETMASK || request == SIOCADDRT
-              || request== SIOCETHTOOL ))
-    {
+              || request== SIOCETHTOOL )));
 
-        print_error("ERROR", __FILE__, __LINE__,__func__, "you need to be admnistrator if you want modify the configuration !");
-        return -2;
-    }
-
-    if(!argp)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "argp=%p",argp);
-        return -3;
-    }
+    EXALT_ASSERT_QUIT(argp);
 
     fd=iw_sockets_open();
-    if (fd < 0)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "fd=%d",fd);
-        return -4;
-    }
+    EXALT_ASSERT_QUIT(fd>=0);
+    EXALT_ASSERT_ADV( ioctl(fd, request, argp) !=-1, close(fd);return 0,  "ioctl(%d): %s",request,strerror(errno));
 
-    if( ioctl(fd, request, argp) < 0)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "ioctl(%d): %s",request,strerror(errno));
-        close(fd);
-        return -5;
-    }
     close(fd);
     return 1;
 }
@@ -98,13 +79,7 @@ char* exalt_addr_hexa_to_dec(const char* addr)
     char* end;
     int i;
     int n;
-    if(strlen(addr)!=8)
-    {
-        char buf[1024];
-        sprintf(buf,"addr_hexa_to_dec(): the hexadecimal address is not correct: %s\n",addr);
-        print_error("ERROR", __FILE__, __LINE__,__func__, buf);
-        return NULL;
-    }
+    EXALT_ASSERT_QUIT(strlen(addr)==8);
 
     res = (char*)malloc((unsigned int)sizeof(char)*16);
     res[0] = '\0';

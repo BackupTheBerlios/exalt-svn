@@ -46,19 +46,11 @@ int exalt_main()
 {
     struct sockaddr_nl addr;
 
-    if(exalt_eth_interfaces.is_launch>0)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"exalt_is launch") ;
-        return -1;
-    }
+    EXALT_ASSERT_ADV(exalt_eth_interfaces.is_launch<=0,return 0,"Exalt is launch");
 
     e_dbus_init();
     exalt_eth_interfaces.dbus_conn = e_dbus_bus_get(DBUS_BUS_SYSTEM);
-    if (!exalt_eth_interfaces.dbus_conn)
-    {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"Error connecting to system bus. Is it running?");
-        return -1;
-    }
+   EXALT_ASSERT_QUIT(exalt_eth_interfaces.dbus_conn!=NULL);
     e_hal_manager_find_device_by_capability(exalt_eth_interfaces.dbus_conn, "net", _exalt_cb_find_device_by_capability_net, NULL);
     e_dbus_signal_handler_add(exalt_eth_interfaces.dbus_conn, "org.freedesktop.Hal", "/org/freedesktop/Hal/Manager", "org.freedesktop.Hal.Manager", "DeviceAdded", _exalt_cb_signal_device_added, NULL);
     e_dbus_signal_handler_add(exalt_eth_interfaces.dbus_conn, "org.freedesktop.Hal", "/org/freedesktop/Hal/Manager", "org.freedesktop.Hal.Manager", "DeviceRemoved", _exalt_cb_signal_device_removed, NULL);

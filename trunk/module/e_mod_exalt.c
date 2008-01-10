@@ -126,7 +126,7 @@ void _popup_show(Instance *inst, char* interface, Exalt_Enum_Action action)
 		case EXALT_WIRELESS_CB_ACTION_ESSIDCHANGE:
                     break;
 		case EXALT_ETH_CB_ACTION_ADDRESS_NEW:
-                    if(strcmp(exalt_dbus_eth_get_ip(conn,interface),"0.0.0.0") == 0)
+                    if(!exalt_dbus_eth_get_ip(conn,interface))
                         return ;
                     break;
                 case EXALT_ETH_CB_ACTION_CONN_APPLY_START:
@@ -398,6 +398,7 @@ void _exalt_menu_item_interfaces_load(exalt_dbus_conn *conn, E_Menu *m)
 	E_Menu_Item *mi;
 	Ecore_List *l;
 	char buf[1024];
+        char *ip;
 
 	char wireless_img[] = PACKAGE_DATA_DIR ICONS_WIRELESS_ACTIVATE;
 	char wireless_img_not_activate[] = PACKAGE_DATA_DIR ICONS_WIRELESS_NOT_ACTIVATE;
@@ -427,7 +428,13 @@ void _exalt_menu_item_interfaces_load(exalt_dbus_conn *conn, E_Menu *m)
 			img = eth_img_not_activate;
 
 		e_menu_item_icon_file_set(mi,img);
-		sprintf(buf,"%s (%s)", interface, exalt_dbus_eth_get_ip(conn,interface));
+                ip = exalt_dbus_eth_get_ip(conn,interface);
+                if(ip)
+		    sprintf(buf,"%s (%s)", interface,ip);
+                else
+                    sprintf(buf,"%s (%s)", interface,"no ip address");
+                EXALT_FREE(ip);
+
 		e_menu_item_label_set(mi,buf);
 
 		e_menu_item_callback_set(mi, _exalt_interface_cb, interface);

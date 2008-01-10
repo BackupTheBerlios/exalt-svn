@@ -20,7 +20,8 @@ define.h \
 exalt_dbus_ethernet.h \
 exalt_dbus_wireless.h\
 exalt_dbus_wireless_info.h \
-exalt_dbus_dns.h
+exalt_dbus_dns.h \
+exalt_dbus_bootprocess.h
 
 libexalt_dbus_la_SOURCES = \
 libexalt_dbus.c \
@@ -30,6 +31,7 @@ exalt_dbus_wireless_info.c \
 libexalt_dbus_private.h \
 libexalt_dbus_private.c \
 exalt_dbus_dns.c \
+exalt_dbus_bootprocess.c \
 $(EXALTHEADERS)
 
 installed_headersdir = $(prefix)/include/exalt_dbus

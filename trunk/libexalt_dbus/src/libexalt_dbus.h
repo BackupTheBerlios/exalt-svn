@@ -39,6 +39,7 @@ typedef void (exalt_notify_conn_applied_cb) (char* interface, void* user_data);
 #include "exalt_dbus_wireless.h"
 #include "exalt_dbus_wireless_info.h"
 #include "exalt_dbus_dns.h"
+#include "exalt_dbus_bootprocess.h"
 
 void exalt_dbus_init();
 void exalt_dbus_free(exalt_dbus_conn** conn);

@@ -31,7 +31,7 @@ DBusMessage * dbus_cb_dns_get_list(E_DBus_Object *obj __UNUSED__, DBusMessage *m
     dnss = exalt_dns_get_list();
     if(!dnss)
     {
-        print_error("WARNING", __FILE__, __LINE__,__func__, "dnss=%p",dnss);
+        print_error("WARNING", __FILE__,__func__, "dnss=%p",dnss);
         return reply;
     }
 
@@ -40,7 +40,7 @@ DBusMessage * dbus_cb_dns_get_list(E_DBus_Object *obj __UNUSED__, DBusMessage *m
     {
         if (!dns || !dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &dns))
         {
-            print_error("ERROR", __FILE__, __LINE__,__func__, "Out Of Memory");
+            print_error("ERROR", __FILE__,__func__, "Out Of Memory");
             ecore_list_destroy(dnss);
             return reply;
         }
@@ -59,12 +59,12 @@ DBusMessage * dbus_cb_dns_add(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 
     if(!dbus_message_iter_init(msg, &args))
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "no argument");
+        print_error("ERROR", __FILE__,__func__, "no argument");
         return reply;
     }
     if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a string");
+        print_error("ERROR", __FILE__,__func__, "Argument is not a string");
         return reply;
     }
     else
@@ -86,12 +86,12 @@ DBusMessage * dbus_cb_dns_delete(E_DBus_Object *obj __UNUSED__, DBusMessage *msg
 
     if(!dbus_message_iter_init(msg, &args))
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "no argument");
+        print_error("ERROR", __FILE__,__func__, "no argument");
         return reply;
     }
     if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a string");
+        print_error("ERROR", __FILE__,__func__, "Argument is not a string");
         return reply;
     }
     else
@@ -113,12 +113,12 @@ DBusMessage * dbus_cb_dns_replace(E_DBus_Object *obj __UNUSED__, DBusMessage *ms
 
     if(!dbus_message_iter_init(msg, &args))
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "no argument");
+        print_error("ERROR", __FILE__,__func__, "no argument");
         return reply;
     }
     if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a string");
+        print_error("ERROR", __FILE__,__func__, "Argument is not a string");
         return reply;
     }
     else
@@ -128,7 +128,7 @@ DBusMessage * dbus_cb_dns_replace(E_DBus_Object *obj __UNUSED__, DBusMessage *ms
 
     if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a string");
+        print_error("ERROR", __FILE__,__func__, "Argument is not a string");
         return reply;
     }
     else

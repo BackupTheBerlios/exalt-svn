@@ -472,7 +472,7 @@ void wirelesspanel_scanlist_row_clicked_cb(Etk_Object *object, Etk_Tree_Row *row
 void wirelesspanel_scan_networks_cb(char* interface, Ecore_List* new_networks, Ecore_List* old_networks, void* data)
 {
     wireless_panel* pnl;
-    char encryption[] = PACKAGE_DATA_DIR ICONS_ENCRYPTION;
+    const char* encryption = etk_stock_key_get(ETK_STOCK_NETWORK_WIRELESS_ENCRYPTED, ETK_STOCK_SMALL);
     char img1[] = PACKAGE_DATA_DIR ICONS_QUALITY_LESS_25;
     char img2[] = PACKAGE_DATA_DIR ICONS_QUALITY_LESS_50;
     char img3[] = PACKAGE_DATA_DIR ICONS_QUALITY_LESS_75;
@@ -492,12 +492,10 @@ void wirelesspanel_scan_networks_cb(char* interface, Ecore_List* new_networks, E
     ecore_list_first_goto(new_networks);
     while( (essid = ecore_list_next(new_networks)))
     {
-        etk_tree_row_append(ETK_TREE(pnl->scan_list), NULL,
-                pnl->scan_quality,
+        etk_tree_row_append(ETK_TREE(pnl->scan_list), NULL,pnl->scan_quality,
                 img[(exalt_dbus_wirelessinfo_get_quality(exalt_conn, interface, essid))/25],NULL,
                 pnl->scan_encryption,
-                (exalt_dbus_wirelessinfo_get_encryption(exalt_conn, interface, essid)?encryption:NULL)
-                ,NULL,
+                etk_theme_icon_path_get(),(exalt_dbus_wirelessinfo_get_encryption(exalt_conn, interface, essid)?encryption:NULL),
                 pnl->scan_essid,
                 essid,NULL);
         if(essid && exalt_default_network && strcmp(essid,exalt_default_network)==0)
