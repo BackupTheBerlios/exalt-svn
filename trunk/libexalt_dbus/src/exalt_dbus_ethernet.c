@@ -58,7 +58,7 @@ char* exalt_dbus_eth_get_ip(const exalt_dbus_conn* conn, const char* eth)
 
     dbus_pending_call_unref(ret);
     //read the response
-    EXALT_STRDUP(res , exalt_dbus_response_string(msg));
+    EXALT_STRDUP(res , exalt_dbus_response_string(msg,0));
     dbus_message_unref(msg);
     return res;
 }
@@ -101,7 +101,7 @@ char* exalt_dbus_eth_get_netmask(const exalt_dbus_conn* conn, const char* eth)
     dbus_pending_call_unref(ret);
 
     //read the response
-    EXALT_STRDUP(res , exalt_dbus_response_string(msg));
+    EXALT_STRDUP(res , exalt_dbus_response_string(msg,0));
     dbus_message_unref(msg);
     return res;
 }
@@ -144,7 +144,7 @@ char* exalt_dbus_eth_get_gateway(const exalt_dbus_conn* conn, const char* eth)
     dbus_pending_call_unref(ret);
 
     //read the response
-    EXALT_STRDUP(res , exalt_dbus_response_string(msg));
+    EXALT_STRDUP(res , exalt_dbus_response_string(msg,0));
     dbus_message_unref(msg);
     return res;
 }
@@ -179,7 +179,7 @@ Ecore_List* exalt_dbus_eth_get_list(const exalt_dbus_conn* conn)
     }dbus_pending_call_unref(ret);
 
     //read the response
-    res = exalt_dbus_response_strings(msg);
+    res = exalt_dbus_response_strings(msg,0);
     dbus_message_unref(msg);
     return res;
 }
@@ -222,7 +222,7 @@ int exalt_dbus_eth_is_wireless(const exalt_dbus_conn* conn, const char* eth)
     dbus_pending_call_unref(ret);
 
     //read the response
-    res = exalt_dbus_response_boolean(msg);
+    res = exalt_dbus_response_boolean(msg,0);
     dbus_message_unref(msg);
     return res;
 }
@@ -265,7 +265,7 @@ int exalt_dbus_eth_is_link(const exalt_dbus_conn* conn, const char* eth)
     dbus_pending_call_unref(ret);
 
     //read the response
-    res = exalt_dbus_response_boolean(msg);
+    res = exalt_dbus_response_boolean(msg,0);
     dbus_message_unref(msg);
     return res;
 }
@@ -308,7 +308,7 @@ int exalt_dbus_eth_is_up(const exalt_dbus_conn* conn, const char* eth)
     dbus_pending_call_unref(ret);
 
     //read the response
-    res = exalt_dbus_response_boolean(msg);
+    res = exalt_dbus_response_boolean(msg,0);
     dbus_message_unref(msg);
     return res;
 }
@@ -352,7 +352,7 @@ int exalt_dbus_eth_is_dhcp(const exalt_dbus_conn* conn, const char* eth)
     dbus_pending_call_unref(ret);
 
     //read the response
-    res = exalt_dbus_response_boolean(msg);
+    res = exalt_dbus_response_boolean(msg,0);
     dbus_message_unref(msg);
     return res;
 }

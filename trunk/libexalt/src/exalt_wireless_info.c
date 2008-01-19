@@ -46,7 +46,7 @@ Exalt_Wireless_Info* exalt_wirelessinfo_create(Exalt_Wireless* w)
 {
     Exalt_Wireless_Info* wi = (Exalt_Wireless_Info*)malloc((unsigned int)sizeof(Exalt_Wireless_Info));
 
-    EXALT_ASSERT_QUIT(wi!=NULL);
+    EXALT_ASSERT_RETURN(wi!=NULL);
 
     wi->w = w;
     wi->address = NULL;
@@ -92,8 +92,8 @@ void exalt_wirelessinfo_free(void* data)
  */
 void exalt_wirelessinfo_set_address(Exalt_Wireless_Info* w, const char* address)
 {
-    EXALT_ASSERT_QUIT_VOID(w!=NULL);
-    EXALT_ASSERT_QUIT_VOID(address!=NULL);
+    EXALT_ASSERT_RETURN_VOID(w!=NULL);
+    EXALT_ASSERT_RETURN_VOID(address!=NULL);
     EXALT_FREE(w->address);
     w->address = strdup(address);
 }
@@ -108,8 +108,8 @@ void exalt_wirelessinfo_set_address(Exalt_Wireless_Info* w, const char* address)
  */
 void exalt_wirelessinfo_set_essid(Exalt_Wireless_Info* w, const char* essid)
 {
-    EXALT_ASSERT_QUIT_VOID(w!=NULL);
-    EXALT_ASSERT_QUIT_VOID(essid!=NULL);
+    EXALT_ASSERT_RETURN_VOID(w!=NULL);
+    EXALT_ASSERT_RETURN_VOID(essid!=NULL);
     EXALT_FREE(w->essid);
     w->essid = strdup(essid);
 }
@@ -123,8 +123,8 @@ void exalt_wirelessinfo_set_essid(Exalt_Wireless_Info* w, const char* essid)
  */
 void exalt_wirelessinfo_set_mode(Exalt_Wireless_Info* w, const char* mode)
 {
-    EXALT_ASSERT_QUIT_VOID(w!=NULL);
-    EXALT_ASSERT_QUIT_VOID(mode!=NULL);
+    EXALT_ASSERT_RETURN_VOID(w!=NULL);
+    EXALT_ASSERT_RETURN_VOID(mode!=NULL);
     EXALT_FREE(w->mode);
     w->mode = strdup(mode);
 }
@@ -138,8 +138,8 @@ void exalt_wirelessinfo_set_mode(Exalt_Wireless_Info* w, const char* mode)
  */
 void exalt_wirelessinfo_set_protocol(Exalt_Wireless_Info* w, const char* protocol)
 {
-    EXALT_ASSERT_QUIT_VOID(w!=NULL);
-    EXALT_ASSERT_QUIT_VOID(protocol!=NULL);
+    EXALT_ASSERT_RETURN_VOID(w!=NULL);
+    EXALT_ASSERT_RETURN_VOID(protocol!=NULL);
     EXALT_FREE(w->protocol);
     w->protocol = strdup(protocol);
 }
@@ -153,8 +153,8 @@ void exalt_wirelessinfo_set_protocol(Exalt_Wireless_Info* w, const char* protoco
  */
 void exalt_wirelessinfo_set_channel(Exalt_Wireless_Info* w, const char* channel)
 {
-    EXALT_ASSERT_QUIT_VOID(w!=NULL);
-    EXALT_ASSERT_QUIT_VOID(channel!=NULL);
+    EXALT_ASSERT_RETURN_VOID(w!=NULL);
+    EXALT_ASSERT_RETURN_VOID(channel!=NULL);
     EXALT_FREE(w->channel);
     w->channel = strdup(channel);
 }
@@ -168,7 +168,7 @@ void exalt_wirelessinfo_set_channel(Exalt_Wireless_Info* w, const char* channel)
  */
 void exalt_wirelessinfo_set_encryption(Exalt_Wireless_Info* w, int  encryption)
 {
-    EXALT_ASSERT_QUIT_VOID(w!=NULL);
+    EXALT_ASSERT_RETURN_VOID(w!=NULL);
     w->encryption = encryption;
 }
 
@@ -181,8 +181,8 @@ void exalt_wirelessinfo_set_encryption(Exalt_Wireless_Info* w, int  encryption)
  */
 void exalt_wirelessinfo_set_bitrates(Exalt_Wireless_Info* w, const char* bit_rates)
 {
-    EXALT_ASSERT_QUIT_VOID(w!=NULL);
-    EXALT_ASSERT_QUIT_VOID(bit_rates!=NULL);
+    EXALT_ASSERT_RETURN_VOID(w!=NULL);
+    EXALT_ASSERT_RETURN_VOID(bit_rates!=NULL);
     EXALT_FREE(w->bit_rates);
     w->bit_rates = strdup(bit_rates);
 }
@@ -196,7 +196,7 @@ void exalt_wirelessinfo_set_bitrates(Exalt_Wireless_Info* w, const char* bit_rat
  */
 void exalt_wirelessinfo_set_quality(Exalt_Wireless_Info* w, int quality)
 {
-    EXALT_ASSERT_QUIT_VOID(w!=NULL);
+    EXALT_ASSERT_RETURN_VOID(w!=NULL);
     w->quality = quality;
 }
 
@@ -209,7 +209,7 @@ void exalt_wirelessinfo_set_quality(Exalt_Wireless_Info* w, int quality)
  */
 void exalt_wirelessinfo_set_signalvl(Exalt_Wireless_Info* w, int signal_lvl)
 {
-    EXALT_ASSERT_QUIT_VOID(w!=NULL);
+    EXALT_ASSERT_RETURN_VOID(w!=NULL);
     w->signal_lvl = signal_lvl;
 }
 
@@ -222,7 +222,7 @@ void exalt_wirelessinfo_set_signalvl(Exalt_Wireless_Info* w, int signal_lvl)
  */
 void exalt_wirelessinfo_set_noiselvl(Exalt_Wireless_Info* w, int noise_lvl)
 {
-    EXALT_ASSERT_QUIT_VOID(w!=NULL);
+    EXALT_ASSERT_RETURN_VOID(w!=NULL);
     w->noise_lvl = noise_lvl;
 }
 
@@ -236,7 +236,7 @@ void exalt_wirelessinfo_set_noiselvl(Exalt_Wireless_Info* w, int noise_lvl)
 
 void exalt_wirelessinfo_set_scanok(Exalt_Wireless_Info *w,short ok)
 {
-    EXALT_ASSERT_QUIT_VOID(w!=NULL);
+    EXALT_ASSERT_RETURN_VOID(w!=NULL);
     w->scan_ok = ok;
 }
 
@@ -250,7 +250,7 @@ void exalt_wirelessinfo_set_scanok(Exalt_Wireless_Info *w,short ok)
 
 void exalt_wirelessinfo_set_known(Exalt_Wireless_Info* w,short known)
 {
-    EXALT_ASSERT_QUIT_VOID(w!=NULL);
+    EXALT_ASSERT_RETURN_VOID(w!=NULL);
     w->known = known;
 }
 
@@ -263,7 +263,7 @@ void exalt_wirelessinfo_set_known(Exalt_Wireless_Info* w,short known)
  */
 const char* exalt_wirelessinfo_get_addr(Exalt_Wireless_Info* w)
 {
-    EXALT_ASSERT_QUIT(w!=NULL);
+    EXALT_ASSERT_RETURN(w!=NULL);
     return w->address;
 }
 
@@ -274,7 +274,7 @@ const char* exalt_wirelessinfo_get_addr(Exalt_Wireless_Info* w)
  */
 Exalt_Wireless* exalt_wirelessinfo_get_wireless(Exalt_Wireless_Info* w)
 {
-    EXALT_ASSERT_QUIT(w!=NULL);
+    EXALT_ASSERT_RETURN(w!=NULL);
     return w->w;
 }
 
@@ -285,7 +285,7 @@ Exalt_Wireless* exalt_wirelessinfo_get_wireless(Exalt_Wireless_Info* w)
  */
 const char* exalt_wirelessinfo_get_essid(Exalt_Wireless_Info* w)
 {
-    EXALT_ASSERT_QUIT(w!=NULL);
+    EXALT_ASSERT_RETURN(w!=NULL);
     return w->essid;
 }
 
@@ -298,7 +298,7 @@ const char* exalt_wirelessinfo_get_essid(Exalt_Wireless_Info* w)
  */
 const char* exalt_wirelessinfo_get_protocol(Exalt_Wireless_Info* w)
 {
-    EXALT_ASSERT_QUIT(w!=NULL);
+    EXALT_ASSERT_RETURN(w!=NULL);
     return w->protocol;
 }
 
@@ -311,7 +311,7 @@ const char* exalt_wirelessinfo_get_protocol(Exalt_Wireless_Info* w)
  */
 const char* exalt_wirelessinfo_get_mode(Exalt_Wireless_Info* w)
 {
-    EXALT_ASSERT_QUIT(w!=NULL);
+    EXALT_ASSERT_RETURN(w!=NULL);
     return w->mode;
 }
 
@@ -324,7 +324,7 @@ const char* exalt_wirelessinfo_get_mode(Exalt_Wireless_Info* w)
  */
 const char* exalt_wirelessinfo_get_channel(Exalt_Wireless_Info* w)
 {
-    EXALT_ASSERT_QUIT(w!=NULL);
+    EXALT_ASSERT_RETURN(w!=NULL);
     return w->channel;
 }
 
@@ -337,7 +337,7 @@ const char* exalt_wirelessinfo_get_channel(Exalt_Wireless_Info* w)
  */
 int exalt_wirelessinfo_get_encryption(Exalt_Wireless_Info* w)
 {
-    EXALT_ASSERT_QUIT(w!=NULL);
+    EXALT_ASSERT_RETURN(w!=NULL);
     return w->encryption;
 }
 
@@ -350,7 +350,7 @@ int exalt_wirelessinfo_get_encryption(Exalt_Wireless_Info* w)
  */
 const char* exalt_wirelessinfo_get_bitrates(Exalt_Wireless_Info* w)
 {
-    EXALT_ASSERT_QUIT(w!=NULL);
+    EXALT_ASSERT_RETURN(w!=NULL);
     return w->bit_rates;
 }
 
@@ -363,7 +363,7 @@ const char* exalt_wirelessinfo_get_bitrates(Exalt_Wireless_Info* w)
  */
 int exalt_wirelessinfo_get_quality(Exalt_Wireless_Info* w)
 {
-    EXALT_ASSERT_QUIT(w!=NULL);
+    EXALT_ASSERT_RETURN(w!=NULL);
     return w->quality;
 }
 
@@ -376,7 +376,7 @@ int exalt_wirelessinfo_get_quality(Exalt_Wireless_Info* w)
  */
 int exalt_wirelessinfo_get_signallvl(Exalt_Wireless_Info* w)
 {
-    EXALT_ASSERT_QUIT(w!=NULL);
+    EXALT_ASSERT_RETURN(w!=NULL);
     return w->signal_lvl;
 }
 
@@ -389,7 +389,7 @@ int exalt_wirelessinfo_get_signallvl(Exalt_Wireless_Info* w)
  */
 int exalt_wirelessinfo_get_noiselvl(Exalt_Wireless_Info* w)
 {
-    EXALT_ASSERT_QUIT(w!=NULL);
+    EXALT_ASSERT_RETURN(w!=NULL);
     return w->noise_lvl;
 }
 
@@ -402,7 +402,7 @@ int exalt_wirelessinfo_get_noiselvl(Exalt_Wireless_Info* w)
  */
 int exalt_wirelessinfo_is_known(Exalt_Wireless_Info* wi)
 {
-    EXALT_ASSERT_QUIT(wi!=NULL);
+    EXALT_ASSERT_RETURN(wi!=NULL);
 
     return wi->known;
 }
@@ -415,7 +415,7 @@ int exalt_wirelessinfo_is_known(Exalt_Wireless_Info* wi)
  */
 int exalt_wirelessinfo_is_scan(Exalt_Wireless_Info* wi)
 {
-    EXALT_ASSERT_QUIT(wi!=NULL);
+    EXALT_ASSERT_RETURN(wi!=NULL);
 
     return wi->scan_ok;
 }

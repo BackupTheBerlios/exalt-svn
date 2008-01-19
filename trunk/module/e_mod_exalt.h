@@ -28,7 +28,7 @@ static void _menu_cb_post(void *data, E_Menu *m);
 static E_Menu * _exalt_menu_new(Instance *inst);
 static void _exalt_menu_pre_cb(void *data, E_Menu *m);
 
-void _exalt_notify_cb(char* interface, int action, void* user_data);
+void _exalt_notify_cb(char* interface, Exalt_Enum_Action action, void* user_data);
 void _exalt_menu_item_interfaces_load(exalt_dbus_conn* conn, E_Menu *m);
 void _exalt_menu_item_wireless_load(exalt_dbus_conn *conn, E_Menu *mi, char* interface);
 static void _exalt_interface_cb(void *data, E_Menu *m, E_Menu_Item *mi);

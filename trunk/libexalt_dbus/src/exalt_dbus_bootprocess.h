@@ -21,9 +21,11 @@
 
 #include "libexalt_dbus.h"
 
-void exalt_dbus_bootprocess_iface_add(const exalt_dbus_conn* conn, const char* interface);
-void exalt_dbus_bootprocess_iface_remove(const exalt_dbus_conn* conn, const char* interface);
+int exalt_dbus_bootprocess_iface_add(const exalt_dbus_conn* conn, const char* interface);
+int exalt_dbus_bootprocess_iface_remove(const exalt_dbus_conn* conn, const char* interface);
 int exalt_dbus_bootprocess_iface_is(const exalt_dbus_conn* conn, const char* interface);
+int exalt_dbus_bootprocess_timeout_set(const exalt_dbus_conn* conn, int timeout);
+int exalt_dbus_bootprocess_timeout_get(const exalt_dbus_conn* conn);
 
 #endif   /* ----- #ifndef EXALT_DBUS_BOOTPROCESS_INC  ----- */
 

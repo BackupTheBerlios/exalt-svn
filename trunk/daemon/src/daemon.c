@@ -59,6 +59,7 @@ int setup(E_DBus_Connection *conn)
     e_dbus_interface_method_add(iface, "DNS_GET_LIST", NULL, NULL, dbus_cb_dns_get_list);
 
     e_dbus_interface_method_add(iface, "BOOTPROCESS_IFACE_IS", NULL, NULL, dbus_cb_bootprocess_iface_is);
+    e_dbus_interface_method_add(iface, "BOOTPROCESS_TIMEOUT_GET", NULL, NULL, dbus_cb_bootprocess_timeout_get);
 
 
     e_dbus_object_interface_attach(obj, iface);
@@ -77,6 +78,7 @@ int setup(E_DBus_Connection *conn)
 
     e_dbus_interface_method_add(iface, "BOOTPROCESS_IFACE_ADD", NULL, NULL, dbus_cb_bootprocess_iface_add);
     e_dbus_interface_method_add(iface, "BOOTPROCESS_IFACE_REMOVE", NULL, NULL, dbus_cb_bootprocess_iface_remove);
+    e_dbus_interface_method_add(iface, "BOOTPROCESS_TIMEOUT_SET", NULL, NULL, dbus_cb_bootprocess_timeout_set);
 
     e_dbus_object_interface_attach(obj, iface);
 
@@ -256,6 +258,7 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
         }
     }
 
+    //maybe we can apply the configuration when the card is activate ?
     if (action == EXALT_ETH_CB_ACTION_LINK && exalt_eth_is_up(eth))
     {
         Exalt_Connection *c = exalt_eth_conn_load(CONF_FILE, exalt_eth_get_name(eth));
@@ -270,15 +273,17 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
         exalt_eth_save(CONF_FILE,eth);
     }
 
+    if (action == EXALT_ETH_CB_ACTION_UNLINK || action == EXALT_ETH_CB_ACTION_DOWN)
+        //remove the default gateway
+        exalt_eth_del_gateway(eth);
+
     if( action == EXALT_ETH_CB_ACTION_UP || action == EXALT_ETH_CB_ACTION_DOWN)
         exalt_eth_save(CONF_FILE, eth);
 
 
     if( action==EXALT_ETH_CB_ACTION_CONN_APPLY_DONE)
-    {
-        //save the configuration
+        //save the new configuration
         exalt_eth_save(CONF_FILE, eth);
-    }
 
 
 
@@ -541,15 +546,33 @@ Exalt_Wireless_Info* get_wirelessinfo(Exalt_Ethernet* eth, char* essid)
 }
 
 
-void print_error(const char* type, const char* file,const char* fct, const char* msg, ...)
+int dbus_args_error_append(DBusMessage *msg, int id_error, const char* error)
 {
-    va_list ap;
-    va_start(ap,msg);
-    fprintf(stderr,"EXALTD:%s %s: %s\n",type,file,fct);
-    fprintf(stderr,"\t");
-    vfprintf(stderr,msg,ap);
-    fprintf(stderr,"\n\n");
-    va_end(ap);
+    DBusMessageIter args;
+    int err = EXALT_DBUS_ERROR;
+
+    EXALT_ASSERT_RETURN(msg!=NULL);
+    EXALT_ASSERT_RETURN(error!=NULL);
+
+    dbus_message_iter_init_append(msg, &args);
+
+    dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &err);
+
+    dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &id_error);
+
+    dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &error);
+
+    return 1;
 }
 
+int dbus_args_valid_append(DBusMessage *msg)
+{
+    DBusMessageIter args;
+    int err = EXALT_DBUS_VALID;
 
+    dbus_message_iter_init_append(msg, &args);
+
+    dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &err);
+
+    return 1;
+}

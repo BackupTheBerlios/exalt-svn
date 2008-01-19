@@ -54,7 +54,7 @@ Exalt_Connection* exalt_conn_new()
     Exalt_Connection* c;
 
     c = malloc(sizeof(Exalt_Connection));
-    EXALT_ASSERT_QUIT(c!=NULL);
+    EXALT_ASSERT_RETURN(c!=NULL);
 
     c->mode = EXALT_DHCP;
 
@@ -97,7 +97,7 @@ Exalt_Connection* exalt_conn_custom_new(Exalt_Enum_Mode mode,
     Exalt_Connection* c;
 
     c = exalt_conn_new();
-    EXALT_ASSERT_QUIT(c!=NULL);
+    EXALT_ASSERT_RETURN(c!=NULL);
 
     exalt_conn_set_mode(c,mode);
     exalt_conn_set_ip(c,ip);
@@ -120,7 +120,7 @@ Exalt_Connection* exalt_conn_custom_new(Exalt_Enum_Mode mode,
  */
 void exalt_conn_free(Exalt_Connection* c)
 {
-    EXALT_ASSERT_QUIT_VOID(c!=NULL);
+    EXALT_ASSERT_RETURN_VOID(c!=NULL);
 
     EXALT_FREE(c->ip);
     EXALT_FREE(c->gateway);
@@ -139,7 +139,7 @@ void exalt_conn_free(Exalt_Connection* c)
 short exalt_conn_is_valid(Exalt_Connection* c)
 {
     short valid = 1;
-    EXALT_ASSERT_QUIT(c!=NULL);
+    EXALT_ASSERT_RETURN(c!=NULL);
 
     if(!exalt_conn_is_dhcp(c))
     {
@@ -171,7 +171,7 @@ short exalt_conn_is_valid(Exalt_Connection* c)
  */
 short exalt_conn_set_mode(Exalt_Connection* c, Exalt_Enum_Mode mode)
 {
-    EXALT_ASSERT_QUIT(c!=NULL);
+    EXALT_ASSERT_RETURN(c!=NULL);
     c->mode = mode;
     return 1;
 }
@@ -185,8 +185,8 @@ short exalt_conn_set_mode(Exalt_Connection* c, Exalt_Enum_Mode mode)
  */
 short exalt_conn_set_ip(Exalt_Connection* c, const char* ip)
 {
-    EXALT_ASSERT_QUIT(c!=NULL);
-    EXALT_ASSERT_QUIT(exalt_is_address(ip));
+    EXALT_ASSERT_RETURN(c!=NULL);
+    EXALT_ASSERT_RETURN(exalt_is_address(ip));
 
     EXALT_FREE(c->ip);
     c->ip=strdup(ip);
@@ -202,8 +202,8 @@ short exalt_conn_set_ip(Exalt_Connection* c, const char* ip)
  */
 short exalt_conn_set_netmask(Exalt_Connection* c, const char* netmask)
 {
-    EXALT_ASSERT_QUIT(c!=NULL);
-    EXALT_ASSERT_QUIT(exalt_is_address(netmask));
+    EXALT_ASSERT_RETURN(c!=NULL);
+    EXALT_ASSERT_RETURN(exalt_is_address(netmask));
 
     EXALT_FREE(c->netmask);
     c->netmask=strdup(netmask);
@@ -220,8 +220,8 @@ short exalt_conn_set_netmask(Exalt_Connection* c, const char* netmask)
  */
 short exalt_conn_set_gateway(Exalt_Connection* c, const char* gateway)
 {
-    EXALT_ASSERT_QUIT(c!=NULL);
-    EXALT_ASSERT_QUIT(exalt_is_address(gateway));
+    EXALT_ASSERT_RETURN(c!=NULL);
+    EXALT_ASSERT_RETURN(exalt_is_address(gateway));
     EXALT_FREE(c->gateway);
     c->gateway=strdup(gateway);
     return 1;
@@ -236,7 +236,7 @@ short exalt_conn_set_gateway(Exalt_Connection* c, const char* gateway)
  */
 short exalt_conn_set_wireless(Exalt_Connection* c, short is_wireless)
 {
-    EXALT_ASSERT_QUIT(c!=NULL);
+    EXALT_ASSERT_RETURN(c!=NULL);
     c->is_wireless = is_wireless;
     return 1;
 }
@@ -249,9 +249,9 @@ short exalt_conn_set_wireless(Exalt_Connection* c, short is_wireless)
  */
 short exalt_conn_set_essid(Exalt_Connection* c, const char* essid)
 {
-    EXALT_ASSERT_QUIT(c!=NULL);
-    EXALT_ASSERT_QUIT(exalt_conn_is_wireless(c));
-    EXALT_ASSERT_QUIT(exalt_is_essid(essid));
+    EXALT_ASSERT_RETURN(c!=NULL);
+    EXALT_ASSERT_RETURN(exalt_conn_is_wireless(c));
+    EXALT_ASSERT_RETURN(exalt_is_essid(essid));
 
     EXALT_FREE(c->essid);
     c->essid=strdup(essid);
@@ -268,9 +268,9 @@ short exalt_conn_set_essid(Exalt_Connection* c, const char* essid)
  */
 short exalt_conn_set_key(Exalt_Connection* c, const char* key)
 {
-    EXALT_ASSERT_QUIT(c!=NULL);
-    EXALT_ASSERT_QUIT(exalt_conn_is_wireless(c));
-    EXALT_ASSERT_QUIT(exalt_is_key(key,exalt_conn_get_encryption_mode(c)));
+    EXALT_ASSERT_RETURN(c!=NULL);
+    EXALT_ASSERT_RETURN(exalt_conn_is_wireless(c));
+    EXALT_ASSERT_RETURN(exalt_is_key(key,exalt_conn_get_encryption_mode(c)));
 
     EXALT_FREE(c->key);
     c->key=strdup(key);
@@ -288,8 +288,8 @@ short exalt_conn_set_key(Exalt_Connection* c, const char* key)
  */
 short exalt_conn_set_encryption_mode(Exalt_Connection* c, Exalt_Enum_Encryption_Mode encryption_mode)
 {
-    EXALT_ASSERT_QUIT(c!=NULL);
-    EXALT_ASSERT_QUIT(exalt_conn_is_wireless(c));
+    EXALT_ASSERT_RETURN(c!=NULL);
+    EXALT_ASSERT_RETURN(exalt_conn_is_wireless(c));
 
     c->encryption_mode = encryption_mode;
     return 1;
@@ -304,8 +304,8 @@ short exalt_conn_set_encryption_mode(Exalt_Connection* c, Exalt_Enum_Encryption_
  */
 short exalt_conn_set_connection_mode(Exalt_Connection* c, Exalt_Enum_Connection_Mode connection_mode)
 {
-    EXALT_ASSERT_QUIT(c!=NULL);
-    EXALT_ASSERT_QUIT(exalt_conn_is_wireless(c));
+    EXALT_ASSERT_RETURN(c!=NULL);
+    EXALT_ASSERT_RETURN(exalt_conn_is_wireless(c));
 
     c->connection_mode = connection_mode;
     return 1;
@@ -320,8 +320,8 @@ short exalt_conn_set_connection_mode(Exalt_Connection* c, Exalt_Enum_Connection_
  */
 short exalt_conn_set_security_mode(Exalt_Connection* c, Exalt_Enum_Security_Mode security_mode)
 {
-    EXALT_ASSERT_QUIT(c!=NULL);
-    EXALT_ASSERT_QUIT(exalt_conn_is_wireless(c));
+    EXALT_ASSERT_RETURN(c!=NULL);
+    EXALT_ASSERT_RETURN(exalt_conn_is_wireless(c));
 
     c->security_mode = security_mode;
     return 1;
@@ -339,7 +339,7 @@ short exalt_conn_set_security_mode(Exalt_Connection* c, Exalt_Enum_Security_Mode
  */
 short exalt_conn_is_dhcp(Exalt_Connection* c)
 {
-    EXALT_ASSERT_QUIT(c!=NULL);
+    EXALT_ASSERT_RETURN(c!=NULL);
     return c->mode == EXALT_DHCP;
 }
 
@@ -350,7 +350,7 @@ short exalt_conn_is_dhcp(Exalt_Connection* c)
  */
 Exalt_Enum_Mode exalt_conn_get_mode(Exalt_Connection* c)
 {
-    EXALT_ASSERT_QUIT(c!=NULL);
+    EXALT_ASSERT_RETURN(c!=NULL);
     return c->mode;
 }
 
@@ -361,7 +361,7 @@ Exalt_Enum_Mode exalt_conn_get_mode(Exalt_Connection* c)
  */
 const char* exalt_conn_get_ip(Exalt_Connection *c)
 {
-    EXALT_ASSERT_QUIT(c!=NULL);
+    EXALT_ASSERT_RETURN(c!=NULL);
     return c->ip;
 }
 
@@ -373,7 +373,7 @@ const char* exalt_conn_get_ip(Exalt_Connection *c)
  */
 const char* exalt_conn_get_gateway(Exalt_Connection *c)
 {
-    EXALT_ASSERT_QUIT(c!=NULL);
+    EXALT_ASSERT_RETURN(c!=NULL);
     return c->gateway;
 }
 
@@ -384,7 +384,7 @@ const char* exalt_conn_get_gateway(Exalt_Connection *c)
  */
 const char* exalt_conn_get_netmask(Exalt_Connection *c)
 {
-    EXALT_ASSERT_QUIT(c!=NULL);
+    EXALT_ASSERT_RETURN(c!=NULL);
     return c->netmask;
 }
 
@@ -398,7 +398,7 @@ const char* exalt_conn_get_netmask(Exalt_Connection *c)
  */
 short exalt_conn_is_wireless(Exalt_Connection* c)
 {
-    EXALT_ASSERT_QUIT(c!=NULL);
+    EXALT_ASSERT_RETURN(c!=NULL);
     return c->is_wireless;
 }
 
@@ -409,8 +409,8 @@ short exalt_conn_is_wireless(Exalt_Connection* c)
  */
 const char* exalt_conn_get_essid(Exalt_Connection *c)
 {
-    EXALT_ASSERT_QUIT(c!=NULL);
-    EXALT_ASSERT_QUIT(exalt_conn_is_wireless(c));
+    EXALT_ASSERT_RETURN(c!=NULL);
+    EXALT_ASSERT_RETURN(exalt_conn_is_wireless(c));
     return c->essid;
 }
 
@@ -421,8 +421,8 @@ const char* exalt_conn_get_essid(Exalt_Connection *c)
  */
 const char* exalt_conn_get_key(Exalt_Connection *c)
 {
-    EXALT_ASSERT_QUIT(c!=NULL);
-    EXALT_ASSERT_QUIT(exalt_conn_is_wireless(c));
+    EXALT_ASSERT_RETURN(c!=NULL);
+    EXALT_ASSERT_RETURN(exalt_conn_is_wireless(c));
     return c->key;
 }
 
@@ -433,8 +433,8 @@ const char* exalt_conn_get_key(Exalt_Connection *c)
  */
 Exalt_Enum_Encryption_Mode exalt_conn_get_encryption_mode(Exalt_Connection* c)
 {
-    EXALT_ASSERT_QUIT(c!=NULL);
-    EXALT_ASSERT_QUIT(exalt_conn_is_wireless(c));
+    EXALT_ASSERT_RETURN(c!=NULL);
+    EXALT_ASSERT_RETURN(exalt_conn_is_wireless(c));
     return c->encryption_mode;
 }
 
@@ -445,8 +445,8 @@ Exalt_Enum_Encryption_Mode exalt_conn_get_encryption_mode(Exalt_Connection* c)
  */
 Exalt_Enum_Security_Mode exalt_conn_get_security_mode(Exalt_Connection* c)
 {
-    EXALT_ASSERT_QUIT(c!=NULL);
-    EXALT_ASSERT_QUIT(exalt_conn_is_wireless(c));
+    EXALT_ASSERT_RETURN(c!=NULL);
+    EXALT_ASSERT_RETURN(exalt_conn_is_wireless(c));
     return c->security_mode;
 }
 
@@ -457,8 +457,8 @@ Exalt_Enum_Security_Mode exalt_conn_get_security_mode(Exalt_Connection* c)
  */
 Exalt_Enum_Connection_Mode exalt_conn_get_connection_mode(Exalt_Connection* c)
 {
-    EXALT_ASSERT_QUIT(c!=NULL);
-    EXALT_ASSERT_QUIT(exalt_conn_is_wireless(c));
+    EXALT_ASSERT_RETURN(c!=NULL);
+    EXALT_ASSERT_RETURN(exalt_conn_is_wireless(c));
     return c->connection_mode;
 }
 

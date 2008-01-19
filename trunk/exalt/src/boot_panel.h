@@ -33,7 +33,6 @@ struct boot_panel
     Etk_Tree_Col* eth_col0;
 
     Etk_Widget *slider;
-    Etk_Widget *slider_entry;
 } ;
 
 boot_panel* bootpanel_create();
@@ -41,12 +40,14 @@ void bootpanel_show(boot_panel* pnl);
 void bootpanel_hide(boot_panel* pnl);
 void bootpanel_free(boot_panel** pnl);
 
+void bootpanel_update_timeout(boot_panel* pnl);
 void bootpanel_update_interface(char* interface, boot_panel* pnl);
 void bootpanel_add_interface(char* interface, boot_panel* pnl);
 void bootpanel_remove_interface(char* interface, boot_panel* pnl);
 Etk_Tree_Row * bootpanel_findrow(char* interface, boot_panel* pnl);
 
 Etk_Bool bootpanel_ethlist_checkbox_change_cb(Etk_Object *object, Etk_Tree_Row *row, void *data);
+Etk_Bool bootpanel_slider_value_changed_cb(Etk_Object *object __UNUSED__, double value, void* data __UNUSED__);
 
 
 #endif   /* ----- #ifndef BOOT_PANEL_INC  ----- */

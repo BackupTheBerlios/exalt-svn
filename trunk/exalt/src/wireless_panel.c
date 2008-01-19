@@ -247,7 +247,7 @@ void wirelesspanel_set_eth(wireless_panel* pnl, char* interface)
 {
     if(!pnl || !interface)
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"pnl=%p and interface=%p",pnl,interface);
+        print_error( __FILE__, __func__,"pnl=%p and interface=%p",pnl,interface);
         return ;
     }
     char name[100];
@@ -483,7 +483,7 @@ void wirelesspanel_scan_networks_cb(char* interface, Ecore_List* new_networks, E
 
     if( !interface || !new_networks || !interface || !new_networks)
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"interface = %p, old_networks = %p, new_networks = %p, data = %p",interface, new_networks, old_networks, data);
+        print_error( __FILE__, __func__,"interface = %p, old_networks = %p, new_networks = %p, data = %p",interface, new_networks, old_networks, data);
         return ;
     }
 

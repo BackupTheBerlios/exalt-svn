@@ -14,14 +14,14 @@ int main(int argc,char**argv)
 
 	if (!etk_init(argc, argv))
         {
-            print_error("ERROR", __FILE__, __LINE__,__func__,"Can not init ETK");
+            print_error(__FILE__,__func__,"Can not init ETK");
             return 1;
         }
 
         exalt_dbus_init();
         if(! (exalt_conn = exalt_dbus_connect()))
         {
-            print_error("ERROR", __FILE__, __LINE__,__func__,"Can not connect to DBUS");
+            print_error( __FILE__,__func__,"Can not connect to DBUS");
             return -1;
         }
 
@@ -75,14 +75,4 @@ int main(int argc,char**argv)
 }
 
 
-void print_error(const char* type, const char* file, int line,const char* fct, const char* msg, ...)
-{
-    va_list ap;
-    va_start(ap,msg);
-    fprintf(stderr,"LIBEXALT:%s (%d)%s: %s\n",type,line,file,fct);
-    fprintf(stderr,"\t");
-    vfprintf(stderr,msg,ap);
-    fprintf(stderr,"\n\n");
-    va_end(ap);
-}
 

@@ -133,7 +133,7 @@ void ethpanel_set_eth(eth_panel* pnl, char* interface)
 
     if(!pnl || !interface)
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"pnl=%p and interface=%p",pnl,interface);
+        print_error( __FILE__, __func__,"pnl=%p and interface=%p",pnl,interface);
         return ;
     }
     sprintf(name,_("Network card: %s"),interface);

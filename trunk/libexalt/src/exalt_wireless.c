@@ -54,10 +54,10 @@ Exalt_Wireless* exalt_wireless_new(Exalt_Ethernet* eth)
     Exalt_Wireless *w;
     char* str;
 
-    EXALT_ASSERT_QUIT(eth!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
 
     w = (Exalt_Wireless*)malloc((unsigned int)sizeof(Exalt_Wireless));
-    EXALT_ASSERT_QUIT(w!=NULL);
+    EXALT_ASSERT_RETURN(w!=NULL);
 
     w -> eth = eth;
 
@@ -92,7 +92,7 @@ Exalt_Wireless* exalt_wireless_new(Exalt_Ethernet* eth)
  */
 void exalt_wireless_free(Exalt_Wireless* w)
 {
-    EXALT_ASSERT_QUIT_VOID(w!=NULL);
+    EXALT_ASSERT_RETURN_VOID(w!=NULL);
     ecore_list_destroy(w->networks);
 
     EXALT_FREE(w->_save_essid);
@@ -123,7 +123,7 @@ char* exalt_wireless_get_essid(Exalt_Wireless* w)
     struct iwreq wrq;
     Exalt_Ethernet *eth;
 
-    EXALT_ASSERT_QUIT(w!=NULL);
+    EXALT_ASSERT_RETURN(w!=NULL);
 
     eth = exalt_wireless_get_eth(w);
 
@@ -148,8 +148,8 @@ char* exalt_wireless_get_essid(Exalt_Wireless* w)
  */
 int exalt_wireless_set_wpasupplicant_driver(Exalt_Wireless* w, const char* driver)
 {
-    EXALT_ASSERT_QUIT(w!=NULL);
-    EXALT_ASSERT_QUIT(driver!=NULL);
+    EXALT_ASSERT_RETURN(w!=NULL);
+    EXALT_ASSERT_RETURN(driver!=NULL);
     EXALT_FREE(w->wpasupplicant_driver);
     w->wpasupplicant_driver = strdup(driver);
     return 1;
@@ -162,7 +162,7 @@ int exalt_wireless_set_wpasupplicant_driver(Exalt_Wireless* w, const char* drive
  */
 char* exalt_wireless_get_wpasupplicant_driver(Exalt_Wireless* w)
 {
-    EXALT_ASSERT_QUIT(w!=NULL);
+    EXALT_ASSERT_RETURN(w!=NULL);
     return w->wpasupplicant_driver;
 }
 
@@ -173,7 +173,7 @@ char* exalt_wireless_get_wpasupplicant_driver(Exalt_Wireless* w)
  */
 Exalt_Ethernet* exalt_wireless_get_ethernet(Exalt_Wireless* w)
 {
-    EXALT_ASSERT_QUIT(w!=NULL);
+    EXALT_ASSERT_RETURN(w!=NULL);
     return w->eth;
 }
 
@@ -185,7 +185,7 @@ Exalt_Ethernet* exalt_wireless_get_ethernet(Exalt_Wireless* w)
  */
 Ecore_List* exalt_wireless_get_networks_list(Exalt_Wireless* w)
 {
-    EXALT_ASSERT_QUIT(w!=NULL);
+    EXALT_ASSERT_RETURN(w!=NULL);
     return w->networks;
 }
 
@@ -196,7 +196,7 @@ Ecore_List* exalt_wireless_get_networks_list(Exalt_Wireless* w)
  */
 Exalt_Ethernet* exalt_wireless_get_eth(Exalt_Wireless* w)
 {
-    EXALT_ASSERT_QUIT(w!=NULL);
+    EXALT_ASSERT_RETURN(w!=NULL);
     return w->eth;
 }
 
@@ -213,7 +213,7 @@ Exalt_Ethernet* exalt_wireless_get_eth(Exalt_Wireless* w)
  */
 Exalt_Wireless_Info* exalt_wireless_get_networkinfo(Exalt_Wireless* w, int nb)
 {
-    EXALT_ASSERT_QUIT(w!=NULL);
+    EXALT_ASSERT_RETURN(w!=NULL);
     return Exalt_Wireless_Info(ecore_list_index_goto(w->networks,nb));
 }
 
@@ -229,8 +229,8 @@ Exalt_Wireless_Info* exalt_wireless_get_networkinfo_by_essid(Exalt_Wireless* w,c
     void* data;
     Exalt_Wireless_Info* wi=NULL;
 
-    EXALT_ASSERT_QUIT(w!=NULL);
-    EXALT_ASSERT_QUIT(essid!=NULL);
+    EXALT_ASSERT_RETURN(w!=NULL);
+    EXALT_ASSERT_RETURN(essid!=NULL);
 
     ecore_list_first_goto(w->networks);
     data = ecore_list_next(w->networks);
@@ -263,8 +263,8 @@ void exalt_wireless_scan_start(Exalt_Ethernet* eth)
 {
     Exalt_Wireless* w;
 
-    EXALT_ASSERT_QUIT_VOID(eth!=NULL);
-    EXALT_ASSERT_QUIT_VOID(exalt_eth_is_wireless(eth));
+    EXALT_ASSERT_RETURN_VOID(eth!=NULL);
+    EXALT_ASSERT_RETURN_VOID(exalt_eth_is_wireless(eth));
     w = exalt_eth_get_wireless(eth);
     EXALT_ASSERT_ADV(!w->scan_cb_timer,return ,"You can't start 2 scans in the same time");
 
@@ -282,7 +282,7 @@ void exalt_wireless_scan_stop(Exalt_Ethernet* eth)
     Exalt_Wireless* w;
 
     w=exalt_eth_get_wireless(eth);
-    EXALT_ASSERT_QUIT_VOID(w!=NULL);
+    EXALT_ASSERT_RETURN_VOID(w!=NULL);
     EXALT_ASSERT_ADV(w->scan_cb_timer,return ,"No scan launch");
 
     EXALT_DELETE_TIMER(w->scan_cb_timer);
@@ -308,10 +308,10 @@ int exalt_wireless_scan_wait(Exalt_Ethernet* eth)
 
     w = exalt_eth_get_wireless(eth);
     context=w->context;
-    EXALT_ASSERT_QUIT(context!=NULL);
+    EXALT_ASSERT_RETURN(context!=NULL);
 
     fd = w->scan_fd;
-    EXALT_ASSERT_QUIT(w!=0);
+    EXALT_ASSERT_RETURN(w!=0);
 
     while(1)
     {
@@ -396,7 +396,7 @@ int exalt_wireless_scan_wait(Exalt_Ethernet* eth)
 short exalt_wireless_radiobutton_ison(Exalt_Wireless *w)
 {
     struct iwreq wrq;
-    EXALT_ASSERT_QUIT(w!=NULL);
+    EXALT_ASSERT_RETURN(w!=NULL);
 
     strncpy(wrq.ifr_name, exalt_eth_get_name(exalt_wireless_get_eth(w)), sizeof(wrq.ifr_name));
     if(!exalt_ioctl(&wrq, SIOCGIWNAME))
@@ -427,12 +427,12 @@ int exalt_wireless_apply_conn(Exalt_Wireless *w)
     char buf[1024];
     int keylen = 0;
 
-    EXALT_ASSERT_QUIT(w!=NULL);
+    EXALT_ASSERT_RETURN(w!=NULL);
     eth = exalt_wireless_get_eth(w);
 
     c = exalt_eth_get_connection(eth);
-    EXALT_ASSERT_QUIT(exalt_conn_is_valid(c));
-    EXALT_ASSERT_QUIT(exalt_conn_is_wireless(c));
+    EXALT_ASSERT_RETURN(exalt_conn_is_valid(c));
+    EXALT_ASSERT_RETURN(exalt_conn_is_wireless(c));
 
     encryption_mode = exalt_conn_get_encryption_mode(c);
     switch(encryption_mode)
@@ -533,11 +533,11 @@ int exalt_wireless_apply_conn(Exalt_Wireless *w)
                 ecore_exe_free(exe);
                 print_error("WARNING", __FILE__,__func__,"Re-try to connect to wpa_supplicant");
                 ctrl_conn = _exalt_wpa_open_connection(exalt_eth_get_name(eth));
-                EXALT_ASSERT_QUIT(ctrl_conn!=NULL);
+                EXALT_ASSERT_RETURN(ctrl_conn!=NULL);
                 print_error("WARNING", __FILE__,__func__,"Connection succesfull");
             }
 
-            EXALT_ASSERT_QUIT(_exalt_wpa_ctrl_command(ctrl_conn, "RECONFIGURE"));
+            EXALT_ASSERT_RETURN(_exalt_wpa_ctrl_command(ctrl_conn, "RECONFIGURE"));
 
             //close the connection
             wpa_ctrl_close(ctrl_conn);
@@ -614,7 +614,7 @@ struct wpa_ctrl * _exalt_wpa_open_connection(const char *ifname)
     char *cfile;
     int flen;
     struct wpa_ctrl* ctrl_conn;
-    EXALT_ASSERT_QUIT(ifname!=NULL);
+    EXALT_ASSERT_RETURN(ifname!=NULL);
 
     flen = strlen(EXALT_WPA_IFACE_DIR) + strlen(ifname) + 2;
     cfile = malloc(flen);
@@ -635,7 +635,7 @@ void _exalt_wpa_stop(Exalt_Wireless* w)
 #ifdef  HAVE_WPA_SUPPLICANT
     struct wpa_ctrl *ctrl_conn;
     Exalt_Ethernet* eth;
-    EXALT_ASSERT_QUIT_VOID(w!=NULL);
+    EXALT_ASSERT_RETURN_VOID(w!=NULL);
     eth = exalt_wireless_get_eth(w);
 
     ctrl_conn = _exalt_wpa_open_connection(exalt_eth_get_name(eth));
@@ -665,12 +665,12 @@ int _exalt_wpa_ctrl_command(struct wpa_ctrl *ctrl_conn, char *cmd)
     size_t len;
     int ret;
 
-    EXALT_ASSERT_QUIT(ctrl_conn!=NULL);
+    EXALT_ASSERT_RETURN(ctrl_conn!=NULL);
     len = sizeof(buf) - 1;
     ret = wpa_ctrl_request(ctrl_conn, cmd, strlen(cmd), buf, &len,
             /*wpa_cli_msg_cb*/ NULL);
 
-    EXALT_ASSERT_QUIT(ret>=0);
+    EXALT_ASSERT_RETURN(ret>=0);
 
     return 1;
 }
@@ -682,7 +682,7 @@ int _exalt_rtlink_essid_change(Exalt_Wireless *w)
 {
     char* essid, *save_essid;
 
-    EXALT_ASSERT_QUIT(w!=NULL);
+    EXALT_ASSERT_RETURN(w!=NULL);
 
     essid = exalt_wireless_get_essid(w);
     save_essid = _exalt_wireless_get_save_essid(w);
@@ -710,8 +710,8 @@ int _exalt_rtlink_essid_change(Exalt_Wireless *w)
  */
 int _exalt_wireless_set_save_essid(Exalt_Wireless* w,const char* essid)
 {
-    EXALT_ASSERT_QUIT(w!=NULL);
-    EXALT_ASSERT_QUIT(essid!=NULL);
+    EXALT_ASSERT_RETURN(w!=NULL);
+    EXALT_ASSERT_RETURN(essid!=NULL);
 
     EXALT_FREE(w->_save_essid);
     w->_save_essid=strdup(essid);
@@ -725,7 +725,7 @@ int _exalt_wireless_set_save_essid(Exalt_Wireless* w,const char* essid)
  */
 char* _exalt_wireless_get_save_essid(Exalt_Wireless* w)
 {
-    EXALT_ASSERT_QUIT(w!=NULL);
+    EXALT_ASSERT_RETURN(w!=NULL);
     return w->_save_essid;
 }
 
@@ -736,7 +736,7 @@ char* _exalt_wireless_get_save_essid(Exalt_Wireless* w)
 void _exalt_wireless_scan_free(wireless_scan **ws)
 {
     wireless_scan* result,*r_save;
-    EXALT_ASSERT_QUIT_VOID(ws!=NULL);
+    EXALT_ASSERT_RETURN_VOID(ws!=NULL);
 
     result = *ws;
 
@@ -767,16 +767,16 @@ int _exalt_wireless_scan(void *data)
     Exalt_Wireless* w;
     char* cpy;
 
-    EXALT_ASSERT_QUIT(data!=NULL);
+    EXALT_ASSERT_RETURN(data!=NULL);
     Exalt_Ethernet* eth = Exalt_Ethernet(data);
     w = exalt_eth_get_wireless(eth);
-    EXALT_ASSERT_QUIT(w!=NULL);
+    EXALT_ASSERT_RETURN(w!=NULL);
 
     context=w->context;
-    EXALT_ASSERT_QUIT(context!=NULL);
+    EXALT_ASSERT_RETURN(context!=NULL);
 
     fd = w->scan_fd;
-    EXALT_ASSERT_QUIT(fd>=0);
+    EXALT_ASSERT_RETURN(fd>=0);
     cpy = strdup(exalt_eth_get_name(eth));
     delay = iw_process_scan(fd, cpy, exalt_eth_interfaces.we_version, context);
     EXALT_FREE(cpy);

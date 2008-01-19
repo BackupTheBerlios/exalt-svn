@@ -25,6 +25,21 @@
 #include <string.h>
 #include <libexalt.h>
 
+
+/*
+ * when we return a valid response, next args are the response
+ */
+#define EXALT_DBUS_VALID 1;
+/* when we return an error, the next args have to be an int32 with a error id
+ * and the third args have to be a string with a description of the error
+ */
+#define EXALT_DBUS_ERROR 0;
+
+#define EXALT_DBUS_NO_ARGUMENT "Received no argument"
+#define EXALT_DBUS_NO_ARGUMENT_ID 0
+#define EXALT_DBUS_ARGUMENT_NOT_STRING "One of arguments is not a string but should be a string"
+#define EXALT_DBUS_ARGUMENT_NOT_STRING_ID 1
+
 typedef struct _exalt_dbus_conn exalt_dbus_conn;
 typedef struct _exalt_dbus_notify_data exalt_dbus_notify_data;
 typedef struct _exalt_dbus_notify_conn_applied_data exalt_dbus_notify_conn_applied_data;

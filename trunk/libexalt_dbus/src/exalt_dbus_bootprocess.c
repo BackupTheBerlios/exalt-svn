@@ -20,86 +20,83 @@
 
 #include "libexalt_dbus_private.h"
 
-void exalt_dbus_bootprocess_iface_add(const exalt_dbus_conn* conn, const char* interface)
+int exalt_dbus_bootprocess_iface_add(const exalt_dbus_conn* conn, const char* interface)
 {
     DBusPendingCall * ret;
     DBusMessage *msg;
     DBusMessageIter args;
 
-    if(!conn || !interface)
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"conn=%p, interface=%p",conn, interface);
-        return ;
-    }
+    EXALT_ASSERT_RETURN(conn!=NULL);
+    EXALT_ASSERT_RETURN(interface!=NULL);
 
     msg = exalt_dbus_write_call_new("BOOTPROCESS_IFACE_ADD");
     dbus_message_iter_init_append(msg, &args);
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &interface))
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
-        dbus_message_unref(msg);
-        return ;
-    }
 
-    if(!dbus_connection_send_with_reply (conn->conn, msg, &ret, -1))
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Send Out Of Memory!");
-        dbus_message_unref(msg);
-        return ;
-    }
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &interface),
+            dbus_message_unref(msg); return 0,
+            "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &interface");
+
+
+    EXALT_ASSERT_ADV(dbus_connection_send_with_reply (conn->conn, msg, &ret, -1),
+            dbus_message_unref(msg); return 0,
+            "dbus_connection_send_with_reply (conn->conn, msg, &ret, -1)");
+
+
     dbus_message_unref(msg);
 
     dbus_pending_call_block(ret);
     msg = dbus_pending_call_steal_reply(ret);
-    if(msg == NULL)
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"msg=",msg);
-        return ;
-    }
+    EXALT_ASSERT_RETURN(msg!=NULL);
+
     dbus_pending_call_unref(ret);
 
+    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
+            return 0,
+            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
+            exalt_dbus_error_get_id(msg),
+            exalt_dbus_error_get_msg(msg));
+
     dbus_message_unref(msg);
+    return 1;
 }
 
-void exalt_dbus_bootprocess_iface_remove(const exalt_dbus_conn* conn, const char* interface)
+int exalt_dbus_bootprocess_iface_remove(const exalt_dbus_conn* conn, const char* interface)
 {
     DBusPendingCall * ret;
     DBusMessage *msg;
     DBusMessageIter args;
 
-    if(!conn || !interface)
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"conn=%p, interface=%p",conn, interface);
-        return ;
-    }
+    EXALT_ASSERT_RETURN(conn!=NULL);
+    EXALT_ASSERT_RETURN(interface!=NULL);
 
     msg = exalt_dbus_write_call_new("BOOTPROCESS_IFACE_REMOVE");
     dbus_message_iter_init_append(msg, &args);
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &interface))
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
-        dbus_message_unref(msg);
-        return ;
-    }
 
-    if(!dbus_connection_send_with_reply (conn->conn, msg, &ret, -1))
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Send Out Of Memory!");
-        dbus_message_unref(msg);
-        return ;
-    }
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &interface),
+            dbus_message_unref(msg); return 0,
+            "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &interface");
+
+
+    EXALT_ASSERT_ADV(dbus_connection_send_with_reply (conn->conn, msg, &ret, -1),
+            dbus_message_unref(msg); return 0,
+            "dbus_connection_send_with_reply (conn->conn, msg, &ret, -1)");
+
+
     dbus_message_unref(msg);
 
     dbus_pending_call_block(ret);
     msg = dbus_pending_call_steal_reply(ret);
-    if(msg == NULL)
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"msg=",msg);
-        return ;
-    }
+    EXALT_ASSERT_RETURN(msg!=NULL);
     dbus_pending_call_unref(ret);
 
+    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
+            return 0,
+            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
+            exalt_dbus_error_get_id(msg),
+            exalt_dbus_error_get_msg(msg));
+
     dbus_message_unref(msg);
+    return 1;
 }
 
 int exalt_dbus_bootprocess_iface_is(const exalt_dbus_conn* conn, const char* interface)
@@ -109,38 +106,106 @@ int exalt_dbus_bootprocess_iface_is(const exalt_dbus_conn* conn, const char* int
     DBusMessageIter args;
     int res;
 
-    if(!conn || !interface)
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"conn=%p, interface=%p",conn, interface);
-        return 0;
-    }
+     EXALT_ASSERT_RETURN(conn!=NULL);
+    EXALT_ASSERT_RETURN(interface!=NULL);
 
     msg = exalt_dbus_read_call_new("BOOTPROCESS_IFACE_IS");
     dbus_message_iter_init_append(msg, &args);
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &interface))
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
-        dbus_message_unref(msg);
-        return 0;
-    }
 
-    if(!dbus_connection_send_with_reply (conn->conn, msg, &ret, -1))
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Send Out Of Memory!");
-        dbus_message_unref(msg);
-        return 0;
-    }
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &interface),
+            dbus_message_unref(msg); return 0,
+            "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &interface");
+
+
+    EXALT_ASSERT_ADV(dbus_connection_send_with_reply (conn->conn, msg, &ret, -1),
+            dbus_message_unref(msg); return 0,
+            "dbus_connection_send_with_reply (conn->conn, msg, &ret, -1)");
+
     dbus_message_unref(msg);
 
     dbus_pending_call_block(ret);
     msg = dbus_pending_call_steal_reply(ret);
-    if(msg == NULL)
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"msg=",msg);
-        return 0;
-    }
+    EXALT_ASSERT_RETURN(msg!=NULL);
     dbus_pending_call_unref(ret);
-    res=exalt_dbus_response_boolean(msg);
+
+    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
+            return 0,
+            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
+            exalt_dbus_error_get_id(msg),
+            exalt_dbus_error_get_msg(msg));
+
+
+    res=exalt_dbus_response_boolean(msg,1);
+    dbus_message_unref(msg);
+
+    return res;
+}
+
+int exalt_dbus_bootprocess_timeout_set(const exalt_dbus_conn* conn, int timeout)
+{
+    DBusPendingCall * ret;
+    DBusMessage *msg;
+    DBusMessageIter args;
+
+
+     EXALT_ASSERT_RETURN(conn!=NULL);
+
+    msg = exalt_dbus_write_call_new("BOOTPROCESS_TIMEOUT_SET");
+    dbus_message_iter_init_append(msg, &args);
+
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &timeout),
+            dbus_message_unref(msg); return 0,
+            "dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &timeout");
+
+    EXALT_ASSERT_ADV(dbus_connection_send_with_reply (conn->conn, msg, &ret, -1),
+            dbus_message_unref(msg); return 0,
+            "dbus_connection_send_with_reply (conn->conn, msg, &ret, -1)");
+
+    dbus_message_unref(msg);
+
+    dbus_pending_call_block(ret);
+    msg = dbus_pending_call_steal_reply(ret);
+    EXALT_ASSERT_RETURN(msg!=NULL);
+    dbus_pending_call_unref(ret);
+
+    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
+            return 0,
+            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
+            exalt_dbus_error_get_id(msg),
+            exalt_dbus_error_get_msg(msg));
+
+    dbus_message_unref(msg);
+    return 1;
+}
+
+int exalt_dbus_bootprocess_timeout_get(const exalt_dbus_conn* conn)
+{
+    DBusPendingCall * ret;
+    DBusMessage *msg;
+    int res;
+
+     EXALT_ASSERT_RETURN(conn!=NULL);
+
+    msg = exalt_dbus_read_call_new("BOOTPROCESS_TIMEOUT_GET");
+
+    EXALT_ASSERT_ADV(dbus_connection_send_with_reply (conn->conn, msg, &ret, -1),
+            dbus_message_unref(msg); return 0,
+            "dbus_connection_send_with_reply (conn->conn, msg, &ret, -1)");
+
+    dbus_message_unref(msg);
+
+    dbus_pending_call_block(ret);
+    msg = dbus_pending_call_steal_reply(ret);
+    EXALT_ASSERT_RETURN(msg!=NULL);
+    dbus_pending_call_unref(ret);
+
+    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
+            return 0,
+            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
+            exalt_dbus_error_get_id(msg),
+            exalt_dbus_error_get_msg(msg));
+
+    res=exalt_dbus_response_integer(msg,1);
     dbus_message_unref(msg);
 
     return res;

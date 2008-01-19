@@ -35,9 +35,6 @@ extern char* exalt_default_interface;
 extern char* exalt_default_network;
 extern exalt_dbus_conn* exalt_conn;
 
-void print_error(const char* type, const char* file, int line,const char* fct, const char* msg, ...);
-
-
 #include "main_window.h"
 #include "eth_panel.h"
 #include "wireless_panel.h"

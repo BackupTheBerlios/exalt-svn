@@ -30,49 +30,6 @@
 #include <E_DBus.h>
 #include "exalt_ethernet.h"
 
-#define EXALT_ASSERT(test) \
-    do\
-    {\
-        if(!(test))\
-        {\
-            print_error("ERROR", __FILE__,__func__,"%s failed",#test);\
-        }\
-    }while(0)
-
-
-
-#define EXALT_ASSERT_QUIT(test) \
-    do\
-    {\
-        if(!(test))\
-        {\
-            print_error("ERROR", __FILE__,__func__,"%s failed",#test);\
-            return 0;\
-        }\
-    }while(0)
-
-#define EXALT_ASSERT_QUIT_VOID(test) \
-    do\
-    {\
-        if(!(test))\
-        {\
-            print_error("ERROR", __FILE__,__func__,"%s failed",#test);\
-            return ;\
-        }\
-    }while(0)
-
-
-
-#define EXALT_ASSERT_ADV(test, instr, ...) \
-    do \
-    { \
-        if(!(test))\
-        {\
-            print_error("ERROR", __FILE__,__func__, __VA_ARGS__ );\
-            instr; \
-        }\
-    }while(0)
-
 
 
 struct Exalt_Ethernets
@@ -117,7 +74,6 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler);
 
 
 char *str_remove (const char *s, const char *ct);
-void print_error(const char* type, const char* file,const char* fct, const char* msg, ...);
 char* exalt_addr_hexa_to_dec(const char* addr);
 short exalt_ioctl(void* argp, int request);
 

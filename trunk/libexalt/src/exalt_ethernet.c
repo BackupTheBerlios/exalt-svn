@@ -81,7 +81,7 @@ Exalt_Ethernet* exalt_eth_new(const char* name)
     Exalt_Ethernet* eth;
 
     eth = (Exalt_Ethernet*)malloc((unsigned int)sizeof(Exalt_Ethernet));
-    EXALT_ASSERT_QUIT(eth!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
 
     eth->state = EXALT_DOWN;
     eth->connection = NULL;
@@ -155,7 +155,7 @@ void _exalt_cb_is_net(void *user_data, void *reply_data, DBusError *error)
     *action = EXALT_ETH_CB_ACTION_ADD;
 
 
-    EXALT_ASSERT_QUIT_VOID(!dbus_error_is_set(error));
+    EXALT_ASSERT_RETURN_VOID(!dbus_error_is_set(error));
 
     if (ret && ret->boolean)
         e_hal_device_get_all_properties(exalt_eth_interfaces.dbus_conn, udi, _exalt_cb_net_properties, action);
@@ -172,7 +172,7 @@ void _exalt_cb_net_properties(void *data, void *reply_data, DBusError *error)
     Exalt_Ethernet* eth;
     char* str;
 
-    EXALT_ASSERT_QUIT_VOID(!dbus_error_is_set(error));
+    EXALT_ASSERT_RETURN_VOID(!dbus_error_is_set(error));
 
     str = e_hal_property_string_get(ret,"net.interface", &err);
     eth = exalt_eth_new(str);
@@ -217,9 +217,9 @@ void _exalt_cb_find_device_by_capability_net(void *user_data, void *reply_data, 
     int *action = malloc(sizeof(int));
     *action = EXALT_ETH_CB_ACTION_NEW;
 
-    EXALT_ASSERT_QUIT_VOID(ret!=NULL);
-    EXALT_ASSERT_QUIT_VOID(ret->strings!=NULL);
-    EXALT_ASSERT_QUIT_VOID(!dbus_error_is_set(error));
+    EXALT_ASSERT_RETURN_VOID(ret!=NULL);
+    EXALT_ASSERT_RETURN_VOID(ret->strings!=NULL);
+    EXALT_ASSERT_RETURN_VOID(!dbus_error_is_set(error));
 
     ecore_list_first_goto(ret->strings);
     while ((device = ecore_list_next(ret->strings)))
@@ -266,7 +266,7 @@ short exalt_eth_is_ethernet(char* name)
 {
     struct ifreq ifr;
 
-    EXALT_ASSERT_QUIT(name!=NULL);
+    EXALT_ASSERT_RETURN(name!=NULL);
 
     strncpy(ifr.ifr_name,name,sizeof(ifr.ifr_name));
     if(!exalt_ioctl(&ifr, SIOCGIFHWADDR))
@@ -289,7 +289,7 @@ void exalt_eth_up(Exalt_Ethernet* eth)
 {
     struct ifreq ifr;
 
-    EXALT_ASSERT_QUIT_VOID(eth!=NULL);
+    EXALT_ASSERT_RETURN_VOID(eth!=NULL);
 
     strncpy(ifr.ifr_name,exalt_eth_get_name(eth),sizeof(ifr.ifr_name));
 
@@ -311,7 +311,7 @@ void exalt_eth_down(Exalt_Ethernet* eth)
 {
     struct ifreq ifr;
 
-    EXALT_ASSERT_QUIT_VOID(eth!=NULL);
+    EXALT_ASSERT_RETURN_VOID(eth!=NULL);
 
     if(exalt_eth_is_wireless(eth))
         _exalt_wpa_stop(exalt_eth_get_wireless(eth));
@@ -368,7 +368,7 @@ Exalt_Ethernet* exalt_eth_get_ethernet_byname(const char* name)
     void *data;
     Exalt_Ethernet* eth;
 
-    EXALT_ASSERT_QUIT(name!=NULL);
+    EXALT_ASSERT_RETURN(name!=NULL);
 
     ecore_list_first_goto(exalt_eth_interfaces.ethernets);
     data = ecore_list_next(exalt_eth_interfaces.ethernets);
@@ -394,7 +394,7 @@ Exalt_Ethernet* exalt_eth_get_ethernet_byudi(const char* udi)
     void *data;
     Exalt_Ethernet* eth;
 
-    EXALT_ASSERT_QUIT(udi!=NULL);
+    EXALT_ASSERT_RETURN(udi!=NULL);
 
     ecore_list_first_goto(exalt_eth_interfaces.ethernets);
     data = ecore_list_next(exalt_eth_interfaces.ethernets);
@@ -448,7 +448,7 @@ short exalt_eth_is_link(Exalt_Ethernet* eth)
     int res;
 
 
-    EXALT_ASSERT_QUIT(eth!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
 
     if(exalt_eth_is_wireless(eth))
         return 1;
@@ -471,7 +471,7 @@ short exalt_eth_is_link(Exalt_Ethernet* eth)
  */
 const char* exalt_eth_get_name(const Exalt_Ethernet* eth)
 {
-    EXALT_ASSERT_QUIT(eth!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
 
     return eth->name;
 }
@@ -483,7 +483,7 @@ const char* exalt_eth_get_name(const Exalt_Ethernet* eth)
  */
 const char* exalt_eth_get_udi(Exalt_Ethernet* eth)
 {
-    EXALT_ASSERT_QUIT(eth!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
     return eth->udi;
 }
 /**
@@ -493,7 +493,7 @@ const char* exalt_eth_get_udi(Exalt_Ethernet* eth)
  */
 int exalt_eth_get_ifindex(Exalt_Ethernet* eth)
 {
-    EXALT_ASSERT_QUIT(eth!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
     return eth->ifindex;
 }
 
@@ -504,7 +504,7 @@ int exalt_eth_get_ifindex(Exalt_Ethernet* eth)
  */
 Exalt_Connection* exalt_eth_get_connection(Exalt_Ethernet* eth)
 {
-    EXALT_ASSERT_QUIT(eth!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
     return eth->connection;
 }
 
@@ -516,8 +516,8 @@ Exalt_Connection* exalt_eth_get_connection(Exalt_Ethernet* eth)
  */
 short exalt_eth_set_connection(Exalt_Ethernet* eth, Exalt_Connection* c)
 {
-    EXALT_ASSERT_QUIT(eth!=NULL);
-    EXALT_ASSERT_QUIT(c!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(c!=NULL);
 
     if(eth->connection)
         exalt_conn_free(eth->connection);
@@ -535,7 +535,7 @@ char* exalt_eth_get_ip(const Exalt_Ethernet* eth)
     struct sockaddr_in sin = { AF_INET };
     struct ifreq ifr;
 
-    EXALT_ASSERT_QUIT(eth!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
 
     strncpy(ifr.ifr_name,exalt_eth_get_name(eth),sizeof(ifr.ifr_name));
     ifr.ifr_addr = *(struct sockaddr *) &sin;
@@ -560,7 +560,7 @@ char* exalt_eth_get_netmask(Exalt_Ethernet* eth)
     struct sockaddr_in sin = { AF_INET };
     struct ifreq ifr;
 
-    EXALT_ASSERT_QUIT(eth!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
 
     strncpy(ifr.ifr_name,exalt_eth_get_name(eth),sizeof(ifr.ifr_name));
     ifr.ifr_addr = *(struct sockaddr *) &sin;
@@ -589,10 +589,10 @@ char* exalt_eth_get_gateway(Exalt_Ethernet* eth)
     char mask_addr[128];
     short find = 0;
 
-    EXALT_ASSERT_QUIT(eth!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
 
     f = fopen(EXALT_PATH_ROUTE,"r");
-    EXALT_ASSERT_QUIT(f!=NULL);
+    EXALT_ASSERT_RETURN(f!=NULL);
     fmt = proc_gen_fmt(EXALT_PATH_ROUTE, 0, f,
             "Iface", "%16s",
             "Destination", "%128s",
@@ -624,6 +624,29 @@ char* exalt_eth_get_gateway(Exalt_Ethernet* eth)
         return NULL;
 }
 
+/**
+ * @brief remove the default gateway of the interface eth
+ * @param eth the interface
+ * @return Returns 1 if all gateways are removed, else 0
+ */
+int exalt_eth_del_gateway(Exalt_Ethernet* eth)
+{
+    struct rtentry rt;
+    struct sockaddr_in sin = { AF_INET };
+
+
+    memset((char *) &rt, 0, sizeof(struct rtentry));
+    rt.rt_flags = ( RTF_UP | RTF_GATEWAY );
+    sin.sin_addr.s_addr = inet_addr ("0.0.0.0");
+    rt.rt_dst = *(struct sockaddr *) &sin;
+    rt.rt_dev = NULL;
+    EXALT_STRDUP(rt.rt_dev , exalt_eth_get_name(eth));
+    while (exalt_ioctl(&rt, SIOCDELRT))
+        usleep(100);
+
+    EXALT_FREE(rt.rt_dev);
+    return 1;
+}
 
 /**
  * @brief get if the card "eth" use DHCP or static (look the configuration file)
@@ -633,7 +656,7 @@ char* exalt_eth_get_gateway(Exalt_Ethernet* eth)
 short exalt_eth_is_dhcp(Exalt_Ethernet* eth)
 {
     Exalt_Connection *c;
-    EXALT_ASSERT_QUIT(eth!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
 
     if( (c=exalt_eth_get_connection(eth)))
         return exalt_conn_is_dhcp(c);
@@ -652,7 +675,7 @@ short exalt_eth_is_up(Exalt_Ethernet* eth)
 {
     struct ifreq ifr;
 
-    EXALT_ASSERT_QUIT(eth!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
 
     strncpy(ifr.ifr_name,exalt_eth_get_name(eth),sizeof(ifr.ifr_name));
 
@@ -676,7 +699,7 @@ short exalt_eth_is_up(Exalt_Ethernet* eth)
  */
 short exalt_eth_is_wireless(Exalt_Ethernet* eth)
 {
-    EXALT_ASSERT_QUIT(eth!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
     return eth->wireless != NULL;
 }
 
@@ -689,7 +712,7 @@ short exalt_eth_is_wireless(Exalt_Ethernet* eth)
  */
 Exalt_Wireless* exalt_eth_get_wireless(Exalt_Ethernet* eth)
 {
-    EXALT_ASSERT_QUIT(eth!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
     return eth->wireless;
 }
 
@@ -740,11 +763,14 @@ int exalt_eth_set_scan_cb(Exalt_Wifi_Scan_Cb fct, void * user_data)
 int exalt_eth_apply_conn(Exalt_Ethernet* eth, Exalt_Connection *c)
 {
     int res;
-    struct rtentry rt;
-    struct sockaddr_in sin = { AF_INET };
 
-    EXALT_ASSERT_QUIT(eth!=NULL);
-    EXALT_ASSERT_ADV(exalt_conn_is_valid(c),eth->apply_pid = -1; _exalt_apply_timer(eth), "exalt_conn_is_valid(c) failed");
+    EXALT_ASSERT_RETURN(eth!=NULL);
+    //if the connection is not valid, we send the information as the configuration is done
+    //else a application will wait a very long time the end of the configuration
+    //(_exalt_apply_timer())
+    EXALT_ASSERT_ADV(exalt_conn_is_valid(c),
+            eth->apply_pid = -1; _exalt_apply_timer(eth),
+            "exalt_conn_is_valid(c) failed");
 
     //apply start
     if(exalt_eth_interfaces.eth_cb)
@@ -753,14 +779,19 @@ int exalt_eth_apply_conn(Exalt_Ethernet* eth, Exalt_Connection *c)
     exalt_eth_set_connection(eth,c);
 
     eth->apply_pid = fork();
-    EXALT_ASSERT_ADV(eth->apply_pid>=0,eth->apply_pid = -1; _exalt_apply_timer(eth), "exalt_conn_is_valid(c) failed");
+    EXALT_ASSERT_ADV(eth->apply_pid>=0,
+            eth->apply_pid = -1; _exalt_apply_timer(eth),
+            "eth->apply_pid>=0 failed");
+
     if(eth->apply_pid == 0)
     {
         if(exalt_eth_is_wireless(eth))
             exalt_wireless_apply_conn(exalt_eth_get_wireless(eth));
 
-        //remove old gateway
-        if(exalt_conn_is_dhcp(c) || exalt_is_address(exalt_conn_get_gateway(c)))
+        //remove the old gateway
+        exalt_eth_del_gateway(eth);
+
+        /*if(exalt_conn_is_dhcp(c) || exalt_is_address(exalt_conn_get_gateway(c)))
         {
             memset((char *) &rt, 0, sizeof(struct rtentry));
             rt.rt_flags = ( RTF_UP | RTF_GATEWAY );
@@ -769,7 +800,8 @@ int exalt_eth_apply_conn(Exalt_Ethernet* eth, Exalt_Connection *c)
 
             while (exalt_ioctl(&rt, SIOCDELRT))
                 usleep(100);
-        }
+        }*/
+
         if(exalt_conn_is_dhcp(c))
             res = _exalt_eth_apply_dhcp(eth);
         else
@@ -840,7 +872,7 @@ void exalt_eth_printf()
  */
 short _exalt_eth_set_state(Exalt_Ethernet* eth, Exalt_Enum_State state)
 {
-    EXALT_ASSERT_QUIT(eth!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
     eth->state = state;
     return 1;
 }
@@ -852,7 +884,7 @@ short _exalt_eth_set_state(Exalt_Ethernet* eth, Exalt_Enum_State state)
  */
 Exalt_Enum_State _exalt_eth_get_state(Exalt_Ethernet* eth)
 {
-    EXALT_ASSERT_QUIT(eth!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
     return eth->state;
 }
 
@@ -863,7 +895,7 @@ Exalt_Enum_State _exalt_eth_get_state(Exalt_Ethernet* eth)
  */
 const char* _exalt_eth_get_save_ip(Exalt_Ethernet* eth)
 {
-    EXALT_ASSERT_QUIT(eth!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
     return eth->_save_ip;
 }
 
@@ -874,7 +906,7 @@ const char* _exalt_eth_get_save_ip(Exalt_Ethernet* eth)
  */
 const char* _exalt_eth_get_save_gateway(Exalt_Ethernet* eth)
 {
-    EXALT_ASSERT_QUIT(eth!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
     return eth->_save_gateway;
 }
 
@@ -885,7 +917,7 @@ const char* _exalt_eth_get_save_gateway(Exalt_Ethernet* eth)
  */
 const char* _exalt_eth_get_save_netmask(Exalt_Ethernet* eth)
 {
-    EXALT_ASSERT_QUIT(eth!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
     return eth->_save_netmask;
 }
 
@@ -896,7 +928,7 @@ const char* _exalt_eth_get_save_netmask(Exalt_Ethernet* eth)
  */
 short _exalt_eth_get_save_link(Exalt_Ethernet* eth)
 {
-    EXALT_ASSERT_QUIT(eth!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
     return eth->_save_link;
 }
 
@@ -907,7 +939,7 @@ short _exalt_eth_get_save_link(Exalt_Ethernet* eth)
  */
 short _exalt_eth_get_save_up(Exalt_Ethernet* eth)
 {
-    EXALT_ASSERT_QUIT(eth!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
     return eth->_save_up;
 }
 
@@ -920,8 +952,8 @@ short _exalt_eth_get_save_up(Exalt_Ethernet* eth)
  */
 int _exalt_eth_set_save_ip(Exalt_Ethernet* eth,const char* ip)
 {
-    EXALT_ASSERT_QUIT(eth!=NULL);
-    EXALT_ASSERT_QUIT(exalt_is_address(ip) || ip==NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(exalt_is_address(ip) || ip==NULL);
 
     EXALT_FREE(eth->_save_ip);
     if(ip)
@@ -937,8 +969,8 @@ int _exalt_eth_set_save_ip(Exalt_Ethernet* eth,const char* ip)
  */
 int _exalt_eth_set_save_netmask(Exalt_Ethernet* eth,const char* netmask)
 {
-    EXALT_ASSERT_QUIT(eth!=NULL);
-    EXALT_ASSERT_QUIT(exalt_is_address(netmask) || netmask==NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(exalt_is_address(netmask) || netmask==NULL);
 
     EXALT_FREE(eth->_save_netmask);
     if(netmask)
@@ -954,8 +986,8 @@ int _exalt_eth_set_save_netmask(Exalt_Ethernet* eth,const char* netmask)
  */
 int _exalt_eth_set_save_gateway(Exalt_Ethernet* eth,const char* gateway)
 {
-    EXALT_ASSERT_QUIT(eth!=NULL);
-    EXALT_ASSERT_QUIT(exalt_is_address(gateway) || gateway==NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(exalt_is_address(gateway) || gateway==NULL);
 
     EXALT_FREE(eth->_save_gateway);
     if(gateway)
@@ -971,7 +1003,7 @@ int _exalt_eth_set_save_gateway(Exalt_Ethernet* eth,const char* gateway)
  */
 int _exalt_eth_set_save_link(Exalt_Ethernet* eth,short link)
 {
-    EXALT_ASSERT_QUIT(eth!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
     eth->_save_link=link;
     return 1;
 }
@@ -983,7 +1015,7 @@ int _exalt_eth_set_save_link(Exalt_Ethernet* eth,short link)
  */
 int _exalt_eth_set_save_up(Exalt_Ethernet* eth,short up)
 {
-    EXALT_ASSERT_QUIT(eth!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
     eth->_save_up=up;
     return 1;
 }
@@ -997,8 +1029,8 @@ int _exalt_eth_set_save_up(Exalt_Ethernet* eth,short up)
  */
 int _exalt_eth_set_name(Exalt_Ethernet* eth, const char* name)
 {
-    EXALT_ASSERT_QUIT(eth!=NULL);
-    EXALT_ASSERT_QUIT(name!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(name!=NULL);
 
     EXALT_FREE(eth->name);
     eth->name=strdup(name);
@@ -1014,8 +1046,8 @@ int _exalt_eth_set_name(Exalt_Ethernet* eth, const char* name)
  */
 int _exalt_eth_set_udi(Exalt_Ethernet* eth,const char* udi)
 {
-    EXALT_ASSERT_QUIT(eth!=NULL);
-    EXALT_ASSERT_QUIT(udi!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(udi!=NULL);
 
     EXALT_FREE(eth->udi);
     eth->udi=strdup(udi);
@@ -1030,7 +1062,7 @@ int _exalt_eth_set_udi(Exalt_Ethernet* eth,const char* udi)
  */
 int _exalt_eth_set_ifindex(Exalt_Ethernet* eth,int ifindex)
 {
-    EXALT_ASSERT_QUIT(eth!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
     eth->ifindex=ifindex;
     return 1;
 }
@@ -1093,7 +1125,7 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
     fd = exalt_eth_interfaces.rtlink_sock;
 
     bin = recvmsg(fd, &msg, 0);
-    EXALT_ASSERT_QUIT(bin>=0);
+    EXALT_ASSERT_RETURN(bin>=0);
 
     for(nh = (struct nlmsghdr *)buf; NLMSG_OK(nh, bin);
             nh = NLMSG_NEXT(nh, bin))
@@ -1244,9 +1276,9 @@ int _exalt_eth_apply_static(Exalt_Ethernet *eth)
     struct rtentry rt;
     Exalt_Connection *c;
 
-    EXALT_ASSERT_QUIT(eth!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
     c = exalt_eth_get_connection(eth);
-    EXALT_ASSERT_QUIT(c!=NULL);
+    EXALT_ASSERT_RETURN(c!=NULL);
 
     strncpy(ifr.ifr_name,exalt_eth_get_name(eth),sizeof(ifr.ifr_name));
 
@@ -1300,7 +1332,7 @@ int _exalt_eth_apply_dhcp(Exalt_Ethernet* eth)
     char buf[1024];
     pid_t pid;
 
-    EXALT_ASSERT_QUIT(eth!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
 
     sprintf(command,COMMAND_DHCLIENT,exalt_eth_get_name(eth));
     exe = ecore_exe_run(command, NULL);
@@ -1309,7 +1341,7 @@ int _exalt_eth_apply_dhcp(Exalt_Ethernet* eth)
 
     //dhclient create a background process, we don't need it, we kill it.
     f = fopen(DHCLIENT_PID_FILE,"r");
-    EXALT_ASSERT_QUIT(f!=NULL);
+    EXALT_ASSERT_RETURN(f!=NULL);
     fgets(buf,1024,f);
     pid = atoi(buf);
     kill(pid,SIGKILL);

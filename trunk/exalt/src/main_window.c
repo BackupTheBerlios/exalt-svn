@@ -189,6 +189,8 @@ void mainwindow_notify_cb(char* interface, Exalt_Enum_Action action, void* user_
     }
     else if(action == EXALTD_ETH_CB_WAITINGBOOT_CHANGE)
         bootpanel_update_interface(interface, win->general_panel->boot);
+    else if(action == EXALTD_ETH_CB_WAITINGBOOT_TIMEOUT_CHANGE)
+        bootpanel_update_timeout(win->general_panel->boot);
 }
 
 void mainwindow_add_interface(char* interface, main_window* win)
@@ -199,7 +201,7 @@ void mainwindow_add_interface(char* interface, main_window* win)
 
     if(!interface || !win)
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"interface=%p  win=%p",interface,win);
+        print_error( __FILE__, __func__,"interface=%p  win=%p",interface,win);
         return ;
     }
 
@@ -251,7 +253,7 @@ void mainwindow_remove_interface(char* interface, main_window* win)
 {
     if(!interface || !win)
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"interface=%p  win=%p",interface,win);
+        print_error( __FILE__, __func__,"interface=%p  win=%p",interface,win);
         return ;
     }
 

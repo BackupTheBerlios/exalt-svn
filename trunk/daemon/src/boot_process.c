@@ -33,24 +33,22 @@ Boot_Process_List *waiting_iface_load(const char* file)
     edd = waiting_iface_edd_new();
     f = eet_open(file, EET_FILE_MODE_READ);
 
-    if(!f)
-    {
-        print_error("ERROR", __FILE__,__func__, "f=%p",f);
-        data = malloc(sizeof(Boot_Process_List));
-        data->timeout = 30;
-        data->l=NULL;
-    }
+    EXALT_ASSERT_ADV(f!=NULL,
+                            data = malloc(sizeof(Boot_Process_List));
+                            data->timeout = 30;
+                            data->l=NULL,
+                    "f!=NULL failed");
 
     data = eet_data_read(f, edd, "boot process interface list");
     eet_close(f);
     eet_data_descriptor_free(edd);
 
-    if(!data)
-    {
-        data = malloc(sizeof(Boot_Process_List));
-        data->timeout = 30;
-        data->l=NULL;
-    }
+    EXALT_ASSERT_ADV(data!=NULL,
+                            data = malloc(sizeof(Boot_Process_List));
+                            data->timeout = 30;
+                            data->l=NULL,
+                    "data!=NULL failed");
+
     return data;
 }
 
@@ -65,14 +63,12 @@ void waiting_iface_save(const Boot_Process_List* l, const char* file)
     Eet_Data_Descriptor* edd;
     Eet_File* f;
 
-    if(!l || !file)
-    {
-        print_error("ERROR", __FILE__,__func__, "l=%p, file=%p",l,file);
-        return ;
-    }
+    EXALT_ASSERT_RETURN_VOID(l!=NULL);
+    EXALT_ASSERT_RETURN_VOID(file!=NULL);
 
     edd = waiting_iface_edd_new();
     f = eet_open(file, EET_FILE_MODE_READ_WRITE);
+
     if(!f)
     {
         f = eet_open(file, EET_FILE_MODE_WRITE);
@@ -85,17 +81,8 @@ void waiting_iface_save(const Boot_Process_List* l, const char* file)
 
 void waiting_iface_free(Boot_Process_List** l)
 {
-    if(!l)
-    {
-        print_error("ERROR", __FILE__,__func__, "l=%p",l);
-        return ;
-    }
-
-    if(!(*l))
-    {
-        print_error("ERROR", __FILE__,__func__, "*l=%p",*l);
-        return ;
-    }
+    EXALT_ASSERT_RETURN_VOID(l!=NULL);
+    EXALT_ASSERT_RETURN_VOID((*l)!=NULL);
 
     //evas_list_free() doesn't free the data, we free them
     {
@@ -125,11 +112,8 @@ int waiting_iface_is(const Boot_Process_List* l,const Exalt_Ethernet* eth)
     Evas_List *elt;
     Boot_Process_Elt *data;
 
-    if(!l)
-    {
-        print_error("ERROR", __FILE__,__func__, "l=%p",l);
-        return 0;
-    }
+    EXALT_ASSERT_RETURN(l!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
 
     elt = l->l;
     while(!find && elt)
@@ -154,11 +138,7 @@ void waiting_iface_done(Boot_Process_List* l,const Exalt_Ethernet* eth)
     Evas_List *elt;
     Boot_Process_Elt *data;
 
-    if(!l)
-    {
-        print_error("ERROR", __FILE__,__func__, "l=%p",l);
-        return ;
-    }
+    EXALT_ASSERT_RETURN_VOID(l!=NULL);
 
     elt = l->l;
 
@@ -189,11 +169,7 @@ int waiting_iface_is_done(const Boot_Process_List* l)
     Boot_Process_Elt *data;
     int find =  0;
 
-    if(!l)
-    {
-        print_error("ERROR", __FILE__,__func__, "l=%p",l);
-        return 1;
-    }
+    EXALT_ASSERT_RETURN(l!=NULL);
 
     elt = l->l;
 
@@ -240,8 +216,12 @@ int waiting_iface_stop(void* data)
 int waiting_iface_add(const char* interface,const char* file)
 {
     Exalt_Ethernet* eth;
-    Boot_Process_List *l = waiting_iface_load(file);
+    Boot_Process_List *l;
 
+    EXALT_ASSERT_RETURN(interface!=NULL);
+    EXALT_ASSERT_RETURN(file!=NULL);
+
+    l= waiting_iface_load(file);
     //add the new interface
     Boot_Process_Elt *elt = malloc(sizeof(Boot_Process_Elt));
     EXALT_STRDUP(elt->interface,interface);
@@ -261,6 +241,59 @@ int waiting_iface_add(const char* interface,const char* file)
 }
 
 /*
+ * @brief set the timeout
+ * @param timeout the timeout value
+ * @param file the configuration file
+ * @return Returns 1 if success
+ */
+int waiting_timeout_set(int timeout, const char* file)
+{
+    Exalt_Ethernet* eth;
+    Boot_Process_List *l;
+
+    EXALT_ASSERT_RETURN(file!=NULL);
+
+    l= waiting_iface_load(file);
+    l->timeout = timeout;
+
+    //save the new list
+    waiting_iface_save(l,file);
+
+    waiting_iface_free(&l);
+
+   /*we can't send a broadcast without specify a interface
+     * that's why we create a special ethernet struct without name :)
+     */
+    eth = exalt_eth_new("No interface is specify with the signal EXALTD_ETH_CB_WAITINGBOOT_CHANGE");
+    if(eth)
+        eth_cb(eth,EXALTD_ETH_CB_WAITINGBOOT_TIMEOUT_CHANGE,exaltd_conn);
+
+    exalt_eth_free(eth);
+    return 1;
+}
+
+/*
+ * @brief get the timeout
+ * @param timeout the timeout value
+ * @param file the configuration file
+ * @return Returns the timeout if success
+ */
+int waiting_timeout_get(const char* file)
+{
+    int timeout;
+    Boot_Process_List *l;
+
+    EXALT_ASSERT_RETURN(file!=NULL);
+
+    l = waiting_iface_load(file);
+    timeout = l->timeout;
+
+    waiting_iface_free(&l);
+
+    return timeout;
+}
+
+/*
  * @brief remove an interface in the configuration file
  * @param interface the interface name
  * @param file the configuration file
@@ -271,10 +304,11 @@ int waiting_iface_remove(const char* interface,const char* file)
     Exalt_Ethernet* eth;
     Boot_Process_List *l = waiting_iface_load(file);
 
+    EXALT_ASSERT_RETURN(file!=NULL);
+    EXALT_ASSERT_RETURN(interface!=NULL);
 
+    l = waiting_iface_load(file);
     eth = exalt_eth_get_ethernet_byname(interface);
-
-    printf("remove: %s\n",interface);
 
     waiting_iface_done(l,eth);
 
@@ -300,8 +334,12 @@ int waiting_iface_is_inconf(const char* interface,const char* file)
 {
     Exalt_Ethernet* eth;
     int is;
-    Boot_Process_List *l = waiting_iface_load(file);
+    Boot_Process_List *l;
 
+    EXALT_ASSERT_RETURN(file!=NULL);
+    EXALT_ASSERT_RETURN(interface!=NULL);
+
+    l = waiting_iface_load(file);
     eth = exalt_eth_get_ethernet_byname(interface);
     is = waiting_iface_is(l,eth);
     waiting_iface_free(&l);

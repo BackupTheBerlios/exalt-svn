@@ -512,7 +512,7 @@ void _exalt_wireless_cb(void *data, E_Menu *m, E_Menu_Item *mi)
 	EXALT_FREE(command2);
 }
 
-void _exalt_notify_cb(char* interface, int action, void* user_data)
+void _exalt_notify_cb(char* interface, Exalt_Enum_Action action, void* user_data)
 {
 	Instance* inst = user_data;
 	_popup_show(inst,interface,action);

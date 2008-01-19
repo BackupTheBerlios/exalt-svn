@@ -147,7 +147,7 @@ int exalt_dbus_wpasupplicant_is_support(const exalt_dbus_conn* conn)
     dbus_pending_call_unref(ret);
 
     //read the response
-    res = exalt_dbus_response_boolean(msg);
+    res = exalt_dbus_response_boolean(msg,0);
     dbus_message_unref(msg);
     return res;
 }
@@ -183,7 +183,7 @@ int exalt_dbus_dhcp_is_support(const exalt_dbus_conn* conn)
     dbus_pending_call_unref(ret);
 
     //read the response
-    res = exalt_dbus_response_boolean(msg);
+    res = exalt_dbus_response_boolean(msg,0);
     dbus_message_unref(msg);
     return res;
 }

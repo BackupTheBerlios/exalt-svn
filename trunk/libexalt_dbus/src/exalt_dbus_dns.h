@@ -23,9 +23,9 @@
 
 
 Ecore_List* exalt_dbus_dns_get_list(const exalt_dbus_conn* conn);
-void exalt_dbus_dns_add(const exalt_dbus_conn* conn, const char* dns);
-void exalt_dbus_dns_delete(const exalt_dbus_conn* conn, const char* dns);
-void exalt_dbus_dns_replace(const exalt_dbus_conn* conn, const char* old_dns, const char* new_dns);
+int exalt_dbus_dns_add(const exalt_dbus_conn* conn, const char* dns);
+int exalt_dbus_dns_delete(const exalt_dbus_conn* conn, const char* dns);
+int exalt_dbus_dns_replace(const exalt_dbus_conn* conn, const char* old_dns, const char* new_dns);
 
 #endif   /* ----- #ifndef EXALT_DBUS_DNS_INC  ----- */
 

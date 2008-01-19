@@ -38,19 +38,19 @@ int exalt_conf_save_wpasupplicant(Exalt_Wireless *w)
     Exalt_Connection *c;
     int enc_mode;
 
-    EXALT_ASSERT_QUIT(w!=NULL);
+    EXALT_ASSERT_RETURN(w!=NULL);
 
     eth = exalt_wireless_get_eth(w);
     c = exalt_eth_get_connection(eth);
-    EXALT_ASSERT_QUIT(exalt_conn_is_valid(c));
-    EXALT_ASSERT_QUIT(exalt_conn_is_wireless(c));
+    EXALT_ASSERT_RETURN(exalt_conn_is_valid(c));
+    EXALT_ASSERT_RETURN(exalt_conn_is_wireless(c));
 
     //its more easy to recreate a new file
     //so we don't modify the old file, just delete it :)
     remove(EXALT_WPA_CONF_FILE);
 
     //recreate the file
-    EXALT_ASSERT_QUIT(ecore_file_mkpath(EXALT_WPA_CONF_FILE_DIR) != 0);
+    EXALT_ASSERT_RETURN(ecore_file_mkpath(EXALT_WPA_CONF_FILE_DIR) != 0);
 
     //save the new configuration
     fw = fopen(EXALT_WPA_CONF_FILE,"w");
@@ -115,7 +115,7 @@ int exalt_conf_save_wpasupplicant(Exalt_Wireless *w)
  */
 int exalt_wireless_conn_save(const char* file, Exalt_Connection* c)
 {
-    EXALT_ASSERT_QUIT(c!=NULL);
+    EXALT_ASSERT_RETURN(c!=NULL);
     return _exalt_eet_wireless_conn_save(file, c);
 }
 
@@ -140,7 +140,7 @@ int exalt_eth_save(const char* file, Exalt_Ethernet* eth)
 {
     Exalt_Eth_Save s;
 
-    EXALT_ASSERT_QUIT(eth!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
 
     s.state = _exalt_eth_get_state(eth);
     s.connection = exalt_eth_get_connection(eth);
@@ -156,7 +156,7 @@ int exalt_eth_save(const char* file, Exalt_Ethernet* eth)
 Exalt_Enum_State exalt_eth_state_load(const char* file, const char* udi)
 {
     Exalt_Eth_Save *s = _exalt_eet_eth_load(file, udi);
-    EXALT_ASSERT_QUIT(s!=NULL);
+    EXALT_ASSERT_RETURN(s!=NULL);
 
     Exalt_Enum_State st = s->state;
     EXALT_FREE(s->driver);
@@ -168,7 +168,7 @@ Exalt_Enum_State exalt_eth_state_load(const char* file, const char* udi)
 char* exalt_eth_driver_load(const char* file, const char* udi)
 {
     Exalt_Eth_Save *s = _exalt_eet_eth_load(file,  udi);
-    EXALT_ASSERT_QUIT(s!=NULL);
+    EXALT_ASSERT_RETURN(s!=NULL);
     char* driver = s->driver;
     exalt_conn_free(s->connection);
     EXALT_FREE(s);
@@ -179,7 +179,7 @@ char* exalt_eth_driver_load(const char* file, const char* udi)
 Exalt_Connection* exalt_eth_conn_load(const char* file, const char* udi)
 {
     Exalt_Eth_Save *s = _exalt_eet_eth_load(file, udi);
-    EXALT_ASSERT_QUIT(s!=NULL);
+    EXALT_ASSERT_RETURN(s!=NULL);
     Exalt_Connection *c = s->connection;
     EXALT_FREE(s->driver);
     EXALT_FREE(s);
@@ -202,7 +202,7 @@ Exalt_Eth_Save* _exalt_eet_eth_load(const char* file, const char* udi)
     edd = _exalt_eth_save_edd_new();
 
     f = eet_open(file, EET_FILE_MODE_READ);
-    EXALT_ASSERT_QUIT(f!=NULL);
+    EXALT_ASSERT_RETURN(f!=NULL);
 
     data = eet_data_read(f, edd, udi);
 
@@ -239,7 +239,7 @@ Exalt_Connection* _exalt_eet_wireless_conn_load(const char*file, const char* ess
     edd = exalt_conn_edd_new();
 
     f = eet_open(file, EET_FILE_MODE_READ);
-    EXALT_ASSERT_QUIT(f!=NULL);
+    EXALT_ASSERT_RETURN(f!=NULL);
 
     data = eet_data_read(f, edd, essid);
 

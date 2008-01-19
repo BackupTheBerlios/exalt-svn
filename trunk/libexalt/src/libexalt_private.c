@@ -19,25 +19,6 @@
 #include "libexalt_private.h"
 
 /**
- * @brief print a error
- * @param type: WARNING OR ERROR
- * @param file the file
- * @param fct the function
- * @param msg the message
- * @param ... a list of params
- */
-void print_error(const char* type, const char* file,const char* fct, const char* msg, ...)
-{
-    va_list ap;
-    va_start(ap,msg);
-    fprintf(stderr,"LIBEXALT:%s %s: %s\n",type,file,fct);
-    fprintf(stderr,"\t");
-    vfprintf(stderr,msg,ap);
-    fprintf(stderr,"\n\n");
-    va_end(ap);
-}
-
-/**
  * @brief execute a ioctl call
  * @param argp the strucuture with data (struct ifreq, rtentry, iwreq)
  * @param request the request key (SIOCGIWNAME ...)
@@ -50,17 +31,17 @@ short exalt_ioctl(void* argp, int request)
     //edit param: SIOCSIFFLAGS SIOCSIFFLAGS SIOCDELRT SIOCSIFADDR SIOCSIFNETMASK SIOCADDRT SIOCETHTOOL
     //read param: SIOCGIWNAME SIOCGIWESSID SIOCGIWNAME SIOCGIFFLAGS SIOCGIFADDR SIOCGIFNETMASK SIOCGIFHWADDR
 
-    EXALT_ASSERT_QUIT(!
+    EXALT_ASSERT_RETURN(!
             (!exalt_is_admin() &&
             ( request == SIOCSIFFLAGS || request == SIOCSIFFLAGS
               || request == SIOCDELRT || request == SIOCSIFADDR
               || request == SIOCSIFNETMASK || request == SIOCADDRT
               || request== SIOCETHTOOL )));
 
-    EXALT_ASSERT_QUIT(argp);
+    EXALT_ASSERT_RETURN(argp);
 
     fd=iw_sockets_open();
-    EXALT_ASSERT_QUIT(fd>=0);
+    EXALT_ASSERT_RETURN(fd>=0);
     EXALT_ASSERT_ADV( ioctl(fd, request, argp) !=-1, close(fd);return 0,  "ioctl(%d): %s",request,strerror(errno));
 
     close(fd);
@@ -79,7 +60,7 @@ char* exalt_addr_hexa_to_dec(const char* addr)
     char* end;
     int i;
     int n;
-    EXALT_ASSERT_QUIT(strlen(addr)==8);
+    EXALT_ASSERT_RETURN(strlen(addr)==8);
 
     res = (char*)malloc((unsigned int)sizeof(char)*16);
     res[0] = '\0';

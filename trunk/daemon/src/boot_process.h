@@ -49,6 +49,10 @@ int waiting_iface_add(const char* interface,const char* file);
 int waiting_iface_remove(const char* interface,const char* file);
 int waiting_iface_is_inconf(const char* interface,const char* file);
 
+int waiting_timeout_set(int timeout, const char* file);
+int waiting_timeout_get(const char* file);
+
+
 Eet_Data_Descriptor * waiting_iface_edd_new();
 
 

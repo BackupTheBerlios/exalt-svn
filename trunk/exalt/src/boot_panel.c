@@ -56,8 +56,8 @@ boot_panel* bootpanel_create(main_window *win)
     etk_object_properties_set(ETK_OBJECT(text), "focusable", ETK_FALSE, NULL);
     etk_textblock_text_set(ETK_TEXT_VIEW(text)->textblock,
              _("<p align=\"center\"><style effect=glow color1=#fa14 color2=#fe87><b>Help!</b></style>"
-             "\n<p>When your computer boot, exalt starts and configure yours networks interfaces in the background. If you use the DHCP your interface will get a IP address after a while.</p>"
-             "\n<p>You can have a problem if you use a daemon as nfs-client. If the daemon need a network connection when it starts and your interface has no IP address it will not work. To avoid this problem Exalt can configure your interface in the foreground. If you select the interface in the list Exalt will wait until your interface gets a IP address.</p>"
+             "\n<p>When your computer boot, exalt starts and configure yours networks interfaces in the background. If you use the DHCP, your interface will get a IP address after a while.</p>"
+             "\n<p>You can have a problem if you use a daemon as nfs-client. If the daemon need a network connection when it starts and your interface has no IP address, the daemon will not work. To avoid this problem Exalt can configure your interface in the foreground. If you select the interface in the list, Exalt will wait until your interface gets a IP address.</p>"
              "\n<p>If the interface doesn't get a IP address before the timeout, your computer will continue the boot process.</p>"
              ),
              ETK_TRUE);
@@ -72,12 +72,11 @@ boot_panel* bootpanel_create(main_window *win)
 
     pnl->slider = etk_hslider_new(1,60,30,1,5);
     etk_box_append(ETK_BOX(hbox), pnl->slider, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+    etk_slider_label_set(ETK_SLIDER(pnl->slider), "%.0f");
+    etk_signal_connect_by_code(ETK_RANGE_VALUE_CHANGED_SIGNAL, ETK_OBJECT(pnl->slider), ETK_CALLBACK(bootpanel_slider_value_changed_cb), pnl);
+    etk_slider_update_policy_set(ETK_SLIDER(pnl->slider), ETK_SLIDER_DELAYED);
 
-    pnl->slider_entry = etk_entry_new();
-    etk_entry_text_set(ETK_ENTRY(pnl->slider_entry),"30");
-    etk_widget_disabled_set(pnl->slider_entry,ETK_TRUE);
-    etk_widget_size_request_set(pnl->slider_entry,30,10);
-    etk_box_append(ETK_BOX(hbox), pnl->slider_entry, ETK_BOX_START, ETK_BOX_FILL, 0);
+    bootpanel_update_timeout(pnl);
 
     return pnl;
 }
@@ -105,7 +104,7 @@ void bootpanel_add_interface(char* interface, boot_panel* pnl)
     int checked;
     if(!interface || !pnl)
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"interface=%p  pnl=%p",interface,pnl);
+        print_error( __FILE__, __func__,"interface=%p  pnl=%p",interface,pnl);
         return ;
     }
 
@@ -120,7 +119,7 @@ void bootpanel_update_interface(char* interface, boot_panel* pnl)
     int checked;
     if(!interface || !pnl)
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"interface=%p  pnl=%p",interface,pnl);
+        print_error( __FILE__, __func__,"interface=%p  pnl=%p",interface,pnl);
         return ;
     }
 
@@ -132,11 +131,24 @@ void bootpanel_update_interface(char* interface, boot_panel* pnl)
         etk_tree_row_fields_set(row, ETK_FALSE, pnl->eth_col0, checked,interface,NULL);
 }
 
+void bootpanel_update_timeout(boot_panel* pnl)
+{
+    int timeout;
+    if(!pnl)
+    {
+        print_error( __FILE__, __func__,"pnl=%p",pnl);
+        return ;
+    }
+
+    timeout = exalt_dbus_bootprocess_timeout_get(exalt_conn);
+    etk_range_value_set(ETK_RANGE(pnl->slider),timeout);
+}
+
 void bootpanel_remove_interface(char* interface, boot_panel* pnl)
 {
     if(!interface || !pnl)
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"interface=%p  pnl=%p",interface,pnl);
+        print_error(__FILE__,__func__,"interface=%p  pnl=%p",interface,pnl);
         return ;
     }
 
@@ -153,7 +165,7 @@ Etk_Tree_Row * bootpanel_findrow(char* interface, boot_panel* pnl)
 
     if(!interface || !pnl)
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"interface=%p  pnl=%p",interface,pnl);
+        print_error(__FILE__,__func__,"interface=%p  pnl=%p",interface,pnl);
         return NULL;
     }
 
@@ -181,7 +193,7 @@ Etk_Bool bootpanel_ethlist_checkbox_change_cb(Etk_Object *object, Etk_Tree_Row *
     col = ETK_TREE_COL(object);
     if(!col || !row || !pnl)
     {
-        print_error("ERROR", __FILE__, __LINE__,__func__,"col=%p  row=%p pnl=%p",col,row,pnl);
+        print_error( __FILE__, __func__,"col=%p  row=%p pnl=%p",col,row,pnl);
         return ETK_FALSE;
     }
 
@@ -197,5 +209,11 @@ Etk_Bool bootpanel_ethlist_checkbox_change_cb(Etk_Object *object, Etk_Tree_Row *
         exalt_dbus_bootprocess_iface_remove(exalt_conn,interface);
 
     return ETK_TRUE;
+}
+
+Etk_Bool bootpanel_slider_value_changed_cb(Etk_Object *object __UNUSED__, double value, void* data __UNUSED__)
+{
+    exalt_dbus_bootprocess_timeout_set(exalt_conn,(int)value);
+    return 1;
 }
 

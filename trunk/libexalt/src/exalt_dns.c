@@ -21,7 +21,7 @@ Ecore_List* exalt_dns_get_list()
     Ecore_List* l;
 
     f = fopen(EXALT_RESOLVCONF_FILE, "ro");
-   EXALT_ASSERT_QUIT(f!=NULL);
+   EXALT_ASSERT_RETURN(f!=NULL);
 
     l = ecore_list_new();
     l->free_func = free;
@@ -51,11 +51,11 @@ int exalt_dns_add(const char* dns)
 {
     char buf[1024];
     FILE* f;
- EXALT_ASSERT_QUIT(dns!=NULL);
-EXALT_ASSERT_QUIT(exalt_is_address(dns));
+ EXALT_ASSERT_RETURN(dns!=NULL);
+EXALT_ASSERT_RETURN(exalt_is_address(dns));
 
     f = fopen(EXALT_RESOLVCONF_FILE, "a");
-  EXALT_ASSERT_QUIT(f!=NULL);
+  EXALT_ASSERT_RETURN(f!=NULL);
 
     sprintf(buf,"nameserver %s\n", dns);
     fwrite( buf, sizeof(char), strlen(buf), f);
@@ -75,12 +75,12 @@ int exalt_dns_delete(const char* dns)
 {
     char buf[1024], buf2[1024];
     FILE* fw, *fr;
-    EXALT_ASSERT_QUIT(dns!=NULL);
+    EXALT_ASSERT_RETURN(dns!=NULL);
 
     ecore_file_cp(EXALT_RESOLVCONF_FILE, EXALT_TEMP_FILE);
 
     fr = fopen(EXALT_TEMP_FILE, "ro");
-    EXALT_ASSERT_QUIT(fr!=NULL);
+    EXALT_ASSERT_RETURN(fr!=NULL);
 
     fw = fopen(EXALT_RESOLVCONF_FILE, "w");
     EXALT_ASSERT_ADV(fw!=NULL,EXALT_FCLOSE(fr);return 0,"f!=NULL failed");
@@ -108,13 +108,13 @@ int exalt_dns_replace(const char* old_dns, const char* new_dns)
     char buf[1024], buf2[1024], buf3[1024];;
     FILE* fw, *fr;
 
-    EXALT_ASSERT_QUIT(old_dns!=NULL);
-    EXALT_ASSERT_QUIT(new_dns!=NULL);
-    EXALT_ASSERT_QUIT(exalt_is_address(new_dns));
+    EXALT_ASSERT_RETURN(old_dns!=NULL);
+    EXALT_ASSERT_RETURN(new_dns!=NULL);
+    EXALT_ASSERT_RETURN(exalt_is_address(new_dns));
 
     ecore_file_cp(EXALT_RESOLVCONF_FILE, EXALT_TEMP_FILE);
     fr = fopen(EXALT_TEMP_FILE, "ro");
-    EXALT_ASSERT_QUIT(fr!=NULL);
+    EXALT_ASSERT_RETURN(fr!=NULL);
 
     fw = fopen(EXALT_RESOLVCONF_FILE, "w");
     EXALT_ASSERT_ADV(fw!=NULL,EXALT_FCLOSE(fr);return 0,"f!=NULL failed");

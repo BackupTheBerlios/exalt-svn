@@ -57,7 +57,7 @@ Ecore_List* exalt_dbus_wireless_scan_wait(const exalt_dbus_conn* conn, const cha
     dbus_pending_call_unref(ret);
 
     //read the response
-    res = exalt_dbus_response_strings(msg);
+    res = exalt_dbus_response_strings(msg,0);
     dbus_message_unref(msg);
     return res;
 }
@@ -175,7 +175,7 @@ char* exalt_dbus_wireless_get_essid(const exalt_dbus_conn* conn, const char* eth
     dbus_pending_call_unref(ret);
 
     //read the response
-    EXALT_STRDUP(res , exalt_dbus_response_string(msg));
+    EXALT_STRDUP(res , exalt_dbus_response_string(msg,0));
     dbus_message_unref(msg);
     return res;
 }
@@ -219,7 +219,7 @@ char* exalt_dbus_wireless_get_wpasupplicant_driver(const exalt_dbus_conn* conn, 
     dbus_pending_call_unref(ret);
 
     //read the response
-    str = exalt_dbus_response_string(msg);
+    str = exalt_dbus_response_string(msg,0);
     EXALT_STRDUP(res,str);
     dbus_message_unref(msg);
     return res;

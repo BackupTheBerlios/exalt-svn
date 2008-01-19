@@ -20,7 +20,7 @@
 #define  CB_DNS_INC
 
 #include "daemon.h"
-
+#include <libexalt.h>
 
 DBusMessage * dbus_cb_dns_get_list(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
 DBusMessage * dbus_cb_dns_add(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);

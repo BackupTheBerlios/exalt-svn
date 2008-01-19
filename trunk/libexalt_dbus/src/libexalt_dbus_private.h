@@ -45,11 +45,16 @@ struct _exalt_dbus_scan_notify_data
 
 
 void exalt_dbus_print_error(const char* type, const char* file, int line,const char* fct, const char* msg, ...);
-const char* exalt_dbus_response_string(DBusMessage *msg);
-Ecore_List* exalt_dbus_response_strings(DBusMessage *msg);
+
+const char* exalt_dbus_response_string(DBusMessage *msg, int pos);
+Ecore_List* exalt_dbus_response_strings(DBusMessage *msg, int pos);
 void exalt_dbus_string_free(void* data);
-int exalt_dbus_response_boolean(DBusMessage *msg);
-int exalt_dbus_response_integer(DBusMessage *msg);
+int exalt_dbus_response_boolean(DBusMessage *msg, int pos);
+int exalt_dbus_response_integer(DBusMessage *msg, int pos);
+
+int exalt_dbus_valid_is(DBusMessage *msg);
+int exalt_dbus_error_get_id(DBusMessage *msg);
+const char* exalt_dbus_error_get_msg(DBusMessage *msg);
 
 
 #endif   /* ----- #ifndef LIBEXALT_DBUS_PRIVATE_INC  ----- */

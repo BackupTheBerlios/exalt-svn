@@ -10,6 +10,10 @@ typedef struct _Popup Popup;
 #include "e_mod_config.h"
 #include <e.h>
 
+#ifndef _
+#define _(STRING)    gettext(STRING)
+#endif
+
 struct _Instance
 {
     E_Gadcon_Client *gcc;

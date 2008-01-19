@@ -17,6 +17,54 @@
 #define EXALT_WPA_IFACE_DIR "/var/run/wpa_supplicant"
 #define EXALT_TEMP_FILE "/tmp/exalt_temp"
 
+
+
+#define EXALT_ASSERT(test) \
+    do\
+    {\
+        if(!(test))\
+        {\
+            print_error(__FILE__,__func__,"%s failed",#test);\
+        }\
+    }while(0)
+
+
+
+#define EXALT_ASSERT_RETURN(test) \
+    do\
+    {\
+        if(!(test))\
+        {\
+            print_error(__FILE__,__func__,"%s failed",#test);\
+            return 0;\
+        }\
+    }while(0)
+
+#define EXALT_ASSERT_RETURN_VOID(test) \
+    do\
+    {\
+        if(!(test))\
+        {\
+            print_error(__FILE__,__func__,"%s failed",#test);\
+            return ;\
+        }\
+    }while(0)
+
+
+
+#define EXALT_ASSERT_ADV(test, instr, ...) \
+    do \
+    { \
+        if(!(test))\
+        {\
+            print_error(__FILE__,__func__, __VA_ARGS__ );\
+            instr; \
+        }\
+    }while(0)
+
+
+
+
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
@@ -56,6 +104,7 @@ short exalt_is_key(const char* key, Exalt_Enum_Encryption_Mode encryption_mode);
 short exalt_wpasupplicant_is_support();
 short exalt_dhcp_is_support();
 
+void print_error(const char* file,const char* fct, const char* msg, ...);
 
 
 
