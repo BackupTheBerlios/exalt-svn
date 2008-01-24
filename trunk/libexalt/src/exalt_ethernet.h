@@ -84,7 +84,7 @@ typedef void (*Exalt_Eth_Cb) (Exalt_Ethernet* eth, Exalt_Enum_Action action, voi
 extern Exalt_Ethernets exalt_eth_interfaces;
 
 /** callback function used for notifications during a scan */
-typedef void (*Exalt_Wifi_Scan_Cb) (Exalt_Ethernet* eth, Ecore_List* new_networks, Ecore_List* old_networks, void* user_data);
+typedef void (*Exalt_Wifi_Scan_Cb) (Exalt_Ethernet* eth, Ecore_List* networks, void* user_data);
 
 /** callback function used for notify than the configuration is applied */
 typedef void (*Exalt_Conf_Applied) (Exalt_Ethernet* eth, void* data);

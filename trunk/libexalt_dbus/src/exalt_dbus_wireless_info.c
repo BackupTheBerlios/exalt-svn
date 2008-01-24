@@ -26,37 +26,39 @@ int exalt_dbus_wirelessinfo_get_quality(const exalt_dbus_conn* conn, const char*
     DBusMessageIter args;
     int res;
 
-    if(!conn || !eth || !essid)
-    {
-
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"conn==%p, eth==%p essid=%p",conn, eth, essid);
-        return -1;
-    }
+    EXALT_ASSERT_RETURN(conn!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(essid!=NULL);
 
     msg = exalt_dbus_read_call_new("NETWORK_GET_QUALITY");
     dbus_message_iter_init_append(msg, &args);
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth)) {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
-        dbus_message_unref(msg);
-        return -1;
-    }
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth),
+            dbus_message_unref(msg); return 0,
+            "bus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth");
 
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid)) {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
-        dbus_message_unref(msg);
-        return -1;
-    }
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid),
+            dbus_message_unref(msg); return 0,
+            "bus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid");
 
-    dbus_connection_send_with_reply (conn->conn, msg, &ret, -1);
+    EXALT_ASSERT_ADV(dbus_connection_send_with_reply (conn->conn, msg, &ret, -1),
+            dbus_message_unref(msg); return 0,
+            "dbus_connection_send_with_reply (conn->conn, msg, &ret, -1)");
+
     dbus_pending_call_block(ret);
     msg = dbus_pending_call_steal_reply(ret);
+    EXALT_ASSERT_RETURN(msg!=NULL);
     dbus_pending_call_unref(ret);
+    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
+            return 0,
+            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
+            exalt_dbus_error_get_id(msg),
+            exalt_dbus_error_get_msg(msg));
 
-    //read the response
-    res = exalt_dbus_response_integer(msg,0);
+    res = exalt_dbus_response_integer(msg,1);
     dbus_message_unref(msg);
     return res;
 }
+
 
 int exalt_dbus_wirelessinfo_get_encryption(const exalt_dbus_conn* conn, const char* eth, const char* essid)
 {
@@ -65,45 +67,35 @@ int exalt_dbus_wirelessinfo_get_encryption(const exalt_dbus_conn* conn, const ch
     DBusMessageIter args;
     int res;
 
-    if(!conn || !eth || !essid)
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"conn==%p, eth==%p essid=%p",conn, eth, essid);
-        return -1;
-    }
+    EXALT_ASSERT_RETURN(conn!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(essid!=NULL);
 
     msg = exalt_dbus_read_call_new("NETWORK_GET_ENCRYPTION");
     dbus_message_iter_init_append(msg, &args);
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth)) {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
-        dbus_message_unref(msg);
-        return -1;
-    }
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth),
+            dbus_message_unref(msg); return 0,
+            "bus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth");
 
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid)) {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
-        dbus_message_unref(msg);
-        return -1;
-    }
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid),
+            dbus_message_unref(msg); return 0,
+            "bus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid");
 
-    if(!dbus_connection_send_with_reply (conn->conn, msg, &ret, -1))
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Send Out Of Memory!");
-        dbus_message_unref(msg);
-        return 0;
-    }
-    dbus_message_unref(msg);
+    EXALT_ASSERT_ADV(dbus_connection_send_with_reply (conn->conn, msg, &ret, -1),
+            dbus_message_unref(msg); return 0,
+            "dbus_connection_send_with_reply (conn->conn, msg, &ret, -1)");
 
     dbus_pending_call_block(ret);
     msg = dbus_pending_call_steal_reply(ret);
-    if(msg == NULL)
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"msg=",msg);
-        return 0;
-    }
+    EXALT_ASSERT_RETURN(msg!=NULL);
     dbus_pending_call_unref(ret);
+    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
+            return 0,
+            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
+            exalt_dbus_error_get_id(msg),
+            exalt_dbus_error_get_msg(msg));
 
-    //read the response
-    res = exalt_dbus_response_integer(msg,0);
+    res = exalt_dbus_response_integer(msg,1);
     dbus_message_unref(msg);
     return res;
 }
@@ -115,45 +107,35 @@ int exalt_dbus_wirelessinfo_get_signallvl(const exalt_dbus_conn* conn, const cha
     DBusMessageIter args;
     int res;
 
-    if(!conn || !eth || !essid)
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"conn==%p, eth==%p essid=%p",conn, eth, essid);
-        return -1;
-    }
+    EXALT_ASSERT_RETURN(conn!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(essid!=NULL);
 
     msg = exalt_dbus_read_call_new("NETWORK_GET_SIGNALLVL");
     dbus_message_iter_init_append(msg, &args);
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth)) {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
-        dbus_message_unref(msg);
-        return -1;
-    }
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth),
+            dbus_message_unref(msg); return 0,
+            "bus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth");
 
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid)) {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
-        dbus_message_unref(msg);
-        return -1;
-    }
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid),
+            dbus_message_unref(msg); return 0,
+            "bus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid");
 
-    if(!dbus_connection_send_with_reply (conn->conn, msg, &ret, -1))
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Send Out Of Memory!");
-        dbus_message_unref(msg);
-        return 0;
-    }
-    dbus_message_unref(msg);
+    EXALT_ASSERT_ADV(dbus_connection_send_with_reply (conn->conn, msg, &ret, -1),
+            dbus_message_unref(msg); return 0,
+            "dbus_connection_send_with_reply (conn->conn, msg, &ret, -1)");
 
     dbus_pending_call_block(ret);
     msg = dbus_pending_call_steal_reply(ret);
-    if(msg == NULL)
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"msg=",msg);
-        return 0;
-    }
+    EXALT_ASSERT_RETURN(msg!=NULL);
     dbus_pending_call_unref(ret);
+    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
+            return 0,
+            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
+            exalt_dbus_error_get_id(msg),
+            exalt_dbus_error_get_msg(msg));
 
-    //read the response
-    res = exalt_dbus_response_integer(msg,0);
+    res = exalt_dbus_response_integer(msg,1);
     dbus_message_unref(msg);
     return res;
 }
@@ -165,48 +147,39 @@ int exalt_dbus_wirelessinfo_get_noiselvl(const exalt_dbus_conn* conn, const char
     DBusMessageIter args;
     int res;
 
-    if(!conn || !eth || !essid)
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"conn==%p, eth==%p essid=%p",conn, eth, essid);
-        return -1;
-    }
+    EXALT_ASSERT_RETURN(conn!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(essid!=NULL);
 
     msg = exalt_dbus_read_call_new("NETWORK_GET_NOISELVL");
     dbus_message_iter_init_append(msg, &args);
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth)) {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
-        dbus_message_unref(msg);
-        return -1;
-    }
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth),
+            dbus_message_unref(msg); return 0,
+            "bus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth");
 
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid)) {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
-        dbus_message_unref(msg);
-        return -1;
-    }
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid),
+            dbus_message_unref(msg); return 0,
+            "bus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid");
 
-    if(!dbus_connection_send_with_reply (conn->conn, msg, &ret, -1))
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Send Out Of Memory!");
-        dbus_message_unref(msg);
-        return 0;
-    }
-    dbus_message_unref(msg);
+    EXALT_ASSERT_ADV(dbus_connection_send_with_reply (conn->conn, msg, &ret, -1),
+            dbus_message_unref(msg); return 0,
+            "dbus_connection_send_with_reply (conn->conn, msg, &ret, -1)");
 
     dbus_pending_call_block(ret);
     msg = dbus_pending_call_steal_reply(ret);
-    if(msg == NULL)
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"msg=",msg);
-        return 0;
-    }
+    EXALT_ASSERT_RETURN(msg!=NULL);
     dbus_pending_call_unref(ret);
+    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
+            return 0,
+            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
+            exalt_dbus_error_get_id(msg),
+            exalt_dbus_error_get_msg(msg));
 
-    //read the response
-    res = exalt_dbus_response_integer(msg,0);
+    res = exalt_dbus_response_integer(msg,1);
     dbus_message_unref(msg);
     return res;
 }
+
 
 char* exalt_dbus_wirelessinfo_get_addr(const exalt_dbus_conn* conn, const char* eth, const char* essid)
 {
@@ -215,95 +188,77 @@ char* exalt_dbus_wirelessinfo_get_addr(const exalt_dbus_conn* conn, const char* 
     DBusMessageIter args;
     char* res;
 
-    if(!conn || !eth || !essid)
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"conn==%p, eth==%p essid=%p",conn, eth, essid);
-        return NULL;
-    }
+    EXALT_ASSERT_RETURN(conn!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(essid!=NULL);
 
     msg = exalt_dbus_read_call_new("NETWORK_GET_ADDR");
     dbus_message_iter_init_append(msg, &args);
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth)) {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
-        dbus_message_unref(msg);
-        return NULL;
-    }
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth),
+            dbus_message_unref(msg); return 0,
+            "bus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth");
 
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid)) {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
-        dbus_message_unref(msg);
-        return NULL;
-    }
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid),
+            dbus_message_unref(msg); return 0,
+            "bus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid");
 
-    if(!dbus_connection_send_with_reply (conn->conn, msg, &ret, -1))
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Send Out Of Memory!");
-        dbus_message_unref(msg);
-        return 0;
-    }
-    dbus_message_unref(msg);
+    EXALT_ASSERT_ADV(dbus_connection_send_with_reply (conn->conn, msg, &ret, -1),
+            dbus_message_unref(msg); return 0,
+            "dbus_connection_send_with_reply (conn->conn, msg, &ret, -1)");
 
     dbus_pending_call_block(ret);
     msg = dbus_pending_call_steal_reply(ret);
-    if(msg == NULL)
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"msg=",msg);
-        return 0;
-    }
+    EXALT_ASSERT_RETURN(msg!=NULL);
     dbus_pending_call_unref(ret);
+    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
+            return 0,
+            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
+            exalt_dbus_error_get_id(msg),
+            exalt_dbus_error_get_msg(msg));
 
-    //read the response
-    EXALT_STRDUP(res , exalt_dbus_response_string(msg,0));
+    EXALT_STRDUP(res, exalt_dbus_response_string(msg,1));
     dbus_message_unref(msg);
     return res;
 }
 
-char* exalt_dbus_wirelessinfo_get_protocol(const exalt_dbus_conn* conn, const char* eth, const char* essid)
+
+
+char* exalt_dbus_wirelessinfo_get_bitrates(const exalt_dbus_conn* conn, const char* eth, const char* essid)
 {
     DBusPendingCall * ret;
     DBusMessage *msg;
     DBusMessageIter args;
     char* res;
 
-    if(!conn || !eth || !essid)
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"conn==%p, eth==%p essid=%p",conn, eth, essid);
-        return NULL;
-    }
+    EXALT_ASSERT_RETURN(conn!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(essid!=NULL);
 
-    msg = exalt_dbus_read_call_new("NETWORK_GET_PROTOCOL");
+    msg = exalt_dbus_read_call_new("NETWORK_GET_BITRATES");
     dbus_message_iter_init_append(msg, &args);
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth)) {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
-        dbus_message_unref(msg);
-        return NULL;
-    }
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth),
+            dbus_message_unref(msg); return 0,
+            "bus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth");
 
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid)) {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
-        dbus_message_unref(msg);
-        return NULL;
-    }
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid),
+            dbus_message_unref(msg); return 0,
+            "bus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid");
 
-    if(!dbus_connection_send_with_reply (conn->conn, msg, &ret, -1))
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Send Out Of Memory!");
-        dbus_message_unref(msg);
-        return 0;
-    }
-    dbus_message_unref(msg);
+    EXALT_ASSERT_ADV(dbus_connection_send_with_reply (conn->conn, msg, &ret, -1),
+            dbus_message_unref(msg); return 0,
+            "dbus_connection_send_with_reply (conn->conn, msg, &ret, -1)");
 
     dbus_pending_call_block(ret);
     msg = dbus_pending_call_steal_reply(ret);
-    if(msg == NULL)
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"msg=",msg);
-        return 0;
-    }
+    EXALT_ASSERT_RETURN(msg!=NULL);
     dbus_pending_call_unref(ret);
+    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
+            return 0,
+            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
+            exalt_dbus_error_get_id(msg),
+            exalt_dbus_error_get_msg(msg));
 
-    //read the response
-    EXALT_STRDUP(res , exalt_dbus_response_string(msg,0));
+    EXALT_STRDUP(res, exalt_dbus_response_string(msg,1));
     dbus_message_unref(msg);
     return res;
 }
@@ -315,148 +270,80 @@ char* exalt_dbus_wirelessinfo_get_mode(const exalt_dbus_conn* conn, const char* 
     DBusMessageIter args;
     char* res;
 
-    if(!conn || !eth || !essid)
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"conn==%p, eth==%p essid=%p",conn, eth, essid);
-        return NULL;
-    }
+    EXALT_ASSERT_RETURN(conn!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(essid!=NULL);
 
     msg = exalt_dbus_read_call_new("NETWORK_GET_MODE");
     dbus_message_iter_init_append(msg, &args);
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth)) {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
-        dbus_message_unref(msg);
-        return NULL;
-    }
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth),
+            dbus_message_unref(msg); return 0,
+            "bus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth");
 
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid)) {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
-        dbus_message_unref(msg);
-        return NULL;
-    }
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid),
+            dbus_message_unref(msg); return 0,
+            "bus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid");
 
-    if(!dbus_connection_send_with_reply (conn->conn, msg, &ret, -1))
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Send Out Of Memory!");
-        dbus_message_unref(msg);
-        return 0;
-    }
-    dbus_message_unref(msg);
+    EXALT_ASSERT_ADV(dbus_connection_send_with_reply (conn->conn, msg, &ret, -1),
+            dbus_message_unref(msg); return 0,
+            "dbus_connection_send_with_reply (conn->conn, msg, &ret, -1)");
 
     dbus_pending_call_block(ret);
     msg = dbus_pending_call_steal_reply(ret);
-    if(msg == NULL)
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"msg=",msg);
-        return 0;
-    }
+    EXALT_ASSERT_RETURN(msg!=NULL);
     dbus_pending_call_unref(ret);
+    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
+            return 0,
+            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
+            exalt_dbus_error_get_id(msg),
+            exalt_dbus_error_get_msg(msg));
 
-    //read the response
-    EXALT_STRDUP(res , exalt_dbus_response_string(msg,0));
+    EXALT_STRDUP(res, exalt_dbus_response_string(msg,1));
     dbus_message_unref(msg);
     return res;
 }
 
-char* exalt_dbus_wirelessinfo_get_channel(const exalt_dbus_conn* conn, const char* eth, const char* essid)
+char* exalt_dbus_wirelessinfo_get_protocol(const exalt_dbus_conn* conn, const char* eth, const char* essid)
 {
     DBusPendingCall * ret;
     DBusMessage *msg;
     DBusMessageIter args;
     char* res;
 
-    if(!conn || !eth || !essid)
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"conn==%p, eth==%p essid=%p",conn, eth, essid);
-        return NULL;
-    }
+    EXALT_ASSERT_RETURN(conn!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(essid!=NULL);
 
-    msg = exalt_dbus_read_call_new("NETWORK_GET_CHANNEL");
+    msg = exalt_dbus_read_call_new("NETWORK_GET_PROTOCOL");
     dbus_message_iter_init_append(msg, &args);
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth)) {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
-        dbus_message_unref(msg);
-        return NULL;
-    }
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth),
+            dbus_message_unref(msg); return 0,
+            "bus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth");
 
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid)) {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
-        dbus_message_unref(msg);
-        return NULL;
-    }
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid),
+            dbus_message_unref(msg); return 0,
+            "bus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid");
 
-    if(!dbus_connection_send_with_reply (conn->conn, msg, &ret, -1))
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Send Out Of Memory!");
-        dbus_message_unref(msg);
-        return 0;
-    }
-    dbus_message_unref(msg);
+    EXALT_ASSERT_ADV(dbus_connection_send_with_reply (conn->conn, msg, &ret, -1),
+            dbus_message_unref(msg); return 0,
+            "dbus_connection_send_with_reply (conn->conn, msg, &ret, -1)");
 
     dbus_pending_call_block(ret);
     msg = dbus_pending_call_steal_reply(ret);
-    if(msg == NULL)
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"msg=",msg);
-        return 0;
-    }
+    EXALT_ASSERT_RETURN(msg!=NULL);
     dbus_pending_call_unref(ret);
+    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
+            return 0,
+            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
+            exalt_dbus_error_get_id(msg),
+            exalt_dbus_error_get_msg(msg));
 
-    //read the response
-    EXALT_STRDUP(res , exalt_dbus_response_string(msg,0));
+    EXALT_STRDUP(res, exalt_dbus_response_string(msg,1));
     dbus_message_unref(msg);
     return res;
 }
 
-char* exalt_dbus_wirelessinfo_get_bitrates(const exalt_dbus_conn* conn, const char* eth, const char* essid)
-{
-    DBusPendingCall * ret;
-    DBusMessage *msg;
-    DBusMessageIter args;
-    char* res;
 
-    if(!conn || !eth || !essid)
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"conn==%p, eth==%p essid=%p",conn, eth, essid);
-        return NULL;
-    }
-
-    msg = exalt_dbus_read_call_new("NETWORK_GET_BITRATES");
-    dbus_message_iter_init_append(msg, &args);
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth)) {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
-        dbus_message_unref(msg);
-        return NULL;
-    }
-
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid)) {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
-        dbus_message_unref(msg);
-        return NULL;
-    }
-
-    if(!dbus_connection_send_with_reply (conn->conn, msg, &ret, -1))
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Send Out Of Memory!");
-        dbus_message_unref(msg);
-        return 0;
-    }
-    dbus_message_unref(msg);
-
-    dbus_pending_call_block(ret);
-    msg = dbus_pending_call_steal_reply(ret);
-    if(msg == NULL)
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"msg=",msg);
-        return 0;
-    }
-    dbus_pending_call_unref(ret);
-
-    //read the response
-    EXALT_STRDUP(res , exalt_dbus_response_string(msg,0));
-    dbus_message_unref(msg);
-    return res;
-}
 
 
 Exalt_Connection * exalt_dbus_wirelessinfo_get_default_conn(const exalt_dbus_conn* conn, const char* eth, const char* essid)
@@ -464,173 +351,66 @@ Exalt_Connection * exalt_dbus_wirelessinfo_get_default_conn(const exalt_dbus_con
     DBusPendingCall * ret;
     DBusMessage *msg;
     DBusMessageIter args;
-    const char* s;
-    int i;
+    int pos;
     Exalt_Connection *c;
 
-    if(!conn || !eth || !essid)
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"conn==%p, eth==%p essid=%p",conn, eth, essid);
-        return NULL;
-    }
+    EXALT_ASSERT_RETURN(conn!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(essid!=NULL);
 
     msg = exalt_dbus_read_call_new("NETWORK_GET_DEFAULT_CONN");
     dbus_message_iter_init_append(msg, &args);
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth)) {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
-        dbus_message_unref(msg);
-        return NULL;
-    }
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth),
+            dbus_message_unref(msg); return 0,
+            "bus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth");
 
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid)) {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Out Of Memory!");
-        dbus_message_unref(msg);
-        return NULL;
-    }
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid),
+            dbus_message_unref(msg); return 0,
+            "bus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid");
 
-    if(!dbus_connection_send_with_reply (conn->conn, msg, &ret, -1))
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"Send Out Of Memory!");
-        dbus_message_unref(msg);
-        return 0;
-    }
+    EXALT_ASSERT_ADV(dbus_connection_send_with_reply (conn->conn, msg, &ret, -1),
+            dbus_message_unref(msg); return 0,
+            "dbus_connection_send_with_reply (conn->conn, msg, &ret, -1)");
+
     dbus_message_unref(msg);
 
     dbus_pending_call_block(ret);
     msg = dbus_pending_call_steal_reply(ret);
-    if(msg == NULL)
-    {
-        exalt_dbus_print_error("ERROR", __FILE__,__LINE__,__func__,"msg=",msg);
-        return 0;
-    }
+    EXALT_ASSERT_RETURN(msg!=NULL);
     dbus_pending_call_unref(ret);
 
-    //read the response
-    c = exalt_conn_new();
-    if(!dbus_message_iter_init(msg, &args))
-    {
-        exalt_dbus_print_error("ERROR", __FILE__, __LINE__,__func__, "no argument");
-        dbus_message_unref(msg);
-        exalt_conn_free(c);
-        return NULL;
-    }
-    if (DBUS_TYPE_INT32 != dbus_message_iter_get_arg_type(&args))
-    {
-        exalt_dbus_print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a int");
-        dbus_message_unref(msg);
-        exalt_conn_free(c);
-        return NULL;
-    }
-    else
-        dbus_message_iter_get_basic(&args, &i);
-    exalt_conn_set_mode(c,i);
-    dbus_message_iter_next(&args);
+    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
+            return 0,
+            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
+            exalt_dbus_error_get_id(msg),
+            exalt_dbus_error_get_msg(msg));
 
+
+
+    c = exalt_conn_new();
+    pos = 1;
+    exalt_conn_set_mode(c,exalt_dbus_response_integer(msg,pos++));
     if(!exalt_conn_is_dhcp(c))
     {
-        if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
-        {
-            exalt_dbus_print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a string");
-            dbus_message_unref(msg);
-            exalt_conn_free(c);
-            return NULL;
-        }
-        else
-            dbus_message_iter_get_basic(&args, &s);
-        exalt_conn_set_ip(c,s);
-        dbus_message_iter_next(&args);
-
-        if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
-        {
-            exalt_dbus_print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a string");
-            dbus_message_unref(msg);
-            exalt_conn_free(c);
-            return NULL;
-        }
-        else
-            dbus_message_iter_get_basic(&args, &s);
-        exalt_conn_set_netmask(c,s);
-        dbus_message_iter_next(&args);
-
-        if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
-        {
-            exalt_dbus_print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a string");
-            dbus_message_unref(msg);
-            exalt_conn_free(c);
-            return NULL;
-        }
-        else
-            dbus_message_iter_get_basic(&args, &s);
-        exalt_conn_set_gateway(c,s);
-        dbus_message_iter_next(&args);
+        exalt_conn_set_ip(c,exalt_dbus_response_string(msg,pos++));
+        exalt_conn_set_netmask(c,exalt_dbus_response_string(msg,pos++));
+        exalt_conn_set_gateway(c,exalt_dbus_response_string(msg,pos++));
     }
 
-    if (DBUS_TYPE_INT32 != dbus_message_iter_get_arg_type(&args))
-    {
-        exalt_dbus_print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a int");
-        dbus_message_unref(msg);
-        exalt_conn_free(c);
-        return NULL;
-    }
-    else
-        dbus_message_iter_get_basic(&args, &i);
-    exalt_conn_set_wireless(c,i);
-    dbus_message_iter_next(&args);
+    exalt_conn_set_wireless(c,exalt_dbus_response_integer(msg,pos++));
 
     if(exalt_conn_is_wireless(c))
     {
-        if (DBUS_TYPE_INT32 != dbus_message_iter_get_arg_type(&args))
-        {
-            exalt_dbus_print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a int");
-            dbus_message_unref(msg);
-            exalt_conn_free(c);
-            return NULL;
-        }
-        else
-            dbus_message_iter_get_basic(&args, &i);
-        exalt_conn_set_encryption_mode(c,i);
-        dbus_message_iter_next(&args);
+        exalt_conn_set_encryption_mode(c,exalt_dbus_response_integer(msg,pos++));
 
         if(exalt_conn_get_encryption_mode(c)!= EXALT_ENCRYPTION_NONE)
-        {
-            if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
-            {
-                exalt_dbus_print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a string");
-                dbus_message_unref(msg);
-                exalt_conn_free(c);
-                return NULL;
-            }
-            else
-                dbus_message_iter_get_basic(&args, &s);
-            exalt_conn_set_key(c,s);
-            dbus_message_iter_next(&args);
-        }
+            exalt_conn_set_key(c,exalt_dbus_response_string(msg,pos++));
 
-        if (DBUS_TYPE_INT32 != dbus_message_iter_get_arg_type(&args))
-        {
-            exalt_dbus_print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a int");
-            dbus_message_unref(msg);
-            exalt_conn_free(c);
-            return NULL;
-        }
-        else
-            dbus_message_iter_get_basic(&args, &i);
-        exalt_conn_set_connection_mode(c,i);
-        dbus_message_iter_next(&args);
+        exalt_conn_set_connection_mode(c,exalt_dbus_response_integer(msg,pos++));
 
-
-        if (DBUS_TYPE_INT32 != dbus_message_iter_get_arg_type(&args))
-        {
-            exalt_dbus_print_error("ERROR", __FILE__, __LINE__,__func__, "Argument is not a int");
-            dbus_message_unref(msg);
-            exalt_conn_free(c);
-            return NULL;
-        }
-        else
-            dbus_message_iter_get_basic(&args, &i);
-        exalt_conn_set_security_mode(c,i);
-        dbus_message_iter_next(&args);
+        exalt_conn_set_security_mode(c,exalt_dbus_response_integer(msg,pos++));
     }
+
     dbus_message_unref(msg);
     return c;
 }

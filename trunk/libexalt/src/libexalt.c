@@ -216,11 +216,11 @@ short exalt_vpnc_is_support()
  * @param msg the message
  * @param ... a list of params
  */
-void print_error(const char* file,const char* fct, const char* msg, ...)
+void print_error(const char* file,const char* fct, int line, const char* msg, ...)
 {
     va_list ap;
     va_start(ap,msg);
-    fprintf(stderr,"%s: %s\n",file,fct);
+    fprintf(stderr,"%s: %s (%d)\n",file,fct,line);
     fprintf(stderr,"\t");
     vfprintf(stderr,msg,ap);
     fprintf(stderr,"\n\n");

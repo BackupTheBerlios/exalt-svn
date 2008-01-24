@@ -29,34 +29,33 @@ DBusMessage * dbus_cb_eth_get_eth_list(E_DBus_Object *obj __UNUSED__, DBusMessag
 
     reply = dbus_message_new_method_return(msg);
 
-    dbus_message_iter_init_append(reply, &args);
     interfaces = exalt_eth_get_list();
-    if(!interfaces)
-    {
-        print_error("WARNING", __FILE__,__func__, "interfaces=%p",interfaces);
-        return reply;
-    }
+    EXALT_ASSERT_ADV(interfaces!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_INTERFACE_LIST_ERROR_ID,
+                EXALT_DBUS_INTERFACE_LIST_ERROR);
+            return reply,
+            "interfaces!=NULL failed");
 
+
+    dbus_args_valid_append(reply);
+    dbus_message_iter_init_append(reply, &args);
     ecore_list_first_goto(interfaces);
     while( (data=ecore_list_next(interfaces)))
     {
         eth = Exalt_Ethernet(data);
         interface = exalt_eth_get_name(eth);
-        if(!interface)
-        {
-            print_error("WARNING", __FILE__,__func__, "interface=%p",interface);
-            return reply;
-        }
-        if (!interface || !dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &interface))
-        {
-            print_error("ERROR", __FILE__,__func__, "Out Of Memory");
-            return reply;
-        }
+        EXALT_ASSERT_ADV(interface!=NULL,
+                return reply,
+                "interface!=NULL failed");
+
+        EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &interface),
+                return reply,
+                "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &interface) failed");
+
     }
     return reply;
 }
-
-
 
 DBusMessage * dbus_cb_eth_get_ip(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
@@ -68,26 +67,35 @@ DBusMessage * dbus_cb_eth_get_ip(E_DBus_Object *obj __UNUSED__, DBusMessage *msg
     reply = dbus_message_new_method_return(msg);
 
     eth= dbus_get_eth(msg);
+    EXALT_ASSERT_ADV(eth!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_INTERFACE_ERROR_ID,
+                EXALT_DBUS_INTERFACE_ERROR);
+            return reply,
+            "eth!=NULL failed");
 
-    if(!eth)
-        return reply;
+    ip = exalt_eth_get_ip(eth);
+
+    EXALT_ASSERT_ADV(ip!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_IP_ERROR_ID,
+                EXALT_DBUS_IP_ERROR);
+            return reply,
+            "ip!=NULL failed");
+
+    dbus_args_valid_append(reply);
 
     dbus_message_iter_init_append(reply, &args);
-    ip = exalt_eth_get_ip(eth);
-    if(!ip)
-    {
-        print_error("WARNING", __FILE__,__func__, "ip=%p",ip);
-        return reply;
-    }
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &ip))
-    {
-        print_error("ERROR", __FILE__,__func__, "Out Of Memory");
-        EXALT_FREE(ip);
-        return reply;
-    }
+
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &ip),
+            EXALT_FREE(ip);return reply,
+            "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &ip) failed");
+
+
     EXALT_FREE(ip);
     return reply;
 }
+
 
 DBusMessage * dbus_cb_eth_get_netmask(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
@@ -99,27 +107,35 @@ DBusMessage * dbus_cb_eth_get_netmask(E_DBus_Object *obj __UNUSED__, DBusMessage
     reply = dbus_message_new_method_return(msg);
 
     eth= dbus_get_eth(msg);
+    EXALT_ASSERT_ADV(eth!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_INTERFACE_ERROR_ID,
+                EXALT_DBUS_INTERFACE_ERROR);
+            return reply,
+            "eth!=NULL failed");
 
-    if(!eth)
-        return reply;
+    netmask = exalt_eth_get_netmask(eth);
+
+    EXALT_ASSERT_ADV(netmask!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_NETMASK_ERROR_ID,
+                EXALT_DBUS_NETMASK_ERROR);
+            return reply,
+            "netmask!=NULL failed");
+
+    dbus_args_valid_append(reply);
 
     dbus_message_iter_init_append(reply, &args);
-    netmask = exalt_eth_get_netmask(eth);
-    if(!netmask)
-    {
-        print_error("WARNING", __FILE__,__func__, "netmask=%p",netmask);
-        return reply;
-    }
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &netmask))
-    {
-        print_error("ERROR", __FILE__,__func__, "Out Of Memory");
-        EXALT_FREE(netmask);
-        return reply;
-    }
+
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &netmask),
+            EXALT_FREE(netmask);return reply,
+            "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &netmask) failed");
+
 
     EXALT_FREE(netmask);
     return reply;
 }
+
 
 DBusMessage * dbus_cb_eth_get_gateway(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
@@ -131,25 +147,31 @@ DBusMessage * dbus_cb_eth_get_gateway(E_DBus_Object *obj __UNUSED__, DBusMessage
     reply = dbus_message_new_method_return(msg);
 
     eth= dbus_get_eth(msg);
+    EXALT_ASSERT_ADV(eth!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_INTERFACE_ERROR_ID,
+                EXALT_DBUS_INTERFACE_ERROR);
+            return reply,
+            "eth!=NULL failed");
 
-    if(!eth)
-        return reply;
+    gateway = exalt_eth_get_gateway(eth);
+
+    EXALT_ASSERT_ADV(gateway!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_GATEWAY_ERROR_ID,
+                EXALT_DBUS_GATEWAY_ERROR);
+            return reply,
+            "gateway!=NULL failed");
+
+    dbus_args_valid_append(reply);
 
     dbus_message_iter_init_append(reply, &args);
-    gateway = exalt_eth_get_gateway(eth);
-    if(!gateway)
-    {
-        print_error("WARNING", __FILE__,__func__, "gateway=%p",gateway);
-        return reply;
-    }
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &gateway))
-    {
-        print_error("ERROR", __FILE__,__func__, "Out Of Memory");
-        EXALT_FREE(gateway);
-        return reply;
-    }
 
-    //free -> segfault
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &gateway),
+            EXALT_FREE(gateway);return reply,
+            "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &gateway) failed");
+
+
     EXALT_FREE(gateway);
     return reply;
 }
@@ -166,16 +188,20 @@ DBusMessage * dbus_cb_eth_is_wireless(E_DBus_Object *obj __UNUSED__, DBusMessage
 
     //search the interface
     eth = dbus_get_eth(msg);
-    if(!eth)
-        return reply;
+    EXALT_ASSERT_ADV(eth!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_INTERFACE_ERROR_ID,
+                EXALT_DBUS_INTERFACE_ERROR);
+            return reply,
+            "eth!=NULL failed");
+
+    dbus_args_valid_append(reply);
 
     dbus_message_iter_init_append(reply, &args);
     is = exalt_eth_is_wireless(eth);
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_BOOLEAN, &is))
-    {
-        print_error("ERROR", __FILE__,__func__, "Out Of Memory");
-        return reply;
-    }
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_BOOLEAN, &is),
+            return reply,
+            "dbus_message_iter_append_basic(&args, DBUS_TYPE_NOOLEAN, &is) failed");
 
     return reply;
 }
@@ -192,16 +218,50 @@ DBusMessage * dbus_cb_eth_is_link(E_DBus_Object *obj __UNUSED__, DBusMessage *ms
 
     //search the interface
     eth = dbus_get_eth(msg);
-    if(!eth)
-        return reply;
+    EXALT_ASSERT_ADV(eth!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_INTERFACE_ERROR_ID,
+                EXALT_DBUS_INTERFACE_ERROR);
+            return reply,
+            "eth!=NULL failed");
+
+    dbus_args_valid_append(reply);
 
     dbus_message_iter_init_append(reply, &args);
     is = exalt_eth_is_link(eth);
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_BOOLEAN, &is))
-    {
-        print_error("ERROR", __FILE__,__func__, "Out Of Memory");
-        return reply;
-    }
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_BOOLEAN, &is),
+            return reply,
+            "dbus_message_iter_append_basic(&args, DBUS_TYPE_NOOLEAN, &is) failed");
+
+    return reply;
+}
+
+DBusMessage * dbus_cb_eth_is_dhcp(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
+{
+    DBusMessage *reply;
+    DBusMessageIter args;
+    Exalt_Ethernet* eth;
+    int is;
+
+
+    reply = dbus_message_new_method_return(msg);
+
+    //search the interface
+    eth = dbus_get_eth(msg);
+    EXALT_ASSERT_ADV(eth!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_INTERFACE_ERROR_ID,
+                EXALT_DBUS_INTERFACE_ERROR);
+            return reply,
+            "eth!=NULL failed");
+
+    dbus_args_valid_append(reply);
+
+    dbus_message_iter_init_append(reply, &args);
+    is = exalt_eth_is_dhcp(eth);
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_BOOLEAN, &is),
+            return reply,
+            "dbus_message_iter_append_basic(&args, DBUS_TYPE_NOOLEAN, &is) failed");
 
     return reply;
 }
@@ -218,43 +278,20 @@ DBusMessage * dbus_cb_eth_is_up(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 
     //search the interface
     eth = dbus_get_eth(msg);
-    if(!eth)
-        return reply;
+    EXALT_ASSERT_ADV(eth!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_INTERFACE_ERROR_ID,
+                EXALT_DBUS_INTERFACE_ERROR);
+            return reply,
+            "eth!=NULL failed");
+
+    dbus_args_valid_append(reply);
 
     dbus_message_iter_init_append(reply, &args);
     is = exalt_eth_is_up(eth);
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_BOOLEAN, &is))
-    {
-        print_error("ERROR", __FILE__,__func__, "Out Of Memory");
-        return reply;
-    }
-
-    return reply;
-}
-
-
-DBusMessage * dbus_cb_eth_is_dhcp(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
-{
-    DBusMessage *reply;
-    DBusMessageIter args;
-    Exalt_Ethernet* eth;
-    int is;
-
-
-    reply = dbus_message_new_method_return(msg);
-
-    //search the interface
-    eth = dbus_get_eth(msg);
-    if(!eth)
-        return reply;
-
-    dbus_message_iter_init_append(reply, &args);
-    is = exalt_eth_is_dhcp(eth);
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_BOOLEAN, &is))
-    {
-        print_error("ERROR", __FILE__,__func__, "Out Of Memory");
-        return reply;
-    }
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_BOOLEAN, &is),
+            return reply,
+            "dbus_message_iter_append_basic(&args, DBUS_TYPE_NOOLEAN, &is) failed");
 
     return reply;
 }
@@ -269,10 +306,16 @@ DBusMessage * dbus_cb_eth_up(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 
     //search the interface
     eth = dbus_get_eth(msg);
-    if(!eth)
-        return reply;
+    EXALT_ASSERT_ADV(eth!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_INTERFACE_ERROR_ID,
+                EXALT_DBUS_INTERFACE_ERROR);
+            return reply,
+            "eth!=NULL failed");
+
 
     exalt_eth_up(eth);
+    dbus_args_valid_append(reply);
 
     return reply;
 }
@@ -287,10 +330,16 @@ DBusMessage * dbus_cb_eth_down(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 
     //search the interface
     eth = dbus_get_eth(msg);
-    if(!eth)
-        return reply;
+    EXALT_ASSERT_ADV(eth!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_INTERFACE_ERROR_ID,
+                EXALT_DBUS_INTERFACE_ERROR);
+            return reply,
+            "eth!=NULL failed");
 
     exalt_eth_down(eth);
+
+    dbus_args_valid_append(reply);
 
     return reply;
 }
@@ -306,27 +355,39 @@ DBusMessage * dbus_cb_eth_apply_conn(E_DBus_Object *obj __UNUSED__, DBusMessage 
     char* s;
 
     c = exalt_conn_new();
-    if(!c)
-    {
-        print_error("ERROR", __FILE__,__func__, "c=%p",c);
-        return reply;
-    }
+    EXALT_ASSERT_ADV(c!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_CONN_NEW_ERROR_ID,
+                EXALT_DBUS_CONN_NEW_ERROR);
+            return reply,
+            "c!=NULL failed");
+
 
     eth = dbus_get_eth(msg);
 
-    if(!eth)
-        return reply;
+    EXALT_ASSERT_ADV(eth!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_INTERFACE_ERROR_ID,
+                EXALT_DBUS_INTERFACE_ERROR);
+            return reply,
+            "eth!=NULL failed");
 
     //retrieve the connection
     if(!dbus_message_iter_init(msg, &args))
     {
-        print_error("ERROR", __FILE__,__func__, "no argument");
+        dbus_args_error_append(reply,
+                EXALT_DBUS_NO_ARGUMENT_ID,
+                EXALT_DBUS_NO_ARGUMENT);
         return reply;
     }
+
+
     dbus_message_iter_next(&args);
     if (DBUS_TYPE_INT32 != dbus_message_iter_get_arg_type(&args))
     {
-        print_error("ERROR", __FILE__,__func__, "Argument is not a int");
+        dbus_args_error_append(reply,
+                EXALT_DBUS_ARGUMENT_NOT_INT32_ID,
+                EXALT_DBUS_ARGUMENT_NOT_INT32);
         return reply;
     }
     else
@@ -338,7 +399,9 @@ DBusMessage * dbus_cb_eth_apply_conn(E_DBus_Object *obj __UNUSED__, DBusMessage 
     {
         if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
         {
-            print_error("ERROR", __FILE__,__func__, "Argument is not a string");
+            dbus_args_error_append(reply,
+                    EXALT_DBUS_ARGUMENT_NOT_STRING_ID,
+                    EXALT_DBUS_ARGUMENT_NOT_STRING);
             return reply;
         }
         else
@@ -348,7 +411,9 @@ DBusMessage * dbus_cb_eth_apply_conn(E_DBus_Object *obj __UNUSED__, DBusMessage 
 
         if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
         {
-            print_error("ERROR", __FILE__,__func__, "Argument is not a string");
+            dbus_args_error_append(reply,
+                    EXALT_DBUS_ARGUMENT_NOT_STRING_ID,
+                    EXALT_DBUS_ARGUMENT_NOT_STRING);
             return reply;
         }
         else
@@ -358,7 +423,9 @@ DBusMessage * dbus_cb_eth_apply_conn(E_DBus_Object *obj __UNUSED__, DBusMessage 
 
         if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
         {
-            print_error("ERROR", __FILE__,__func__, "Argument is not a string");
+            dbus_args_error_append(reply,
+                    EXALT_DBUS_ARGUMENT_NOT_STRING_ID,
+                    EXALT_DBUS_ARGUMENT_NOT_STRING);
             return reply;
         }
         else
@@ -369,7 +436,9 @@ DBusMessage * dbus_cb_eth_apply_conn(E_DBus_Object *obj __UNUSED__, DBusMessage 
 
     if (DBUS_TYPE_INT32 != dbus_message_iter_get_arg_type(&args))
     {
-        print_error("ERROR", __FILE__,__func__, "Argument is not a int");
+        dbus_args_error_append(reply,
+                EXALT_DBUS_ARGUMENT_NOT_STRING_ID,
+                EXALT_DBUS_ARGUMENT_NOT_STRING);
         return reply;
     }
     else
@@ -381,7 +450,9 @@ DBusMessage * dbus_cb_eth_apply_conn(E_DBus_Object *obj __UNUSED__, DBusMessage 
     {
         if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
         {
-            print_error("ERROR", __FILE__,__func__, "Argument is not a string");
+            dbus_args_error_append(reply,
+                    EXALT_DBUS_ARGUMENT_NOT_STRING_ID,
+                    EXALT_DBUS_ARGUMENT_NOT_STRING);
             return reply;
         }
         else
@@ -392,7 +463,9 @@ DBusMessage * dbus_cb_eth_apply_conn(E_DBus_Object *obj __UNUSED__, DBusMessage 
 
         if (DBUS_TYPE_INT32 != dbus_message_iter_get_arg_type(&args))
         {
-            print_error("ERROR", __FILE__,__func__, "Argument is not a int");
+            dbus_args_error_append(reply,
+                    EXALT_DBUS_ARGUMENT_NOT_STRING_ID,
+                    EXALT_DBUS_ARGUMENT_NOT_STRING);
             return reply;
         }
         else
@@ -404,7 +477,9 @@ DBusMessage * dbus_cb_eth_apply_conn(E_DBus_Object *obj __UNUSED__, DBusMessage 
         {
             if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
             {
-                print_error("ERROR", __FILE__,__func__, "Argument is not a string");
+                dbus_args_error_append(reply,
+                        EXALT_DBUS_ARGUMENT_NOT_STRING_ID,
+                        EXALT_DBUS_ARGUMENT_NOT_STRING);
                 return reply;
             }
             else
@@ -415,7 +490,9 @@ DBusMessage * dbus_cb_eth_apply_conn(E_DBus_Object *obj __UNUSED__, DBusMessage 
 
         if (DBUS_TYPE_INT32 != dbus_message_iter_get_arg_type(&args))
         {
-            print_error("ERROR", __FILE__,__func__, "Argument is not a int");
+            dbus_args_error_append(reply,
+                    EXALT_DBUS_ARGUMENT_NOT_INT32_ID,
+                    EXALT_DBUS_ARGUMENT_NOT_INT32);
             return reply;
         }
         else
@@ -426,7 +503,9 @@ DBusMessage * dbus_cb_eth_apply_conn(E_DBus_Object *obj __UNUSED__, DBusMessage 
 
         if (DBUS_TYPE_INT32 != dbus_message_iter_get_arg_type(&args))
         {
-            print_error("ERROR", __FILE__,__func__, "Argument is not a int");
+            dbus_args_error_append(reply,
+                    EXALT_DBUS_ARGUMENT_NOT_INT32_ID,
+                    EXALT_DBUS_ARGUMENT_NOT_INT32);
             return reply;
         }
         else
@@ -442,5 +521,10 @@ DBusMessage * dbus_cb_eth_apply_conn(E_DBus_Object *obj __UNUSED__, DBusMessage 
     if(exalt_conn_is_wireless(c))
         exalt_wireless_conn_save(CONF_FILE, c);
 
+    dbus_args_valid_append(reply);
+
     return reply;
 }
+
+
+

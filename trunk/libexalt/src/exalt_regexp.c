@@ -167,7 +167,7 @@ int exalt_regex_execute(Exalt_Regex* r)
         {
 	    if(r->debug)
 	    {
-            	print_error("ERROR", __FILE__,__func__, "no match found"
+            	print_error( __FILE__,__func__, __LINE__, "no match found"
 					"str_request: %s"
 					"str_regex: %s\n\n", r->str_request,r->str_regex);
 	    }
@@ -184,7 +184,7 @@ int exalt_regex_execute(Exalt_Regex* r)
             if (text)
             {
                	regerror (err, &preg, text, size);
-               	print_error("ERROR", __FILE__,__func__, "%s\n", text);
+               	print_error(__FILE__,__func__,__LINE__, "%s\n", text);
                	free (text);
                 EXALT_FREE(pmatch);
 		return 0;
@@ -198,7 +198,7 @@ int exalt_regex_execute(Exalt_Regex* r)
     }
     else
     {
-        print_error("ERROR", __FILE__, __func__, "regcomp error");
+        print_error(__FILE__, __func__, __LINE__,"regcomp error");
         EXALT_FREE(pmatch);
         return 0;
     }

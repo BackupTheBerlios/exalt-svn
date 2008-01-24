@@ -27,7 +27,7 @@ const char* exalt_dbus_response_string(DBusMessage *msg, int pos)
 
     if(!dbus_message_iter_init(msg, &args))
     {
-        exalt_dbus_print_error("WARNING", __FILE__, __LINE__,__func__, "no argument");
+        print_error(__FILE__, __func__,__LINE__, "no argument");
         return NULL;
     }
 
@@ -38,7 +38,7 @@ const char* exalt_dbus_response_string(DBusMessage *msg, int pos)
 
     if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
     {
-        exalt_dbus_print_error("ERROR", __FILE__, __LINE__,__func__, "the argument is not a string");
+        print_error( __FILE__, __func__,__LINE__, "the argument is not a string");
         return NULL;
     }
     else
@@ -60,7 +60,7 @@ Ecore_List* exalt_dbus_response_strings(DBusMessage *msg, int pos)
 
     if(!dbus_message_iter_init(msg, &args))
     {
-        exalt_dbus_print_error("WARNING", __FILE__, __LINE__,__func__, "no argument");
+        print_error( __FILE__, __func__,__LINE__, "no argument");
         return res;
     }
 
@@ -84,7 +84,7 @@ int exalt_dbus_response_boolean(DBusMessage *msg, int pos)
 
     if(!dbus_message_iter_init(msg, &args))
     {
-        exalt_dbus_print_error("WARNING", __FILE__, __LINE__,__func__, "no argument");
+        print_error( __FILE__, __func__,__LINE__, "no argument");
         return 0;
     }
     for(i=0;i<pos;i++)
@@ -97,10 +97,10 @@ int exalt_dbus_response_boolean(DBusMessage *msg, int pos)
         {
             char* error;
             dbus_message_iter_get_basic(&args, &error);
-            exalt_dbus_print_error("ERROR", __FILE__, __LINE__,__func__, "%s",error);
+            print_error( __FILE__, __func__,__LINE__, "%s",error);
         }
         else
-            exalt_dbus_print_error("ERROR", __FILE__, __LINE__,__func__, "the argument is not a boolean");
+            print_error( __FILE__, __func__,__LINE__, "the argument is not a boolean");
         return 0;
     }
     else
@@ -118,7 +118,7 @@ int exalt_dbus_response_integer(DBusMessage *msg, int pos)
 
     if(!dbus_message_iter_init(msg, &args))
     {
-        exalt_dbus_print_error("WARNING", __FILE__, __LINE__,__func__, "no argument");
+        print_error( __FILE__, __func__,__LINE__, "no argument");
         return 0;
     }
 
@@ -131,10 +131,10 @@ int exalt_dbus_response_integer(DBusMessage *msg, int pos)
         {
             char* error;
             dbus_message_iter_get_basic(&args, &error);
-            exalt_dbus_print_error("ERROR", __FILE__, __LINE__,__func__, "%s",error);
+            print_error( __FILE__, __func__,__LINE__, "%s",error);
         }
         else
-            exalt_dbus_print_error("ERROR", __FILE__, __LINE__,__func__, "the argument is not an integer");
+            print_error( __FILE__, __func__,__LINE__, "the argument is not an integer");
         return 0;
     }
     else
@@ -164,17 +164,6 @@ const char* exalt_dbus_error_get_msg(DBusMessage *msg)
    const char* id;
    id = exalt_dbus_response_string(msg,2);
    return id;
-}
-
-void exalt_dbus_print_error(const char* type, const char* file, int line,const char* fct, const char* msg, ...)
-{
-    va_list ap;
-    va_start(ap,msg);
-    fprintf(stderr,"LIBEXALT_DBUS:%s: (%d)%s: %s\n",type,line,file,fct);
-    fprintf(stderr,"\t");
-    vfprintf(stderr,msg,ap);
-    fprintf(stderr,"\n\n");
-    va_end(ap);
 }
 
 void exalt_dbus_string_free(void* data)

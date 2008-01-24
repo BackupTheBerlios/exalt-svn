@@ -169,7 +169,8 @@ int waiting_iface_is_done(const Boot_Process_List* l)
     Boot_Process_Elt *data;
     int find =  0;
 
-    EXALT_ASSERT_RETURN(l!=NULL);
+    if(!l)
+        return 1;
 
     elt = l->l;
 

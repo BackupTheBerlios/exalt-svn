@@ -69,19 +69,21 @@ struct _wireless_panel
 	Etk_Widget* hbox_pbar;
 	Etk_Widget* pbar;
 	Ecore_Timer* pulsebar_timer;
+
+        Ecore_Timer* scan_timer;
 };
 
-void wirelesspanel_scan_networks_cb(char* interface, Ecore_List* new_networks, Ecore_List* old_networks, void* data);
+void wirelesspanel_scan_networks_cb(char* interface, Ecore_List* networks, void* data);
 
 wireless_panel* wirelesspanel_create(main_window* win);
 void wirelesspanel_free(wireless_panel** pnl);
 void wirelesspanel_show(wireless_panel* pnl);
 void wirelesspanel_hide(wireless_panel* pnl);
 void wirelesspanel_set_eth(wireless_panel* pnl, char* interface);
-void wirelesspanel_load_scan(wireless_panel* pnl);
 
 void wirelesspanel_update_current_conf(wireless_panel* pnl);
 
+Etk_Tree_Row* wirelesspanel_essid_get_row(wireless_panel* pnl, const char*essid);
 
 Etk_Widget* wirelesspanel_pageconnection_create(wireless_panel* pnl);
 
@@ -103,6 +105,7 @@ void wirelesspanel_conn_apply_done(wireless_panel* pnl);
 Etk_Combobox_Item * exalt_etk_combobox_data_item_get (Etk_Combobox *combobox, void *data);
 
 void wirelesspanel_update_advanced_mode(wireless_panel *pnl);
+int wirelesspanel_scan_timer_cb(void *data);
 
 #endif
 

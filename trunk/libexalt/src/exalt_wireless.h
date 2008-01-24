@@ -14,8 +14,6 @@
  */
 typedef struct Exalt_Wireless Exalt_Wireless;
 
-#define EXALT_WIRELESS_SCAN_UPDATE_TIME 5
-
 
 #include "libexalt.h"
 #include "exalt_wireless_info.h"
@@ -31,7 +29,6 @@ int exalt_wireless_set_wpasupplicant_driver(Exalt_Wireless* w, const char* drive
 char* exalt_wireless_get_wpasupplicant_driver(Exalt_Wireless* w);
 
 void exalt_wireless_scan_start(Exalt_Ethernet* eth);
-void exalt_wireless_scan_stop(Exalt_Ethernet* eth);
 int exalt_wireless_scan_wait(Exalt_Ethernet* eth);
 
 Exalt_Ethernet* exalt_wireless_get_ethernet(Exalt_Wireless* w);

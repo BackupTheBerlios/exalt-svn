@@ -55,12 +55,12 @@ boot_panel* bootpanel_create(main_window *win)
     etk_widget_size_request_set(text, -1, 150);
     etk_object_properties_set(ETK_OBJECT(text), "focusable", ETK_FALSE, NULL);
     etk_textblock_text_set(ETK_TEXT_VIEW(text)->textblock,
-             _("<p align=\"center\"><style effect=glow color1=#fa14 color2=#fe87><b>Help!</b></style>"
-             "\n<p>When your computer boot, exalt starts and configure yours networks interfaces in the background. If you use the DHCP, your interface will get a IP address after a while.</p>"
-             "\n<p>You can have a problem if you use a daemon as nfs-client. If the daemon need a network connection when it starts and your interface has no IP address, the daemon will not work. To avoid this problem Exalt can configure your interface in the foreground. If you select the interface in the list, Exalt will wait until your interface gets a IP address.</p>"
-             "\n<p>If the interface doesn't get a IP address before the timeout, your computer will continue the boot process.</p>"
+            _("<p align=\"center\"><style effect=glow color1=#fa14 color2=#fe87><b>Help!</b></style>"
+                "\n<p>When your computer boot, exalt starts and configure yours networks interfaces in the background. If you use the DHCP, your interface will get a IP address after a while.</p>"
+                "\n<p>You can have a problem if you use a daemon as nfs-client. If the daemon need a network connection when it starts and your interface has no IP address, the daemon will not work. To avoid this problem Exalt can configure your interface in the foreground. If you select the interface in the list, Exalt will wait until your interface gets a IP address.</p>"
+                "\n<p>If the interface doesn't get a IP address before the timeout, your computer will continue the boot process.</p>"
              ),
-             ETK_TRUE);
+            ETK_TRUE);
     etk_box_append(ETK_BOX(hbox), text, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
 
@@ -95,18 +95,15 @@ void bootpanel_show(boot_panel* pnl)
 
 void bootpanel_hide(boot_panel* pnl)
 {
-	etk_widget_hide_all(pnl->frame);
+    etk_widget_hide_all(pnl->frame);
 }
 
 
 void bootpanel_add_interface(char* interface, boot_panel* pnl)
 {
     int checked;
-    if(!interface || !pnl)
-    {
-        print_error( __FILE__, __func__,"interface=%p  pnl=%p",interface,pnl);
-        return ;
-    }
+    EXALT_ASSERT_RETURN_VOID(interface!=NULL);
+    EXALT_ASSERT_RETURN_VOID(pnl!=NULL);
 
     checked = exalt_dbus_bootprocess_iface_is(exalt_conn, interface);
     etk_tree_row_append(ETK_TREE(pnl->eth_list), NULL,
@@ -117,11 +114,8 @@ void bootpanel_add_interface(char* interface, boot_panel* pnl)
 void bootpanel_update_interface(char* interface, boot_panel* pnl)
 {
     int checked;
-    if(!interface || !pnl)
-    {
-        print_error( __FILE__, __func__,"interface=%p  pnl=%p",interface,pnl);
-        return ;
-    }
+    EXALT_ASSERT_RETURN_VOID(interface!=NULL);
+    EXALT_ASSERT_RETURN_VOID(pnl!=NULL);
 
     checked = exalt_dbus_bootprocess_iface_is(exalt_conn,interface);
 
@@ -134,11 +128,7 @@ void bootpanel_update_interface(char* interface, boot_panel* pnl)
 void bootpanel_update_timeout(boot_panel* pnl)
 {
     int timeout;
-    if(!pnl)
-    {
-        print_error( __FILE__, __func__,"pnl=%p",pnl);
-        return ;
-    }
+    EXALT_ASSERT_RETURN_VOID(pnl!=NULL);
 
     timeout = exalt_dbus_bootprocess_timeout_get(exalt_conn);
     etk_range_value_set(ETK_RANGE(pnl->slider),timeout);
@@ -146,11 +136,8 @@ void bootpanel_update_timeout(boot_panel* pnl)
 
 void bootpanel_remove_interface(char* interface, boot_panel* pnl)
 {
-    if(!interface || !pnl)
-    {
-        print_error(__FILE__,__func__,"interface=%p  pnl=%p",interface,pnl);
-        return ;
-    }
+    EXALT_ASSERT_RETURN_VOID(pnl!=NULL);
+    EXALT_ASSERT_RETURN_VOID(interface!=NULL);
 
     Etk_Tree_Row* row;
     row = bootpanel_findrow(interface,pnl);
@@ -163,11 +150,8 @@ Etk_Tree_Row * bootpanel_findrow(char* interface, boot_panel* pnl)
     Etk_Tree_Row* row;
     char* row_name;
 
-    if(!interface || !pnl)
-    {
-        print_error(__FILE__,__func__,"interface=%p  pnl=%p",interface,pnl);
-        return NULL;
-    }
+    EXALT_ASSERT_RETURN(interface!=NULL);
+    EXALT_ASSERT_RETURN(pnl!=NULL);
 
     row = etk_tree_first_row_get(ETK_TREE(pnl->eth_list));
     while(row)
@@ -191,11 +175,9 @@ Etk_Bool bootpanel_ethlist_checkbox_change_cb(Etk_Object *object, Etk_Tree_Row *
 
     pnl = (boot_panel*) data;
     col = ETK_TREE_COL(object);
-    if(!col || !row || !pnl)
-    {
-        print_error( __FILE__, __func__,"col=%p  row=%p pnl=%p",col,row,pnl);
-        return ETK_FALSE;
-    }
+    EXALT_ASSERT_RETURN(col!=NULL);
+    EXALT_ASSERT_RETURN(row!=NULL);
+    EXALT_ASSERT_RETURN(pnl!=NULL);
 
     etk_tree_row_fields_get(row, col, NULL, &interface, NULL);
     etk_tree_row_fields_get(row, col, &checked, NULL, NULL);

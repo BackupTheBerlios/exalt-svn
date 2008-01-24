@@ -27,7 +27,6 @@ DBusMessage * dbus_cb_wireless_get_wpasupplicant_driver(E_DBus_Object *obj __UNU
 DBusMessage * dbus_cb_wireless_set_wpasupplicant_driver(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
 
 DBusMessage * dbus_cb_wireless_scan_start(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
-DBusMessage * dbus_cb_wireless_scan_stop(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
 
 #endif   /* ----- #ifndef CB_WIRELESS_INC  ----- */
 

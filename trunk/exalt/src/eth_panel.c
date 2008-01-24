@@ -131,11 +131,8 @@ void ethpanel_set_eth(eth_panel* pnl, char* interface)
     char name[100];
     char *str;
 
-    if(!pnl || !interface)
-    {
-        print_error( __FILE__, __func__,"pnl=%p and interface=%p",pnl,interface);
-        return ;
-    }
+    EXALT_ASSERT_RETURN_VOID(pnl!=NULL);
+    EXALT_ASSERT_RETURN_VOID(interface!=NULL);
     sprintf(name,_("Network card: %s"),interface);
 
     EXALT_FREE(pnl->interface);

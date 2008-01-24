@@ -44,7 +44,6 @@ struct _exalt_dbus_scan_notify_data
 };
 
 
-void exalt_dbus_print_error(const char* type, const char* file, int line,const char* fct, const char* msg, ...);
 
 const char* exalt_dbus_response_string(DBusMessage *msg, int pos);
 Ecore_List* exalt_dbus_response_strings(DBusMessage *msg, int pos);

@@ -20,31 +20,6 @@
 
 
 
-DBusMessage * dbus_cb_wirelessinfo_get_quality(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
-{
-    DBusMessage *reply;
-    DBusMessageIter args;
-    Exalt_Wireless_Info* wi;
-    int quality;
-
-    reply = dbus_message_new_method_return(msg);
-
-    //search the interface
-    wi = dbus_get_wirelessinfo(msg);
-    if(!wi)
-        return reply;
-
-    dbus_message_iter_init_append(reply, &args);
-    quality = exalt_wirelessinfo_get_quality(wi);
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &quality))
-    {
-        print_error("WARNING", __FILE__,__func__, "Out Of Memory");
-        return reply;
-    }
-
-    return reply;
-}
-
 DBusMessage * dbus_cb_wirelessinfo_get_addr(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
     DBusMessage *reply;
@@ -54,23 +29,30 @@ DBusMessage * dbus_cb_wirelessinfo_get_addr(E_DBus_Object *obj __UNUSED__, DBusM
 
     reply = dbus_message_new_method_return(msg);
 
-    //search the interface
-    wi = dbus_get_wirelessinfo(msg);
-    if(!wi)
-        return reply;
 
-    dbus_message_iter_init_append(reply, &args);
+    wi = dbus_get_wirelessinfo(msg);
+    EXALT_ASSERT_ADV(wi!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_WIRELESS_NETWORK_ERROR_ID,
+                EXALT_DBUS_WIRELESS_NETWORK_ERROR);
+            return reply,
+            "wi!=NULL failed");
+
+
     addr = exalt_wirelessinfo_get_addr(wi);
-   if(!addr)
-    {
-        print_error("WARNING", __FILE__,__func__, "addr=%p",addr);
-        return reply;
-    }
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &addr))
-    {
-        print_error("ERROR", __FILE__,__func__,"Out Of Memory!");
-        return reply;
-    }
+    EXALT_ASSERT_ADV(addr!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_WIRELESS_NETWORK_ADDR_ERROR_ID,
+                EXALT_DBUS_WIRELESS_NETWORK_ADDR_ERROR);
+            return reply,
+            "addr!=NULL failed");
+
+
+    dbus_args_valid_append(reply);
+    dbus_message_iter_init_append(reply, &args);
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &addr),
+            return reply,
+            "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &addr) failed");
 
     return reply;
 }
@@ -84,28 +66,33 @@ DBusMessage * dbus_cb_wirelessinfo_get_protocol(E_DBus_Object *obj __UNUSED__, D
 
     reply = dbus_message_new_method_return(msg);
 
-    //search the interface
+
     wi = dbus_get_wirelessinfo(msg);
-    if(!wi)
-        return reply;
+    EXALT_ASSERT_ADV(wi!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_WIRELESS_NETWORK_ERROR_ID,
+                EXALT_DBUS_WIRELESS_NETWORK_ERROR);
+            return reply,
+            "wi!=NULL failed");
 
-    dbus_message_iter_init_append(reply, &args);
+
     protocol = exalt_wirelessinfo_get_protocol(wi);
+    EXALT_ASSERT_ADV(protocol!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_WIRELESS_NETWORK_PROTOCOL_ERROR_ID,
+                EXALT_DBUS_WIRELESS_NETWORK_PROTOCOL_ERROR);
+            return reply,
+            "protocol!=NULL failed");
 
-  if(!protocol)
-    {
-        print_error("WARNING", __FILE__,__func__, "protocol=%p",protocol);
-        return reply;
-    }
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &protocol))
-    {
-        print_error("ERROR", __FILE__,__func__,"Out Of Memory!");
-        return reply;
-    }
+
+    dbus_args_valid_append(reply);
+    dbus_message_iter_init_append(reply, &args);
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &protocol),
+            return reply,
+            "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &protocol) failed");
 
     return reply;
 }
-
 
 DBusMessage * dbus_cb_wirelessinfo_get_mode(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
@@ -116,24 +103,30 @@ DBusMessage * dbus_cb_wirelessinfo_get_mode(E_DBus_Object *obj __UNUSED__, DBusM
 
     reply = dbus_message_new_method_return(msg);
 
-    //search the interface
+
     wi = dbus_get_wirelessinfo(msg);
-    if(!wi)
-        return reply;
+    EXALT_ASSERT_ADV(wi!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_WIRELESS_NETWORK_ERROR_ID,
+                EXALT_DBUS_WIRELESS_NETWORK_ERROR);
+            return reply,
+            "wi!=NULL failed");
 
-    dbus_message_iter_init_append(reply, &args);
+
     mode = exalt_wirelessinfo_get_mode(wi);
+    EXALT_ASSERT_ADV(mode!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_WIRELESS_NETWORK_MODE_ERROR_ID,
+                EXALT_DBUS_WIRELESS_NETWORK_MODE_ERROR);
+            return reply,
+            "mode!=NULL failed");
 
-      if(!mode)
-    {
-        print_error("WARNING", __FILE__,__func__, "mode=%p",mode);
-        return reply;
-    }
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &mode))
-    {
-        print_error("ERROR", __FILE__,__func__,"Out Of Memory!");
-        return reply;
-    }
+
+    dbus_args_valid_append(reply);
+    dbus_message_iter_init_append(reply, &args);
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &mode),
+            return reply,
+            "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &mode) failed");
 
     return reply;
 }
@@ -147,24 +140,30 @@ DBusMessage * dbus_cb_wirelessinfo_get_channel(E_DBus_Object *obj __UNUSED__, DB
 
     reply = dbus_message_new_method_return(msg);
 
-    //search the interface
+
     wi = dbus_get_wirelessinfo(msg);
-    if(!wi)
-        return reply;
+    EXALT_ASSERT_ADV(wi!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_WIRELESS_NETWORK_ERROR_ID,
+                EXALT_DBUS_WIRELESS_NETWORK_ERROR);
+            return reply,
+            "wi!=NULL failed");
 
-    dbus_message_iter_init_append(reply, &args);
+
     channel = exalt_wirelessinfo_get_channel(wi);
+    EXALT_ASSERT_ADV(channel!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_WIRELESS_NETWORK_CHANNEL_ERROR_ID,
+                EXALT_DBUS_WIRELESS_NETWORK_CHANNEL_ERROR);
+            return reply,
+            "channel!=NULL failed");
 
-    if(!channel)
-    {
-        print_error("WARNING", __FILE__,__func__, "channel=%p",channel);
-        return reply;
-    }
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &channel))
-    {
-        print_error("ERROR", __FILE__,__func__,"Out Of Memory!");
-        return reply;
-    }
+
+    dbus_args_valid_append(reply);
+    dbus_message_iter_init_append(reply, &args);
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &channel),
+            return reply,
+            "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &channel) failed");
 
     return reply;
 }
@@ -178,28 +177,33 @@ DBusMessage * dbus_cb_wirelessinfo_get_bitrates(E_DBus_Object *obj __UNUSED__, D
 
     reply = dbus_message_new_method_return(msg);
 
-    //search the interface
+
     wi = dbus_get_wirelessinfo(msg);
-    if(!wi)
-        return reply;
+    EXALT_ASSERT_ADV(wi!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_WIRELESS_NETWORK_ERROR_ID,
+                EXALT_DBUS_WIRELESS_NETWORK_ERROR);
+            return reply,
+            "wi!=NULL failed");
 
-    dbus_message_iter_init_append(reply, &args);
+
     bitrates = exalt_wirelessinfo_get_bitrates(wi);
+    EXALT_ASSERT_ADV(bitrates!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_WIRELESS_NETWORK_BITRATES_ERROR_ID,
+                EXALT_DBUS_WIRELESS_NETWORK_BITRATES_ERROR);
+            return reply,
+            "bitrates!=NULL failed");
 
-    if(!bitrates)
-    {
-        print_error("WARNING", __FILE__,__func__, "bitrates=%p",bitrates);
-        return reply;
-    }
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &bitrates))
-    {
-        print_error("ERROR", __FILE__,__func__,"Out Of Memory!");
-        return reply;
-    }
+
+    dbus_args_valid_append(reply);
+    dbus_message_iter_init_append(reply, &args);
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &bitrates),
+            return reply,
+            "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &bitrates) failed");
 
     return reply;
 }
-
 
 DBusMessage * dbus_cb_wirelessinfo_get_encryption(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
@@ -210,21 +214,27 @@ DBusMessage * dbus_cb_wirelessinfo_get_encryption(E_DBus_Object *obj __UNUSED__,
 
     reply = dbus_message_new_method_return(msg);
 
-    //search the interface
-    wi = dbus_get_wirelessinfo(msg);
-    if(!wi)
-        return reply;
 
-    dbus_message_iter_init_append(reply, &args);
+    wi = dbus_get_wirelessinfo(msg);
+    EXALT_ASSERT_ADV(wi!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_WIRELESS_NETWORK_ERROR_ID,
+                EXALT_DBUS_WIRELESS_NETWORK_ERROR);
+            return reply,
+            "wi!=NULL failed");
+
     encryption = exalt_wirelessinfo_get_encryption(wi);
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &encryption))
-    {
-        print_error("ERROR", __FILE__,__func__, "Out Of Memory");
-        return reply;
-    }
+
+    dbus_args_valid_append(reply);
+    dbus_message_iter_init_append(reply, &args);
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &encryption),
+            return reply,
+            "dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &encryption) failed");
 
     return reply;
 }
+
+
 
 DBusMessage * dbus_cb_wirelessinfo_get_signallvl(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
@@ -235,18 +245,22 @@ DBusMessage * dbus_cb_wirelessinfo_get_signallvl(E_DBus_Object *obj __UNUSED__, 
 
     reply = dbus_message_new_method_return(msg);
 
-    //search the interface
-    wi = dbus_get_wirelessinfo(msg);
-    if(!wi)
-        return reply;
 
-    dbus_message_iter_init_append(reply, &args);
+    wi = dbus_get_wirelessinfo(msg);
+    EXALT_ASSERT_ADV(wi!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_WIRELESS_NETWORK_ERROR_ID,
+                EXALT_DBUS_WIRELESS_NETWORK_ERROR);
+            return reply,
+            "wi!=NULL failed");
+
     signallvl = exalt_wirelessinfo_get_signallvl(wi);
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &signallvl))
-    {
-        print_error("ERROR", __FILE__,__func__, "Out Of Memory");
-        return reply;
-    }
+
+    dbus_args_valid_append(reply);
+    dbus_message_iter_init_append(reply, &args);
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &signallvl),
+            return reply,
+            "dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &signallvl) failed");
 
     return reply;
 }
@@ -260,21 +274,56 @@ DBusMessage * dbus_cb_wirelessinfo_get_noiselvl(E_DBus_Object *obj __UNUSED__, D
 
     reply = dbus_message_new_method_return(msg);
 
-    //search the interface
-    wi = dbus_get_wirelessinfo(msg);
-    if(!wi)
-        return reply;
 
-    dbus_message_iter_init_append(reply, &args);
+    wi = dbus_get_wirelessinfo(msg);
+    EXALT_ASSERT_ADV(wi!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_WIRELESS_NETWORK_ERROR_ID,
+                EXALT_DBUS_WIRELESS_NETWORK_ERROR);
+            return reply,
+            "wi!=NULL failed");
+
     noiselvl = exalt_wirelessinfo_get_noiselvl(wi);
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &noiselvl))
-    {
-        print_error("ERROR", __FILE__,__func__, "Out Of Memory");
-        return reply;
-    }
+
+    dbus_args_valid_append(reply);
+    dbus_message_iter_init_append(reply, &args);
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &noiselvl),
+            return reply,
+            "dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &noiselvl) failed");
 
     return reply;
 }
+
+DBusMessage * dbus_cb_wirelessinfo_get_quality(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
+{
+    DBusMessage *reply;
+    DBusMessageIter args;
+    Exalt_Wireless_Info* wi;
+    int quality;
+
+    reply = dbus_message_new_method_return(msg);
+
+
+    wi = dbus_get_wirelessinfo(msg);
+    EXALT_ASSERT_ADV(wi!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_WIRELESS_NETWORK_ERROR_ID,
+                EXALT_DBUS_WIRELESS_NETWORK_ERROR);
+            return reply,
+            "wi!=NULL failed");
+
+    quality = exalt_wirelessinfo_get_quality(wi);
+
+    dbus_args_valid_append(reply);
+    dbus_message_iter_init_append(reply, &args);
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &quality),
+            return reply,
+            "dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &quality) failed");
+
+    return reply;
+}
+
+
 
 DBusMessage * dbus_cb_wirelessinfo_get_default_conn(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
@@ -287,51 +336,73 @@ DBusMessage * dbus_cb_wirelessinfo_get_default_conn(E_DBus_Object *obj __UNUSED_
 
     reply = dbus_message_new_method_return(msg);
 
-    //search the interface
+
     wi = dbus_get_wirelessinfo(msg);
 
-    //try to load the configuration
+
     if(!wi || ! (c=exalt_wireless_conn_load(CONF_FILE, exalt_wirelessinfo_get_essid(wi))))
         c = exalt_conn_new();
+
     exalt_conn_set_wireless(c,1);
 
+    dbus_args_valid_append(reply);
     dbus_message_iter_init_append(reply, &args);
     i=exalt_conn_get_mode(c);
-    dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &i);
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &i),
+            return reply,
+            "dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &i) failed");
     if(!exalt_conn_is_dhcp(c))
     {
         s = exalt_conn_get_ip(c);
         if(!s)
             s="";
-        dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &s);
+        EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &s),
+                return reply,
+                "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &s) failed");
         s = exalt_conn_get_netmask(c);
         if(!s)
             s="";
-        dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &s);
+        EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &s),
+                return reply,
+                "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &s) failed");
         s = exalt_conn_get_gateway(c);
         if(!s)
             s="";
-        dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &s);
+        EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &s),
+                return reply,
+                "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &s) failed");
     }
 
     i=exalt_conn_is_wireless(c);
-    dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &i);
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &i),
+            return reply,
+            "dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &i) failed");
     if(exalt_conn_is_wireless(c))
     {
         i=exalt_conn_get_encryption_mode(c);
-        dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &i);
+        EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &i),
+                return reply,
+                "dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &i) failed");
         if(exalt_conn_get_encryption_mode(c)!=EXALT_ENCRYPTION_NONE)
         {
             s = exalt_conn_get_key(c);
             if(!s)
                 s="";
-            dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &s);
+            EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &s),
+                    return reply,
+                    "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &s) failed");
         }
         i=exalt_conn_get_connection_mode(c);
-        dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &i);
+        EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &i),
+                return reply,
+                "dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &i) failed");
         i=exalt_conn_get_security_mode(c);
-        dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &i);
+        EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &i),
+                return reply,
+                "dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &i) failed");
     }
     return reply;
 }
+
+
 

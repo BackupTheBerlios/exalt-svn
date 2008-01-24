@@ -60,7 +60,7 @@ main_window* mainwindow_create()
 
     etk_widget_show_all(win->win);
 
-        win->eth_panel = ethpanel_create(win);
+    win->eth_panel = ethpanel_create(win);
     etk_box_append(ETK_BOX(hbox),win->eth_panel->frame , ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
     win->wireless_panel = wirelesspanel_create(win);
@@ -199,30 +199,27 @@ void mainwindow_add_interface(char* interface, main_window* win)
     int status;
     const char* key_icon, *key_status;
 
-    if(!interface || !win)
-    {
-        print_error( __FILE__, __func__,"interface=%p  win=%p",interface,win);
-        return ;
-    }
+    EXALT_ASSERT_RETURN_VOID(interface!=NULL);
+    EXALT_ASSERT_RETURN_VOID(win!=NULL);
 
-    if(exalt_dbus_eth_is_wireless(exalt_conn,interface))
-    {
-        icon = ETK_STOCK_NETWORK_WIRELESS;
-        if(exalt_dbus_eth_is_up(exalt_conn,interface))
-            status = ETK_STOCK_DIALOG_APPLY;
+        if(exalt_dbus_eth_is_wireless(exalt_conn,interface))
+        {
+            icon = ETK_STOCK_NETWORK_WIRELESS;
+            if(exalt_dbus_eth_is_up(exalt_conn,interface))
+                status = ETK_STOCK_DIALOG_APPLY;
+            else
+                status = ETK_STOCK_DIALOG_NO;
+        }
         else
-            status = ETK_STOCK_DIALOG_NO;
-    }
-    else
-    {
-        icon = ETK_STOCK_NETWORK_WIRED;
-        if(exalt_dbus_eth_is_up(exalt_conn,interface) && exalt_dbus_eth_is_link(exalt_conn,interface))
-            status = ETK_STOCK_DIALOG_APPLY;
-        else if(exalt_dbus_eth_is_up(exalt_conn,interface) && !exalt_dbus_eth_is_link(exalt_conn,interface))
-            status = ETK_STOCK_DIALOG_WARNING;
-        else
-            status= ETK_STOCK_DIALOG_NO;
-    }
+        {
+            icon = ETK_STOCK_NETWORK_WIRED;
+            if(exalt_dbus_eth_is_up(exalt_conn,interface) && exalt_dbus_eth_is_link(exalt_conn,interface))
+                status = ETK_STOCK_DIALOG_APPLY;
+            else if(exalt_dbus_eth_is_up(exalt_conn,interface) && !exalt_dbus_eth_is_link(exalt_conn,interface))
+                status = ETK_STOCK_DIALOG_WARNING;
+            else
+                status= ETK_STOCK_DIALOG_NO;
+        }
     key_icon = etk_stock_key_get(icon, ETK_STOCK_BIG);
     key_status = etk_stock_key_get(status, ETK_STOCK_SMALL);
     etk_tree_row_append(ETK_TREE(win->eth_list), NULL,win->eth_col0,
@@ -251,13 +248,11 @@ void mainwindow_add_interface(char* interface, main_window* win)
 
 void mainwindow_remove_interface(char* interface, main_window* win)
 {
-    if(!interface || !win)
-    {
-        print_error( __FILE__, __func__,"interface=%p  win=%p",interface,win);
-        return ;
-    }
+    EXALT_ASSERT_RETURN_VOID(interface!=NULL);
+    EXALT_ASSERT_RETURN_VOID(win!=NULL);
 
-    Etk_Tree_Row* row;
+
+        Etk_Tree_Row* row;
     row = mainwindow_findrow(win, interface);
     if(row)
         etk_tree_row_delete(row);

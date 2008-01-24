@@ -82,8 +82,6 @@ int _exalt_rtlink_essid_change(Exalt_Wireless *w);
 
 void _exalt_wpa_stop(Exalt_Wireless* w);
 
-Exalt_Enum_State _exalt_eth_get_state(Exalt_Ethernet* eth);
-
 
 #endif   /* ----- #ifndef LIBEXALT_PRIVATE_INC  ----- */
 

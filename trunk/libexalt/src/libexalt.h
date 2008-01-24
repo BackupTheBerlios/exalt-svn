@@ -24,7 +24,7 @@
     {\
         if(!(test))\
         {\
-            print_error(__FILE__,__func__,"%s failed",#test);\
+            print_error(__FILE__,__func__,__LINE__,"%s failed",#test);\
         }\
     }while(0)
 
@@ -35,7 +35,7 @@
     {\
         if(!(test))\
         {\
-            print_error(__FILE__,__func__,"%s failed",#test);\
+            print_error(__FILE__,__func__,__LINE__, "%s failed",#test);\
             return 0;\
         }\
     }while(0)
@@ -45,7 +45,7 @@
     {\
         if(!(test))\
         {\
-            print_error(__FILE__,__func__,"%s failed",#test);\
+            print_error(__FILE__,__func__,__LINE__,"%s failed",#test);\
             return ;\
         }\
     }while(0)
@@ -57,7 +57,7 @@
     { \
         if(!(test))\
         {\
-            print_error(__FILE__,__func__, __VA_ARGS__ );\
+            print_error(__FILE__,__func__, __LINE__,__VA_ARGS__ );\
             instr; \
         }\
     }while(0)
@@ -104,7 +104,7 @@ short exalt_is_key(const char* key, Exalt_Enum_Encryption_Mode encryption_mode);
 short exalt_wpasupplicant_is_support();
 short exalt_dhcp_is_support();
 
-void print_error(const char* file,const char* fct, const char* msg, ...);
+void print_error(const char* file,const char* fct, int line, const char* msg, ...);
 
 
 

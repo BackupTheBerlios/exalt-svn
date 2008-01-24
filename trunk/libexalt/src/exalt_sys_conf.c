@@ -142,7 +142,7 @@ int exalt_eth_save(const char* file, Exalt_Ethernet* eth)
 
     EXALT_ASSERT_RETURN(eth!=NULL);
 
-    s.state = _exalt_eth_get_state(eth);
+    s.state = exalt_eth_is_up(eth);
     s.connection = exalt_eth_get_connection(eth);
     if(exalt_eth_is_wireless(eth))
         s.driver = exalt_wireless_get_wpasupplicant_driver(exalt_eth_get_wireless(eth));

@@ -7,7 +7,6 @@
  * Private functions headers
  */
 
-short _exalt_eth_set_state(Exalt_Ethernet* eth, Exalt_Enum_State state);
 const char* _exalt_eth_get_save_ip(Exalt_Ethernet* eth);
 const char* _exalt_eth_get_save_gateway(Exalt_Ethernet* eth);
 const char* _exalt_eth_get_save_netmask(Exalt_Ethernet* eth);
@@ -47,7 +46,6 @@ struct Exalt_Ethernet
     char* udi;
     int ifindex;
 
-    Exalt_Enum_State state;
     Exalt_Connection *connection;
     Exalt_Wireless* wireless; //if null, the interface is not wireless
 
@@ -59,8 +57,6 @@ struct Exalt_Ethernet
 
     pid_t apply_pid;
     Ecore_Timer *apply_timer;
-
-    short new_up;
 };
 
 
@@ -83,7 +79,6 @@ Exalt_Ethernet* exalt_eth_new(const char* name)
     eth = (Exalt_Ethernet*)malloc((unsigned int)sizeof(Exalt_Ethernet));
     EXALT_ASSERT_RETURN(eth!=NULL);
 
-    eth->state = EXALT_DOWN;
     eth->connection = NULL;
 
     eth->name = NULL;
@@ -100,10 +95,6 @@ Exalt_Ethernet* exalt_eth_new(const char* name)
     strncpy(wrq.ifr_name, exalt_eth_get_name(eth), sizeof(wrq.ifr_name));
     if(exalt_ioctl(&wrq, SIOCGIWNAME))
         eth->wireless = exalt_wireless_new(eth);
-
-    //now update the state
-    if(exalt_eth_is_up(eth))
-        _exalt_eth_set_state(eth,EXALT_UP);
 
     return eth;
 }
@@ -528,7 +519,7 @@ short exalt_eth_set_connection(Exalt_Ethernet* eth, Exalt_Connection* c)
 /**
  * @brief get the ip address of the card "eth"
  * @param eth the card
- * @return Returns the ip address
+ * @return Returns the ip address (you ll have to free the IP address)
  */
 char* exalt_eth_get_ip(const Exalt_Ethernet* eth)
 {
@@ -865,30 +856,6 @@ void exalt_eth_printf()
  */
 
 /**
- * @brief set the state of a card (need for save)
- * @param eth the card
- * @param state the new state
- * @return Returns 1 if the state is apply, else 0
- */
-short _exalt_eth_set_state(Exalt_Ethernet* eth, Exalt_Enum_State state)
-{
-    EXALT_ASSERT_RETURN(eth!=NULL);
-    eth->state = state;
-    return 1;
-}
-
-/**
- * @brief get the state of a card (need for save)
- * @param eth the card
- * @return Returns the state
- */
-Exalt_Enum_State _exalt_eth_get_state(Exalt_Ethernet* eth)
-{
-    EXALT_ASSERT_RETURN(eth!=NULL);
-    return eth->state;
-}
-
-/**
  * @brief get the save ip address of the card "eth"
  * @param eth the card
  * @return Returns the ip address
@@ -1152,7 +1119,6 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
                 if(_exalt_eth_get_save_up(eth) != exalt_eth_is_up(eth))
                 {
                     _exalt_eth_set_save_up(eth, exalt_eth_is_up(eth));
-                    _exalt_eth_set_state(eth,exalt_eth_is_up(eth));
                     if(exalt_eth_is_up(eth) && exalt_eth_interfaces.eth_cb)
                         exalt_eth_interfaces.eth_cb(eth,EXALT_ETH_CB_ACTION_UP,exalt_eth_interfaces.eth_cb_user_data);
                     else if(exalt_eth_interfaces.eth_cb)
@@ -1340,11 +1306,13 @@ int _exalt_eth_apply_dhcp(Exalt_Ethernet* eth)
     ecore_exe_free(exe);
 
     //dhclient create a background process, we don't need it, we kill it.
+    usleep(500);
     f = fopen(DHCLIENT_PID_FILE,"r");
     EXALT_ASSERT_RETURN(f!=NULL);
     fgets(buf,1024,f);
     pid = atoi(buf);
-    kill(pid,SIGKILL);
+    if(pid!=getpid());
+        kill(pid,SIGKILL);
     fclose(f);
 
     return 1;

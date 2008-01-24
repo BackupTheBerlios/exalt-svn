@@ -26,8 +26,7 @@ char* exalt_dbus_wireless_get_essid(const exalt_dbus_conn* conn, const char* eth
 char* exalt_dbus_wireless_get_wpasupplicant_driver(const exalt_dbus_conn* conn, const char* eth);
 int exalt_dbus_wireless_set_wpasupplicant_driver(const exalt_dbus_conn* conn, const char* eth, const char* driver);
 
-void exalt_dbus_wireless_scan_start(const exalt_dbus_conn* conn, const char* eth);
-void exalt_dbus_wireless_scan_stop(const exalt_dbus_conn* conn, const char* eth);
+int exalt_dbus_wireless_scan_start(const exalt_dbus_conn* conn, const char* eth);
 
 #endif   /* ----- #ifndef EXALT_DBUS_WIRELESS_INC  ----- */
 

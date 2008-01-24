@@ -42,7 +42,9 @@ short exalt_ioctl(void* argp, int request)
 
     fd=iw_sockets_open();
     EXALT_ASSERT_RETURN(fd>=0);
-    EXALT_ASSERT_ADV( ioctl(fd, request, argp) !=-1, close(fd);return 0,  "ioctl(%d): %s",request,strerror(errno));
+    EXALT_ASSERT_ADV( ioctl(fd, request, argp) !=-1,
+            close(fd);return 0,
+            "ioctl(%d): %s",request,strerror(errno));
 
     close(fd);
     return 1;

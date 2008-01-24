@@ -32,26 +32,6 @@
 
 
 /*
- * when we return a valid response, next args are the response
- */
-#define EXALT_DBUS_VALID 1;
-/* when we return an error, the next args have to be an int32 with a error id
- * and the third args have to be a string with a description of the error
- */
-#define EXALT_DBUS_ERROR 0;
-
-#define EXALT_DBUS_NO_ARGUMENT "Received no argument"
-#define EXALT_DBUS_NO_ARGUMENT_ID 0
-#define EXALT_DBUS_ARGUMENT_NOT_STRING "One of arguments is not a string but should be a string"
-#define EXALT_DBUS_ARGUMENT_NOT_STRING_ID 1
-#define EXALT_DBUS_ARGUMENT_NOT_INT32 "One of arguments is not a int32 but should be an int32"
-#define EXALT_DBUS_ARGUMENT_NOT_INT32_ID 2
-
-#define EXALT_DBUS_DNS_ERROR "Exalt can not read the list of DNS"
-#define EXALT_DBUS_DNS_ERROR_ID 99
-
-
-/*
  * @brief The dbus connection of the daemon
  */
 E_DBus_Connection* exaltd_conn;
@@ -63,7 +43,7 @@ Exalt_Ethernet* dbus_get_eth(DBusMessage* msg);
 Exalt_Wireless_Info* dbus_get_wirelessinfo(DBusMessage* msg);
 Exalt_Wireless_Info* get_wirelessinfo(Exalt_Ethernet* eth, char* essid);
 void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data);
-void wireless_scan_cb(Exalt_Ethernet* eth, Ecore_List* new_networks, Ecore_List* old_networks, void* data);
+void wireless_scan_cb(Exalt_Ethernet* eth, Ecore_List* networks, void* data);
 
 int dbus_args_error_append(DBusMessage *msg, int id_error, const char* error);
 int dbus_args_valid_append(DBusMessage *msg);

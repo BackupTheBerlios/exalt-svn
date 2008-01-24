@@ -14,14 +14,14 @@ int main(int argc,char**argv)
 
 	if (!etk_init(argc, argv))
         {
-            print_error(__FILE__,__func__,"Can not init ETK");
+            print_error(__FILE__,__func__,__LINE__,"Can not init ETK");
             return 1;
         }
 
         exalt_dbus_init();
         if(! (exalt_conn = exalt_dbus_connect()))
         {
-            print_error( __FILE__,__func__,"Can not connect to DBUS");
+            print_error( __FILE__,__func__,__LINE__,"Can not connect to DBUS");
             return -1;
         }
 
@@ -62,7 +62,6 @@ int main(int argc,char**argv)
 
 	etk_main();
 
-        exalt_dbus_wireless_scan_stop(exalt_conn, win->wireless_panel->interface);
         mainWindow_free(&win);
 
         if(exalt_conn)

@@ -11,6 +11,7 @@ wireless_panel* wirelesspanel_create(main_window* win)
     pnl->win=win;
     pnl->interface = NULL;
     pnl->pulsebar_timer = NULL;
+    pnl->scan_timer=NULL;
 
     pnl->frame = etk_frame_new("wireless_frame");
 
@@ -104,9 +105,8 @@ void wirelesspanel_show(wireless_panel* pnl)
 {
     etk_tree_clear (ETK_TREE(pnl->scan_list));
 
-    exalt_dbus_wireless_scan_stop(exalt_conn, pnl->interface);
     exalt_dbus_wireless_scan_start(exalt_conn,pnl->interface);
-
+    pnl->scan_timer = ecore_timer_add(5,wirelesspanel_scan_timer_cb,pnl);
     etk_widget_show_all(pnl->frame);
     wirelesspanel_update_advanced_mode(pnl);
     etk_widget_hide(pnl->hbox_pbar);
@@ -239,18 +239,16 @@ void wirelesspanel_disabled_widget_activate(wireless_panel* pnl)
 
 void wirelesspanel_hide(wireless_panel* pnl)
 {
+    EXALT_DELETE_TIMER(pnl->scan_timer);
     etk_widget_hide_all(pnl->frame);
-    exalt_dbus_wireless_scan_stop(exalt_conn, pnl->interface);
 }
 
 void wirelesspanel_set_eth(wireless_panel* pnl, char* interface)
 {
-    if(!pnl || !interface)
-    {
-        print_error( __FILE__, __func__,"pnl=%p and interface=%p",pnl,interface);
-        return ;
-    }
-    char name[100];
+   EXALT_ASSERT_RETURN_VOID(pnl!=NULL);
+   EXALT_ASSERT_RETURN_VOID(interface!=NULL);
+
+   char name[100];
     sprintf(name,_("Wireless card: %s"),interface);
     EXALT_FREE(pnl->interface);
     pnl->interface = strdup(interface);
@@ -469,9 +467,10 @@ void wirelesspanel_scanlist_row_clicked_cb(Etk_Object *object, Etk_Tree_Row *row
     etk_entry_text_set(ETK_ENTRY(pnl->entry_conn_essid), row_name);
 }
 
-void wirelesspanel_scan_networks_cb(char* interface, Ecore_List* new_networks, Ecore_List* old_networks, void* data)
+void wirelesspanel_scan_networks_cb(char* interface, Ecore_List* networks, void* data)
 {
     wireless_panel* pnl;
+    Etk_Tree_Row* row;
     const char* encryption = etk_stock_key_get(ETK_STOCK_NETWORK_WIRELESS_ENCRYPTED, ETK_STOCK_SMALL);
     char img1[] = PACKAGE_DATA_DIR ICONS_QUALITY_LESS_25;
     char img2[] = PACKAGE_DATA_DIR ICONS_QUALITY_LESS_50;
@@ -479,51 +478,95 @@ void wirelesspanel_scan_networks_cb(char* interface, Ecore_List* new_networks, E
     char img4[] = PACKAGE_DATA_DIR ICONS_QUALITY_LESS_100;
     char *img[4];
     char * essid;
+    const char* essid_tree = NULL;
     img[0] = img1;img[1] = img2;img[2] = img3;img[3] = img4;
 
-    if( !interface || !new_networks || !interface || !new_networks)
-    {
-        print_error( __FILE__, __func__,"interface = %p, old_networks = %p, new_networks = %p, data = %p",interface, new_networks, old_networks, data);
-        return ;
-    }
+    EXALT_ASSERT_RETURN_VOID(interface!=NULL);
+    EXALT_ASSERT_RETURN_VOID(networks!=NULL);
 
     pnl=(wireless_panel*)data;
 
-    ecore_list_first_goto(new_networks);
-    while( (essid = ecore_list_next(new_networks)))
+    //delete the old networks
+    //they are in the tree but not in the networks list.
+    row = etk_tree_first_row_get(ETK_TREE(pnl->scan_list));
+    while(row)
     {
-        etk_tree_row_append(ETK_TREE(pnl->scan_list), NULL,pnl->scan_quality,
-                img[(exalt_dbus_wirelessinfo_get_quality(exalt_conn, interface, essid))/25],NULL,
-                pnl->scan_encryption,
-                etk_theme_icon_path_get(),(exalt_dbus_wirelessinfo_get_encryption(exalt_conn, interface, essid)?encryption:NULL),
-                pnl->scan_essid,
-                essid,NULL);
-        if(essid && exalt_default_network && strcmp(essid,exalt_default_network)==0)
+        etk_tree_row_fields_get(row,pnl->scan_essid,&essid_tree,NULL);
+        ecore_list_first_goto(networks);
+        while( (essid=ecore_list_next(networks)))
         {
-            etk_entry_text_set(ETK_ENTRY(pnl->entry_conn_essid),exalt_default_network);
-            wirelesspanel_textchanged_entry_cb(NULL,pnl);
+            if(essid && essid_tree && strcmp(essid, essid_tree)==0)
+                break;
         }
+        if(!essid)
+            etk_tree_row_delete(row);
+        row = etk_tree_row_next_get(row);
     }
 
-    ecore_list_first_goto(old_networks);
-    while( (essid = ecore_list_next(old_networks)))
+    ecore_list_first_goto(networks);
+    while( (essid = ecore_list_next(networks)))
     {
-        Etk_Tree_Row* row = NULL;
-        char* row_name;
-        row = etk_tree_first_row_get(ETK_TREE(pnl->scan_list));
 
-        while(row)
+        if( (row=wirelesspanel_essid_get_row(pnl,essid)))
         {
-            etk_tree_row_fields_get(row, pnl->scan_essid,  &row_name, NULL);
-            if(strcmp(row_name,essid)==0)
+            etk_tree_row_fields_set(row,ETK_FALSE,
+                    pnl->scan_quality,
+                    img[(exalt_dbus_wirelessinfo_get_quality(exalt_conn, interface, essid))/25],
+                    NULL,
+
+                    pnl->scan_encryption,
+                    etk_theme_icon_path_get(),(exalt_dbus_wirelessinfo_get_encryption(exalt_conn, interface, essid)?encryption:NULL),
+
+                    pnl->scan_essid,
+                    essid,NULL);
+        }
+        else
+        {
+            //we add the network
+            etk_tree_row_append(ETK_TREE(pnl->scan_list), NULL,
+                    pnl->scan_quality,
+                    img[(exalt_dbus_wirelessinfo_get_quality(exalt_conn, interface, essid))/25],
+                    NULL,
+
+                    pnl->scan_encryption,
+                    etk_theme_icon_path_get(),(exalt_dbus_wirelessinfo_get_encryption(exalt_conn, interface, essid)?encryption:NULL),
+
+                    pnl->scan_essid,
+                    essid,NULL);
+            //select the network if it is in the argument (exalt -w essid_name)
+            if(essid && exalt_default_network && strcmp(essid,exalt_default_network)==0)
             {
-                etk_tree_row_delete(row);
-                row = NULL;
+                etk_entry_text_set(ETK_ENTRY(pnl->entry_conn_essid),exalt_default_network);
+                wirelesspanel_textchanged_entry_cb(NULL,pnl);
             }
-            else
-                row = etk_tree_row_next_get(row);
         }
     }
+
+}
+
+int wirelesspanel_scan_timer_cb(void *data)
+{
+    wireless_panel *pnl = data;
+    exalt_dbus_wireless_scan_start(exalt_conn,pnl->interface);
+    return 1;
+}
+
+Etk_Tree_Row* wirelesspanel_essid_get_row(wireless_panel* pnl, const char*essid)
+{
+    Etk_Tree_Row *row;
+    const char* essid_tree;
+    EXALT_ASSERT_RETURN(pnl!=NULL);
+    EXALT_ASSERT_RETURN(essid!=NULL);
+    row = etk_tree_first_row_get(ETK_TREE(pnl->scan_list));
+    while(row)
+    {
+        etk_tree_row_fields_get(row,pnl->scan_essid,&essid_tree,NULL);
+        if(essid_tree && strcmp(essid,essid_tree)==0)
+            return row;
+        else
+            row = etk_tree_row_next_get(row);
+    }
+    return NULL;
 }
 
 void wirelesspanel_btn_disactivate_clicked_cb(void *data)
