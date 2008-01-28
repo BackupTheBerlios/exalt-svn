@@ -7,7 +7,7 @@
 
 /**
  * @defgroup Exalt_DNS
- * @brief manage the dns list (add, delet, print)
+ * @brief manage the dns list (add, delete, print)
  * @{
  */
 

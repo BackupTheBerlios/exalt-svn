@@ -28,6 +28,7 @@ int _exalt_eet_wireless_conn_save(const char* file,Exalt_Connection* c);
 
 /**
  * @brief save the wpa_supplicant configuration for a wireless interface
+ * This configuration is saved in the wpa_supplicant configuration file
  * @param w the wireless card
  * @return Return 1 if success, else -0
  */
@@ -40,7 +41,7 @@ int exalt_conf_save_wpasupplicant(Exalt_Wireless *w)
 
     EXALT_ASSERT_RETURN(w!=NULL);
 
-    eth = exalt_wireless_get_eth(w);
+    eth = exalt_wireless_get_ethernet(w);
     c = exalt_eth_get_connection(eth);
     EXALT_ASSERT_RETURN(exalt_conn_is_valid(c));
     EXALT_ASSERT_RETURN(exalt_conn_is_wireless(c));
@@ -108,7 +109,7 @@ int exalt_conf_save_wpasupplicant(Exalt_Wireless *w)
 }
 
 /**
- * @brief save a connection
+ * @brief save the connection associated to an essid
  * @param file the file where save
  * @param c the connection
  * @return Return 1 if success, else 0
@@ -120,10 +121,10 @@ int exalt_wireless_conn_save(const char* file, Exalt_Connection* c)
 }
 
 /**
- * @brief load the connection for a wireless network
- * @param file the file where load
- * @param essid the network
- * @return Return the conenction if success, else NULL
+ * @brief load the connection for an essid
+ * @param file the configuration file
+ * @param essid the essid
+ * @return Returns the connection if success, else NULL
  */
 Exalt_Connection* exalt_wireless_conn_load(const char* file, const char *essid)
 {
@@ -133,6 +134,7 @@ Exalt_Connection* exalt_wireless_conn_load(const char* file, const char *essid)
 
 /**
  * @brief save the configuration of a card
+ * @param file the configuration file
  * @param eth the card
  * @return Return 1 if success, else 0
  */
@@ -152,7 +154,12 @@ int exalt_eth_save(const char* file, Exalt_Ethernet* eth)
     return _exalt_eet_eth_save(file, &s, exalt_eth_get_udi(eth));
 }
 
-
+/**
+ * @brief Load the state (up/down) of an interface from the configuration file
+ * @param file the configuration file
+ * @param udi the hal udi of the interface
+ * @return Returns the state
+ */
 Exalt_Enum_State exalt_eth_state_load(const char* file, const char* udi)
 {
     Exalt_Eth_Save *s = _exalt_eet_eth_load(file, udi);
@@ -165,6 +172,12 @@ Exalt_Enum_State exalt_eth_state_load(const char* file, const char* udi)
     return st;
 }
 
+/**
+ * @brief Load the driver of an <ireless interface from the configuration file
+ * @param file the configuration file
+ * @param udi the hal udi of the interface
+ * @return Returns the state
+ */
 char* exalt_eth_driver_load(const char* file, const char* udi)
 {
     Exalt_Eth_Save *s = _exalt_eet_eth_load(file,  udi);
@@ -175,7 +188,12 @@ char* exalt_eth_driver_load(const char* file, const char* udi)
     return driver;
 }
 
-
+/**
+ * @brief Load the configuration of an interface from the configuration file
+ * @param file the configuration file
+ * @param udi the hal udi of the interface
+ * @return Returns the state
+ */
 Exalt_Connection* exalt_eth_conn_load(const char* file, const char* udi)
 {
     Exalt_Eth_Save *s = _exalt_eet_eth_load(file, udi);
@@ -193,6 +211,13 @@ Exalt_Connection* exalt_eth_conn_load(const char* file, const char* udi)
 
 /* PRIVATES FUNCTIONS */
 
+/**
+ * @brief Load the information about an interface from the configuration file
+ * The information are saved in a Exalt_Eth_Save structure
+ * @param file the configuration file
+ * @param udi the hal udi of the interface
+ * @return Returns the information
+ */
 Exalt_Eth_Save* _exalt_eet_eth_load(const char* file, const char* udi)
 {
     Exalt_Eth_Save *data = NULL;
@@ -211,7 +236,14 @@ Exalt_Eth_Save* _exalt_eet_eth_load(const char* file, const char* udi)
     return data;
 }
 
-int _exalt_eet_eth_save(const char* file, Exalt_Eth_Save* s, const char* interface)
+/**
+ * @brief Save a Exalt_Eth_Save structure in the configuration file
+ * @param file the configuration file
+ * @param s the Exalt_Eth_Save strucuture
+ * @param udi the hal udi of the interface
+ * @return Returns 1 if success, else 0
+ */
+int _exalt_eet_eth_save(const char* file, Exalt_Eth_Save* s, const char* udi)
 {
     Eet_Data_Descriptor *edd;
     Eet_File* f;
@@ -221,7 +253,7 @@ int _exalt_eet_eth_save(const char* file, Exalt_Eth_Save* s, const char* interfa
     f = eet_open(file, EET_FILE_MODE_READ_WRITE);
     if(!f)
         f = eet_open(file, EET_FILE_MODE_WRITE);
-    res=eet_data_write(f, edd,interface, s, 0);
+    res=eet_data_write(f, edd,udi, s, 0);
     EXALT_ASSERT(res!=0);
 
     eet_close(f);
@@ -229,7 +261,12 @@ int _exalt_eet_eth_save(const char* file, Exalt_Eth_Save* s, const char* interfa
     return res;
 }
 
-
+/**
+ * @brief Load the connection associated to an essid from the configuration file
+ * @param file the configuration file
+ * @param essid the essid
+ * @return Returns the connection if success, else NULL
+ */
 Exalt_Connection* _exalt_eet_wireless_conn_load(const char*file, const char* essid)
 {
     Exalt_Connection *data = NULL;
@@ -248,6 +285,13 @@ Exalt_Connection* _exalt_eet_wireless_conn_load(const char*file, const char* ess
     return data;
 }
 
+
+/**
+ * @brief Save the connection associated to an essid in the configuration file
+ * @param file the configuration file
+ * @param c the connection
+ * @return Returns 1 if success, else 0
+ */
 int _exalt_eet_wireless_conn_save(const char*file, Exalt_Connection* c)
 {
     Eet_Data_Descriptor* edd;
@@ -266,6 +310,10 @@ int _exalt_eet_wireless_conn_save(const char*file, Exalt_Connection* c)
     return res;
 }
 
+/**
+ * @brief Create an eet descriptor for the structure Exalt_Eth_Save
+ * @return Returns the descriptor
+ */
 Eet_Data_Descriptor * _exalt_eth_save_edd_new()
 {
     Eet_Data_Descriptor *edd, *edd_conn;

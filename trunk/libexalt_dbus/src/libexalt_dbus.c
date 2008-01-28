@@ -15,20 +15,32 @@
  *
  * =====================================================================================
  */
-
+/** @file libexalt_dbus.c */
 #include "libexalt_dbus.h"
 #include "libexalt_dbus_private.h"
 
 void _exalt_dbus_notify(void *data,DBusMessage *msg);
 void _exalt_dbus_scan_notify(void *data, DBusMessage *msg);
 
+/**
+ * @addtogroup General
+ * @{
+ */
 
+/**
+ * @brief Initialise the library
+ * Don't forget to create a connection with exalt_dbus_connect() after
+ */
 void exalt_dbus_init()
 {
     ecore_init();
     e_dbus_init();
 }
 
+/**
+ * @brief Create a connection
+ * @return Returns a new DBus connection
+ */
 exalt_dbus_conn* exalt_dbus_connect()
 {
     exalt_dbus_conn* conn;
@@ -44,6 +56,10 @@ exalt_dbus_conn* exalt_dbus_connect()
     return conn;
 }
 
+/**
+ * @brief Free a exalt DBus connection
+ * @param conn a connection
+ */
 void exalt_dbus_free(exalt_dbus_conn** conn)
 {
     e_dbus_connection_close((*conn)->e_conn);
@@ -52,12 +68,22 @@ void exalt_dbus_free(exalt_dbus_conn** conn)
     EXALT_FREE(*conn);
 }
 
+/**
+ * @brief shutdown the library
+ */
 void exalt_dbus_shutdown()
 {
     e_dbus_shutdown();
     ecore_shutdown();
 }
 
+/**
+ * @brief set the callback function which will be called when an ip address change, an interface is add ...
+ * See Exalt_Enum_Action for more information
+ * @param conn a connection
+ * @param cb the callback function
+ * @param user_data the user data
+ */
 void exalt_dbus_notify_set(exalt_dbus_conn* conn, exalt_notify_cb *cb, void* user_data)
 {
     EXALT_ASSERT_RETURN_VOID(conn!=NULL);
@@ -81,6 +107,12 @@ void exalt_dbus_notify_set(exalt_dbus_conn* conn, exalt_notify_cb *cb, void* use
     }
 }
 
+/**
+ * @brief set the callback function which will be call to return the result of a network scan
+ * @param conn
+ * @param cb the callback function
+ * @param user_data the user data
+ */
 void exalt_dbus_scan_notify_set(exalt_dbus_conn* conn, exalt_scan_notify_cb *cb, void* user_data)
 {
     EXALT_ASSERT_RETURN_VOID(conn!=NULL);
@@ -105,54 +137,5 @@ void exalt_dbus_scan_notify_set(exalt_dbus_conn* conn, exalt_scan_notify_cb *cb,
     }
 }
 
-void _exalt_dbus_notify(void *data, DBusMessage *msg)
-{
-    char* eth;
-    int action;
-    exalt_dbus_conn *conn;
-
-    conn = (exalt_dbus_conn*)data;
-    EXALT_ASSERT_RETURN_VOID(conn!=NULL);
-
-    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
-            ,
-            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
-            exalt_dbus_error_get_id(msg),
-            exalt_dbus_error_get_msg(msg));
-
-    EXALT_STRDUP(eth , exalt_dbus_response_string(msg,1));
-    action = exalt_dbus_response_integer(msg,2);
-
-    if(conn->notify->cb)
-        conn->notify->cb(eth,action,conn->notify->user_data);
-    EXALT_FREE(eth);
-}
-
-void _exalt_dbus_scan_notify(void *data, DBusMessage *msg)
-{
-    char* eth;
-    Ecore_List* networks;
-    exalt_dbus_conn *conn;
-
-    conn = (exalt_dbus_conn*)data;
-    EXALT_ASSERT_RETURN_VOID(conn!=NULL);
-
-    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
-            ,
-            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
-            exalt_dbus_error_get_id(msg),
-            exalt_dbus_error_get_msg(msg));
-
-    EXALT_STRDUP(eth,exalt_dbus_response_string(msg,1));
-
-    networks = exalt_dbus_response_strings(msg,2);
-
-    if(conn->scan_notify->cb)
-        conn->scan_notify->cb(eth,networks,conn->scan_notify->user_data);
-
-    EXALT_FREE(eth);
-    ecore_list_destroy(networks);
-}
-
-
+/** @} */
 

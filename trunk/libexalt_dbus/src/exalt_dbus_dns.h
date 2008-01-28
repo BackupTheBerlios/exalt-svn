@@ -16,11 +16,18 @@
  * =====================================================================================
  */
 
+/** @file exalt_dbus_dns.h */
+
 #ifndef  EXALT_DBUS_DNS_INC
 #define  EXALT_DBUS_DNS_INC
 
 #include "libexalt_dbus.h"
 
+/**
+ * @defgroup DNS
+ * @brief configure your DNS
+ * @{
+ */
 
 Ecore_List* exalt_dbus_dns_get_list(const exalt_dbus_conn* conn);
 int exalt_dbus_dns_add(const exalt_dbus_conn* conn, const char* dns);
@@ -29,3 +36,4 @@ int exalt_dbus_dns_replace(const exalt_dbus_conn* conn, const char* old_dns, con
 
 #endif   /* ----- #ifndef EXALT_DBUS_DNS_INC  ----- */
 
+/** @} */

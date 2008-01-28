@@ -22,10 +22,6 @@
 
 typedef struct Exalt_Regex Exalt_Regex;
 
-/**
- * @brief informations about a regular expression
- * @structinfo
- */
 struct Exalt_Regex
 {
     char* str_request;

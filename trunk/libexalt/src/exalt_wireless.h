@@ -16,7 +16,7 @@ typedef struct Exalt_Wireless Exalt_Wireless;
 
 
 #include "libexalt.h"
-#include "exalt_wireless_info.h"
+#include "exalt_wireless_network.h"
 #include <Ecore_Data.h>
 #include <Ecore.h>
 #include <stdio.h>
@@ -33,15 +33,14 @@ int exalt_wireless_scan_wait(Exalt_Ethernet* eth);
 
 Exalt_Ethernet* exalt_wireless_get_ethernet(Exalt_Wireless* w);
 Ecore_List* exalt_wireless_get_networks_list(Exalt_Wireless* w);
-Exalt_Ethernet* exalt_wireless_get_eth(Exalt_Wireless* w);
 
 void exalt_set_button_state(Exalt_Wireless* w);
 short exalt_wireless_radiobutton_ison(Exalt_Wireless* w);
 
 
 
-Exalt_Wireless_Info* exalt_wireless_get_networkinfo(Exalt_Wireless* w, int nb);
-Exalt_Wireless_Info* exalt_wireless_get_networkinfo_by_essid(Exalt_Wireless* w,const char *essid);
+Exalt_Wireless_Network* exalt_wireless_get_networkinfo(Exalt_Wireless* w, int nb);
+Exalt_Wireless_Network* exalt_wireless_get_networkinfo_by_essid(Exalt_Wireless* w,const char *essid);
 
 
 int exalt_wireless_apply_conn(Exalt_Wireless *w);

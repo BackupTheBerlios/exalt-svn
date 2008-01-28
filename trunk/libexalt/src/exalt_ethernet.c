@@ -3,7 +3,7 @@
 #include "libexalt_private.h"
 #include "../config.h"
 
-/**
+/*
  * Private functions headers
  */
 
@@ -60,15 +60,9 @@ struct Exalt_Ethernet
 };
 
 
-/*
- * Constructor / Destructor
- */
-
-
-
 /**
  * @brief create a Exalt_Ethernet structure
- * @param name the name of the card (eth0, ath3 ...)
+ * @param name the name of the interface (eth0, ath3 ...)
  * @return Return a new Exalt_Ethernet structure
  */
 Exalt_Ethernet* exalt_eth_new(const char* name)
@@ -102,7 +96,7 @@ Exalt_Ethernet* exalt_eth_new(const char* name)
 
 
 /**
- * @brief free the "library" (exalt_eth_interfaces)
+ * @brief free exalt_eth_interfaces
  */
 void exalt_eth_ethernets_free()
 {
@@ -118,7 +112,7 @@ void exalt_eth_ethernets_free()
  */
 void exalt_eth_free(void *data)
 {
-    Exalt_Ethernet* eth = Exalt_Ethernet(data);
+    Exalt_Ethernet* eth = data;
     EXALT_FREE(eth->name);
     EXALT_FREE(eth->udi);
     EXALT_FREE(eth->_save_ip);
@@ -128,124 +122,6 @@ void exalt_eth_free(void *data)
         exalt_conn_free(eth->connection);
     if(exalt_eth_is_wireless(eth)) exalt_wireless_free(exalt_eth_get_wireless(eth));
     EXALT_FREE(eth);
-}
-
-/*
- * Load ethernet informations
- */
-
-
-/**
- * test if a hal device is a net device
- */
-void _exalt_cb_is_net(void *user_data, void *reply_data, DBusError *error)
-{
-    char *udi = user_data;
-    E_Hal_Device_Query_Capability_Return *ret = reply_data;
-    int *action = malloc(sizeof(int));
-    *action = EXALT_ETH_CB_ACTION_ADD;
-
-
-    EXALT_ASSERT_RETURN_VOID(!dbus_error_is_set(error));
-
-    if (ret && ret->boolean)
-        e_hal_device_get_all_properties(exalt_eth_interfaces.dbus_conn, udi, _exalt_cb_net_properties, action);
-}
-
-/**
- * load the property of a net device from hall
- */
-void _exalt_cb_net_properties(void *data, void *reply_data, DBusError *error)
-{
-    int action = *((int*)data);
-    E_Hal_Properties *ret = reply_data;
-    int err = 0;
-    Exalt_Ethernet* eth;
-    char* str;
-
-    EXALT_ASSERT_RETURN_VOID(!dbus_error_is_set(error));
-
-    str = e_hal_property_string_get(ret,"net.interface", &err);
-    eth = exalt_eth_new(str);
-    EXALT_FREE(str);
-
-    str = e_hal_property_string_get(ret,"info.udi", &err);
-    _exalt_eth_set_udi(eth,str);
-    EXALT_FREE(str);
-
-    _exalt_eth_set_ifindex(eth,e_hal_property_int_get(ret,"net.linux.ifindex", &err));
-
-    str = exalt_eth_get_ip(eth);
-    _exalt_eth_set_save_ip(eth,str);
-    EXALT_FREE(str);
-
-    str = exalt_eth_get_netmask(eth);
-    _exalt_eth_set_save_netmask(eth,str);
-    EXALT_FREE(str);
-
-    str = exalt_eth_get_gateway(eth);
-    _exalt_eth_set_save_gateway(eth,str);
-    EXALT_FREE(str);
-
-    _exalt_eth_set_save_link(eth, exalt_eth_is_link(eth));
-    _exalt_eth_set_save_up(eth, exalt_eth_is_up(eth));
-
-    //add the interface in the list
-    ecore_list_append(exalt_eth_interfaces.ethernets,(void *)eth);
-
-    if(exalt_eth_interfaces.eth_cb)
-        exalt_eth_interfaces.eth_cb(eth,action,exalt_eth_interfaces.eth_cb_user_data);
-}
-
-
-/**
- * @brief load the net device list from Hal
- */
-void _exalt_cb_find_device_by_capability_net(void *user_data, void *reply_data, DBusError *error)
-{
-    E_Hal_Manager_Find_Device_By_Capability_Return *ret = reply_data;
-    char *device;
-    int *action = malloc(sizeof(int));
-    *action = EXALT_ETH_CB_ACTION_NEW;
-
-    EXALT_ASSERT_RETURN_VOID(ret!=NULL);
-    EXALT_ASSERT_RETURN_VOID(ret->strings!=NULL);
-    EXALT_ASSERT_RETURN_VOID(!dbus_error_is_set(error));
-
-    ecore_list_first_goto(ret->strings);
-    while ((device = ecore_list_next(ret->strings)))
-    {
-        e_hal_device_get_all_properties(exalt_eth_interfaces.dbus_conn, device, _exalt_cb_net_properties, action);
-    }
-
-    //EXALT_FREE(action);
-}
-
-/**
- * @brief call when a new device is added
- */
-void _exalt_cb_signal_device_added(void *data, DBusMessage *msg)
-{
-    DBusError err;
-    char *udi;
-    int ret;
-
-    dbus_error_init(&err);
-    dbus_message_get_args(msg, &err, DBUS_TYPE_STRING, &udi, DBUS_TYPE_INVALID);
-    ret = e_hal_device_query_capability(exalt_eth_interfaces.dbus_conn, udi, "net", _exalt_cb_is_net, strdup(udi));
-}
-
-/**
- * @brief call when a device is removed
- */
-void _exalt_cb_signal_device_removed(void *data, DBusMessage *msg)
-{
-    DBusError err;
-    char *udi;
-
-    dbus_error_init(&err);
-    dbus_message_get_args(msg, &err, DBUS_TYPE_STRING, &udi, DBUS_TYPE_INVALID);
-    _exalt_eth_remove_udi(udi);
 }
 
 /**
@@ -267,14 +143,9 @@ short exalt_eth_is_ethernet(char* name)
 }
 
 
-/*
- * up / down a card
- */
-
-
 /**
- * @brief up the card "eth"
- * @param eth the card
+ * @brief up the interface "eth"
+ * @param eth the interface
  */
 void exalt_eth_up(Exalt_Ethernet* eth)
 {
@@ -295,8 +166,8 @@ void exalt_eth_up(Exalt_Ethernet* eth)
 
 
 /**
- * @brief down the card eth"
- * @param eth the card
+ * @brief down the interface eth"
+ * @param eth the interface
  */
 void exalt_eth_down(Exalt_Ethernet* eth)
 {
@@ -320,14 +191,14 @@ void exalt_eth_down(Exalt_Ethernet* eth)
 
 
 /*
- * get / set informations about cards
+ * get / set informations about interfaces
  */
 
 
 
 /**
- * @brief get the interface ecore list
- * @return Return the ecore list
+ * @brief get the list of all interfaces
+ * @return Return a list of Exalt_Ethernet structure
  */
 Ecore_List* exalt_eth_get_list()
 {
@@ -338,21 +209,21 @@ Ecore_List* exalt_eth_get_list()
 
 
 /**
- * @brief get a card by his position in the card list
+ * @brief get an interface by his position in the interface list
  * @param pos the position
- * @return Returns the card
+ * @return Returns the interface
  */
 Exalt_Ethernet* exalt_eth_get_ethernet_bypos(int pos)
 {
-    return Exalt_Ethernet(ecore_list_index_goto(exalt_eth_interfaces.ethernets,pos));
+    return ecore_list_index_goto(exalt_eth_interfaces.ethernets,pos);
 }
 
 
 
 /**
- * @brief get a card by his name
+ * @brief get an interface by his name
  * @param name the name
- * @return Returns the card
+ * @return Returns the interface
  */
 Exalt_Ethernet* exalt_eth_get_ethernet_byname(const char* name)
 {
@@ -365,7 +236,7 @@ Exalt_Ethernet* exalt_eth_get_ethernet_byname(const char* name)
     data = ecore_list_next(exalt_eth_interfaces.ethernets);
     while(data)
     {
-        eth = Exalt_Ethernet(data);
+        eth = data;
         if(strcmp(exalt_eth_get_name(eth),name) == 0)
             return eth;
 
@@ -376,9 +247,9 @@ Exalt_Ethernet* exalt_eth_get_ethernet_byname(const char* name)
 }
 
 /**
- * @brief get a card by his udi
+ * @brief get an interface by his udi
  * @param udi the udi
- * @return Returns the card
+ * @return Returns the interface
  */
 Exalt_Ethernet* exalt_eth_get_ethernet_byudi(const char* udi)
 {
@@ -391,7 +262,7 @@ Exalt_Ethernet* exalt_eth_get_ethernet_byudi(const char* udi)
     data = ecore_list_next(exalt_eth_interfaces.ethernets);
     while(data)
     {
-        eth = Exalt_Ethernet(data);
+        eth = data;
         if(strcmp(exalt_eth_get_udi(eth),udi) == 0)
             return eth;
 
@@ -402,9 +273,9 @@ Exalt_Ethernet* exalt_eth_get_ethernet_byudi(const char* udi)
 }
 
 /**
- * @brief get a card by his ifindex
+ * @brief get an interface by his ifindex
  * @param ifindex the ifindex
- * @return Returns the card
+ * @return Returns the interface
  */
 Exalt_Ethernet* exalt_eth_get_ethernet_byifindex(int ifindex)
 {
@@ -415,7 +286,7 @@ Exalt_Ethernet* exalt_eth_get_ethernet_byifindex(int ifindex)
     data = ecore_list_next(exalt_eth_interfaces.ethernets);
     while(data)
     {
-        eth = Exalt_Ethernet(data);
+        eth = data;
         if(ifindex == exalt_eth_get_ifindex(eth))
             return eth;
 
@@ -429,7 +300,7 @@ Exalt_Ethernet* exalt_eth_get_ethernet_byifindex(int ifindex)
 
 /**
  * @brief test if an interface is link
- * @param eth the card
+ * @param eth the interface
  * @return Return 1 if yes, else 0
  */
 short exalt_eth_is_link(Exalt_Ethernet* eth)
@@ -456,8 +327,8 @@ short exalt_eth_is_link(Exalt_Ethernet* eth)
 }
 
 /**
- * @brief get the name of the card "eth" (eth0, eth1 ...)
- * @param eth the card
+ * @brief get the name of the interface "eth" (eth0, eth1 ...)
+ * @param eth the interface
  * @return Returns the name
  */
 const char* exalt_eth_get_name(const Exalt_Ethernet* eth)
@@ -468,8 +339,8 @@ const char* exalt_eth_get_name(const Exalt_Ethernet* eth)
 }
 
 /**
- * @brief get the udi of the card "eth" (eth0, eth1 ...)
- * @param eth the card
+ * @brief get the udi of the interface "eth" (eth0, eth1 ...)
+ * @param eth the interface
  * @return Returns the udi
  */
 const char* exalt_eth_get_udi(Exalt_Ethernet* eth)
@@ -478,8 +349,8 @@ const char* exalt_eth_get_udi(Exalt_Ethernet* eth)
     return eth->udi;
 }
 /**
- * @brief get the ifindex of the card "eth" (eth0, eth1 ...)
- * @param eth the card
+ * @brief get the ifindex of the interface "eth" (eth0, eth1 ...)
+ * @param eth the interface
  * @return Returns the ifindex
  */
 int exalt_eth_get_ifindex(Exalt_Ethernet* eth)
@@ -489,8 +360,8 @@ int exalt_eth_get_ifindex(Exalt_Ethernet* eth)
 }
 
 /**
- * @brief get the connection of the card "eth"
- * @param eth the card
+ * @brief get the connection of the interface "eth"
+ * @param eth the interface
  * @return Returns the connection
  */
 Exalt_Connection* exalt_eth_get_connection(Exalt_Ethernet* eth)
@@ -500,10 +371,11 @@ Exalt_Connection* exalt_eth_get_connection(Exalt_Ethernet* eth)
 }
 
 /**
- * @brief set the connection of the card "eth"
- * @param eth the card
+ * @brief set the connection of the interface "eth"
+ * this function doesn't apply the configuration, only set the variable
+ * @param eth the interface
  * @param c the connection
- * @return returns 1 if the connexion is apply, else 0
+ * @return returns 1 if the connexion is set, else 0
  */
 short exalt_eth_set_connection(Exalt_Ethernet* eth, Exalt_Connection* c)
 {
@@ -517,9 +389,9 @@ short exalt_eth_set_connection(Exalt_Ethernet* eth, Exalt_Connection* c)
 }
 
 /**
- * @brief get the ip address of the card "eth"
- * @param eth the card
- * @return Returns the ip address (you ll have to free the IP address)
+ * @brief get the ip address of the interface "eth"
+ * @param eth the interface
+ * @return Returns the ip address (don't forget to free the IP address)
  */
 char* exalt_eth_get_ip(const Exalt_Ethernet* eth)
 {
@@ -542,9 +414,9 @@ char* exalt_eth_get_ip(const Exalt_Ethernet* eth)
 
 
 /**
- * @brief get the netmask address of the card "eth"
- * @param eth the card
- * @return Returns the netmask address
+ * @brief get the netmask address of the interface "eth"
+ * @param eth the interface
+ * @return Returns the netmask address (dont forget to free the address)
  */
 char* exalt_eth_get_netmask(Exalt_Ethernet* eth)
 {
@@ -565,9 +437,9 @@ char* exalt_eth_get_netmask(Exalt_Ethernet* eth)
 
 
 /**
- * @brief get the default gateway address of the card "eth"
- * @param eth the card
- * @return Returns the gateway address
+ * @brief get the default gateway address of the interface "eth"
+ * @param eth the interface
+ * @return Returns the gateway address (don't forget to free the address)
  */
 char* exalt_eth_get_gateway(Exalt_Ethernet* eth)
 {
@@ -618,9 +490,9 @@ char* exalt_eth_get_gateway(Exalt_Ethernet* eth)
 /**
  * @brief remove the default gateway of the interface eth
  * @param eth the interface
- * @return Returns 1 if all gateways are removed, else 0
+ * @return Returns 1 if all defaults gateways of the interface are removed, else 0
  */
-int exalt_eth_del_gateway(Exalt_Ethernet* eth)
+int exalt_eth_delete_gateway(Exalt_Ethernet* eth)
 {
     struct rtentry rt;
     struct sockaddr_in sin = { AF_INET };
@@ -640,9 +512,9 @@ int exalt_eth_del_gateway(Exalt_Ethernet* eth)
 }
 
 /**
- * @brief get if the card "eth" use DHCP or static (look the configuration file)
- * @param eth the card
- * @return Returns 1 if the card use DHCP, 0 if static, -1 if unknow
+ * @brief get if the interface "eth" use DHCP or static (look the configuration file)
+ * @param eth the interface
+ * @return Returns 1 if the interface use DHCP, 0 if static, -1 if unknow
  */
 short exalt_eth_is_dhcp(Exalt_Ethernet* eth)
 {
@@ -658,9 +530,9 @@ short exalt_eth_is_dhcp(Exalt_Ethernet* eth)
 
 
 /**
- * @brief get if the card is activated
- * @param eth the card
- * @return Returns 1 if the card is activated, else 0
+ * @brief get if the interface is activated
+ * @param eth the interface
+ * @return Returns 1 if the interface is activated, else 0
  */
 short exalt_eth_is_up(Exalt_Ethernet* eth)
 {
@@ -684,9 +556,9 @@ short exalt_eth_is_up(Exalt_Ethernet* eth)
 
 
 /**
- * @brief get if the card "eth" is a wireless card
- * @param eth the card
- * @return Returns 1 if the card is a wireless card, else 0
+ * @brief get if the interface "eth" is a wireless interface
+ * @param eth the interface
+ * @return Returns 1 if the interface is a wireless interface, else 0
  */
 short exalt_eth_is_wireless(Exalt_Ethernet* eth)
 {
@@ -697,8 +569,8 @@ short exalt_eth_is_wireless(Exalt_Ethernet* eth)
 
 
 /**
- * @brief get the wireless structure of the card "eth"
- * @param eth the card
+ * @brief get the wireless structure of the interface "eth"
+ * @param eth the interface
  * @return Returns the wireless structure
  */
 Exalt_Wireless* exalt_eth_get_wireless(Exalt_Ethernet* eth)
@@ -709,11 +581,28 @@ Exalt_Wireless* exalt_eth_get_wireless(Exalt_Ethernet* eth)
 
 
 
+/**
+ * @brief set the callback scan function
+ * this callback is called when a scan is finish,
+ * the scan must be started with the function exalt_wireless_scan_start()
+ * @param fct function called
+ * @param user_data user data
+ * @return Returns 1 if success, else 0
+ */
+int exalt_eth_set_scan_cb(Exalt_Wifi_Scan_Cb fct, void * user_data)
+{
+    exalt_eth_interfaces.wireless_scan_cb = fct;
+    exalt_eth_interfaces.wireless_scan_cb_user_data = user_data;
+    return 1;
+}
 
 /**
  * @brief set the callback function
- * @param fct function call when we have a new or remove interface
+ * This callback will be called when we have a new interface, new ip address ..
+ * see the type Exalt_Enum_Action for a list of notifications
+ * @param fct function called
  * @param user_data user data
+ * @return Returns 1 if success, else 0
  */
 int exalt_eth_set_cb(Exalt_Eth_Cb fct, void * user_data)
 {
@@ -724,30 +613,12 @@ int exalt_eth_set_cb(Exalt_Eth_Cb fct, void * user_data)
 
 
 
-/**
- * @brief set the callback scan function
- * @param fct function call when we have a new or old wireless network
- * @param user_data user data
- */
-int exalt_eth_set_scan_cb(Exalt_Wifi_Scan_Cb fct, void * user_data)
-{
-    exalt_eth_interfaces.wireless_scan_cb = fct;
-    exalt_eth_interfaces.wireless_scan_cb_user_data = user_data;
-    return 1;
-}
-
-
-
-
-/*
- * Apply the current configuration
- */
 
 
 
 /**
- * @brief apply the connection for the card "eth"
- * @param eth the card
+ * @brief apply the connection for the interface "eth"
+ * @param eth the interface
  * @param c the connection
  * @return Returns 1 if the configuration is apply, else 0
  */
@@ -780,7 +651,7 @@ int exalt_eth_apply_conn(Exalt_Ethernet* eth, Exalt_Connection *c)
             exalt_wireless_apply_conn(exalt_eth_get_wireless(eth));
 
         //remove the old gateway
-        exalt_eth_del_gateway(eth);
+        exalt_eth_delete_gateway(eth);
 
         /*if(exalt_conn_is_dhcp(c) || exalt_is_address(exalt_conn_get_gateway(c)))
         {
@@ -807,13 +678,8 @@ int exalt_eth_apply_conn(Exalt_Ethernet* eth, Exalt_Connection *c)
 }
 
 
-/*
- * Others
- */
-
-
 /**
- * @brief print card informations in the standard output
+ * @brief print interface informations in the standard output
  */
 void exalt_eth_printf()
 {
@@ -824,7 +690,7 @@ void exalt_eth_printf()
     data = ecore_list_next(exalt_eth_interfaces.ethernets);
     while(data)
     {
-        eth = Exalt_Ethernet(data);
+        eth = data;
         printf("###   %s   ###\n",eth->name);
         printf("Up: %d\n",exalt_eth_is_up(eth));
         if(exalt_eth_is_dhcp(eth))
@@ -851,13 +717,13 @@ void exalt_eth_printf()
 
 
 
-/**
+/*
  * Private functions bodies
  */
 
 /**
- * @brief get the save ip address of the card "eth"
- * @param eth the card
+ * @brief get the save ip address of the interface "eth"
+ * @param eth the interface
  * @return Returns the ip address
  */
 const char* _exalt_eth_get_save_ip(Exalt_Ethernet* eth)
@@ -867,8 +733,8 @@ const char* _exalt_eth_get_save_ip(Exalt_Ethernet* eth)
 }
 
 /**
- * @brief get the save default gateway of the card "eth"
- * @param eth the card
+ * @brief get the save default gateway of the interface "eth"
+ * @param eth the interface
  * @return Returns the gateway
  */
 const char* _exalt_eth_get_save_gateway(Exalt_Ethernet* eth)
@@ -878,8 +744,8 @@ const char* _exalt_eth_get_save_gateway(Exalt_Ethernet* eth)
 }
 
 /**
- * @brief get the save netmask of the card "eth"
- * @param eth the card
+ * @brief get the save netmask of the interface "eth"
+ * @param eth the interface
  * @return Returns the netmask
  */
 const char* _exalt_eth_get_save_netmask(Exalt_Ethernet* eth)
@@ -889,8 +755,8 @@ const char* _exalt_eth_get_save_netmask(Exalt_Ethernet* eth)
 }
 
 /**
- * @brief get the save link stat of the card "eth"
- * @param eth the card
+ * @brief get the save link state of the interface "eth"
+ * @param eth the interface
  * @return Returns 1 or 0
  */
 short _exalt_eth_get_save_link(Exalt_Ethernet* eth)
@@ -900,8 +766,8 @@ short _exalt_eth_get_save_link(Exalt_Ethernet* eth)
 }
 
 /**
- * @brief get the save up stat of the card "eth"
- * @param eth the card
+ * @brief get the save up stat of the interface "eth"
+ * @param eth the interface
  * @return Returns 1 or 0
  */
 short _exalt_eth_get_save_up(Exalt_Ethernet* eth)
@@ -912,10 +778,10 @@ short _exalt_eth_get_save_up(Exalt_Ethernet* eth)
 
 
 /**
- * @brief set the save ip address of the card "eth"
- * @param eth the card
+ * @brief set the save ip address of the interface "eth"
+ * @param eth the interface
  * @param ip the new ip address
- * @return Returns 1 if the save ip address is apply, 0 if the ip address doesn't have a correct format else -1
+ * @return Returns 1 if the save ip address is apply, else 0
  */
 int _exalt_eth_set_save_ip(Exalt_Ethernet* eth,const char* ip)
 {
@@ -929,10 +795,10 @@ int _exalt_eth_set_save_ip(Exalt_Ethernet* eth,const char* ip)
 }
 
 /**
- * @brief set the save netmask of the card "eth"
- * @param eth the card
- * @param ip the new netmask
- * @return Returns 1 if the netmask is apply, 0 if the netmask doesn't have a correct format else -1
+ * @brief set the save netmask of the interface "eth"
+ * @param eth the interface
+ * @param netmask the new netmask
+ * @return Returns 1 if the netmask is apply, else 0
  */
 int _exalt_eth_set_save_netmask(Exalt_Ethernet* eth,const char* netmask)
 {
@@ -946,9 +812,9 @@ int _exalt_eth_set_save_netmask(Exalt_Ethernet* eth,const char* netmask)
 }
 
 /**
- * @brief set the save gateway of the card "eth"
- * @param eth the card
- * @param ip the new gateway
+ * @brief set the save gateway of the interface "eth"
+ * @param eth the interface
+ * @param gateway the new gateway
  * @return Returns 1 if the new gateway is apply, else 0
  */
 int _exalt_eth_set_save_gateway(Exalt_Ethernet* eth,const char* gateway)
@@ -963,10 +829,10 @@ int _exalt_eth_set_save_gateway(Exalt_Ethernet* eth,const char* gateway)
 }
 
 /**
- * @brief set the save link state of the card "eth"
- * @param eth the card
+ * @brief set the save link state of the interface "eth"
+ * @param eth the interface
  * @param link the state link (1 or 0)
- * @return Returns 1 if the new stat is apply,else -1
+ * @return Returns 1 if the new stat is apply,else 0
  */
 int _exalt_eth_set_save_link(Exalt_Ethernet* eth,short link)
 {
@@ -975,10 +841,10 @@ int _exalt_eth_set_save_link(Exalt_Ethernet* eth,short link)
     return 1;
 }
 /**
- * @brief set the save up state of the card "eth"
- * @param eth the card
- * @param ip the up state (1 or 0)
- * @return Returns 1 if the new state is apply,else -1
+ * @brief set the save up state of the interface "eth"
+ * @param eth the interface
+ * @param up the up state (1 or 0)
+ * @return Returns 1 if the new state is apply,else 0
  */
 int _exalt_eth_set_save_up(Exalt_Ethernet* eth,short up)
 {
@@ -989,8 +855,8 @@ int _exalt_eth_set_save_up(Exalt_Ethernet* eth,short up)
 
 
 /**
- * @brief set the name of the card "eth"
- * @param eth the card
+ * @brief set the name of the interface "eth"
+ * @param eth the interface
  * @param name the new name
  * @return Returns 1 if the new name is apply, else 0
  */
@@ -1006,8 +872,8 @@ int _exalt_eth_set_name(Exalt_Ethernet* eth, const char* name)
 
 
 /**
- * @brief set the udi of the card "eth"
- * @param eth the card
+ * @brief set the udi of the interface "eth"
+ * @param eth the interface
  * @param udi the new udi
  * @return Returns 1 if udi is apply, else -1
  */
@@ -1022,8 +888,8 @@ int _exalt_eth_set_udi(Exalt_Ethernet* eth,const char* udi)
 }
 
 /**
- * @brief set the ifindex of the card "eth"
- * @param eth the card
+ * @brief set the ifindex of the interface "eth"
+ * @param eth the interface
  * @param ifindex the ifindex
  * @return Returns 1 if the new ifindex is apply,else -1
  */
@@ -1038,7 +904,7 @@ int _exalt_eth_set_ifindex(Exalt_Ethernet* eth,int ifindex)
 /**
  * @brief remove an interface by his udi
  * @param udi the udi
- * @return Returns 1 if the card is remove, else -1
+ * @return Returns 1 if the interface is remove, else -1
  */
 int _exalt_eth_remove_udi(const char* udi)
 {
@@ -1049,7 +915,7 @@ int _exalt_eth_remove_udi(const char* udi)
     data = ecore_list_next(l);
     while(data)
     {
-        Exalt_Ethernet* eth = Exalt_Ethernet(data);
+        Exalt_Ethernet* eth = data;
         if(strcmp(exalt_eth_get_udi(eth),udi)==0)
         {
             if(exalt_eth_interfaces.eth_cb)
@@ -1068,6 +934,7 @@ int _exalt_eth_remove_udi(const char* udi)
 
 /**
  * @brief called when the kernel send an piece of information
+ * An interface is link, has a new address ...
  */
 int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
 {
@@ -1189,7 +1056,7 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
                 data_l = ecore_list_next(l);
                 while(data_l)
                 {
-                    eth = Exalt_Ethernet(data_l);
+                    eth = data_l;
                     str = exalt_eth_get_gateway(eth);
                     str2 = _exalt_eth_get_save_gateway(eth);
                     if((!str && str2)
@@ -1210,9 +1077,14 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
     return 1;
 }
 
+/**
+ * @brief Check every secs if the configuration is apply on an interface
+ * When it's done, the callback function is called
+ * @param data the Exalt_Ethernet struct of the interface
+ */
 int _exalt_apply_timer(void *data)
 {
-    Exalt_Ethernet* eth = Exalt_Ethernet(data);
+    Exalt_Ethernet* eth = data;
     int res;
     int status;
 
@@ -1231,8 +1103,8 @@ int _exalt_apply_timer(void *data)
 
 
 /**
- * @brief apply static address for the card "eth"
- * @param eth the card
+ * @brief apply static address for the interface "eth"
+ * @param eth the interface
  * @return Returns 1 if static address are apply, else 0
  */
 int _exalt_eth_apply_static(Exalt_Ethernet *eth)
@@ -1284,8 +1156,8 @@ int _exalt_eth_apply_static(Exalt_Ethernet *eth)
 
 
 /**
- * @brief apply the dhcp mode for the card "eth"
- * @param eth the card
+ * @brief apply the dhcp mode for the interface "eth"
+ * @param eth the interface
  * @return Returns 1 if the dhcp is apply, else 0
  */
 int _exalt_eth_apply_dhcp(Exalt_Ethernet* eth)
@@ -1322,4 +1194,120 @@ int _exalt_eth_apply_dhcp(Exalt_Ethernet* eth)
 }
 
 
+/**
+ * Hal functions
+ */
+
+/**
+ * test if a hal device is a net device
+ */
+void _exalt_cb_is_net(void *user_data, void *reply_data, DBusError *error)
+{
+    char *udi = user_data;
+    E_Hal_Device_Query_Capability_Return *ret = reply_data;
+    int *action = malloc(sizeof(int));
+    *action = EXALT_ETH_CB_ACTION_ADD;
+
+
+    EXALT_ASSERT_RETURN_VOID(!dbus_error_is_set(error));
+
+    if (ret && ret->boolean)
+        e_hal_device_get_all_properties(exalt_eth_interfaces.dbus_conn, udi, _exalt_cb_net_properties, action);
+}
+
+/**
+ * load the property of a net device from hal
+ */
+void _exalt_cb_net_properties(void *data, void *reply_data, DBusError *error)
+{
+    int action = *((int*)data);
+    E_Hal_Properties *ret = reply_data;
+    int err = 0;
+    Exalt_Ethernet* eth;
+    char* str;
+
+    EXALT_ASSERT_RETURN_VOID(!dbus_error_is_set(error));
+
+    str = e_hal_property_string_get(ret,"net.interface", &err);
+    eth = exalt_eth_new(str);
+    EXALT_FREE(str);
+
+    str = e_hal_property_string_get(ret,"info.udi", &err);
+    _exalt_eth_set_udi(eth,str);
+    EXALT_FREE(str);
+
+    _exalt_eth_set_ifindex(eth,e_hal_property_int_get(ret,"net.linux.ifindex", &err));
+
+    str = exalt_eth_get_ip(eth);
+    _exalt_eth_set_save_ip(eth,str);
+    EXALT_FREE(str);
+
+    str = exalt_eth_get_netmask(eth);
+    _exalt_eth_set_save_netmask(eth,str);
+    EXALT_FREE(str);
+
+    str = exalt_eth_get_gateway(eth);
+    _exalt_eth_set_save_gateway(eth,str);
+    EXALT_FREE(str);
+
+    _exalt_eth_set_save_link(eth, exalt_eth_is_link(eth));
+    _exalt_eth_set_save_up(eth, exalt_eth_is_up(eth));
+
+    //add the interface in the list
+    ecore_list_append(exalt_eth_interfaces.ethernets,(void *)eth);
+
+    if(exalt_eth_interfaces.eth_cb)
+        exalt_eth_interfaces.eth_cb(eth,action,exalt_eth_interfaces.eth_cb_user_data);
+}
+
+
+/**
+ * @brief load the net device list from Hal
+ */
+void _exalt_cb_find_device_by_capability_net(void *user_data, void *reply_data, DBusError *error)
+{
+    E_Hal_Manager_Find_Device_By_Capability_Return *ret = reply_data;
+    char *device;
+    int *action = malloc(sizeof(int));
+    *action = EXALT_ETH_CB_ACTION_NEW;
+
+    EXALT_ASSERT_RETURN_VOID(ret!=NULL);
+    EXALT_ASSERT_RETURN_VOID(ret->strings!=NULL);
+    EXALT_ASSERT_RETURN_VOID(!dbus_error_is_set(error));
+
+    ecore_list_first_goto(ret->strings);
+    while ((device = ecore_list_next(ret->strings)))
+    {
+        e_hal_device_get_all_properties(exalt_eth_interfaces.dbus_conn, device, _exalt_cb_net_properties, action);
+    }
+
+    //EXALT_FREE(action);
+}
+
+/**
+ * @brief call when a new device is added
+ */
+void _exalt_cb_signal_device_added(void *data, DBusMessage *msg)
+{
+    DBusError err;
+    char *udi;
+    int ret;
+
+    dbus_error_init(&err);
+    dbus_message_get_args(msg, &err, DBUS_TYPE_STRING, &udi, DBUS_TYPE_INVALID);
+    ret = e_hal_device_query_capability(exalt_eth_interfaces.dbus_conn, udi, "net", _exalt_cb_is_net, strdup(udi));
+}
+
+/**
+ * @brief call when a device is removed
+ */
+void _exalt_cb_signal_device_removed(void *data, DBusMessage *msg)
+{
+    DBusError err;
+    char *udi;
+
+    dbus_error_init(&err);
+    dbus_message_get_args(msg, &err, DBUS_TYPE_STRING, &udi, DBUS_TYPE_INVALID);
+    _exalt_eth_remove_udi(udi);
+}
 

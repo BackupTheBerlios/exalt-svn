@@ -43,7 +43,7 @@ DBusMessage * dbus_cb_eth_get_eth_list(E_DBus_Object *obj __UNUSED__, DBusMessag
     ecore_list_first_goto(interfaces);
     while( (data=ecore_list_next(interfaces)))
     {
-        eth = Exalt_Ethernet(data);
+        eth = data;
         interface = exalt_eth_get_name(eth);
         EXALT_ASSERT_ADV(interface!=NULL,
                 return reply,
@@ -514,7 +514,16 @@ DBusMessage * dbus_cb_eth_apply_conn(E_DBus_Object *obj __UNUSED__, DBusMessage 
         dbus_message_iter_next(&args);
     }
 
-    exalt_eth_apply_conn(eth, c);
+    //retrieve the connection
+    if(!exalt_conn_is_valid(c))
+    {
+        dbus_args_error_append(reply,
+                EXALT_DBUS_CONNECTION_NOT_VALID_ID,
+                EXALT_DBUS_CONNECTION_NOT_VALID);
+        return reply;
+    }
+    else
+        exalt_eth_apply_conn(eth, c);
 
     //if it's a wireless connection
     //we save the configuration for the essid

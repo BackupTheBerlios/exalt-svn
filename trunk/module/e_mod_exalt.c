@@ -382,7 +382,7 @@ void _exalt_menu_item_wireless_load(exalt_dbus_conn *conn, E_Menu *m, char* inte
 
 				mi = e_menu_item_new(m);
 				data[1] = essid;
-				e_menu_item_icon_file_set(mi,img[(exalt_dbus_wirelessinfo_get_quality(conn,interface,essid))/25]);
+				e_menu_item_icon_file_set(mi,img[(exalt_dbus_wirelessnetwork_get_quality(conn,interface,essid))/25]);
 				e_menu_item_label_set(mi, essid);
 				e_menu_item_callback_set(mi, _exalt_wireless_cb, data);
 				e_menu_item_check_set(mi,1);

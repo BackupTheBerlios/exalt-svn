@@ -43,17 +43,17 @@ int setup(E_DBus_Connection *conn)
     e_dbus_interface_method_add(iface, "IFACE_GET_WPASUPPLICANT_DRIVER", NULL, NULL, dbus_cb_wireless_get_wpasupplicant_driver);
 
 
-    e_dbus_interface_method_add(iface, "NETWORK_GET_QUALITY", NULL, NULL, dbus_cb_wirelessinfo_get_quality);
-    e_dbus_interface_method_add(iface, "NETWORK_GET_ADDR", NULL, NULL, dbus_cb_wirelessinfo_get_addr);
-    e_dbus_interface_method_add(iface, "NETWORK_GET_PROTOCOL", NULL, NULL, dbus_cb_wirelessinfo_get_protocol);
-    e_dbus_interface_method_add(iface, "NETWORK_GET_MODE", NULL, NULL, dbus_cb_wirelessinfo_get_mode);
-    e_dbus_interface_method_add(iface, "NETWORK_GET_CHANNEL", NULL, NULL, dbus_cb_wirelessinfo_get_channel);
-    e_dbus_interface_method_add(iface, "NETWORK_GET_BITRATES", NULL, NULL, dbus_cb_wirelessinfo_get_bitrates);
-    e_dbus_interface_method_add(iface, "NETWORK_GET_ENCRYPTION", NULL, NULL, dbus_cb_wirelessinfo_get_encryption);
-    e_dbus_interface_method_add(iface, "NETWORK_GET_SIGNALLVL", NULL, NULL, dbus_cb_wirelessinfo_get_signallvl);
-    e_dbus_interface_method_add(iface, "NETWORK_GET_NOISELVL", NULL, NULL, dbus_cb_wirelessinfo_get_noiselvl);
+    e_dbus_interface_method_add(iface, "NETWORK_GET_QUALITY", NULL, NULL, dbus_cb_wirelessnetwork_get_quality);
+    e_dbus_interface_method_add(iface, "NETWORK_GET_ADDR", NULL, NULL, dbus_cb_wirelessnetwork_get_addr);
+    e_dbus_interface_method_add(iface, "NETWORK_GET_PROTOCOL", NULL, NULL, dbus_cb_wirelessnetwork_get_protocol);
+    e_dbus_interface_method_add(iface, "NETWORK_GET_MODE", NULL, NULL, dbus_cb_wirelessnetwork_get_mode);
+    e_dbus_interface_method_add(iface, "NETWORK_GET_CHANNEL", NULL, NULL, dbus_cb_wirelessnetwork_get_channel);
+    e_dbus_interface_method_add(iface, "NETWORK_GET_BITRATES", NULL, NULL, dbus_cb_wirelessnetwork_get_bitrates);
+    e_dbus_interface_method_add(iface, "NETWORK_GET_ENCRYPTION", NULL, NULL, dbus_cb_wirelessnetwork_get_encryption);
+    e_dbus_interface_method_add(iface, "NETWORK_GET_SIGNALLVL", NULL, NULL, dbus_cb_wirelessnetwork_get_signallvl);
+    e_dbus_interface_method_add(iface, "NETWORK_GET_NOISELVL", NULL, NULL, dbus_cb_wirelessnetwork_get_noiselvl);
 
-    e_dbus_interface_method_add(iface, "NETWORK_GET_DEFAULT_CONN", NULL, NULL, dbus_cb_wirelessinfo_get_default_conn);
+    e_dbus_interface_method_add(iface, "NETWORK_GET_DEFAULT_CONN", NULL, NULL, dbus_cb_wirelessnetwork_get_default_conn);
 
     e_dbus_interface_method_add(iface, "DNS_GET_LIST", NULL, NULL, dbus_cb_dns_get_list);
 
@@ -274,7 +274,7 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
 
     if (action == EXALT_ETH_CB_ACTION_UNLINK || action == EXALT_ETH_CB_ACTION_DOWN)
         //remove the default gateway
-        exalt_eth_del_gateway(eth);
+        exalt_eth_delete_gateway(eth);
 
     if( action == EXALT_ETH_CB_ACTION_UP || action == EXALT_ETH_CB_ACTION_DOWN)
         exalt_eth_save(CONF_FILE, eth);
@@ -328,7 +328,7 @@ void wireless_scan_cb(Exalt_Ethernet* eth,Ecore_List* networks, void* data)
     DBusMessageIter args;
     const char* name;
     const char* essid;
-    Exalt_Wireless_Info *wi;
+    Exalt_Wireless_Network *wi;
 
     Ecore_List* l;
 
@@ -355,7 +355,7 @@ void wireless_scan_cb(Exalt_Ethernet* eth,Ecore_List* networks, void* data)
     ecore_list_first_goto(l);
     while ( (wi =  ecore_list_next(l)))
     {
-        essid = exalt_wirelessinfo_get_essid(wi);
+        essid = exalt_wirelessnetwork_get_essid(wi);
         EXALT_ASSERT_ADV(essid!=NULL,
                 dbus_message_unref(msg);return ,
                 "essud!=NULL failed");
@@ -388,13 +388,13 @@ Exalt_Ethernet* dbus_get_eth(DBusMessage* msg)
     return eth;
 }
 
-Exalt_Wireless_Info* dbus_get_wirelessinfo(DBusMessage* msg)
+Exalt_Wireless_Network* dbus_get_wirelessnetwork(DBusMessage* msg)
 {
     DBusMessageIter args;
     char* interface = NULL;
     Exalt_Ethernet* eth;
     char* essid = NULL;
-    Exalt_Wireless_Info* wi;
+    Exalt_Wireless_Network* wi;
 
     if(!dbus_message_iter_init(msg, &args))
         return NULL;
@@ -416,15 +416,15 @@ Exalt_Wireless_Info* dbus_get_wirelessinfo(DBusMessage* msg)
         dbus_message_iter_get_basic(&args, &essid);
 
     //search the interface
-    wi = get_wirelessinfo(eth,essid);
+    wi = get_wirelessnetwork(eth,essid);
 
     return wi;
 }
 
-Exalt_Wireless_Info* get_wirelessinfo(Exalt_Ethernet* eth, char* essid)
+Exalt_Wireless_Network* get_wirelessnetwork(Exalt_Ethernet* eth, char* essid)
 {
     Exalt_Wireless* w;
-    Exalt_Wireless_Info* wi;
+    Exalt_Wireless_Network* wi;
     Ecore_List *l;
     void *data;
 
@@ -439,8 +439,8 @@ Exalt_Wireless_Info* get_wirelessinfo(Exalt_Ethernet* eth, char* essid)
 
     while( (data=ecore_list_next(l)))
     {
-        wi = Exalt_Wireless_Info(data);
-        if(strcmp(essid,exalt_wirelessinfo_get_essid(wi))==0 )
+        wi = Exalt_Wireless_Network(data);
+        if(strcmp(essid,exalt_wirelessnetwork_get_essid(wi))==0 )
             return wi;
     }
     return NULL;

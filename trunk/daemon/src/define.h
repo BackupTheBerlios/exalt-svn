@@ -87,6 +87,9 @@
 #define EXALT_DBUS_WIRELESS_NETWORK_ENCRYPTION_ERROR "The wireless network has no encryption value"
 #define EXALT_DBUS_WIRELESS_NETWORK_ENCRYPTION_ERROR_ID 30
 
+#define EXALT_DBUS_CONNECTION_NOT_VALID "The wireless network has no encryption value"
+#define EXALT_DBUS_CONNECTION_NOT_VALID_ID 70
+
 
 
 #endif   /* ----- #ifndef DEFINE_INC  ----- */

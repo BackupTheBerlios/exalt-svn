@@ -13,7 +13,7 @@ Exalt_Ethernets exalt_eth_interfaces;
 
 
 /**
- * @brief intialise the library
+ * @brief initialise the library
  */
 int exalt_init()
 {
@@ -39,8 +39,9 @@ int exalt_init()
     return 1;
 }
 
-/*
- * @brief load cards and watch events
+/**
+ * @brief Launch the library
+ * load cards and watch events
  */
 int exalt_main()
 {
@@ -83,7 +84,7 @@ int exalt_main()
 
 
 /**
- * @brief test if a string is a correct adress
+ * @brief test if a string is a valid address
  * @param ip the string ip
  * return Return 1 if sucess, else 0
  */
@@ -101,7 +102,7 @@ short exalt_is_address(const char* ip)
 }
 
 /**
- * @brief test if a string is a correct essid
+ * @brief test if a string is a valid essid
  * @param essid the essid
  * @return Return 1 if success, else 0
  */
@@ -112,7 +113,7 @@ short exalt_is_essid(const char* essid)
 }
 
 /**
- * @brief test if a string is a correct key
+ * @brief test if a string is a valid key
  * @param key the key
  * @param encryption_mode the password mode (WEP, WPA ...)
  * @return Return 1 if success, else 0
@@ -158,8 +159,8 @@ short exalt_is_key(const char* key, Exalt_Enum_Encryption_Mode encryption_mode)
 }
 
 /**
- * @brief return if we have the administrator right
- * @return Return EXALT_TRUE if yes, else EXALT_FALSE
+ * @brief return if you have the administrator right
+ * @return Return 1 if yes, else 0
  */
 short exalt_is_admin()
 {
@@ -210,9 +211,10 @@ short exalt_vpnc_is_support()
 
 
 /**
- * @brief print a error
+ * @brief print an error
  * @param file the file
  * @param fct the function
+ * @param line the line number
  * @param msg the message
  * @param ... a list of params
  */
@@ -226,4 +228,6 @@ void print_error(const char* file,const char* fct, int line, const char* msg, ..
     fprintf(stderr,"\n\n");
     va_end(ap);
 }
+
+/** @} */
 

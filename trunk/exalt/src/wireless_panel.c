@@ -511,11 +511,11 @@ void wirelesspanel_scan_networks_cb(char* interface, Ecore_List* networks, void*
         {
             etk_tree_row_fields_set(row,ETK_FALSE,
                     pnl->scan_quality,
-                    img[(exalt_dbus_wirelessinfo_get_quality(exalt_conn, interface, essid))/25],
+                    img[(exalt_dbus_wirelessnetwork_get_quality(exalt_conn, interface, essid))/25],
                     NULL,
 
                     pnl->scan_encryption,
-                    etk_theme_icon_path_get(),(exalt_dbus_wirelessinfo_get_encryption(exalt_conn, interface, essid)?encryption:NULL),
+                    etk_theme_icon_path_get(),(exalt_dbus_wirelessnetwork_get_encryption(exalt_conn, interface, essid)?encryption:NULL),
 
                     pnl->scan_essid,
                     essid,NULL);
@@ -525,11 +525,11 @@ void wirelesspanel_scan_networks_cb(char* interface, Ecore_List* networks, void*
             //we add the network
             etk_tree_row_append(ETK_TREE(pnl->scan_list), NULL,
                     pnl->scan_quality,
-                    img[(exalt_dbus_wirelessinfo_get_quality(exalt_conn, interface, essid))/25],
+                    img[(exalt_dbus_wirelessnetwork_get_quality(exalt_conn, interface, essid))/25],
                     NULL,
 
                     pnl->scan_encryption,
-                    etk_theme_icon_path_get(),(exalt_dbus_wirelessinfo_get_encryption(exalt_conn, interface, essid)?encryption:NULL),
+                    etk_theme_icon_path_get(),(exalt_dbus_wirelessnetwork_get_encryption(exalt_conn, interface, essid)?encryption:NULL),
 
                     pnl->scan_essid,
                     essid,NULL);
@@ -757,7 +757,7 @@ void wirelesspanel_textchanged_entry_cb(Etk_Object *object __UNUSED__, void *dat
         interface = pnl->interface;
         essid = etk_entry_text_get(ETK_ENTRY(pnl->entry_conn_essid));
 
-        c = exalt_dbus_wirelessinfo_get_default_conn(exalt_conn, interface, essid);
+        c = exalt_dbus_wirelessnetwork_get_default_conn(exalt_conn, interface, essid);
         encryption_mode = exalt_conn_get_encryption_mode(c);
         connection_mode = exalt_conn_get_connection_mode(c);
         security_mode = exalt_conn_get_security_mode(c);

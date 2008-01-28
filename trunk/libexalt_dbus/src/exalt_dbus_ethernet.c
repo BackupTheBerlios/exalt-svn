@@ -16,9 +16,22 @@
  * =====================================================================================
  */
 
+/** @file exalt_dbus_ethernet.c */
+
 #include "exalt_dbus_ethernet.h"
 #include "libexalt_dbus_private.h"
 
+/**
+ * @addtogroup Ethernet_interface
+ * @{
+ */
+
+/**
+ * @brief Get the ip address of the interface eth
+ * @param conn a connection
+ * @param eth the interface name (eth0, ath32 ...)
+ * @return Returns the ip address
+ */
 char* exalt_dbus_eth_get_ip(const exalt_dbus_conn* conn, const char* eth)
 {
     DBusPendingCall * ret;
@@ -60,6 +73,12 @@ char* exalt_dbus_eth_get_ip(const exalt_dbus_conn* conn, const char* eth)
     return res;
 }
 
+/**
+ * @brief Get the netmask of the interface eth
+ * @param conn a connection
+ * @param eth the interface name (eth0, ath32 ...)
+ * @return Returns the netmask
+ */
 char* exalt_dbus_eth_get_netmask(const exalt_dbus_conn* conn, const char* eth)
 {
     DBusPendingCall * ret;
@@ -101,6 +120,12 @@ char* exalt_dbus_eth_get_netmask(const exalt_dbus_conn* conn, const char* eth)
     return res;
 }
 
+/**
+ * @brief Get the default gateway of the interface eth
+ * @param conn a connection
+ * @param eth the interface name (eth0, ath32 ...)
+ * @return Returns the default gateway
+ */
 char* exalt_dbus_eth_get_gateway(const exalt_dbus_conn* conn, const char* eth)
 {
     DBusPendingCall * ret;
@@ -142,6 +167,11 @@ char* exalt_dbus_eth_get_gateway(const exalt_dbus_conn* conn, const char* eth)
     return res;
 }
 
+/**
+ * @brief Get the list of interface
+ * @param conn a connection
+ * @return Returns the list of interface name (char *)
+ */
 Ecore_List* exalt_dbus_eth_get_list(const exalt_dbus_conn* conn)
 {
     DBusPendingCall * ret;
@@ -155,7 +185,7 @@ Ecore_List* exalt_dbus_eth_get_list(const exalt_dbus_conn* conn)
             dbus_message_unref(msg); return 0,
             "dbus_connection_send_with_reply (conn->conn, msg, &ret, -1)");
 
-dbus_message_unref(msg);
+    dbus_message_unref(msg);
 
     dbus_pending_call_block(ret);
     msg = dbus_pending_call_steal_reply(ret);
@@ -174,6 +204,12 @@ dbus_message_unref(msg);
     return res;
 }
 
+/**
+ * @brief test if an interface is a wireless interface
+ * @param conn a connection
+ * @param eth the interface name
+ * @return Returns 1 if yes, else 0
+ */
 int exalt_dbus_eth_is_wireless(const exalt_dbus_conn* conn, const char* eth)
 {
     DBusPendingCall * ret;
@@ -214,6 +250,12 @@ int exalt_dbus_eth_is_wireless(const exalt_dbus_conn* conn, const char* eth)
 }
 
 
+/**
+ * @brief test if an interface is up/activate
+ * @param conn a connection
+ * @param eth the interface name
+ * @return Returns 1 if yes, else 0 the interface is down
+ */
 int exalt_dbus_eth_is_up(const exalt_dbus_conn* conn, const char* eth)
 {
     DBusPendingCall * ret;
@@ -253,6 +295,12 @@ int exalt_dbus_eth_is_up(const exalt_dbus_conn* conn, const char* eth)
     return res;
 }
 
+/**
+ * @brief test if an interface use the dhcp mode (instead of static mode)
+ * @param conn a connection
+ * @param eth the interface name
+ * @return Returns 1 if yes, else 0 the interface use the static mode
+ */
 int exalt_dbus_eth_is_dhcp(const exalt_dbus_conn* conn, const char* eth)
 {
     DBusPendingCall * ret;
@@ -292,6 +340,13 @@ int exalt_dbus_eth_is_dhcp(const exalt_dbus_conn* conn, const char* eth)
     return res;
 }
 
+/**
+ * @brief test if an interface is link,
+ * a wireless interface is always link
+ * @param conn a connection
+ * @param eth the interface name
+ * @return Returns 1 if the interface is link or if the interface is wireless, 0 if the interface is unlink
+ */
 int exalt_dbus_eth_is_link(const exalt_dbus_conn* conn, const char* eth)
 {
     DBusPendingCall * ret;
@@ -333,7 +388,12 @@ int exalt_dbus_eth_is_link(const exalt_dbus_conn* conn, const char* eth)
 
 
 
-
+/*
+ * @brief Up/activate an interface
+ * @param conn a connection
+ * @param eth the interface name
+ * @return Returns 1 if success, else 0
+ */
 int exalt_dbus_eth_up(const exalt_dbus_conn* conn, const char* eth)
 {
     DBusPendingCall * ret;
@@ -371,6 +431,12 @@ int exalt_dbus_eth_up(const exalt_dbus_conn* conn, const char* eth)
     return 1;
 }
 
+/**
+ * @brief Down/deactivate an interface
+ * @param conn a connection
+ * @param eth the interface name
+ * @return Returns 1 if sucess, else 0
+ */
 int exalt_dbus_eth_down(const exalt_dbus_conn* conn, const char* eth)
 {
     DBusPendingCall * ret;
@@ -407,6 +473,14 @@ int exalt_dbus_eth_down(const exalt_dbus_conn* conn, const char* eth)
     return 1;
 }
 
+/**
+ * @brief Apply a connection to the interface.
+ * This function ask to the daemon for applying the configuration. When the connection will be apply a message will be notify (see Exalt_Enum_Action)
+ * @param conn a connection
+ * @param eth the interface name
+ * @param c the connection
+ * @return Returns 1 if success, else 0
+ */
 int exalt_dbus_eth_apply_conn(exalt_dbus_conn* conn, const char* eth, Exalt_Connection* c)
 {
     DBusPendingCall * ret;
@@ -521,3 +595,4 @@ int exalt_dbus_eth_apply_conn(exalt_dbus_conn* conn, const char* eth, Exalt_Conn
     return 1;
 }
 
+/** @} */

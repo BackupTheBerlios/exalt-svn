@@ -115,7 +115,7 @@ Exalt_Connection* exalt_conn_custom_new(Exalt_Enum_Mode mode,
 }
 
 /**
- * @brief free a conenction
+ * @brief free a connection
  * @param c the connection
  */
 void exalt_conn_free(Exalt_Connection* c)
@@ -132,7 +132,7 @@ void exalt_conn_free(Exalt_Connection* c)
 }
 
 /**
- * @verify if a connection is valid
+ * @brief test if a connection is valid (valid address ...)
  * @param c the connection
  * @return Returns 1 if the connection is valid, else 0
  */
@@ -244,7 +244,7 @@ short exalt_conn_set_wireless(Exalt_Connection* c, short is_wireless)
 /**
  * @brief set the essid of a connection
  * @param c the connection
- * @param gateway the new essid
+ * @param essid the new essid
  * @return Returns 1 if the essid is apply, else 0
  */
 short exalt_conn_set_essid(Exalt_Connection* c, const char* essid)
@@ -263,7 +263,7 @@ short exalt_conn_set_essid(Exalt_Connection* c, const char* essid)
 /**
  * @brief set the key of a connection
  * @param c the connection
- * @param gateway the new key
+ * @param key the new key
  * @return Returns 1 if the key is apply, else 0
  */
 short exalt_conn_set_key(Exalt_Connection* c, const char* key)
@@ -462,6 +462,10 @@ Exalt_Enum_Connection_Mode exalt_conn_get_connection_mode(Exalt_Connection* c)
     return c->connection_mode;
 }
 
+/**
+ * @brief create a eet descriptor of the structure Exalt_Connection
+ * @return Returns the descriptor
+ */
 Eet_Data_Descriptor * exalt_conn_edd_new()
 {
     Eet_Data_Descriptor *edd;

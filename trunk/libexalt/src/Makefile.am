@@ -21,7 +21,7 @@ exalt_dns.h \
 exalt_ethernet.h \
 exalt_sys_conf.h \
 exalt_wireless.h \
-exalt_wireless_info.h \
+exalt_wireless_network.h \
 exalt_connection.h \
 exalt_vpnc.h
 
@@ -35,7 +35,7 @@ exalt_ethernet.c \
 exalt_regexp.c \
 exalt_sys_conf.c \
 exalt_wireless.c \
-exalt_wireless_info.c \
+exalt_wireless_network.c \
 exalt_vpnc.c \
 libexalt_private.c \
 libexalt_private.h \

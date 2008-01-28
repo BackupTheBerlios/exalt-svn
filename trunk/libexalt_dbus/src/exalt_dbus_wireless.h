@@ -16,10 +16,18 @@
  * =====================================================================================
  */
 
+/** @file exalt_dbus_wireless.h */
+
 #ifndef  EXALT_DBUS_WIRELESS_INC
 #define  EXALT_DBUS_WIRELESS_INC
 
 #include <libexalt_dbus.h>
+
+/**
+ * @defgroup Wireless_interface
+ * @brief Functions about a wireless interface.
+ * @{
+ */
 
 Ecore_List* exalt_dbus_wireless_scan_wait(const exalt_dbus_conn* conn, const char* eth);
 char* exalt_dbus_wireless_get_essid(const exalt_dbus_conn* conn, const char* eth);
@@ -29,4 +37,6 @@ int exalt_dbus_wireless_set_wpasupplicant_driver(const exalt_dbus_conn* conn, co
 int exalt_dbus_wireless_scan_start(const exalt_dbus_conn* conn, const char* eth);
 
 #endif   /* ----- #ifndef EXALT_DBUS_WIRELESS_INC  ----- */
+
+/** @} */
 

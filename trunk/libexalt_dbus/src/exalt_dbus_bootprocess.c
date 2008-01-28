@@ -16,10 +16,22 @@
  * =====================================================================================
  */
 
-#include "exalt_dbus_bootprocess.h"
+/** @file exalt_dbus_bootprocess.c */
 
+#include "exalt_dbus_bootprocess.h"
 #include "libexalt_dbus_private.h"
 
+/**
+ * @addtogroup Boot_process
+ * @{
+ */
+
+/**
+ * @brief Add an interface in the list
+ * @param conn a connection
+ * @param interface the interface
+ * @return Returns 1 if success, else 0
+ */
 int exalt_dbus_bootprocess_iface_add(const exalt_dbus_conn* conn, const char* interface)
 {
     DBusPendingCall * ret;
@@ -60,6 +72,12 @@ int exalt_dbus_bootprocess_iface_add(const exalt_dbus_conn* conn, const char* in
     return 1;
 }
 
+/**
+ * @brief Remove an interface of the list
+ * @param conn a connection
+ * @param interface the interface
+ * @return Returns 1 if success, else 0
+ */
 int exalt_dbus_bootprocess_iface_remove(const exalt_dbus_conn* conn, const char* interface)
 {
     DBusPendingCall * ret;
@@ -99,6 +117,12 @@ int exalt_dbus_bootprocess_iface_remove(const exalt_dbus_conn* conn, const char*
     return 1;
 }
 
+/**
+ * @brief Test if an interface is in the list
+ * @param conn a connection
+ * @param interface the interface
+ * @return Returns 1 if yes, else 0
+ */
 int exalt_dbus_bootprocess_iface_is(const exalt_dbus_conn* conn, const char* interface)
 {
     DBusPendingCall * ret;
@@ -141,6 +165,12 @@ int exalt_dbus_bootprocess_iface_is(const exalt_dbus_conn* conn, const char* int
     return res;
 }
 
+/**
+ * @brief Change the value of the timeout
+ * @param conn a connection
+ * @param timeout the new value in second
+ * @return Returns 1 if success, else 0
+ */
 int exalt_dbus_bootprocess_timeout_set(const exalt_dbus_conn* conn, int timeout)
 {
     DBusPendingCall * ret;
@@ -178,6 +208,11 @@ int exalt_dbus_bootprocess_timeout_set(const exalt_dbus_conn* conn, int timeout)
     return 1;
 }
 
+/**
+ * @brief Get the value of thetimeout
+ * @param conn a connection
+ * @return Returns the value, 0 if error
+ */
 int exalt_dbus_bootprocess_timeout_get(const exalt_dbus_conn* conn)
 {
     DBusPendingCall * ret;
@@ -210,4 +245,6 @@ int exalt_dbus_bootprocess_timeout_get(const exalt_dbus_conn* conn)
 
     return res;
 }
+
+/** @} */
 

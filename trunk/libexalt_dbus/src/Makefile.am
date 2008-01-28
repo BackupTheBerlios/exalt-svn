@@ -19,7 +19,7 @@ libexalt_dbus.h \
 define.h \
 exalt_dbus_ethernet.h \
 exalt_dbus_wireless.h\
-exalt_dbus_wireless_info.h \
+exalt_dbus_wireless_network.h \
 exalt_dbus_dns.h \
 exalt_dbus_bootprocess.h
 
@@ -27,7 +27,7 @@ libexalt_dbus_la_SOURCES = \
 libexalt_dbus.c \
 exalt_dbus_ethernet.c \
 exalt_dbus_wireless.c \
-exalt_dbus_wireless_info.c \
+exalt_dbus_wireless_network.c \
 libexalt_dbus_private.h \
 libexalt_dbus_private.c \
 exalt_dbus_dns.c \

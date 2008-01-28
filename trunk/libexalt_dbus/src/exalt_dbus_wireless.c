@@ -16,9 +16,23 @@
  * =====================================================================================
  */
 
+/** @file exalt_dbus_wireless.c */
+
 #include "exalt_dbus_wireless.h"
 #include "libexalt_dbus_private.h"
 
+/**
+ * @addtogroup Wireless_interface
+ * @{
+ */
+
+/**
+ * @brief Scan wireless networks and return the list of network
+ * This function can freeze your application during a few secondes
+ * @param conn a connection
+ * @param eth a wireless interface name
+ * @return Returns the list of wireless networks essid (char *)
+ */
 Ecore_List* exalt_dbus_wireless_scan_wait(const exalt_dbus_conn* conn, const char* eth)
 {
     DBusPendingCall * ret;
@@ -59,6 +73,13 @@ Ecore_List* exalt_dbus_wireless_scan_wait(const exalt_dbus_conn* conn, const cha
     return res;
 }
 
+/**
+ * @brief Start a scan
+ * The result will be notify (see exalt_dbus_scan_notify_set())
+ * @param conn a connection
+ * @param eth a wireless interface name
+ * @return Returns 1 if success, else 0
+ */
 int exalt_dbus_wireless_scan_start(const exalt_dbus_conn* conn, const char* eth)
 {
     DBusPendingCall * ret;
@@ -93,6 +114,12 @@ int exalt_dbus_wireless_scan_start(const exalt_dbus_conn* conn, const char* eth)
     return 1;
 }
 
+/**
+ * @brief Get the current essid of the interface eth
+ * @param conn a connection
+ * @param eth a wireless interface name
+ * @return Returns the essid
+ */
 char* exalt_dbus_wireless_get_essid(const exalt_dbus_conn* conn, const char* eth)
 {
     DBusPendingCall * ret;
@@ -132,6 +159,12 @@ char* exalt_dbus_wireless_get_essid(const exalt_dbus_conn* conn, const char* eth
     return res;
 }
 
+/**
+ * @brief Get the current wpa_supplicant driver used by the interface
+ * @param conn a connection
+ * @param eth a wireless interface name
+ * @return Returns a wpa_supplicant driver (wext, hostap ...)
+ */
 char* exalt_dbus_wireless_get_wpasupplicant_driver(const exalt_dbus_conn* conn, const char* eth)
 {
     DBusPendingCall * ret;
@@ -173,6 +206,13 @@ char* exalt_dbus_wireless_get_wpasupplicant_driver(const exalt_dbus_conn* conn, 
     return res;
 }
 
+/**
+ * @brief Set the wpa_supplicant driver used by the interface
+ * @param conn a connection
+ * @param eth a wirelss interface name
+ * @param driver a driver (wext, hostap ...)
+ * @return Returns 1 if success, else 0
+ */
 int exalt_dbus_wireless_set_wpasupplicant_driver(const exalt_dbus_conn* conn, const char* eth, const char* driver)
 {
     DBusPendingCall * ret;
@@ -213,4 +253,6 @@ int exalt_dbus_wireless_set_wpasupplicant_driver(const exalt_dbus_conn* conn, co
     dbus_message_unref(msg);
     return 1;
 }
+
+/** @} */
 

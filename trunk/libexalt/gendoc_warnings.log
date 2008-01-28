@@ -3,47 +3,5 @@
 /home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_ethernet.h:12: Warning: missing title after \defgroup Exalt_Ethernet
 /home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_sys_conf.h:6: Warning: missing title after \defgroup Exalt_System_Configuration
 /home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_wireless.h:6: Warning: missing title after \defgroup Exalt_Wireless
-/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_wireless_info.c:883: Warning: end of file while inside a group
-
-/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_wireless_info.h:7: Warning: missing title after \defgroup Exalt_Wireless_Info
-/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/libexalt.c:125: Warning: end of file while inside a group
-
-/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/libexalt.h:41: Warning: missing title after \defgroup Exalt_General
-/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_wireless.c:1: Warning: the name `Exalt_Wireless.c' supplied as the second argument in the \file statement is not an input file
-/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_wireless_info.h:1: Warning: the name `Exalt_Wireless_Info.h' supplied as the second argument in the \file statement is not an input file
-/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_ethernet.c:1175: Warning: member _exalt_eth_get_save_ip: ignoring the detailed description found here, since another one was found at line 6 of file /home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_ethernet.c!
-/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_wireless.c:999: Warning: member _exalt_wireless_scan_free: ignoring the detailed description found here, since another one was found at line 6 of file /home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_wireless.c!
-/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_ethernet.c:1280: Warning: argument `ip' of command @param is not found in the argument list of _exalt_eth_set_save_netmask(Exalt_Ethernet *eth, const char *netmask)
-/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_ethernet.c:1280: Warning: The following parameters of _exalt_eth_set_save_netmask(Exalt_Ethernet *eth, const char *netmask) are not documented:
-  parameter netmask
-/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_ethernet.c:1304: Warning: argument `ip' of command @param is not found in the argument list of _exalt_eth_set_save_gateway(Exalt_Ethernet *eth, const char *gateway)
-/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_ethernet.c:1304: Warning: The following parameters of _exalt_eth_set_save_gateway(Exalt_Ethernet *eth, const char *gateway) are not documented:
-  parameter gateway
-/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_ethernet.c:1328: Warning: argument `ip' of command @param is not found in the argument list of _exalt_eth_set_save_link(Exalt_Ethernet *eth, short link)
-/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_ethernet.c:1328: Warning: The following parameters of _exalt_eth_set_save_link(Exalt_Ethernet *eth, short link) are not documented:
-  parameter link
-/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_ethernet.c:1344: Warning: argument `ip' of command @param is not found in the argument list of _exalt_eth_set_save_up(Exalt_Ethernet *eth, short up)
-/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_ethernet.c:1344: Warning: The following parameters of _exalt_eth_set_save_up(Exalt_Ethernet *eth, short up) are not documented:
-  parameter up
-/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_dns.c:11: Warning: argument `nb_dns' of command @param is not found in the argument list of exalt_dns_get_list()
-/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_ethernet.c:1060: Warning: The following parameters of exalt_eth_apply_conf(Exalt_Ethernet *eth, Exalt_Conf_Applied fct, void *user_data) are not documented:
-  parameter fct
-  parameter user_data
-/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_sys_conf.c:112: Warning: argument `eth' of command @param is not found in the argument list of exalt_conf_wirelessinfo_save(Exalt_Wireless *w)
-/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_sys_conf.c:112: Warning: The following parameters of exalt_conf_wirelessinfo_save(Exalt_Wireless *w) are not documented:
-  parameter w
-/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_sys_conf.c:137: Warning: argument `wi' of command @param is not found in the argument list of exalt_conf_wirelessinfo_load(const char *essid)
-/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_sys_conf.c:137: Warning: The following parameters of exalt_conf_wirelessinfo_load(const char *essid) are not documented:
-  parameter essid
-/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_wireless.c:234: Warning: argument `the' of command @param is not found in the argument list of exalt_wireless_set_new_passwd(Exalt_Wireless *w, const char *passwd)
-/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_wireless.c:234: Warning: The following parameters of exalt_wireless_set_new_passwd(Exalt_Wireless *w, const char *passwd) are not documented:
-  parameter passwd
-/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_wireless.c:515: Warning: argument `w' of command @param is not found in the argument list of exalt_wireless_scan_wait(Exalt_Ethernet *eth)
-/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_wireless.c:515: Warning: The following parameters of exalt_wireless_scan_wait(Exalt_Ethernet *eth) are not documented:
-  parameter eth
-/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_wireless.c:623: Warning: argument `eth' of command @param is not found in the argument list of exalt_wireless_radiobutton_ison(Exalt_Wireless *w)
-/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_wireless.c:623: Warning: The following parameters of exalt_wireless_radiobutton_ison(Exalt_Wireless *w) are not documented:
-  parameter w
-/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_wireless.c:649: Warning: argument `eth' of command @param is not found in the argument list of exalt_wireless_apply_conf(Exalt_Wireless *w)
-/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_wireless.c:649: Warning: The following parameters of exalt_wireless_apply_conf(Exalt_Wireless *w) are not documented:
-  parameter w
+/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/exalt_wireless_network.h:7: Warning: missing title after \defgroup Exalt_Wireless_Network
+/home/watchwolf/Projects/C/exalt_svn/exalt/libexalt/src/libexalt.h:90: Warning: missing title after \defgroup Exalt_General

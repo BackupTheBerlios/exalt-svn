@@ -79,7 +79,7 @@
 #include <Eet.h>
 
 #include "exalt_ethernet.h"
-#include "exalt_wireless_info.h"
+#include "exalt_wireless_network.h"
 #include "exalt_wireless.h"
 #include "exalt_dns.h"
 #include "exalt_sys_conf.h"

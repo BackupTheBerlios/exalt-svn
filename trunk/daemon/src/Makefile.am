@@ -10,7 +10,7 @@ exalt_daemon_INCLUDES = \
 daemon.h \
 cb_ethernet.h \
 cb_wireless.h \
-cb_wirelessinfo.h \
+cb_wirelessnetwork.h \
 define.h \
 cb_dns.h \
 boot_process.h \
@@ -20,7 +20,7 @@ exalt_daemon_SOURCES = \
 daemon.c \
 cb_ethernet.c \
 cb_wireless.c \
-cb_wirelessinfo.c \
+cb_wirelessnetwork.c \
 cb_dns.c \
 boot_process.c \
 cb_bootprocess.c

@@ -25,7 +25,7 @@
 #include "define.h"
 #include "cb_ethernet.h"
 #include "cb_wireless.h"
-#include "cb_wirelessinfo.h"
+#include "cb_wirelessnetwork.h"
 #include "cb_dns.h"
 #include "boot_process.h"
 #include "cb_bootprocess.h"
@@ -40,8 +40,8 @@ E_DBus_Connection* exaltd_conn;
 int main(int argc, char** argv);
 int setup(E_DBus_Connection *conn);
 Exalt_Ethernet* dbus_get_eth(DBusMessage* msg);
-Exalt_Wireless_Info* dbus_get_wirelessinfo(DBusMessage* msg);
-Exalt_Wireless_Info* get_wirelessinfo(Exalt_Ethernet* eth, char* essid);
+Exalt_Wireless_Network* dbus_get_wirelessnetwork(DBusMessage* msg);
+Exalt_Wireless_Network* get_wirelessnetwork(Exalt_Ethernet* eth, char* essid);
 void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data);
 void wireless_scan_cb(Exalt_Ethernet* eth, Ecore_List* networks, void* data);
 

@@ -10,7 +10,6 @@
 
 /**
  * @brief get the dns list
- * @param nb_dns the number of dns
  * @return Return the dns list
  */
 Ecore_List* exalt_dns_get_list()
@@ -21,7 +20,7 @@ Ecore_List* exalt_dns_get_list()
     Ecore_List* l;
 
     f = fopen(EXALT_RESOLVCONF_FILE, "ro");
-   EXALT_ASSERT_RETURN(f!=NULL);
+    EXALT_ASSERT_RETURN(f!=NULL);
 
     l = ecore_list_new();
     l->free_func = free;
@@ -45,17 +44,17 @@ Ecore_List* exalt_dns_get_list()
 /**
  * @brief add a dns
  * @param dns the news dns
- * @return Return 1 if the dns is add, else -1
+ * @return Return 1 if the dns is add, else -0
  */
 int exalt_dns_add(const char* dns)
 {
     char buf[1024];
     FILE* f;
- EXALT_ASSERT_RETURN(dns!=NULL);
-EXALT_ASSERT_RETURN(exalt_is_address(dns));
+    EXALT_ASSERT_RETURN(dns!=NULL);
+    EXALT_ASSERT_RETURN(exalt_is_address(dns));
 
     f = fopen(EXALT_RESOLVCONF_FILE, "a");
-  EXALT_ASSERT_RETURN(f!=NULL);
+    EXALT_ASSERT_RETURN(f!=NULL);
 
     sprintf(buf,"nameserver %s\n", dns);
     fwrite( buf, sizeof(char), strlen(buf), f);
@@ -69,7 +68,7 @@ EXALT_ASSERT_RETURN(exalt_is_address(dns));
 /**
  * @brief delete a dns
  * @param dns the dns
- * @return Return 1 if the dns is delet, else -1
+ * @return Return 1 if the dns is delete, else 0
  */
 int exalt_dns_delete(const char* dns)
 {
@@ -101,7 +100,7 @@ int exalt_dns_delete(const char* dns)
  * @brief replace a dns by a new
  * @param old_dns the old dns
  * @param new_dns the new dns
- * @return Return 1 if the dns is repalce, else -1
+ * @return Return 1 if the dns is replace, else 0
  */
 int exalt_dns_replace(const char* old_dns, const char* new_dns)
 {

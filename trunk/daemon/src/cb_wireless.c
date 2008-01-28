@@ -27,7 +27,7 @@ DBusMessage * dbus_cb_wireless_scan_wait(E_DBus_Object *obj __UNUSED__, DBusMess
     Exalt_Wireless *w;
     void* data;
     char* essid;
-    Exalt_Wireless_Info* wi;
+    Exalt_Wireless_Network* wi;
     reply = dbus_message_new_method_return(msg);
 
     eth = dbus_get_eth(msg);
@@ -56,8 +56,8 @@ DBusMessage * dbus_cb_wireless_scan_wait(E_DBus_Object *obj __UNUSED__, DBusMess
 
     while( (data=ecore_list_next(l)))
     {
-        wi = Exalt_Wireless_Info(data);
-        essid = strdup(exalt_wirelessinfo_get_essid(wi));
+        wi = Exalt_Wireless_Network(data);
+        essid = strdup(exalt_wirelessnetwork_get_essid(wi));
         EXALT_ASSERT_ADV(essid!=NULL,
                 return reply,
                 "essid!=NULL failed");

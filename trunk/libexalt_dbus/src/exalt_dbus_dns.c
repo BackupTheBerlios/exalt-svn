@@ -16,9 +16,21 @@
  * =====================================================================================
  */
 
+/** @file exalt_dbus_dns.c */
+
 #include "exalt_dbus_dns.h"
 #include "libexalt_dbus_private.h"
 
+/**
+ * @addtogroup DNS
+ * @{
+ */
+
+/**
+ * @brief get the DNS list
+ * @param conn a connection
+ * @return Returns the DNS list (char*)
+ */
 Ecore_List* exalt_dbus_dns_get_list(const exalt_dbus_conn* conn)
 {
     DBusPendingCall * ret;
@@ -51,6 +63,12 @@ Ecore_List* exalt_dbus_dns_get_list(const exalt_dbus_conn* conn)
     return res;
 }
 
+/**
+ * @brief Add a new DNS
+ * @param conn a connection
+ * @param dns the new DNS ( a valid ip address)
+ * @return Returns 1 if sucess, else 0
+ */
 int exalt_dbus_dns_add(const exalt_dbus_conn* conn, const char* dns)
 {
     DBusPendingCall * ret;
@@ -86,13 +104,19 @@ int exalt_dbus_dns_add(const exalt_dbus_conn* conn, const char* dns)
     return 1;
 }
 
+/**
+ * @brief Delete a DNS
+ * @param conn a connection
+ * @param dns a DNS ( a valid ip address)
+ * @return Returns 1 if sucess, else 0
+ */
 int exalt_dbus_dns_delete(const exalt_dbus_conn* conn, const char* dns)
 {
     DBusPendingCall * ret;
     DBusMessage *msg;
     DBusMessageIter args;
-EXALT_ASSERT_RETURN(conn!=NULL);
-EXALT_ASSERT_RETURN(dns!=NULL);
+    EXALT_ASSERT_RETURN(conn!=NULL);
+    EXALT_ASSERT_RETURN(dns!=NULL);
 
     msg = exalt_dbus_write_call_new("DNS_DELETE");
     dbus_message_iter_init_append(msg, &args);
@@ -122,6 +146,13 @@ EXALT_ASSERT_RETURN(dns!=NULL);
     return 1;
 }
 
+/**
+ * @brief Replace a DNS by a new
+ * @param conn a connection
+ * @param old_dns the old DNS (a valid ip address)
+ * @param new_dns the new DNS (a valid ip address)
+ * @return Returns 1 if sucess, else 0
+ */
 int exalt_dbus_dns_replace(const exalt_dbus_conn* conn, const char* old_dns, const char* new_dns)
 {
     DBusPendingCall * ret;
@@ -161,3 +192,7 @@ int exalt_dbus_dns_replace(const exalt_dbus_conn* conn, const char* old_dns, con
     dbus_message_unref(msg);
     return 1;
 }
+
+
+
+/** @} */

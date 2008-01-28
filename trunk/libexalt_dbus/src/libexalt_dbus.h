@@ -15,6 +15,7 @@
  *
  * =====================================================================================
  */
+/** @file libexalt_dbus.h */
 
 #ifndef  LIBEXALT_DBUS_INC
 #define  LIBEXALT_DBUS_INC
@@ -26,46 +27,44 @@
 #include <libexalt.h>
 
 
-/*
- * when we return a valid response, next args are the response
+/**
+ * @defgroup General
+ * @brief Generals functions
+ * @{
  */
-#define EXALT_DBUS_VALID 1;
-/* when we return an error, the next args have to be an int32 with a error id
- * and the third args have to be a string with a description of the error
+
+/**
+ * @brief An exalt dbus connection
+ * Contains a DBus connection and the callback functions.
+ * @structinfo
  */
-#define EXALT_DBUS_ERROR 0;
-
-#define EXALT_DBUS_NO_ARGUMENT "Received no argument"
-#define EXALT_DBUS_NO_ARGUMENT_ID 0
-#define EXALT_DBUS_ARGUMENT_NOT_STRING "One of arguments is not a string but should be a string"
-#define EXALT_DBUS_ARGUMENT_NOT_STRING_ID 1
-
 typedef struct _exalt_dbus_conn exalt_dbus_conn;
-typedef struct _exalt_dbus_notify_data exalt_dbus_notify_data;
-typedef struct _exalt_dbus_notify_conn_applied_data exalt_dbus_notify_conn_applied_data;
-typedef struct _exalt_dbus_scan_notify_data exalt_dbus_scan_notify_data;
 
+/** type of the callback function used when an ip address change, a new interface is add ... */
 typedef void (exalt_notify_cb) (char* eth, Exalt_Enum_Action action, void* user_data);
+/** type of the callback function used to return the result of a network scan
+ * networks is a list of essid (char*)
+ */
 typedef void (exalt_scan_notify_cb) (char* eth, Ecore_List* networks, void* user_data);
-typedef void (exalt_notify_conn_applied_cb) (char* interface, void* user_data);
 
 #include "define.h"
 #include "exalt_dbus_ethernet.h"
 #include "exalt_dbus_wireless.h"
-#include "exalt_dbus_wireless_info.h"
+#include "exalt_dbus_wireless_network.h"
 #include "exalt_dbus_dns.h"
 #include "exalt_dbus_bootprocess.h"
 
 void exalt_dbus_init();
+exalt_dbus_conn*  exalt_dbus_connect();
+
 void exalt_dbus_free(exalt_dbus_conn** conn);
 void exalt_dbus_shutdown();
-exalt_dbus_conn*  exalt_dbus_connect();
+
 void exalt_dbus_notify_set(exalt_dbus_conn* conn, exalt_notify_cb* cb, void* user_data);
 void exalt_dbus_scan_notify_set(exalt_dbus_conn* conn, exalt_scan_notify_cb* cb, void* user_data);
 
-int exalt_dbus_wpasupplicant_is_support(const exalt_dbus_conn* conn);
-int exalt_dbus_dhcp_is_support(const exalt_dbus_conn* conn);
-
+/** @} */
 
 #endif   /* ----- #ifndef LIBEXALT_DBUS_INC  ----- */
+
 

@@ -3,26 +3,26 @@
 #define EXALT_ETHERNET_H
 
 /**
- * @brief informations about a card
+ * @brief informations about an interface
  * @structinfo
  */
 typedef struct Exalt_Ethernet Exalt_Ethernet;
 
 /**
  * @defgroup Exalt_Ethernet
- * @brief the Exalt_Ethernet struct contains all informations about a card.
+ * @brief the Exalt_Ethernet struct contains all informations about an ethernet interface.
  * @{
  */
 
 /**
- * @brief all cards
+ * @brief all interfaces
  * @structinfo
  */
 typedef struct Exalt_Ethernets Exalt_Ethernets;
 
 #include "libexalt.h"
 #include "exalt_wireless.h"
-#include "exalt_wireless_info.h"
+#include "exalt_wireless_network.h"
 #include "exalt_connection.h"
 #include <Ecore_Data.h>
 #include <Ecore.h>
@@ -36,22 +36,25 @@ typedef struct Exalt_Ethernets Exalt_Ethernets;
 
 #include <sys/wait.h>
 
+
+extern Exalt_Ethernets exalt_eth_interfaces;
+
 /** Define the list of notify action */
 typedef enum Exalt_Enum_Action
 {
-    /** when we load the device list */
+    /** when we load the interface list */
     EXALT_ETH_CB_ACTION_NEW ,
-    /** when we have a new card */
+    /** when we have a new interface */
     EXALT_ETH_CB_ACTION_ADD,
-    /** when we have a remove card */
+    /** when we have a remove interface */
     EXALT_ETH_CB_ACTION_REMOVE,
-    /** when a known card is up */
+    /** when a known interface is up */
     EXALT_ETH_CB_ACTION_UP ,
-    /** when a known card is down */
+    /** when a known interface is down */
     EXALT_ETH_CB_ACTION_DOWN,
-    /** when a card is link */
+    /** when a interface is link */
     EXALT_ETH_CB_ACTION_LINK ,
-    /** when a card is unlink */
+    /** when a interface is unlink */
     EXALT_ETH_CB_ACTION_UNLINK,
     /** when an essid change */
     EXALT_WIRELESS_CB_ACTION_ESSIDCHANGE ,
@@ -69,26 +72,18 @@ typedef enum Exalt_Enum_Action
     /** when the connection is applied */
     EXALT_ETH_CB_ACTION_CONN_APPLY_DONE,
 
-    /** when we configure if we want wait (or not) that the card is init during the boot process (only use by the daemon exaltd) */
+    /** when we configure if we want wait (or not) that the interface is init during the boot process (only used by the daemon exaltd) */
     EXALTD_ETH_CB_WAITINGBOOT_CHANGE,
-    /** when the value of the timeout change (only use by the daemon exaltd) */
+    /** when the value of the timeout change (only used by the daemon exaltd) */
     EXALTD_ETH_CB_WAITINGBOOT_TIMEOUT_CHANGE
 } Exalt_Enum_Action;
 
-/** cast into an Exalt_Ethernet* struct */
-#define Exalt_Ethernet(a) (Exalt_Ethernet*)a
-
-/** callback function used for notifications when a new card is add, new essid ... */
+/** callback function used for notification when a new interface is add, new essid ... */
 typedef void (*Exalt_Eth_Cb) (Exalt_Ethernet* eth, Exalt_Enum_Action action, void* user_data);
 
-extern Exalt_Ethernets exalt_eth_interfaces;
 
-/** callback function used for notifications during a scan */
+/** callback function used for notification during a scan */
 typedef void (*Exalt_Wifi_Scan_Cb) (Exalt_Ethernet* eth, Ecore_List* networks, void* user_data);
-
-/** callback function used for notify than the configuration is applied */
-typedef void (*Exalt_Conf_Applied) (Exalt_Ethernet* eth, void* data);
-
 
 Exalt_Ethernet* exalt_eth_new(const char* name);
 
@@ -116,7 +111,7 @@ const char* exalt_eth_get_name(const Exalt_Ethernet* eth);
 char* exalt_eth_get_ip(const Exalt_Ethernet* eth);
 char* exalt_eth_get_netmask(Exalt_Ethernet* eth);
 char* exalt_eth_get_gateway(Exalt_Ethernet* eth);
-int exalt_eth_del_gateway(Exalt_Ethernet* eth);
+int exalt_eth_delete_gateway(Exalt_Ethernet* eth);
 
 const char* exalt_eth_get_udi(Exalt_Ethernet* eth);
 int exalt_eth_get_ifindex(Exalt_Ethernet* eth);
