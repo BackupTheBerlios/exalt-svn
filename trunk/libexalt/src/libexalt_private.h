@@ -30,7 +30,14 @@
 #include <E_DBus.h>
 #include "exalt_ethernet.h"
 
-
+// type use in the list exalt_eth_interfaces.default_routes
+// which is a list of the old default route
+// Exalt uses this list when the current default route become invalid (the interface is down for example) and try to find a previous yet available route.
+typedef struct default_route
+{
+    char* interface;
+    char* gateway;
+}Default_Route;
 
 struct Exalt_Ethernets
 {
@@ -38,13 +45,14 @@ struct Exalt_Ethernets
 
     int we_version;
 
-
     short admin;
     short is_launch ;
+
     E_DBus_Connection *dbus_conn;
     Ecore_Fd_Handler *rtlink_watch;
     int rtlink_sock;
 
+    Ecore_List* default_routes;
 
     Exalt_Eth_Cb eth_cb;
     void * eth_cb_user_data;

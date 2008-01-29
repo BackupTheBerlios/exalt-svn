@@ -494,6 +494,8 @@ char* exalt_eth_get_gateway(Exalt_Ethernet* eth)
  */
 int exalt_eth_delete_gateway(Exalt_Ethernet* eth)
 {
+    Default_Route* route;
+    int done = 0;
     struct rtentry rt;
     struct sockaddr_in sin = { AF_INET };
 
@@ -508,8 +510,64 @@ int exalt_eth_delete_gateway(Exalt_Ethernet* eth)
         usleep(100);
 
     EXALT_FREE(rt.rt_dev);
+
+    //And we remove this route from the list, the route is supposed to be the first
+    ecore_list_first_goto(exalt_eth_interfaces.default_routes);
+    route = ecore_list_next(exalt_eth_interfaces.default_routes);
+    if(route && strcmp(exalt_eth_get_name(eth),route->interface)==0)
+    {
+        ecore_list_first_goto(exalt_eth_interfaces.default_routes);
+        ecore_list_remove(exalt_eth_interfaces.default_routes);
+        EXALT_FREE(route->interface);
+        EXALT_FREE(route->gateway);
+        EXALT_FREE(route);
+    }
+
+
+
+    //search an old valid route
+    //a route is valid if:
+    //- the interface is up
+    //- the interface has a ip address
+    ecore_list_first_goto(exalt_eth_interfaces.default_routes);
+    while(!done && (route = ecore_list_next(exalt_eth_interfaces.default_routes)))
+    {
+        Exalt_Ethernet *eth;
+        struct rtentry rt;
+        eth = exalt_eth_get_ethernet_byname(route->interface);
+        if(eth && exalt_eth_is_up(eth) && exalt_is_address(exalt_eth_get_ip(eth)))
+        {
+            //we will use this route
+            done = 1;
+
+            memset((char *) &rt, 0, sizeof(struct rtentry));
+            rt.rt_flags = ( RTF_UP | RTF_GATEWAY );
+            sin.sin_addr.s_addr = inet_addr (route->gateway);
+            rt.rt_gateway = *(struct sockaddr *) &sin;
+            sin.sin_addr.s_addr = inet_addr ("0.0.0.0");
+            rt.rt_dst = *(struct sockaddr *) &sin;
+            rt.rt_metric = 0;
+            rt.rt_dev = strdup(route->interface);
+
+            if ( !exalt_ioctl(&rt, SIOCADDRT))
+                return -1;
+
+            EXALT_FREE(rt.rt_dev);
+        }
+
+        //we remove this route from the list
+        ecore_list_index_goto(exalt_eth_interfaces.default_routes,
+                ecore_list_index(exalt_eth_interfaces.default_routes)-1);
+        ecore_list_remove(exalt_eth_interfaces.default_routes);
+
+        EXALT_FREE(route->interface);
+        EXALT_FREE(route->gateway);
+        EXALT_FREE(route);
+    }
     return 1;
 }
+
+
 
 /**
  * @brief get if the interface "eth" use DHCP or static (look the configuration file)
@@ -1063,6 +1121,51 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
                             || (str && !str2)
                             || (str && str2 &&strcmp(str2,str ) != 0))
                     {
+                        //if we have a new gateway, the gateway exist
+                        if(exalt_is_address(exalt_eth_get_gateway(eth)))
+                        {
+                            Default_Route* route;
+                            struct rtentry rt;
+                            Ecore_List* l = exalt_eth_get_list();
+                            Exalt_Ethernet* eth2;
+                            struct sockaddr_in sin = { AF_INET };
+
+                            //we have a new route for this interface
+                            //first: we remove the others default route because
+                            //the system doesn't accept more than 1 default route
+                            //foreach interface we get the current gateway
+                            //    and removed it if it exist
+                            ecore_list_first_goto(l);
+                            while( (eth2 = ecore_list_next(l)))
+                            {
+                                if(strcmp(exalt_eth_get_name(eth2),exalt_eth_get_name(eth))!=0)
+                                {
+                                    if(exalt_is_address(exalt_eth_get_gateway(eth2)))
+                                    {
+                                        memset((char *) &rt, 0, sizeof(struct rtentry));
+                                        rt.rt_flags = ( RTF_UP | RTF_GATEWAY );
+                                        sin.sin_addr.s_addr = inet_addr ("0.0.0.0");
+                                        rt.rt_dst = *(struct sockaddr *) &sin;
+                                        rt.rt_dev = NULL;
+                                        EXALT_STRDUP(rt.rt_dev , exalt_eth_get_name(eth2));
+                                        while (exalt_ioctl(&rt, SIOCDELRT))
+                                            usleep(100);
+
+                                        EXALT_FREE(rt.rt_dev);
+                                    }
+                                }
+                            }
+
+
+                            //second: we add the new route in the route list
+                            route = malloc(sizeof(Default_Route));
+                            EXALT_STRDUP(route->interface,exalt_eth_get_name(eth));
+                            EXALT_STRDUP(route->gateway,exalt_eth_get_gateway(eth));
+                            ecore_list_prepend(exalt_eth_interfaces.default_routes,route);
+                        }
+
+                        //third: we update the current route of the interface
+                        //and send a broadcast message
                         _exalt_eth_set_save_gateway(eth, str);
                         if(exalt_eth_interfaces.eth_cb)
                             exalt_eth_interfaces.eth_cb(eth,EXALT_ETH_CB_ACTION_GATEWAY_NEW,exalt_eth_interfaces.eth_cb_user_data);
@@ -1136,14 +1239,14 @@ int _exalt_eth_apply_static(Exalt_Ethernet *eth)
     if(!exalt_conn_get_gateway(c))
         return 1;
 
-    //apply the default gateway
+    //apply the new default gateway
     memset((char *) &rt, 0, sizeof(struct rtentry));
     rt.rt_flags = ( RTF_UP | RTF_GATEWAY );
     sin.sin_addr.s_addr = inet_addr (exalt_conn_get_gateway(c));
     rt.rt_gateway = *(struct sockaddr *) &sin;
     sin.sin_addr.s_addr = inet_addr ("0.0.0.0");
     rt.rt_dst = *(struct sockaddr *) &sin;
-    rt.rt_metric = 2001;
+    rt.rt_metric = 0;
     rt.rt_dev = strdup(exalt_eth_get_name(eth));
 
     if ( !exalt_ioctl(&rt, SIOCADDRT))

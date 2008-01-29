@@ -22,6 +22,9 @@ int exalt_init()
     exalt_eth_interfaces.ethernets->free_func =  ECORE_FREE_CB(exalt_eth_free);
     ecore_list_init(exalt_eth_interfaces.ethernets);
 
+    exalt_eth_interfaces.default_routes = ecore_list_new();
+
+
     exalt_eth_interfaces.eth_cb = NULL;
     exalt_eth_interfaces.eth_cb_user_data = NULL;
 
