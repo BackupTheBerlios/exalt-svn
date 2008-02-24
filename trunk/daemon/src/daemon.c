@@ -60,6 +60,8 @@ int setup(E_DBus_Connection *conn)
     e_dbus_interface_method_add(iface, "BOOTPROCESS_IFACE_IS", NULL, NULL, dbus_cb_bootprocess_iface_is);
     e_dbus_interface_method_add(iface, "BOOTPROCESS_TIMEOUT_GET", NULL, NULL, dbus_cb_bootprocess_timeout_get);
 
+    e_dbus_interface_method_add(iface, "IFACE_GET_CMD_AFTER_APPLY_GET", NULL, NULL, dbus_cb_eth_get_cmd);
+
 
     e_dbus_object_interface_attach(obj, iface);
 
@@ -78,6 +80,9 @@ int setup(E_DBus_Connection *conn)
     e_dbus_interface_method_add(iface, "BOOTPROCESS_IFACE_ADD", NULL, NULL, dbus_cb_bootprocess_iface_add);
     e_dbus_interface_method_add(iface, "BOOTPROCESS_IFACE_REMOVE", NULL, NULL, dbus_cb_bootprocess_iface_remove);
     e_dbus_interface_method_add(iface, "BOOTPROCESS_TIMEOUT_SET", NULL, NULL, dbus_cb_bootprocess_timeout_set);
+
+    e_dbus_interface_method_add(iface, "IFACE_SET_CMD_AFTER_APPLY", NULL, NULL, dbus_cb_eth_set_cmd);
+
 
     e_dbus_object_interface_attach(obj, iface);
 
@@ -216,6 +221,11 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
             exalt_wireless_set_wpasupplicant_driver(w,str);
             EXALT_FREE(str);
         }
+        //then we load the command which will be run after a configuration is applied
+   /*     str = exalt_eth_cmd_load(CONF_FILE,exalt_eth_get_udi(eth));
+        exalt_eth_set_cmd(eth,str);
+        EXALT_FREE(eth);
+*/
 
         //apply or not apply a connection ?
         //load a connection

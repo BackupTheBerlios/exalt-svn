@@ -57,6 +57,8 @@ struct Exalt_Ethernet
 
     pid_t apply_pid;
     Ecore_Timer *apply_timer;
+
+    char* cmd_after_apply; //a function call after exalt_conn_apply()
 };
 
 
@@ -85,6 +87,7 @@ Exalt_Ethernet* exalt_eth_new(const char* name)
     eth-> _save_link = 0;
     eth->_save_up = 0;
     eth->wireless = NULL;
+    eth->cmd_after_apply = NULL;
 
     strncpy(wrq.ifr_name, exalt_eth_get_name(eth), sizeof(wrq.ifr_name));
     if(exalt_ioctl(&wrq, SIOCGIWNAME))
@@ -294,6 +297,34 @@ Exalt_Ethernet* exalt_eth_get_ethernet_byifindex(int ifindex)
     }
 
     return NULL;
+}
+
+/**
+ * @brief set a command which will be run after a configuration is applied
+ * @param eth the interface
+ * @param cmd the command
+ * @return Returns 1 if the new command is apply, else 0
+ */
+int exalt_eth_set_cmd(Exalt_Ethernet* eth, const char* cmd)
+{
+    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(cmd!=NULL);
+
+    EXALT_FREE(eth->cmd_after_apply);
+    eth->cmd_after_apply=strdup(cmd);
+    return 1;
+}
+
+
+/**
+ * @brief get the command which will be run after a configuration is applied
+ * @param eth the interface
+ * @return Returns the command or NULL
+ */
+const char* exalt_eth_get_cmd(Exalt_Ethernet* eth)
+{
+    EXALT_ASSERT_RETURN(eth!=NULL);
+    return eth->cmd_after_apply;
 }
 
 

@@ -37,6 +37,7 @@ int exalt_wireless_conn_save(const char* file, Exalt_Connection* c);
 Exalt_Connection* exalt_wireless_conn_load(const char* file, const char *essid);
 
 int exalt_conf_save_wpasupplicant(Exalt_Wireless *w);
+char* exalt_eth_cmd_load(const char* file, const char* udi);
 
 int exalt_eth_save(const char* file, Exalt_Ethernet* eth);
 Exalt_Enum_State exalt_eth_state_load(const char* file, const char* udi);

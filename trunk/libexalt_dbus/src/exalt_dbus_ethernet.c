@@ -595,4 +595,101 @@ int exalt_dbus_eth_apply_conn(exalt_dbus_conn* conn, const char* eth, Exalt_Conn
     return 1;
 }
 
+/**
+ * @brief Get the command which will be run after a connection is applied
+ * @param conn a connection
+ * @param eth a eth interface name
+ * @return Returns the command
+ */
+char* exalt_dbus_eth_get_cmd(const exalt_dbus_conn* conn, const char* eth)
+{
+    DBusPendingCall * ret;
+    DBusMessage *msg;
+    DBusMessageIter args;
+    char* res;
+    const char* str;
+
+    EXALT_ASSERT_RETURN(conn!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
+
+
+    msg = exalt_dbus_read_call_new("IFACE_GET_CMD");
+    dbus_message_iter_init_append(msg, &args);
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth),
+            dbus_message_unref(msg); return 0,
+            "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth");
+    EXALT_ASSERT_ADV(dbus_connection_send_with_reply (conn->conn, msg, &ret, -1),
+            dbus_message_unref(msg); return 0,
+            "dbus_connection_send_with_reply (conn->conn, msg, &ret, -1)");
+
+    dbus_message_unref(msg);
+
+    dbus_pending_call_block(ret);
+    msg = dbus_pending_call_steal_reply(ret);
+    EXALT_ASSERT_RETURN(msg);
+    dbus_pending_call_unref(ret);
+
+    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
+            return 0,
+            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
+            exalt_dbus_error_get_id(msg),
+            exalt_dbus_error_get_msg(msg));
+
+
+    str = exalt_dbus_response_string(msg,1);
+    EXALT_STRDUP(res,str);
+    dbus_message_unref(msg);
+    return res;
+}
+
+/**
+ * @brief Set the command which will be run after a connection is applied
+ * @param conn a connection
+ * @param eth a wirelss interface name
+ * @param cmd a command
+ * @return Returns 1 if success, else 0
+ */
+int exalt_dbus_eth_set_cmd(const exalt_dbus_conn* conn, const char* eth, const char* cmd)
+{
+    DBusPendingCall * ret;
+    DBusMessage *msg;
+    DBusMessageIter args;
+
+    EXALT_ASSERT_RETURN(conn!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
+
+
+    msg = exalt_dbus_write_call_new("IFACE_SET_CMD_AFTER_APPLY");
+    dbus_message_iter_init_append(msg, &args);
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth),
+            dbus_message_unref(msg); return 0,
+            "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth");
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &cmd),
+            dbus_message_unref(msg); return 0,
+            "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &cmd");
+
+    EXALT_ASSERT_ADV(dbus_connection_send_with_reply (conn->conn, msg, &ret, -1),
+            dbus_message_unref(msg); return 0,
+            "dbus_connection_send_with_reply (conn->conn, msg, &ret, -1)");
+
+    dbus_message_unref(msg);
+
+    dbus_pending_call_block(ret);
+    msg = dbus_pending_call_steal_reply(ret);
+    EXALT_ASSERT_RETURN(msg);
+    dbus_pending_call_unref(ret);
+
+    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
+            return 0,
+            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
+            exalt_dbus_error_get_id(msg),
+            exalt_dbus_error_get_msg(msg));
+
+
+    dbus_message_unref(msg);
+    return 1;
+}
+
+
+
 /** @} */

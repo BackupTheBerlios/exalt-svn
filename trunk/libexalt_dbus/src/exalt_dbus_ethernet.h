@@ -45,6 +45,10 @@ int exalt_dbus_eth_down(const exalt_dbus_conn* conn, const char* eth);
 
 int exalt_dbus_eth_apply_conn(exalt_dbus_conn* conn, const char* eth,Exalt_Connection*c);
 
+
+char* exalt_dbus_eth_get_cmd(const exalt_dbus_conn* conn, const char* eth);
+int exalt_dbus_eth_set_cmd(const exalt_dbus_conn* conn, const char* eth, const char* cmd);
+
 #endif   /* ----- #ifndef EXALT_DBUS_ETHERNET_INC  ----- */
 
 /** @} */

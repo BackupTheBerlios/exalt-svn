@@ -72,6 +72,11 @@
 #define EXALT_DBUS_DRIVER_ERROR "The interface has no driver"
 #define EXALT_DBUS_DRIVER_ERROR_ID 29
 
+#define EXALT_DBUS_CMD_ERROR "The interface has no command"
+#define EXALT_DBUS_CMD_ERROR_ID 100
+
+
+
 #define EXALT_DBUS_WIRELESS_NETWORK_ERROR "The wireless network doesn't exists"
 #define EXALT_DBUS_WIRELESS_NETWORK_ERROR_ID 30
 #define EXALT_DBUS_WIRELESS_NETWORK_ADDR_ERROR "The wireless network has no mac address"

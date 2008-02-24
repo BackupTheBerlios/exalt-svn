@@ -8,6 +8,7 @@ typedef struct Exalt_Eth_Save
     Exalt_Enum_State state;
     char* driver;
     Exalt_Connection *connection;
+    char* cmd_after_apply;
 }Exalt_Eth_Save;
 
 Exalt_Eth_Save* _exalt_eet_eth_load(const char* file, const char* interface);
@@ -151,8 +152,30 @@ int exalt_eth_save(const char* file, Exalt_Ethernet* eth)
     else
         s.driver = "wext";
 
+    s.cmd_after_apply = exalt_eth_get_cmd(eth);
+
     return _exalt_eet_eth_save(file, &s, exalt_eth_get_udi(eth));
 }
+
+/**
+ * @brief Load the command which will be run after a connection is applied from the configuration file
+ * @param file the configuration file
+ * @param udi the hal udi of the interface
+ * @return Returns the command
+ */
+char* exalt_eth_cmd_load(const char* file, const char* udi)
+{
+    Exalt_Eth_Save *s = _exalt_eet_eth_load(file, udi);
+    EXALT_ASSERT_RETURN(s!=NULL);
+
+    char* str = s->cmd_after_apply;
+    EXALT_FREE(s->driver);
+    exalt_conn_free(s->connection);
+    EXALT_FREE(s);
+    return str;
+}
+
+
 
 /**
  * @brief Load the state (up/down) of an interface from the configuration file
@@ -167,6 +190,7 @@ Exalt_Enum_State exalt_eth_state_load(const char* file, const char* udi)
 
     Exalt_Enum_State st = s->state;
     EXALT_FREE(s->driver);
+    EXALT_FREE(s->cmd_after_apply);
     exalt_conn_free(s->connection);
     EXALT_FREE(s);
     return st;
@@ -184,6 +208,7 @@ char* exalt_eth_driver_load(const char* file, const char* udi)
     EXALT_ASSERT_RETURN(s!=NULL);
     char* driver = s->driver;
     exalt_conn_free(s->connection);
+    EXALT_FREE(s->cmd_after_apply);
     EXALT_FREE(s);
     return driver;
 }
@@ -200,6 +225,7 @@ Exalt_Connection* exalt_eth_conn_load(const char* file, const char* udi)
     EXALT_ASSERT_RETURN(s!=NULL);
     Exalt_Connection *c = s->connection;
     EXALT_FREE(s->driver);
+    EXALT_FREE(s->cmd_after_apply);
     EXALT_FREE(s);
     return c;
 }

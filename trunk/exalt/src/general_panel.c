@@ -53,8 +53,10 @@ void generalpanel_update_advanced_mode(general_panel *pnl)
     if(!pnl->win->advanced_mode)
     {
         int num = etk_notebook_page_index_get(ETK_NOTEBOOK(pnl->notebook), pnl->boot->frame);
-        if(num>0)
+        //remove a notebook segfault
+        /*if(num>0)
             etk_notebook_page_remove(ETK_NOTEBOOK(pnl->notebook),num);
+            */
     }
     else
         etk_notebook_page_append(ETK_NOTEBOOK(pnl->notebook),_("Boot process"),pnl->boot->frame);

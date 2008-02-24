@@ -36,5 +36,10 @@ DBusMessage * dbus_cb_eth_down(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
 
 
 DBusMessage * dbus_cb_eth_apply_conn(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
+
+
+DBusMessage * dbus_cb_eth_get_cmd(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
+DBusMessage * dbus_cb_eth_set_cmd(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
+
 #endif   /* ----- #ifndef CB_FUNCTIONS_INC  ----- */
 
