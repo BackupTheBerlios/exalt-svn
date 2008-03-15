@@ -334,6 +334,7 @@ void mainwindow_btn_mode_clicked_cb(Etk_Object *object , void *data)
         etk_button_label_set(ETK_BUTTON(btn),_("Advanced"));
 
     generalpanel_update_advanced_mode(win->general_panel);
+    ethpanel_update_advanced_mode(win->eth_panel);
     wirelesspanel_update_advanced_mode(win->wireless_panel);
 }
 

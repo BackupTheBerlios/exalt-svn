@@ -15,37 +15,43 @@ typedef struct _eth_panel eth_panel;
 
 struct _eth_panel
 {
-	char* interface;
+    char* interface;
 
-	main_window* win;
-	Etk_Widget *frame;
+    main_window* win;
+    Etk_Widget *frame;
 
-	Etk_Widget* box_configuration;
+    Etk_Widget* box_configuration;
 
-	//configuration panel
-	Etk_Widget *entry_ip;
-	Etk_Widget *entry_mask;
-	Etk_Widget *entry_gateway;
+    //configuration panel
+    Etk_Widget *entry_ip;
+    Etk_Widget *entry_mask;
+    Etk_Widget *entry_gateway;
+    Etk_Widget *entry_cmd;
+    Etk_Widget *lbl_cmd;
 
-	Etk_Widget *check_static;
-	Etk_Widget *check_dhcp;
+    Etk_Widget *check_static;
+    Etk_Widget *check_dhcp;
 
-	Etk_Widget *btn_apply;
+    Etk_Widget *btn_apply;
 
 
-        Ecore_Timer* pulsebar_timer;
+    Ecore_Timer* pulsebar_timer;
 
-	//pbar pannel
-	Etk_Widget* hbox_pbar;
-	Etk_Widget* pbar;
+    //pbar pannel
+    Etk_Widget* hbox_pbar;
+    Etk_Widget* pbar;
 
-	//box (dis)activate
-	Etk_Widget* box_activate;
-	Etk_Widget* btn_activate;
-	Etk_Widget* btn_disactivate;
+    //box (dis)activate
+    Etk_Widget* box_activate;
+    Etk_Widget* btn_activate;
+    Etk_Widget* btn_disactivate;
 };
 
 eth_panel* ethpanel_create(main_window* win);
+void ethpanel_update_advanced_mode(eth_panel *pnl);
+
+
+
 void ethpanel_show(eth_panel* pnl);
 void ethpanel_free(eth_panel** pnl);
 void ethpanel_hide(eth_panel* pnl);

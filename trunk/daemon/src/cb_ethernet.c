@@ -514,6 +514,18 @@ DBusMessage * dbus_cb_eth_apply_conn(E_DBus_Object *obj __UNUSED__, DBusMessage 
         dbus_message_iter_next(&args);
     }
 
+    if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
+    {
+        dbus_args_error_append(reply,
+                EXALT_DBUS_ARGUMENT_NOT_STRING_ID,
+                EXALT_DBUS_ARGUMENT_NOT_STRING);
+        return reply;
+    }
+    else
+        dbus_message_iter_get_basic(&args, &s);
+    exalt_conn_set_cmd(c,s);
+
+
     //retrieve the connection
     if(!exalt_conn_is_valid(c))
     {
@@ -552,14 +564,13 @@ DBusMessage * dbus_cb_eth_get_cmd(E_DBus_Object *obj __UNUSED__, DBusMessage *ms
             return reply,
             "eth!=NULL failed");
 
-    cmd = exalt_eth_get_cmd(eth);
+    cmd = exalt_conn_get_cmd(exalt_eth_get_connection(eth));
     EXALT_ASSERT_ADV(cmd!=NULL,
             dbus_args_error_append(reply,
                 EXALT_DBUS_CMD_ERROR_ID,
                 EXALT_DBUS_CMD_ERROR);
             return reply,
             "cmd!=NULL failed");
-
 
     dbus_args_valid_append(reply);
     dbus_message_iter_init_append(reply, &args);
@@ -569,49 +580,4 @@ DBusMessage * dbus_cb_eth_get_cmd(E_DBus_Object *obj __UNUSED__, DBusMessage *ms
 
     return reply;
 }
-
-DBusMessage * dbus_cb_eth_set_cmd(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
-{
-    DBusMessage *reply;
-    DBusMessageIter args;
-    Exalt_Ethernet* eth;
-    const char* cmd;
-
-    reply = dbus_message_new_method_return(msg);
-
-    eth= dbus_get_eth(msg);
-    EXALT_ASSERT_ADV(eth!=NULL,
-            dbus_args_error_append(reply,
-                EXALT_DBUS_INTERFACE_ERROR_ID,
-                EXALT_DBUS_INTERFACE_ERROR);
-            return reply,
-            "eth!=NULL failed");
-
-    //retrieve the cmd
-    if(!dbus_message_iter_init(msg, &args))
-    {
-        dbus_args_error_append(reply,
-                EXALT_DBUS_NO_ARGUMENT_ID,
-                EXALT_DBUS_NO_ARGUMENT);
-        return reply;
-    }
-
-    dbus_message_iter_next(&args);
-    if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
-    {
-        dbus_args_error_append(reply,
-                EXALT_DBUS_ARGUMENT_NOT_STRING_ID,
-                EXALT_DBUS_ARGUMENT_NOT_STRING);
-        return reply;
-    }
-    else
-        dbus_message_iter_get_basic(&args, &cmd);
-
-    exalt_eth_set_cmd(eth,cmd);
-
-    dbus_args_valid_append(reply);
-    return reply;
-}
-
-
 

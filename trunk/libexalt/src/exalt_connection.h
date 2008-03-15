@@ -134,6 +134,8 @@ Exalt_Enum_Connection_Mode exalt_conn_get_connection_mode(Exalt_Connection* c);
 
 Eet_Data_Descriptor * exalt_conn_edd_new();
 
+int exalt_conn_set_cmd(Exalt_Connection *c, const char* cmd);
+const char* exalt_conn_get_cmd(Exalt_Connection* c);
 
 /** @} */
 

@@ -105,8 +105,6 @@ Exalt_Ethernet* exalt_eth_get_ethernet_bypos(int pos);
 Exalt_Ethernet* exalt_eth_get_ethernet_byudi(const char* udi);
 Exalt_Ethernet* exalt_eth_get_ethernet_byifindex(int ifindex);
 
-int exalt_eth_set_cmd(Exalt_Ethernet* eth, const char* cmd);
-const char* exalt_eth_get_cmd(Exalt_Ethernet* eth);
 
 short exalt_eth_is_link(Exalt_Ethernet *eth);
 const char* exalt_eth_get_name(const Exalt_Ethernet* eth);

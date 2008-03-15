@@ -36,6 +36,8 @@ struct Exalt_Connection
     char* key;
     Exalt_Enum_Connection_Mode connection_mode;
     Exalt_Enum_Security_Mode security_mode;
+
+    char* cmd_after_apply; //a command call after exalt_conn_apply()
 };
 
 /**
@@ -69,6 +71,7 @@ Exalt_Connection* exalt_conn_new()
     c->connection_mode = EXALT_CONNECTION_ADHOC;
     c->security_mode = EXALT_SECURITY_OPEN;
 
+    c->cmd_after_apply = NULL;
     return c;
 }
 
@@ -110,6 +113,8 @@ Exalt_Connection* exalt_conn_custom_new(Exalt_Enum_Mode mode,
     exalt_conn_set_encryption_mode(c,encryption_mode);
     exalt_conn_set_key(c,key);
     exalt_conn_set_connection_mode(c, connection_mode);
+
+    c->cmd_after_apply = NULL;
     exalt_conn_set_security_mode(c,security_mode);
     return c;
 }
@@ -175,6 +180,37 @@ short exalt_conn_set_mode(Exalt_Connection* c, Exalt_Enum_Mode mode)
     c->mode = mode;
     return 1;
 }
+
+
+
+/**
+ * @brief set a command which will be run after a configuration is applied
+ * @param c the connection
+ * @param cmd the command
+ * @return Returns 1 if the new command is apply, else 0
+ */
+int exalt_conn_set_cmd(Exalt_Connection *c, const char* cmd)
+{
+    EXALT_ASSERT_RETURN(c!=NULL);
+    EXALT_ASSERT_RETURN(cmd!=NULL);
+
+    EXALT_FREE(c->cmd_after_apply);
+    c->cmd_after_apply=strdup(cmd);
+    return 1;
+}
+
+
+/**
+ * @brief get the command which will be run after a configuration is applied
+ * @param c the connection
+ * @return Returns the command or NULL
+ */
+const char* exalt_conn_get_cmd(Exalt_Connection* c)
+{
+    EXALT_ASSERT_RETURN(c!=NULL);
+    return c->cmd_after_apply;
+}
+
 
 
 /**
@@ -491,6 +527,8 @@ Eet_Data_Descriptor * exalt_conn_edd_new()
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Connection, "key", key, EET_T_STRING);
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Connection, "connection_mode", connection_mode, EET_T_INT);
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Connection, "security_mode", security_mode, EET_T_INT);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Connection, "cmd_after_apply", cmd_after_apply, EET_T_STRING);
+
 
     return edd;
 }

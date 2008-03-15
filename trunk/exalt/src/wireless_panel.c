@@ -118,11 +118,15 @@ void wirelesspanel_update_advanced_mode(wireless_panel *pnl)
     {
         etk_widget_hide(pnl->lbl_driver);
         etk_widget_hide(pnl->cmbox_driver);
+        etk_widget_hide(pnl->entry_conn_cmd);
+        etk_widget_hide(pnl->lbl_conn_cmd);
     }
     else
     {
         etk_widget_show(pnl->lbl_driver);
         etk_widget_show(pnl->cmbox_driver);
+        etk_widget_show(pnl->entry_conn_cmd);
+        etk_widget_show(pnl->lbl_conn_cmd);
     }
 }
 
@@ -156,7 +160,7 @@ void wirelesspanel_disabled_widget_activate(wireless_panel* pnl)
         etk_widget_disabled_set(pnl->check_static,ETK_TRUE);
         etk_widget_disabled_set(pnl->check_dhcp,ETK_TRUE);
         etk_widget_disabled_set(pnl->cmbox_driver,ETK_TRUE);
-
+        etk_widget_disabled_set(pnl->entry_conn_cmd,ETK_TRUE);
         etk_widget_show_all(pnl->hbox_pbar);
 
         return ;
@@ -179,6 +183,8 @@ void wirelesspanel_disabled_widget_activate(wireless_panel* pnl)
         etk_widget_disabled_set(pnl->check_static,ETK_TRUE);
         etk_widget_disabled_set(pnl->check_dhcp,ETK_TRUE);
         etk_widget_disabled_set(pnl->cmbox_driver,ETK_TRUE);
+        etk_widget_disabled_set(pnl->entry_conn_cmd,ETK_TRUE);
+
 
         return ;
     }
@@ -198,6 +204,8 @@ void wirelesspanel_disabled_widget_activate(wireless_panel* pnl)
     etk_widget_disabled_set(pnl->check_static,ETK_FALSE);
     etk_widget_disabled_set(pnl->check_dhcp,ETK_FALSE);
     etk_widget_disabled_set(pnl->cmbox_driver,ETK_FALSE);
+    etk_widget_disabled_set(pnl->entry_conn_cmd,ETK_FALSE);
+
 
 
 
@@ -245,10 +253,10 @@ void wirelesspanel_hide(wireless_panel* pnl)
 
 void wirelesspanel_set_eth(wireless_panel* pnl, char* interface)
 {
-   EXALT_ASSERT_RETURN_VOID(pnl!=NULL);
-   EXALT_ASSERT_RETURN_VOID(interface!=NULL);
+    EXALT_ASSERT_RETURN_VOID(pnl!=NULL);
+    EXALT_ASSERT_RETURN_VOID(interface!=NULL);
 
-   char name[100];
+    char name[100];
     sprintf(name,_("Wireless card: %s"),interface);
     EXALT_FREE(pnl->interface);
     pnl->interface = strdup(interface);
@@ -283,6 +291,11 @@ void wirelesspanel_update_current_conf(wireless_panel* pnl)
     etk_label_set(ETK_LABEL(pnl->lbl_gateway), str);
     EXALT_FREE(str);
 
+    str = exalt_dbus_eth_get_cmd(exalt_conn,pnl->interface);
+    etk_entry_text_set(ETK_ENTRY(pnl->entry_conn_cmd),str);
+    EXALT_FREE(str);
+
+
     str = exalt_dbus_wireless_get_wpasupplicant_driver(exalt_conn,pnl->interface);
     etk_entry_text_set(
             ETK_ENTRY(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(pnl->cmbox_driver)))
@@ -294,7 +307,7 @@ Etk_Widget* wirelesspanel_pageconnection_create(wireless_panel* pnl)
 {
     Etk_Widget *table,*label;
     Etk_Combobox_Item* item;
-    table = etk_table_new(2, 13,ETK_TABLE_NOT_HOMOGENEOUS);
+    table = etk_table_new(2, 14,ETK_TABLE_NOT_HOMOGENEOUS);
     Exalt_Enum_Encryption_Mode *en_none = malloc(sizeof(int));
     *en_none = EXALT_ENCRYPTION_NONE;
     Exalt_Enum_Encryption_Mode *en_wep_ascii = malloc(sizeof(Exalt_Enum_Encryption_Mode));
@@ -336,6 +349,9 @@ Etk_Widget* wirelesspanel_pageconnection_create(wireless_panel* pnl)
     etk_entry_clear_button_add(ETK_ENTRY(pnl->entry_conn_mask));
     pnl->entry_conn_gateway = etk_entry_new();
     etk_entry_clear_button_add(ETK_ENTRY(pnl->entry_conn_gateway));
+    pnl->entry_conn_cmd = etk_entry_new();
+    etk_entry_clear_button_add(ETK_ENTRY(pnl->entry_conn_cmd));
+
     pnl->btn_apply = etk_button_new_from_stock(ETK_STOCK_DIALOG_APPLY);
     pnl->check_static = etk_radio_button_new_with_label(_("Static address"),NULL);
     pnl->check_dhcp = etk_radio_button_new_with_label_from_widget(_("DHCP (Automatic configuration)"),ETK_RADIO_BUTTON(pnl->check_static));
@@ -431,14 +447,17 @@ Etk_Widget* wirelesspanel_pageconnection_create(wireless_panel* pnl)
     etk_table_attach(ETK_TABLE(table), label, 0, 0, 8, 8, 0, 0, ETK_TABLE_HFILL);
     etk_table_attach_default(ETK_TABLE(table), pnl->entry_conn_gateway, 1, 1, 8, 8);
 
+    pnl->lbl_conn_cmd = etk_label_new(_("Command: "));
+    etk_table_attach(ETK_TABLE(table), pnl->lbl_conn_cmd, 0, 0, 9, 9, 0, 0, ETK_TABLE_HFILL);
+    etk_table_attach_default(ETK_TABLE(table), pnl->entry_conn_cmd, 1, 1, 9, 9);
 
     pnl->lbl_driver = etk_label_new(_("Wpa_supplicant driver: "));
-    etk_table_attach(ETK_TABLE(table), pnl->lbl_driver, 0, 0, 9, 9, 0, 0, ETK_TABLE_HFILL);
-    etk_table_attach_default(ETK_TABLE(table), pnl->cmbox_driver, 1, 1, 9, 9);
+    etk_table_attach(ETK_TABLE(table), pnl->lbl_driver, 0, 0, 10, 10, 0, 0, ETK_TABLE_HFILL);
+    etk_table_attach_default(ETK_TABLE(table), pnl->cmbox_driver, 1, 1, 10, 10);
 
 
-    etk_table_attach(ETK_TABLE(table), pnl->btn_apply, 0, 0, 10, 10, 0, 0, ETK_TABLE_HFILL);
-    etk_table_attach_default(ETK_TABLE(table), pnl->hbox_pbar, 1, 1, 10, 10);
+    etk_table_attach(ETK_TABLE(table), pnl->btn_apply, 0, 0, 11, 11, 0, 0, ETK_TABLE_HFILL);
+    etk_table_attach_default(ETK_TABLE(table), pnl->hbox_pbar, 1, 1, 11, 11);
 
     etk_signal_connect("text-changed",ETK_OBJECT(pnl->entry_conn_essid),ETK_CALLBACK(wirelesspanel_textchanged_entry_cb),pnl);
     etk_signal_connect("text-changed",ETK_OBJECT(pnl->entry_conn_pwd),ETK_CALLBACK(wirelesspanel_textchanged_entry_cb),pnl);
@@ -655,6 +674,7 @@ void wirelesspanel_btn_apply_clicked_cb(void *data)
     int *mode;
     int *security;
     const char* driver;
+    const char* cmd;
     Etk_Combobox_Item *active_item;
     Exalt_Connection *c;
 
@@ -712,6 +732,9 @@ void wirelesspanel_btn_apply_clicked_cb(void *data)
     driver = etk_entry_text_get(ETK_ENTRY(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(pnl->cmbox_driver))));
     if(driver)
         exalt_dbus_wireless_set_wpasupplicant_driver(exalt_conn, pnl->interface, driver);
+
+    cmd = etk_entry_text_get(ETK_ENTRY(pnl->entry_conn_cmd));
+    exalt_conn_set_cmd(c, cmd);
 
     if(!exalt_dbus_eth_apply_conn(exalt_conn, pnl->interface,c))
         return ;

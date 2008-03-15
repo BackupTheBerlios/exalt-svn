@@ -64,7 +64,8 @@ struct _wireless_panel
 	Etk_Widget *cmbox_security;
         Etk_Widget *cmbox_mode;
         Etk_Widget *btn_apply;
-
+        Etk_Widget *entry_conn_cmd;
+        Etk_Widget *lbl_conn_cmd;
         //pbar pannel
 	Etk_Widget* hbox_pbar;
 	Etk_Widget* pbar;
