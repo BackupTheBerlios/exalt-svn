@@ -132,6 +132,7 @@ void exalt_conn_free(Exalt_Connection* c)
     EXALT_FREE(c->netmask);
     EXALT_FREE(c->essid);
     EXALT_FREE(c->key);
+    EXALT_FREE(c->cmd_after_apply);
 
     EXALT_FREE(c);
 }

@@ -291,11 +291,6 @@ void wirelesspanel_update_current_conf(wireless_panel* pnl)
     etk_label_set(ETK_LABEL(pnl->lbl_gateway), str);
     EXALT_FREE(str);
 
-    str = exalt_dbus_eth_get_cmd(exalt_conn,pnl->interface);
-    etk_entry_text_set(ETK_ENTRY(pnl->entry_conn_cmd),str);
-    EXALT_FREE(str);
-
-
     str = exalt_dbus_wireless_get_wpasupplicant_driver(exalt_conn,pnl->interface);
     etk_entry_text_set(
             ETK_ENTRY(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(pnl->cmbox_driver)))
@@ -816,6 +811,8 @@ void wirelesspanel_textchanged_entry_cb(Etk_Object *object __UNUSED__, void *dat
             etk_entry_text_set(ETK_ENTRY(pnl->entry_conn_pwd),exalt_conn_get_key(c));
         else
             etk_entry_clear(ETK_ENTRY(pnl->entry_conn_pwd));
+
+        etk_entry_text_set(ETK_ENTRY(pnl->entry_conn_cmd),exalt_conn_get_cmd(c));
 
         exalt_conn_free(c);
     }

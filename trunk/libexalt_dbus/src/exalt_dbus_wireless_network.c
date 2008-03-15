@@ -476,6 +476,8 @@ Exalt_Connection * exalt_dbus_wirelessnetwork_get_default_conn(const exalt_dbus_
         exalt_conn_set_security_mode(c,exalt_dbus_response_integer(msg,pos++));
     }
 
+    exalt_conn_set_cmd(c,exalt_dbus_response_string(msg,pos++));
+
     dbus_message_unref(msg);
     return c;
 }

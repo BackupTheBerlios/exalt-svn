@@ -401,6 +401,15 @@ DBusMessage * dbus_cb_wirelessnetwork_get_default_conn(E_DBus_Object *obj __UNUS
                 return reply,
                 "dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &i) failed");
     }
+
+    s = exalt_conn_get_cmd(c);
+    if(!s)
+        s="";
+    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &s),
+            return reply,
+            "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &s) failed");
+
+
     return reply;
 }
 
