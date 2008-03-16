@@ -27,7 +27,7 @@
 short exalt_ioctl(void* argp, int request)
 {
     int fd;
-
+    short busy = 0;
     //edit param: SIOCSIFFLAGS SIOCSIFFLAGS SIOCDELRT SIOCSIFADDR SIOCSIFNETMASK SIOCADDRT SIOCETHTOOL
     //read param: SIOCGIWNAME SIOCGIWESSID SIOCGIWNAME SIOCGIFFLAGS SIOCGIFADDR SIOCGIFNETMASK SIOCGIFHWADDR
 
@@ -42,9 +42,32 @@ short exalt_ioctl(void* argp, int request)
 
     fd=iw_sockets_open();
     EXALT_ASSERT_RETURN(fd>=0);
-    EXALT_ASSERT_ADV( ioctl(fd, request, argp) !=-1,
+
+    //Sometimes the ressource is busy, we can wait a little time and retry (only 1 time)
+    do{
+        busy++;
+        if(ioctl(fd, request, argp) ==-1)
+        {
+            if(busy==1 && errno==11)//ressource not available
+            {
+                busy++;
+                EXALT_ASSERT_ADV(0,,"ioctl(%d): %s (%d) (first time)",request,strerror(errno),errno);
+                usleep(500);
+            }
+            else
+            {
+                close(fd);
+                EXALT_ASSERT_ADV(0,,"ioctl(%d): %s (%d)",request,strerror(errno),errno);
+                return 0;
+            }
+        }
+    }while(busy == 2);
+
+    //old code
+    /*EXALT_ASSERT_ADV( ioctl(fd, request, argp) !=-1,
             close(fd);return 0,
-            "ioctl(%d): %s",request,strerror(errno));
+            "ioctl(%d): %s (%d)",request,strerror(errno),errno);
+    */
 
     close(fd);
     return 1;

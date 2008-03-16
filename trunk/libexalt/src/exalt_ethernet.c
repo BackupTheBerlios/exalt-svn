@@ -86,10 +86,10 @@ Exalt_Ethernet* exalt_eth_new(const char* name)
     eth->_save_up = 0;
     eth->wireless = NULL;
 
+    //test if the interface has a wireless extension
     strncpy(wrq.ifr_name, exalt_eth_get_name(eth), sizeof(wrq.ifr_name));
     if(exalt_ioctl(&wrq, SIOCGIWNAME))
         eth->wireless = exalt_wireless_new(eth);
-
     return eth;
 }
 
