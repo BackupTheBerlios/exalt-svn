@@ -128,6 +128,11 @@ int exalt_eth_apply_conn(Exalt_Ethernet* eth, Exalt_Connection* c);
 Exalt_Connection* exalt_eth_get_connection(Exalt_Ethernet* eth);
 short exalt_eth_set_connection(Exalt_Ethernet* eth, Exalt_Connection* c);
 
+
+void exalt_eth_up_without_apply(Exalt_Ethernet* eth);
+void exalt_eth_set_dontapplyafterup(Exalt_Ethernet * eth, time_t t);
+time_t exalt_eth_get_dontapplyafterup(Exalt_Ethernet* eth);
+
 /** @} */
 
 #endif

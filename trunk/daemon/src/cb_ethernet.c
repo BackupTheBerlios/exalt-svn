@@ -314,7 +314,7 @@ DBusMessage * dbus_cb_eth_up(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
             "eth!=NULL failed");
 
 
-    exalt_eth_up(eth);
+    exalt_eth_up_without_apply(eth);
     dbus_args_valid_append(reply);
 
     return reply;

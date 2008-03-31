@@ -43,16 +43,16 @@ short exalt_ioctl(void* argp, int request)
     fd=iw_sockets_open();
     EXALT_ASSERT_RETURN(fd>=0);
 
-    //Sometimes the ressource is busy, we can wait a little time and retry (only 1 time)
+    //Sometimes the ressource is busy, we can wait a little time and retry (only 3 times)
     do{
         busy++;
         if(ioctl(fd, request, argp) ==-1)
         {
-            if(busy==1 && errno==11)//ressource not available
+            if( (busy==1 || busy==3 || busy==5 ) && errno==11)//ressource not available
             {
                 busy++;
-                EXALT_ASSERT_ADV(0,,"ioctl(%d): %s (%d) (first time)",request,strerror(errno),errno);
-                usleep(500);
+                EXALT_ASSERT_ADV(0,,"ioctl(%d): %s (%d) (will retry)",request,strerror(errno),errno);
+                usleep(50000);
             }
             else
             {
@@ -61,7 +61,7 @@ short exalt_ioctl(void* argp, int request)
                 return 0;
             }
         }
-    }while(busy == 2);
+    }while(busy == 2 || busy==4 || busy==6);
 
     //old code
     /*EXALT_ASSERT_ADV( ioctl(fd, request, argp) !=-1,

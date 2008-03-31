@@ -262,10 +262,24 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
         }
     }
 
-    //maybe we can apply the configuration when the card is activate ?
-    if (action == EXALT_ETH_CB_ACTION_LINK && exalt_eth_is_up(eth))
+    if ( action == EXALT_ETH_CB_ACTION_LINK && exalt_eth_is_up(eth))
     {
-        Exalt_Connection *c = exalt_eth_conn_load(CONF_FILE, exalt_eth_get_name(eth));
+        Exalt_Connection *c = exalt_eth_conn_load(CONF_FILE, exalt_eth_get_udi(eth));
+        if(!c)
+            c = exalt_conn_new();
+        if(exalt_eth_is_wireless(eth))
+            exalt_conn_set_wireless(c, 1);
+        else
+            exalt_conn_set_wireless(c, 0);
+
+        exalt_eth_apply_conn(eth, c);
+        exalt_eth_save(CONF_FILE,eth);
+    }
+
+
+    if ( action == EXALT_ETH_CB_ACTION_UP && exalt_eth_is_link(eth) && (time(NULL) - exalt_eth_get_dontapplyafterup(eth)>2) )
+    {
+        Exalt_Connection *c = exalt_eth_conn_load(CONF_FILE, exalt_eth_get_udi(eth));
         if(!c)
             c = exalt_conn_new();
         if(exalt_eth_is_wireless(eth))
@@ -307,7 +321,6 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
             }
         }
     }
-
 
     //send a broadcast
     msg = dbus_message_new_signal(EXALTD_PATH,EXALTD_INTERFACE_READ, "NOTIFY");

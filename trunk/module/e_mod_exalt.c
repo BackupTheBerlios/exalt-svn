@@ -359,6 +359,7 @@ void _exalt_menu_item_wireless_load(exalt_dbus_conn *conn, E_Menu *m, char* inte
 	char *img[4];
 	img[0] = img1;img[1] = img2;img[2] = img3;img[3] = img4;
 	char** data;
+        int quality;
 
 	if(!m || !interface)
 		return;
@@ -380,9 +381,15 @@ void _exalt_menu_item_wireless_load(exalt_dbus_conn *conn, E_Menu *m, char* inte
 				data = malloc(sizeof(char*)*2);
 				data[0] = interface;
 
+                                quality = exalt_dbus_wirelessnetwork_get_quality(conn,interface,essid)/25;
+                                if(quality<0)
+                                    quality=0;
+                                if(quality>3)
+                                    quality=3;
+
 				mi = e_menu_item_new(m);
 				data[1] = essid;
-				e_menu_item_icon_file_set(mi,img[(exalt_dbus_wirelessnetwork_get_quality(conn,interface,essid))/25]);
+				e_menu_item_icon_file_set(mi,img[quality]);
 				e_menu_item_label_set(mi, essid);
 				e_menu_item_callback_set(mi, _exalt_wireless_cb, data);
 				e_menu_item_check_set(mi,1);

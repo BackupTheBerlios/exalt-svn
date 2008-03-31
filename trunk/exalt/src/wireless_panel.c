@@ -520,12 +520,17 @@ void wirelesspanel_scan_networks_cb(char* interface, Ecore_List* networks, void*
     ecore_list_first_goto(networks);
     while( (essid = ecore_list_next(networks)))
     {
+        int quality = exalt_dbus_wirelessnetwork_get_quality(exalt_conn, interface, essid)/25;
+        if(quality<0)
+            quality = 0;
+        if(quality>3)
+            quality=3;
 
         if( (row=wirelesspanel_essid_get_row(pnl,essid)))
         {
             etk_tree_row_fields_set(row,ETK_FALSE,
                     pnl->scan_quality,
-                    img[(exalt_dbus_wirelessnetwork_get_quality(exalt_conn, interface, essid))/25],
+                    img[quality],
                     NULL,
 
                     pnl->scan_encryption,
@@ -539,7 +544,7 @@ void wirelesspanel_scan_networks_cb(char* interface, Ecore_List* networks, void*
             //we add the network
             etk_tree_row_append(ETK_TREE(pnl->scan_list), NULL,
                     pnl->scan_quality,
-                    img[(exalt_dbus_wirelessnetwork_get_quality(exalt_conn, interface, essid))/25],
+                    img[quality],
                     NULL,
 
                     pnl->scan_encryption,

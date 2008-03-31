@@ -57,6 +57,8 @@ struct Exalt_Ethernet
 
     pid_t apply_pid;
     Ecore_Timer *apply_timer;
+
+    time_t dont_apply_after_up;
 };
 
 
@@ -85,6 +87,7 @@ Exalt_Ethernet* exalt_eth_new(const char* name)
     eth-> _save_link = 0;
     eth->_save_up = 0;
     eth->wireless = NULL;
+    eth->dont_apply_after_up = NULL;
 
     //test if the interface has a wireless extension
     strncpy(wrq.ifr_name, exalt_eth_get_name(eth), sizeof(wrq.ifr_name));
@@ -163,6 +166,53 @@ void exalt_eth_up(Exalt_Ethernet* eth)
         return ;
 }
 
+/**
+ * @brief up the interface "eth" but tell to the daemon "don't apply a connection",
+ * sometimes we need upping an interface when we want apply a connection, this method avoid a infinite loop
+ * @param eth the interface
+ */
+void exalt_eth_up_without_apply(Exalt_Ethernet* eth)
+{
+    struct ifreq ifr;
+
+    EXALT_ASSERT_RETURN_VOID(eth!=NULL);
+
+    strncpy(ifr.ifr_name,exalt_eth_get_name(eth),sizeof(ifr.ifr_name));
+
+    if( !exalt_ioctl(&ifr, SIOCGIFFLAGS))
+        return ;
+
+    ifr.ifr_flags |= IFF_UP;
+    if( !exalt_ioctl(&ifr, SIOCSIFFLAGS))
+        return ;
+
+    eth->dont_apply_after_up =  time(NULL);
+}
+
+/*
+ * @brief set the time in seconds when you up the interface
+ * then the daemon will use this value to know if it will apply or not the connection when it will get the notification from the kernel
+ * the daemon use a timeout of x secondes
+ * if(current_time - value > x) apply a conenction
+ * @param eth the interface
+ * @param the value in seconds
+ */
+void exalt_eth_set_dontapplyafterup(Exalt_Ethernet * eth, time_t t)
+{
+    EXALT_ASSERT(eth!=NULL);
+    eth->dont_apply_after_up = t;
+}
+
+/*
+ * @brief see exalt_eth_set_dontapplyafterup
+ * @param eth the interface
+ * @return Returns the value
+ */
+time_t exalt_eth_get_dontapplyafterup(Exalt_Ethernet* eth)
+{
+    EXALT_ASSERT(eth!=NULL);
+    return eth->dont_apply_after_up;
+}
 
 
 /**
@@ -1012,7 +1062,6 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
     char* str;
     const char* str2;
 
-
     fd = exalt_eth_interfaces.rtlink_sock;
 
     bin = recvmsg(fd, &msg, 0);
@@ -1173,7 +1222,7 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
                     data_l = ecore_list_next(l);
                 }
                 break;
-            default: printf("hd cb default!\n");break;
+            default: /*printf("hd cb default!\n");*/break;
         }
     }
     return 1;
@@ -1304,7 +1353,7 @@ int _exalt_eth_apply_dhcp(Exalt_Ethernet* eth)
     if(pid!=getpid());
         kill(pid,SIGKILL);
     fclose(f);
-
+    remove(DHCLIENT_PID_FILE);
     return 1;
 #else
     EXALT_ASSERT_ADV(0,return 0,"Your build of libexalt doesn't support dhcp");

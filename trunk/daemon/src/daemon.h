@@ -29,7 +29,7 @@
 #include "cb_dns.h"
 #include "boot_process.h"
 #include "cb_bootprocess.h"
-
+#include <time.h>
 
 /*
  * @brief The dbus connection of the daemon

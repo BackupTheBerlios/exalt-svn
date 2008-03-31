@@ -479,7 +479,6 @@ int exalt_wireless_apply_conn(Exalt_Wireless *w)
                 return -1;
 
 
-
             //set the essid
             strncpy(essid, exalt_conn_get_essid(c), IW_ESSID_MAX_SIZE+1);
             wrq.u.essid.pointer = (caddr_t) essid;
@@ -494,6 +493,7 @@ int exalt_wireless_apply_conn(Exalt_Wireless *w)
             //reload wpa_supplicant configuration
             //we stop the current instance, because maybe we want use a different driver
             _exalt_wpa_stop(w);
+
             ctrl_conn = _exalt_wpa_open_connection(exalt_eth_get_name(eth));
             if(!ctrl_conn)
             {
@@ -625,7 +625,7 @@ void _exalt_wpa_stop(Exalt_Wireless* w)
         //the wpa_supplicant daemon deactivate the interface ...
         while(exalt_eth_is_up(eth))
             ;
-        exalt_eth_up(eth);
+        exalt_eth_up_without_apply(eth);
     }
 #endif
 }

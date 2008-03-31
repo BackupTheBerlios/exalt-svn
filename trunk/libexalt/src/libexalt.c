@@ -63,9 +63,10 @@ int exalt_main()
     /* set up a rtnetlink socket */
     memset(&addr, 0, sizeof(addr));
     addr.nl_family = AF_NETLINK;
-    addr.nl_groups = RTMGRP_LINK | RTMGRP_IPV4_IFADDR | RTMGRP_IPV4_ROUTE | RTMGRP_NOTIFY;
+    addr.nl_groups = RTMGRP_LINK | RTMGRP_IPV4_IFADDR | RTMGRP_IPV4_ROUTE | RTMGRP_NOTIFY | RTMGRP_NEIGH | RTMGRP_TC;
 
     exalt_eth_interfaces.rtlink_sock = socket(AF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
+
     if(exalt_eth_interfaces.rtlink_sock < 0) {
         perror("socket()");
         return -1;
