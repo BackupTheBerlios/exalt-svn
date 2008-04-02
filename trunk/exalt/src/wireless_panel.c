@@ -525,7 +525,6 @@ void wirelesspanel_scan_networks_cb(char* interface, Ecore_List* networks, void*
             quality = 0;
         if(quality>3)
             quality=3;
-
         if( (row=wirelesspanel_essid_get_row(pnl,essid)))
         {
             etk_tree_row_fields_set(row,ETK_FALSE,

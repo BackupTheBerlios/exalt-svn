@@ -85,10 +85,10 @@ Etk_Bool mainWindow_free(main_window** win)
     if(win && *win)
     {
         etk_object_destroy(ETK_OBJECT((*win)->win));
-        ethpanel_free(&((*win)->eth_panel));
+        /*ethpanel_free(&((*win)->eth_panel));
         wirelesspanel_free(&((*win)->wireless_panel));
         generalpanel_free(&((*win)->general_panel));
-
+*/
         EXALT_FREE(*win);
         *win = NULL;
         return 1;
