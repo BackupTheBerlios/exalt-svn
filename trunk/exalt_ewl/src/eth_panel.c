@@ -35,8 +35,8 @@ eth_panel* ethpanel_create(main_window* win)
     ewl_button_label_set(EWL_BUTTON(pnl->btn_deactivate),_("Deactivate"));
     ewl_object_fill_policy_set(EWL_OBJECT(pnl->btn_deactivate), EWL_FLAG_FILL_SHRINK);
 
-    ewl_container_child_append(EWL_CONTAINER(pnl->box_activate), pnl->btn_activate);
     ewl_container_child_append(EWL_CONTAINER(pnl->box_activate), pnl->btn_deactivate);
+    ewl_container_child_append(EWL_CONTAINER(pnl->box_activate), pnl->btn_activate);
     ewl_widget_show(pnl->btn_activate);
     ewl_widget_show(pnl->btn_deactivate);
     ewl_widget_show(pnl->box_activate);
@@ -95,8 +95,6 @@ eth_panel* ethpanel_create(main_window* win)
     ewl_grid_column_relative_w_set(EWL_GRID(grid), 0, 0.20);
 
     label = ewl_label_new();
-    ewl_object_fill_policy_set(EWL_OBJECT(label), EWL_FLAG_FILL_HSHRINK);
-
     ewl_label_text_set(EWL_LABEL(label),_("Ip address: "));
     ewl_container_child_append(EWL_CONTAINER(grid), label);
     ewl_container_child_append(EWL_CONTAINER(grid), pnl->entry_ip);
@@ -231,14 +229,7 @@ void ethpanel_set_eth(eth_panel* pnl, char* interface)
 
     str = exalt_dbus_eth_get_cmd(exalt_conn, interface);
 
-    //bug in ewl?
-    if(strlen(str)==0)
-    {
-        EXALT_FREE(str);
-        str=strdup(" ");
-    }
-
-    ewl_text_text_set(EWL_TEXT(pnl->entry_cmd),strdup(""));
+    ewl_text_text_set(EWL_TEXT(pnl->entry_cmd),str);
     EXALT_FREE(str);
 
     ethpanel_disabled_set(pnl);
@@ -350,12 +341,12 @@ void ethpanel_btn_apply_clicked_cb(Ewl_Widget *w __UNUSED__,
     //else nothing
     //because exalt_conn_new is a dhcp connection by default
 
-    //exalt_conn_set_cmd(c,ewl_text_text_get(EWL_TEXT(pnl->entry_cmd)));
+    exalt_conn_set_cmd(c,ewl_text_text_get(EWL_TEXT(pnl->entry_cmd)));
 
     if(!exalt_dbus_eth_apply_conn(exalt_conn, pnl->interface,c))
         return ;
     ewl_widget_show(pnl->hbox_pbar);
-    //ewl_widget_disable(pnl->win->eth_list);
+    ewl_widget_disable(pnl->win->eth_tree);
     ewl_widget_disable(pnl->btn_deactivate);
     pnl->apply = 1;
     ethpanel_disabled_set(pnl);
@@ -414,7 +405,7 @@ void ethpanel_disabled_set(eth_panel* pnl)
 void ethpanel_conn_apply_done(eth_panel* pnl)
 {
     ewl_widget_hide(pnl->hbox_pbar);
-    //ewl_widget_enable(pnl->win->eth_list);
+    ewl_widget_enable(pnl->win->eth_tree);
     ewl_widget_enable(pnl->btn_deactivate);
     pnl->apply = 0;
     ethpanel_disabled_set(pnl);

@@ -70,7 +70,6 @@ void ethpanel_conn_apply_done(eth_panel* pnl);
 void ethpanel_btn_deactivate_clicked_cb(Ewl_Widget *w __UNUSED__,
         void *ev_data __UNUSED__,
         void *user_data);
-
 void ethpanel_btn_activate_clicked_cb(Ewl_Widget *w __UNUSED__,
         void *ev_data __UNUSED__,
         void *user_data);

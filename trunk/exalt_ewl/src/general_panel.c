@@ -3,26 +3,49 @@
 
 general_panel* generalpanel_create(main_window *win)
 {
-	Etk_Widget *vbox;
+	Ewl_Widget *vbox, *label;
 	general_panel* pnl;
 
 	pnl=malloc(sizeof(general_panel));
 
         pnl->win = win;
 
-	vbox = etk_vbox_new(ETK_FALSE, 5);
+	vbox = ewl_vbox_new();
 	pnl->frame = vbox;
 
-        pnl->notebook = etk_notebook_new();
-        etk_box_append(ETK_BOX(vbox), pnl->notebook, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+        pnl->notebook = ewl_notebook_new();
+        ewl_container_child_append(EWL_CONTAINER(vbox), pnl->notebook);
 
         pnl->dns = dnspanel_create();
-        etk_notebook_page_append(ETK_NOTEBOOK(pnl->notebook),_("DNS (Dynamic Name Server)"),pnl->dns->frame);
-
         pnl->boot = bootpanel_create(win);
-
         pnl->about = aboutpanel_create();
-        etk_notebook_page_append(ETK_NOTEBOOK(pnl->notebook),_("About"),pnl->about->frame);
+
+        label = ewl_label_new();
+        ewl_label_text_set(EWL_LABEL(label), _("DNS (Dynamic Name Server)"));
+        ewl_widget_show(label);
+
+        ewl_container_child_append(EWL_CONTAINER(pnl->notebook), pnl->dns->frame);
+        ewl_notebook_page_tab_widget_set(EWL_NOTEBOOK(pnl->notebook) ,pnl->dns->frame, label);
+
+        label = ewl_label_new();
+        ewl_label_text_set(EWL_LABEL(label), _("Boot process"));
+        ewl_widget_show(label);
+
+        ewl_container_child_append(EWL_CONTAINER(pnl->notebook), pnl->boot->frame);
+        ewl_notebook_page_tab_widget_set(EWL_NOTEBOOK(pnl->notebook) ,pnl->boot->frame, label);
+
+
+        label = ewl_label_new();
+        ewl_label_text_set(EWL_LABEL(label), _("About"));
+        ewl_widget_show(label);
+
+        ewl_container_child_append(EWL_CONTAINER(pnl->notebook), pnl->about->frame);
+        ewl_notebook_page_tab_widget_set(EWL_NOTEBOOK(pnl->notebook) ,pnl->about->frame, label);
+
+        ewl_widget_show(pnl->frame);
+        ewl_widget_show(pnl->notebook);
+        ewl_widget_show(pnl->about->frame);
+        ewl_widget_show(label);
 
         return pnl;
 }
@@ -40,26 +63,27 @@ void generalpanel_free(general_panel** pnl)
 
 void generalpanel_show(general_panel* pnl)
 {
-	etk_widget_show_all(pnl->frame);
+	ewl_widget_show(pnl->frame);
 }
 
 void generalpanel_hide(general_panel* pnl)
 {
-	etk_widget_hide_all(pnl->frame);
+	ewl_widget_hide(pnl->frame);
 }
 
 void generalpanel_update_advanced_mode(general_panel *pnl)
 {
-    if(!pnl->win->advanced_mode)
+    pnl=pnl;
+    /*if(!pnl->win->advanced_mode)
     {
-        int num = etk_notebook_page_index_get(ETK_NOTEBOOK(pnl->notebook), pnl->boot->frame);
-        //remove a notebook segfault
-        /*if(num>0)
-            etk_notebook_page_remove(ETK_NOTEBOOK(pnl->notebook),num);
-            */
+        Ewl_Widget *w = ewl_notebook_page_tab_widget_get(EWL_NOTEBOOK(pnl->notebook) ,pnl->boot->frame) ;
+        ewl_widget_hide(w);
     }
     else
-        etk_notebook_page_append(ETK_NOTEBOOK(pnl->notebook),_("Boot process"),pnl->boot->frame);
+    {
+       ewl_widget_show(pnl->boot->frame);
+    }
     bootpanel_show(pnl->boot);
+    */
 }
 

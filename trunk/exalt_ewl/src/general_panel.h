@@ -16,9 +16,9 @@ struct _general_panel
 {
     main_window* win;
 
-    Etk_Widget *frame;
+    Ewl_Widget *frame;
 
-    Etk_Widget *notebook;
+    Ewl_Widget *notebook;
 
     about_panel *about;
     dns_panel* dns;
@@ -31,8 +31,6 @@ void generalpanel_show(general_panel* pnl);
 void generalpanel_hide(general_panel* pnl);
 
 void generalpanel_update_advanced_mode(general_panel *pnl);
-
-
 
 
 #endif

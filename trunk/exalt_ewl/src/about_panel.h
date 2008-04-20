@@ -8,7 +8,7 @@ typedef struct about_panel about_panel;
 
 struct about_panel
 {
-    Etk_Widget* frame;
+    Ewl_Widget* frame;
 } ;
 
 about_panel* aboutpanel_create();

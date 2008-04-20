@@ -31,46 +31,46 @@ int main(int argc,char**argv)
 
 	argc--;
 	argv++;
-	while(argc)
-	{
-		if(*argv[0] == '-')
-		{
- 	 	 	if(strcmp(*argv, "-i")==0)
-			{
-				argc--;
-				if(argc)
-				{
-					exalt_default_interface = *(++argv);
-					opt_i=1;
-				}
-			}
-			else if(strcmp(*argv,"-w")==0)
-			{
-			 	argc--;
-				if(argc)
-				{
-					exalt_default_network = *(++argv);
-					opt_w = 1;
-				}
-			}
-		}
-		if(argc) argc--;
- 	 	argv++;
-	}
+   while(argc)
+   {
+       if(*argv[0] == '-')
+       {
+           if(strcmp(*argv, "-i")==0)
+           {
+               argc--;
+               if(argc)
+               {
+                   exalt_default_interface = *(++argv);
+                   opt_i=1;
+               }
+           }
+           else if(strcmp(*argv,"-w")==0)
+           {
+               argc--;
+               if(argc)
+               {
+                   exalt_default_network = *(++argv);
+                   opt_w = 1;
+               }
+           }
+       }
+       if(argc) argc--;
+       argv++;
+   }
 
-        win = mainwindow_create();
+   win = mainwindow_create();
 
-	etk_main();
+   etk_main();
 
-        mainWindow_free(&win);
+   mainWindow_free(&win);
 
-        if(exalt_conn)
-        exalt_dbus_free(&exalt_conn);
+   if(exalt_conn)
+       exalt_dbus_free(&exalt_conn);
 
-        exalt_dbus_shutdown();
+   exalt_dbus_shutdown();
 
-        etk_shutdown();
-        return 1;
+   //etk_shutdown();
+   return 1;
 }
 
 

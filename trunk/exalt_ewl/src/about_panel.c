@@ -3,37 +3,65 @@
 
 about_panel* aboutpanel_create()
 {
-    Etk_Widget *text,*vbox, *hbox,*img;
+    Ewl_Widget *text,*vbox,*img, *grid, *border;
     about_panel* pnl;
 
     pnl = malloc(sizeof(pnl));
 
-    vbox = etk_vbox_new(ETK_FALSE, 5);
+    vbox = ewl_vbox_new();
+
     pnl->frame = vbox;
-    hbox = etk_hbox_new(ETK_FALSE, 5);
 
-    text = etk_text_view_new();
-    etk_widget_size_request_set(text, -1, 150);
-    etk_object_properties_set(ETK_OBJECT(text), "focusable", ETK_FALSE, NULL);
-    etk_textblock_text_set(ETK_TEXT_VIEW(text)->textblock,
-             _("<p><b>Exalt</b> is a network manager that uses Etk as its toolkit. </p>"
-             "\n<p>Exalt supports ethernets interfaces (wired or wireless) and allows you to configure your network configuration easily.</p>"
-             "\n<p>Author: Watchwolf (watchwolf@watchwolf.fr)</p>"
-             "\n<p>This software is provided as-is with no explicit or implied warranty. This software is governed by licensing conditions, so please see the COPYING and COPYING-PLAIN license files installed on your system.</p>"
-             "\n<p align=\"center\"><style effect=glow color1=#fa14 color2=#fe87>"
-             "<b>"VERSION"</b>"
-             "</style></p>"),
-             ETK_TRUE);
-    etk_box_append(ETK_BOX(vbox), text, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+    border = ewl_border_new();
+    ewl_border_label_set(EWL_BORDER(border),_("About"));
+    ewl_object_fill_policy_set(EWL_OBJECT(border),EWL_FLAG_FILL_HSHRINK);
+    text = ewl_text_new();
 
-    etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+    ewl_text_styles_set(EWL_TEXT(text), EWL_TEXT_STYLE_GLOW
+            );
+    ewl_text_glow_color_set(EWL_TEXT(text), 230, 80, 5, 200);
+    ewl_text_text_append(EWL_TEXT(text),_("Exalt"));
+    ewl_text_styles_set(EWL_TEXT(text), EWL_TEXT_STYLE_NONE);
+    ewl_text_text_append(EWL_TEXT(text),
+            _(" is a network manager that uses Ewl as its toolkit. "
+                "\n\nExalt supports ethernets interfaces (wired or wireless) \nand allows you to configure your network configuration easily."
+                "\n\nAuthor: Watchwolf (watchwolf@watchwolf.fr)"
+                "\n\nThis software is provided as-is with no explicit or implied warranty. \nThis software is governed by licensing conditions, so please see \nthe COPYING and COPYING-PLAIN license files installed on your system."
+                "\n\n"));
+
+    ewl_text_styles_set(EWL_TEXT(text), EWL_TEXT_STYLE_GLOW
+            );
+    ewl_text_glow_color_set(EWL_TEXT(text), 230, 80, 5, 200);
+
+    ewl_text_align_set(EWL_TEXT(text),EWL_FLAG_ALIGN_CENTER);
+    ewl_text_text_append(EWL_TEXT(text),VERSION);
+
+    ewl_container_child_append(EWL_CONTAINER(border), text);
+    ewl_container_child_append(EWL_CONTAINER(vbox), border);
+
+    grid = ewl_grid_new();
+    ewl_container_child_append(EWL_CONTAINER(vbox), grid);
+    ewl_object_fill_policy_set(EWL_OBJECT(grid), EWL_FLAG_FILL_HFILL);
+    ewl_grid_dimensions_set(EWL_GRID(grid), 2, 1);
+    ewl_widget_show(grid);
+
+    img = ewl_image_new();
+    ewl_image_file_path_set(EWL_IMAGE(img), ewl_icon_theme_icon_path_get(EWL_ICON_NETWORK_WIRED, EWL_ICON_SIZE_LARGE));
+    ewl_container_child_append(EWL_CONTAINER(grid), img);
+    ewl_widget_show(img);
+    ewl_object_alignment_set(EWL_OBJECT(img),EWL_FLAG_ALIGN_CENTER);
 
 
-    img = etk_image_new_from_stock(ETK_STOCK_NETWORK_WIRED,ETK_STOCK_BIG);
-    etk_box_append(ETK_BOX(hbox), img, ETK_BOX_START, ETK_BOX_EXPAND, 0);
 
-    img = etk_image_new_from_stock(ETK_STOCK_NETWORK_WIRELESS,ETK_STOCK_BIG);
-    etk_box_append(ETK_BOX(hbox), img, ETK_BOX_START, ETK_BOX_EXPAND, 0);
+    img = ewl_image_new();
+    ewl_image_file_path_set(EWL_IMAGE(img), ewl_icon_theme_icon_path_get(EWL_ICON_NETWORK_WIRELESS, EWL_ICON_SIZE_LARGE));
+    ewl_container_child_append(EWL_CONTAINER(grid), img);
+    ewl_widget_show(img);
+    ewl_object_alignment_set(EWL_OBJECT(img),EWL_FLAG_ALIGN_CENTER);
+
+    ewl_widget_show(border);
+    ewl_widget_show(text);
+    ewl_widget_show(pnl->frame);
 
     return pnl;
 }
@@ -47,12 +75,12 @@ void aboutpanel_free(about_panel** pnl)
 
 void aboutpanel_show(about_panel* pnl)
 {
-	etk_widget_show_all(pnl->frame);
+    ewl_widget_show(pnl->frame);
 }
 
 void aboutpanel_hide(about_panel* pnl)
 {
-	etk_widget_hide_all(pnl->frame);
+    ewl_widget_hide(pnl->frame);
 }
 
 
