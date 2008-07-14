@@ -60,7 +60,7 @@ void* bootpanel_eth_tree_data_fetch (
         unsigned int column __UNUSED__);
 void * bootpanel_eth_tree_header_data_fetch(void *data __UNUSED__, unsigned int column);
 Ewl_Widget * bootpanel_eth_tree_widget_fetch(void *data, unsigned int row __UNUSED__,
-        unsigned int column);
+        unsigned int column __UNUSED__);
 
 
 #endif   /* ----- #ifndef BOOT_PANEL_INC  ----- */

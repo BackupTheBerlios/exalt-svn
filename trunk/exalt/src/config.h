@@ -23,7 +23,7 @@
 /* Define if the GNU gettext() function is already present or preinstalled. */
 #define HAVE_GETTEXT 1
 
-/* Define if you have the iconv() function. */
+/* Define if you have the iconv() function and it works. */
 /* #undef HAVE_ICONV */
 
 /* Define to 1 if you have the <inttypes.h> header file. */
@@ -63,19 +63,19 @@
 #define PACKAGE_BUGREPORT ""
 
 /* Shared Data Directory */
-#define PACKAGE_DATA_DIR "/usr/local/share/exalt"
+#define PACKAGE_DATA_DIR "/usr/share/exalt"
 
 /* Installation Directory for Libraries */
 #define PACKAGE_LIB_DIR "${exec_prefix}/lib"
 
 /* Locale-specific data directory */
-#define PACKAGE_LOCALE_DIR "/usr/local/share/locale"
+#define PACKAGE_LOCALE_DIR "/usr/share/locale"
 
 /* Define to the full name of this package. */
 #define PACKAGE_NAME ""
 
 /* Source Code Directory */
-#define PACKAGE_SOURCE_DIR "/home/watchwolf/Projects/C/exalt_svn/exalt/exalt"
+#define PACKAGE_SOURCE_DIR "/home/watchwolf/Projects/C/exalt/exalt/exalt"
 
 /* Define to the full name and version of this package. */
 #define PACKAGE_STRING ""

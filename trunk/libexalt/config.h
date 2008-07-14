@@ -1,11 +1,11 @@
 /* config.h.  Generated from config.h.in by configure.  */
 /* config.h.in.  Generated from configure.in by autoheader.  */
 
-/* Debian distribution */
-/* #undef DIST_DEBIAN */
+/* Path of a dhcp command */
+#define DHCP_COMMAND_PATH "/sbin/dhclient"
 
-/* Gentoo distribution */
-#define DIST_GENTOO "gentoo"
+/* have dhcp support */
+#define HAVE_DHCP "yes"
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #define HAVE_DLFCN_H 1
@@ -37,6 +37,12 @@
 /* Define to 1 if you have the <unistd.h> header file. */
 #define HAVE_UNISTD_H 1
 
+/* have vpnc support */
+/* #undef HAVE_VPNC */
+
+/* have wpa_supplicant support */
+#define HAVE_WPA_SUPPLICANT "yes"
+
 /* Name of package */
 #define PACKAGE "exalt"
 
@@ -44,16 +50,16 @@
 #define PACKAGE_BUGREPORT ""
 
 /* Shared Data Directory */
-#define PACKAGE_DATA_DIR "/usr/local/share/exalt"
+#define PACKAGE_DATA_DIR "/usr/share/exalt"
 
 /* Installation Directory for Libraries */
-#define PACKAGE_LIB_DIR "/usr/local/lib"
+#define PACKAGE_LIB_DIR "/usr/lib"
 
 /* Define to the full name of this package. */
 #define PACKAGE_NAME ""
 
 /* Source Code Directory */
-#define PACKAGE_SOURCE_DIR "/home/watchwolf/Projects/C/exalt_svn/trunk/libexalt"
+#define PACKAGE_SOURCE_DIR "/home/watchwolf/Projects/C/exalt/exalt/libexalt"
 
 /* Define to the full name and version of this package. */
 #define PACKAGE_STRING ""
@@ -68,11 +74,20 @@
 #define STDC_HEADERS 1
 
 /* Version number of package */
-#define VERSION "0.5"
+#define VERSION "0.9"
+
+/* Path of vpnc */
+/* #undef VPNC_COMMAND_PATH */
+
+/* Path of vpnc_disconnect */
+/* #undef VPNC_DISONNECT_COMMAND_PATH */
 
 /* Define to 1 if your processor stores words with the most significant byte
    first (like Motorola and SPARC, unlike Intel and VAX). */
 /* #undef WORDS_BIGENDIAN */
+
+/* Path of wpa_supplicant */
+#define WPA_SUPPLICANT_COMMAND_PATH "/sbin/wpa_supplicant"
 
 /* Define to empty if `const' does not conform to ANSI C. */
 /* #undef const */

@@ -19,6 +19,10 @@
 #ifndef  DAEMON_INC
 #define  DAEMON_INC
 
+#ifndef PATH_MAX
+#define PATH_MAX 1024
+#endif
+
 #include <stdio.h>
 #include <libexalt.h>
 

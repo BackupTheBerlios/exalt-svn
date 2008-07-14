@@ -1,10 +1,10 @@
 /* config.h.in.  Generated from configure.in by autoheader.  */
 
-/* Debian distribution */
-#undef DIST_DEBIAN
+/* Path of a dhcp command */
+#undef DHCP_COMMAND_PATH
 
-/* Gentoo distribution */
-#undef DIST_GENTOO
+/* have dhcp support */
+#undef HAVE_DHCP
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
@@ -35,6 +35,12 @@
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
+
+/* have vpnc support */
+#undef HAVE_VPNC
+
+/* have wpa_supplicant support */
+#undef HAVE_WPA_SUPPLICANT
 
 /* Name of package */
 #undef PACKAGE
@@ -69,9 +75,18 @@
 /* Version number of package */
 #undef VERSION
 
+/* Path of vpnc */
+#undef VPNC_COMMAND_PATH
+
+/* Path of vpnc_disconnect */
+#undef VPNC_DISONNECT_COMMAND_PATH
+
 /* Define to 1 if your processor stores words with the most significant byte
    first (like Motorola and SPARC, unlike Intel and VAX). */
 #undef WORDS_BIGENDIAN
+
+/* Path of wpa_supplicant */
+#undef WPA_SUPPLICANT_COMMAND_PATH
 
 /* Define to empty if `const' does not conform to ANSI C. */
 #undef const

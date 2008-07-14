@@ -29,10 +29,13 @@ wireless_panel* wirelesspanel_create(main_window* win)
     //##############################
     vbox = ewl_vbox_new();
     ewl_container_child_append(EWL_CONTAINER(hbox), vbox);
+    ewl_object_fill_policy_set(EWL_OBJECT(vbox),EWL_FLAG_FILL_VFILL);
     ewl_widget_show(vbox);
 
     pnl->box_activate = ewl_hbox_new();
     ewl_container_child_append(EWL_CONTAINER(vbox), pnl->box_activate);
+    ewl_object_fill_policy_set(EWL_OBJECT(pnl->box_activate),EWL_FLAG_FILL_SHRINK);
+
     pnl->btn_activate = ewl_button_new();
     ewl_button_label_set(EWL_BUTTON(pnl->btn_activate),_("Activate"));
     ewl_object_fill_policy_set(EWL_OBJECT(pnl->btn_activate), EWL_FLAG_FILL_SHRINK);
@@ -57,6 +60,7 @@ wireless_panel* wirelesspanel_create(main_window* win)
     //###############
     scroll = ewl_scrollpane_new ();
     ewl_container_child_append(EWL_CONTAINER(vbox), scroll);
+    ewl_object_fill_policy_set(EWL_OBJECT(scroll),EWL_FLAG_FILL_FILL);
     ewl_widget_show(scroll);
 
     pnl->scan_list = ecore_list_new();
@@ -66,7 +70,7 @@ wireless_panel* wirelesspanel_create(main_window* win)
     ewl_container_child_append(EWL_CONTAINER(scroll), pnl->scan_tree);
     ewl_object_alignment_set(EWL_OBJECT(pnl->scan_tree), EWL_FLAG_ALIGN_LEFT);
     ewl_object_fill_policy_set(EWL_OBJECT(pnl->scan_tree), EWL_FLAG_FILL_FILL);
-    ewl_tree_column_count_set (EWL_TREE (pnl->scan_tree), 3);
+    ewl_tree_column_count_set (EWL_TREE (pnl->scan_tree), 1);
     ewl_widget_show(pnl->scan_tree);
     ewl_callback_append(pnl->scan_tree, EWL_CALLBACK_VALUE_CHANGED,
             wirelesspanel_scanlist_row_clicked_cb, pnl);
@@ -86,22 +90,6 @@ wireless_panel* wirelesspanel_create(main_window* win)
     ewl_mvc_view_set (EWL_MVC(pnl->scan_tree), view);
     ewl_mvc_data_set (EWL_MVC(pnl->scan_tree), pnl->scan_list);
 
-
-    /*
-       etk_widget_size_request_set(pnl->scan_list, 200, 50);
-       pnl->scan_encryption = etk_tree_col_new(ETK_TREE(pnl->scan_list), _("Encryption"), 0.0, 0.0);
-       etk_tree_col_model_add(pnl->scan_encryption, etk_tree_model_image_new());
-       pnl->scan_quality = etk_tree_col_new(ETK_TREE(pnl->scan_list), _("Quality"), 50.0, 0.0);
-       etk_tree_col_model_add(pnl->scan_quality, etk_tree_model_image_new());
-       pnl->scan_essid = etk_tree_col_new(ETK_TREE(pnl->scan_list), _("Essid"), 0.0, 0.0);
-       etk_tree_col_model_add(pnl->scan_essid, etk_tree_model_text_new());
-
-       etk_tree_mode_set(ETK_TREE(pnl->scan_list), ETK_TREE_MODE_LIST);
-       etk_signal_connect("row-clicked", ETK_OBJECT(pnl->scan_list),ETK_CALLBACK(wirelesspanel_scanlist_row_clicked_cb), pnl);
-       etk_tree_build(ETK_TREE(pnl->scan_list));
-       etk_container_add(ETK_CONTAINER(scroll), pnl->scan_list);
-
-*/
     //###########################
     //## current configuration ##
     //###########################
@@ -217,8 +205,6 @@ void wirelesspanel_disabled_widget_activate(Ewl_Widget *w ,
     }
 
     wirelesspanel_callback_del(pnl);
-
-    printf("TEST\n");
 
     if(apply)
     {
@@ -401,7 +387,7 @@ Ewl_Widget* wirelesspanel_pageconnection_create(wireless_panel* pnl)
     grid = ewl_grid_new();
     ewl_object_fill_policy_set(EWL_OBJECT(grid), EWL_FLAG_FILL_HFILL);
     ewl_grid_dimensions_set(EWL_GRID(grid), 2, 14);
-    ewl_grid_column_relative_w_set(EWL_GRID(grid), 0, 0.20);
+    ewl_grid_column_relative_w_set(EWL_GRID(grid), 0, 0.35);
     ewl_widget_show(grid);
 
     Ecore_List *l_enc =ecore_list_new();
@@ -566,6 +552,7 @@ Ewl_Widget* wirelesspanel_pageconnection_create(wireless_panel* pnl)
     ewl_widget_show(pnl->pbar);
 
     pnl->cmbox_driver = ewl_combo_new();
+    ewl_widget_name_set(pnl->cmbox_driver,"cmbox_driver");
     ewl_widget_show(pnl->cmbox_driver);
     Ecore_List *l_driver = ecore_list_new();
     elt = malloc(sizeof(Default_Elt*));
@@ -610,7 +597,6 @@ Ewl_Widget* wirelesspanel_pageconnection_create(wireless_panel* pnl)
     ewl_mvc_view_set (EWL_MVC(pnl->cmbox_driver), view);
     ewl_mvc_data_set (EWL_MVC(pnl->cmbox_driver), l_driver);
     ewl_combo_editable_set(EWL_COMBO(pnl->cmbox_driver), TRUE);
-    ewl_widget_name_set(pnl->cmbox_driver,"cmbox_driver");
 
     label = ewl_label_new();
     ewl_label_text_set(EWL_LABEL(label),_("Essid: "));
@@ -742,6 +728,7 @@ void wirelesspanel_scan_networks_cb(char* interface, Ecore_List* networks, void*
             quality = 0;
         if(quality>3)
             quality=3;
+
         ecore_list_first_goto(l);
         short find = 0;
         while(!find && (elt=ecore_list_next(l)))
@@ -1097,7 +1084,6 @@ Etk_Combobox_Item * exalt_etk_combobox_data_item_get(Etk_Combobox *combobox, voi
 void wirelesspanel_callback_append(wireless_panel *pnl)
 {
     wirelesspanel_callback_del(pnl);
-    printf("ADD\n");
     ewl_callback_append(pnl->entry_conn_essid, EWL_CALLBACK_VALUE_CHANGED,
             wirelesspanel_textchanged_entry_cb , pnl);
     ewl_callback_append(pnl->entry_conn_pwd, EWL_CALLBACK_VALUE_CHANGED,
@@ -1120,7 +1106,6 @@ void wirelesspanel_callback_append(wireless_panel *pnl)
 
 void wirelesspanel_callback_del(wireless_panel *pnl)
 {
-    printf("DEL\n");
     ewl_callback_del(pnl->entry_conn_essid, EWL_CALLBACK_VALUE_CHANGED,
             wirelesspanel_textchanged_entry_cb);
     ewl_callback_del(pnl->entry_conn_pwd, EWL_CALLBACK_VALUE_CHANGED,
@@ -1163,30 +1148,20 @@ void* wirelesspanel_scan_package_tree_data_fetch (
     Ecore_List* l = (Ecore_List*)data;
     ecore_list_index_goto(l,row);
     Scan_Elt * elt =  ecore_list_current(l);
-    if(column==0)
-        return elt->encryption;
-    else if(column==2)
-        return elt->essid;
-    else
-        return elt->quality;
+    return elt;
 }
 
 
 void * wirelesspanel_scan_cb_header_data_fetch(void *data __UNUSED__, unsigned int column)
 {
-    if (column == 0)
-        return _("Encryption");
-    else if(column == 2)
-        return _("Essid");
-    else
-        return _("Quality");
+    return _("Essid");
 }
 
 
 Ewl_Widget * wirelesspanel_scan_cb_widget_fetch(void *data, unsigned int row __UNUSED__,
-        unsigned int column)
+        unsigned int column __UNUSED__)
 {
-    Ewl_Widget *w;
+    Ewl_Widget *w_hbox, *w_quality, *w_encryption, *w_essid;
     const char* encryption = ewl_icon_theme_icon_path_get(EWL_ICON_DIALOG_PASSWORD, EWL_ICON_SIZE_SMALL);
     char img1[] = PACKAGE_DATA_DIR ICONS_QUALITY_LESS_25;
     char img2[] = PACKAGE_DATA_DIR ICONS_QUALITY_LESS_50;
@@ -1195,35 +1170,36 @@ Ewl_Widget * wirelesspanel_scan_cb_widget_fetch(void *data, unsigned int row __U
     char *img[4];
     img[0] = img1;img[1] = img2;img[2] = img3;img[3] = img4;
 
-    if(column==0)
+    Scan_Elt* elt = (Scan_Elt*) data;
+
+    w_hbox = ewl_hbox_new();
+
+    if(*(elt->encryption))
     {
-        int *enc = (int*)data;
-        if(*enc)
-        {
-            w = ewl_image_new();
-            ewl_image_file_path_set(EWL_IMAGE(w), encryption);
-        }
-        else
-            w = NULL;
-    }
-    else if(column==2)
-    {
-        w = ewl_label_new();
-        ewl_label_text_set(EWL_LABEL(w), data);
+        w_encryption = ewl_image_new();
+        ewl_image_file_path_set(EWL_IMAGE(w_encryption), encryption);
     }
     else
-    {
-        int *qua = (int*)data;
-        int quality = (*qua)/25;
-        if(quality<0)
-            quality = 0;
-        if(quality>3)
-            quality=3;
+        w_encryption = NULL;
 
-        w = ewl_image_new();
-        ewl_image_file_path_set(EWL_IMAGE(w), img[quality]);
-    }
-    return w;
+    w_essid = ewl_label_new();
+    ewl_label_text_set(EWL_LABEL(w_essid), elt->essid);
+
+    int quality = (*(elt->quality));
+
+    w_quality = ewl_image_new();
+    ewl_image_file_path_set(EWL_IMAGE(w_quality), img[quality]);
+
+    ewl_container_child_append(EWL_CONTAINER(w_hbox), w_encryption);
+    ewl_container_child_append(EWL_CONTAINER(w_hbox), w_quality);
+    ewl_container_child_append(EWL_CONTAINER(w_hbox), w_essid);
+
+    ewl_widget_show(w_hbox);
+    ewl_widget_show(w_encryption);
+    ewl_widget_show(w_quality);
+    ewl_widget_show(w_essid);
+
+    return w_hbox;
 }
 
 
@@ -1291,6 +1267,7 @@ Ewl_Widget *wirelesspanel_default_editable_header_fetch(void *data, unsigned int
 
     d = data;
     w = ewl_widget_name_find("cmbox_driver");
+
     idx = ewl_mvc_selected_get(EWL_MVC(w));
 
     val = "wext";

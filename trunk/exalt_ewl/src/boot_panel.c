@@ -47,7 +47,7 @@ boot_panel* bootpanel_create(main_window *win)
     pnl->eth_tree = ewl_tree_new();
     ewl_container_child_append(EWL_CONTAINER(scroll), pnl->eth_tree);
     //ewl_object_fill_policy_set(EWL_OBJECT(pnl->eth_tree), EWL_FLAG_FILL_FILL);
-    ewl_tree_column_count_set (EWL_TREE (pnl->eth_tree), 2);
+    ewl_tree_column_count_set (EWL_TREE (pnl->eth_tree), 1);
     ewl_widget_show(pnl->eth_tree);
     /* model */
     model = ewl_model_new();
@@ -206,31 +206,33 @@ void* bootpanel_eth_tree_data_fetch (
 
 void * bootpanel_eth_tree_header_data_fetch(void *data __UNUSED__, unsigned int column )
 {
-    if(column==1)
-        return "Interfaces";
-    else
-        return NULL;
+    return "Interfaces";
 }
 
 Ewl_Widget * bootpanel_eth_tree_widget_fetch(void *data, unsigned int row __UNUSED__,
-        unsigned int column)
+        unsigned int column __UNUSED__)
 {
-    Ewl_Widget *w;
+    Ewl_Widget *w_hbox,*w_label,*w_check;
     char* eth = (char*)data;
-    if(column==0)
-    {
-        int check = exalt_dbus_bootprocess_iface_is(exalt_conn, eth);
-        w = ewl_check_new();
-        ewl_check_checked_set(EWL_CHECK(w),check);
-        ewl_callback_append(w, EWL_CALLBACK_CLICKED,
-                bootpanel_check_clicked_cb, eth);
-    }
-    else
-    {
-        w = ewl_label_new();
-        ewl_label_text_set(EWL_LABEL(w), eth);
-    }
-    return w;
+
+    w_hbox = ewl_hbox_new();
+
+    int check = exalt_dbus_bootprocess_iface_is(exalt_conn, eth);
+    w_check = ewl_check_new();
+    ewl_check_checked_set(EWL_CHECK(w_check),check);
+    ewl_callback_append(w_check, EWL_CALLBACK_CLICKED,
+            bootpanel_check_clicked_cb, eth);
+
+    w_label = ewl_label_new();
+    ewl_label_text_set(EWL_LABEL(w_label), eth);
+
+    ewl_container_child_append(EWL_CONTAINER(w_hbox),w_check);
+    ewl_container_child_append(EWL_CONTAINER(w_hbox),w_label);
+
+    ewl_widget_show(w_hbox);
+    ewl_widget_show(w_label);
+    ewl_widget_show(w_check);
+    return w_hbox;
 }
 
 

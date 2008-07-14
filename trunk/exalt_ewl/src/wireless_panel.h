@@ -139,7 +139,7 @@ void* wirelesspanel_scan_package_tree_data_fetch (
         unsigned int column);
 void * wirelesspanel_scan_cb_header_data_fetch(void *data __UNUSED__, unsigned int column);
 Ewl_Widget * wirelesspanel_scan_cb_widget_fetch(void *data, unsigned int row __UNUSED__,
-        unsigned int column);
+        unsigned int column __UNUSED__);
 
 typedef struct
 {

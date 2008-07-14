@@ -45,7 +45,7 @@ main_window* mainwindow_create()
     ewl_container_child_append(EWL_CONTAINER(scroll), win->eth_tree);
     ewl_object_alignment_set(EWL_OBJECT(win->eth_tree), EWL_FLAG_ALIGN_LEFT);
     ewl_object_fill_policy_set(EWL_OBJECT(win->eth_tree), EWL_FLAG_FILL_FILL);
-    ewl_tree_column_count_set (EWL_TREE (win->eth_tree), 3);
+    ewl_tree_column_count_set (EWL_TREE (win->eth_tree), 1);
     ewl_widget_show(win->eth_tree);
     ewl_callback_append(win->eth_tree, EWL_CALLBACK_VALUE_CHANGED,
             main_window_eth_tree_changed_cb, win);
@@ -134,19 +134,14 @@ void* mainwindow_eth_tree_data_fetch (
 
 void * mainwindow_eth_tree_header_data_fetch(void *data __UNUSED__, unsigned int column)
 {
-    if (column == 0)
-        return _("Type");
-    else if(column == 1)
-        return _("Name");
-    else
-        return _("Status");
+    return _("Interfaces");
 }
 
 
 Ewl_Widget * mainwindow_eth_tree_widget_fetch(void *data, unsigned int row,
-        unsigned int column)
+        unsigned int column __UNUSED__)
 {
-    Ewl_Widget *w;
+    Ewl_Widget *w_icon,*w_status,*w_label,*w_hbox;
     char* interface = (char*) data;
     const char* icon;
     const char* status;
@@ -179,29 +174,30 @@ Ewl_Widget * mainwindow_eth_tree_widget_fetch(void *data, unsigned int row,
         }
     }
 
+
     icon = ewl_icon_theme_icon_path_get(icon, EWL_ICON_SIZE_LARGE);
     if(status)
         status = ewl_icon_theme_icon_path_get(status, EWL_ICON_SIZE_LARGE);
 
+    w_hbox = ewl_hbox_new();
+    w_icon = ewl_image_new();
+    ewl_image_file_path_set(EWL_IMAGE(w_icon), icon);
+    w_status = ewl_image_new();
+    if(status)
+        ewl_image_file_path_set(EWL_IMAGE(w_status), status);
+    w_label = ewl_label_new();
+    ewl_label_text_set(EWL_LABEL(w_label), interface);
 
-    if(column==0)
-    {
-        w = ewl_image_new();
-        ewl_image_file_path_set(EWL_IMAGE(w), icon);
-    }
-    else if(column==1)
-    {
-        w = ewl_label_new();
-        ewl_label_text_set(EWL_LABEL(w), interface);
-    }
-    else
-    {
-        w = ewl_image_new();
-        if(status)
-            ewl_image_file_path_set(EWL_IMAGE(w), status);
-    }
+    ewl_container_child_append(EWL_CONTAINER(w_hbox), w_icon);
+    ewl_container_child_append(EWL_CONTAINER(w_hbox), w_status);
+    ewl_container_child_append(EWL_CONTAINER(w_hbox), w_label);
 
-    return w;
+    ewl_widget_show(w_hbox);
+    ewl_widget_show(w_icon);
+    ewl_widget_show(w_label);
+    ewl_widget_show(w_status);
+
+    return w_hbox;
 }
 
 int mainWindow_free(main_window** win)

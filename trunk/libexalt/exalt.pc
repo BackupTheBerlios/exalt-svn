@@ -1,13 +1,13 @@
-prefix=/usr/local
+prefix=/usr
 exec_prefix=${prefix}
-libdir=/usr/local/lib
+libdir=/usr/lib
 includedir=${prefix}/include
 datarootdir=${prefix}/share
 datadir=${datarootdir}
 
 Name: exalt
 Description: Exalt network toolkit.
-Requires: 
-Version: 0.5
+Requires: ecore eet ecore-file ehal
+Version: 0.9
 Libs: -L${libdir} -lexalt
 Cflags: -I${includedir} -I${includedir}/exalt
