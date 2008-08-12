@@ -18,85 +18,85 @@ msgstr ""
 
 #: ../e_mod_config.c:27
 msgid "Exalt Configuration"
-msgstr "Configuration de Exalt"
+msgstr ""
 
 #: ../e_mod_config.c:59
 msgid "Settings"
-msgstr "Options"
+msgstr ""
 
 #: ../e_mod_config.c:60
 msgid "Launch Application:"
-msgstr "Lancement de l'application"
+msgstr ""
 
 #: ../e_mod_config.c:62
 #, c-format
 msgid "%i: the interface (eth0, wlan0 ...)"
-msgstr "%i: le nom de l'interface (eth0, wlan0 ...)"
+msgstr ""
 
 #: ../e_mod_config.c:64
 msgid "%w: the wireless network essid"
-msgstr "%w: le nom du réseau sans fils"
+msgstr ""
 
 #: ../e_mod_exalt.c:90
 msgid "Configuration"
-msgstr "Configuration"
+msgstr ""
 
 #: ../e_mod_exalt.c:158
 #, c-format
 msgid "New card is <info>plugged</info>"
-msgstr "Une nouvelle interface est <info>connectée</info>"
+msgstr ""
 
 #: ../e_mod_exalt.c:161
 #, c-format
 msgid "The card is <info>removed</info>"
-msgstr "La carte est <info>déconnectée </info>"
+msgstr ""
 
 #: ../e_mod_exalt.c:164
 #, c-format
 msgid "The card is <info>activated</info>"
-msgstr "La carte est <info>activée</info>"
+msgstr ""
 
 #: ../e_mod_exalt.c:167
 #, c-format
 msgid "The card is <info>deactivated</info>"
-msgstr "La carte est <info>désactivée</info>"
+msgstr ""
 
 #: ../e_mod_exalt.c:170
 #, c-format
 msgid "The card is <info>link</info>"
-msgstr "La carte est <info>branchée</info>"
+msgstr ""
 
 #: ../e_mod_exalt.c:173
 #, c-format
 msgid "The card is <info>unlink</info>"
-msgstr "La carte est <info>débranchée</info>"
+msgstr ""
 
 #: ../e_mod_exalt.c:176
 #, c-format
 msgid "New essid: <info>%s</info>"
-msgstr "Nouveau réseau sans fils: <info>%s</info>"
+msgstr ""
 
 #: ../e_mod_exalt.c:179
 #, c-format
 msgid "New address: <info>%s</info>"
-msgstr "Nouvelle adresse: <info>%s</info>"
+msgstr ""
 
 #: ../e_mod_exalt.c:325
 msgid "Networks"
-msgstr "Réseaux"
+msgstr ""
 
 #: ../e_mod_exalt.c:375
 msgid "(no networks)"
-msgstr "(pas de réseaux)"
+msgstr ""
 
 #: ../e_mod_gadcon.c:85
 msgid "Exalt"
-msgstr "Exalt"
+msgstr ""
 
 #: ../e_mod_main.c:87
 msgid "Exalt Module"
-msgstr "Module Exalt"
+msgstr ""
 
 #: ../e_mod_main.c:88
 msgid "This module allow you to configure yours networks cards."
-msgstr "Ce module vous permet de configurer vos cartes réseaux"
+msgstr ""

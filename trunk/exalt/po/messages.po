@@ -1,19 +1,19 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# Watchwolf <watchwolf@watchwolf.fr>, 2008.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-12 20:49+0200\n"
+"POT-Creation-Date: 2008-08-12 21:32+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: watchwolf <watchwolf@watchwolf.fr>\n"
-"Language-Team: fr\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../src/about_panel.c:19
@@ -29,19 +29,10 @@ msgid ""
 "<p align=\"center\"><style effect=glow color1=#fa14 color2=#fe87><b>%s</b></"
 "style></p>"
 msgstr ""
-"<p><b>Exalt</b> est un gestionnaire de réseau utilisant le toolkit ETK.</p>\n"
-"<p>Exalt est compatible avec les interfaces ethernet (avec et sans fils) and vous permet de "
-"configurer votre réseau facilement</p>\n"
-"<p>Autheur: Watchwolf (watchwolf@watchwolf.fr)</p>\n"
-"<p>This software is provided as-is with no explicit or implied warranty. "
-"This software is governed by licensing conditions, so please see the COPYING "
-"and COPYING-PLAIN license files installed on your system.</p>\n"
-"<p align=\"center\"><style effect=glow color1=#fa14 color2=#fe87><b>%s</b></"
-"style></p>"
 
 #: ../src/boot_panel.c:42 ../src/main_window.c:34
 msgid "Interfaces"
-msgstr "Interfaces"
+msgstr ""
 
 #: ../src/boot_panel.c:58
 msgid ""
@@ -58,190 +49,179 @@ msgid ""
 "<p>If the interface doesn't get a IP address before the timeout, your "
 "computer will continue the boot process.</p>"
 msgstr ""
-"<p align=\"center\"><style effect=glow color1=#fa14 color2=#fe87><b>Aide!</"
-"b></style>\n"
-"<p>Lorsque votre ordinateur démarre, exalt démarre et configure vos cartes réseaux"
-"en arrière plan. Si vous utilisé le mode DHCP votre carte réseau va obtenir une adresse ip après un certain temps</p>\n"
-"<p>Vous pouvez avoir un problème si vous utilisez une application comme nfs-daemon. Si l'application "
-"a besoin d'une connection lorsqu'il démarre et si votre carte n'a pas d'IP"
-", l'application ne va pas fonctionner. Pour éviter ce problème, Exalt peut configurer"
-"votre carte en premier plan. Si vous selectionnez une carte dans la liste, "
-"Exalt va attendre que cette carte ait une adresseIP avant de continuer.</p>\n"
-"<p>Si la carte n'obtient une adresse avant la fin du temps d'attente,"
-"le démarrage de votre ordinateur va reprendre normalement.</p>"
 
 #: ../src/boot_panel.c:67
 msgid "Timeout"
-msgstr "Temps d'attente"
+msgstr ""
 
 #: ../src/dns_panel.c:26
 msgid "DNS list"
-msgstr "Liste des DNS"
+msgstr ""
 
 #: ../src/eth_panel.c:41 ../src/wireless_panel.c:351
 msgid "Static address"
-msgstr "Adresse statique"
+msgstr ""
 
 #: ../src/eth_panel.c:43 ../src/wireless_panel.c:352
 msgid "DHCP (Automatic configuration)"
-msgstr "DHCP (Configuation automatique)"
+msgstr ""
 
 #: ../src/eth_panel.c:72 ../src/wireless_panel.c:433
 msgid "Ip address: "
-msgstr "Adresse IP: "
+msgstr ""
 
 #: ../src/eth_panel.c:76 ../src/wireless_panel.c:437
 msgid "Network mask: "
-msgstr "Masque de sous réseau: "
+msgstr ""
 
 #: ../src/eth_panel.c:80 ../src/wireless_panel.c:441
 msgid "Gateway: "
-msgstr "Passerelle: "
+msgstr ""
 
 #: ../src/eth_panel.c:84 ../src/wireless_panel.c:445
 msgid "Command: "
-msgstr "Commande: "
+msgstr ""
 
 #: ../src/eth_panel.c:164
 #, c-format
 msgid "Network card: %s"
-msgstr "Carte réseau: %s"
+msgstr ""
 
 #: ../src/exalt.h:29
 msgid "Updating interface configuration ..."
-msgstr "Mise à jour de la configuration ..."
+msgstr ""
 
 #: ../src/general_panel.c:20
 msgid "DNS (Dynamic Name Server)"
-msgstr "DNS (Dynamic Name Server)"
+msgstr ""
 
 #: ../src/general_panel.c:25
 msgid "About"
-msgstr "A propos"
+msgstr ""
 
 #: ../src/general_panel.c:62 ../src/main_window.c:300
 msgid "Boot process"
-msgstr "Démarrage de Exalt"
+msgstr ""
 
 #: ../src/main_window.c:14
 msgid "Exalt: network manager"
-msgstr "Exalt: gestionnaire réseaux"
+msgstr ""
 
 #: ../src/main_window.c:48 ../src/main_window.c:334
 msgid "Advanced"
-msgstr "Avancé"
+msgstr ""
 
 #: ../src/main_window.c:56 ../src/main_window.c:294
 msgid "General"
-msgstr "Général"
+msgstr ""
 
 #: ../src/main_window.c:332
 msgid "Basic"
-msgstr "Basique"
+msgstr ""
 
 #: ../src/wireless_panel.c:30
 msgid "Activate"
-msgstr "Activer"
+msgstr ""
 
 #: ../src/wireless_panel.c:31
 msgid "Disactivate"
-msgstr "Désactiver"
+msgstr ""
 
 #: ../src/wireless_panel.c:46
 msgid "Encryption"
-msgstr "Chiffrement"
+msgstr ""
 
 #: ../src/wireless_panel.c:48
 msgid "Quality"
-msgstr "Qualité"
+msgstr ""
 
 #: ../src/wireless_panel.c:50
 msgid "Essid"
-msgstr "Nom"
+msgstr ""
 
 #: ../src/wireless_panel.c:64 ../src/wireless_panel.c:65
 #: ../src/wireless_panel.c:66 ../src/wireless_panel.c:67
 #: ../src/wireless_panel.h:13
 msgid "none"
-msgstr "rien"
+msgstr ""
 
 #: ../src/wireless_panel.c:69
 msgid "Current essid: "
-msgstr "Réseau actuel"
+msgstr ""
 
 #: ../src/wireless_panel.c:73
 msgid "Current IP: "
-msgstr "IP actuelle"
+msgstr ""
 
 #: ../src/wireless_panel.c:77
 msgid "Current mask: "
-msgstr "Masque actuel"
+msgstr ""
 
 #: ../src/wireless_panel.c:81
 msgid "Current gateway: "
-msgstr "Passerelle actuelle"
+msgstr ""
 
 #: ../src/wireless_panel.c:260
 #, c-format
 msgid "Wireless card: %s"
-msgstr "Carte sans fils: %s"
+msgstr ""
 
 #: ../src/wireless_panel.c:409
 msgid "Essid: "
-msgstr "Réseau: "
+msgstr ""
 
 #: ../src/wireless_panel.c:413
 msgid "Encryption mode: "
-msgstr "Méthode de chiffrement: "
+msgstr ""
 
 #: ../src/wireless_panel.c:417
 msgid "Password: "
-msgstr "Mot de passe: "
+msgstr ""
 
 #: ../src/wireless_panel.c:421
 msgid "Connection mode: "
-msgstr "Mode de connexion: "
+msgstr ""
 
 #: ../src/wireless_panel.c:425
 msgid "Security mode: "
-msgstr "Mode de sécurité: "
+msgstr ""
 
 #: ../src/wireless_panel.c:449
 msgid "Wpa_supplicant driver: "
-msgstr "Driver Wpa_supplicant: "
+msgstr ""
 
 #: ../src/wireless_panel.h:14
 msgid "WEP (ASCII)"
-msgstr "WEP (mode ASCII)"
+msgstr ""
 
 #: ../src/wireless_panel.h:15
 msgid "WEP (10 or 26 hexadecimals characters)"
-msgstr "WEP (10 ou 26 caractères héxadécimals)"
+msgstr ""
 
 #: ../src/wireless_panel.h:16
 msgid "WPA Personal (PSK-CCMP)"
-msgstr "WPA Personnel (PSK-CCMP)"
+msgstr ""
 
 #: ../src/wireless_panel.h:18
 msgid "WPA2 Personal (PSK-CCMP)"
-msgstr "WPA2 Personnel (PSK-CCMP)"
+msgstr ""
 
 #: ../src/wireless_panel.h:21
 msgid "Open"
-msgstr "Ouvert"
+msgstr ""
 
 #: ../src/wireless_panel.h:22
 msgid "Shared"
-msgstr "Partagé"
+msgstr ""
 
 #: ../src/wireless_panel.h:24
 msgid "Auto"
-msgstr "AUtomatique"
+msgstr ""
 
 #: ../src/wireless_panel.h:25
 msgid "Ad-Hoc"
-msgstr "Ad-Hoc"
+msgstr ""
 
 #: ../src/wireless_panel.h:26
 msgid "Managed"
-msgstr "Managed"
+msgstr ""

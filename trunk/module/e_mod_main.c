@@ -11,9 +11,8 @@ EAPI E_Module_Api e_modapi =
     EAPI void *
 e_modapi_init(E_Module *m)
 {
-    bindtextdomain(PACKAGE, LOCALEDIR);
-    bind_textdomain_codeset(PACKAGE, "UTF-8");
-
+    bindtextdomain("module_exalt", LOCALEDIR);
+    textdomain( "module_exalt" );
     conf_edd = E_CONFIG_DD_NEW("Exalt_Config",Config);
 #undef T
 #undef D
