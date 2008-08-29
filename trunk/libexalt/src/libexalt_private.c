@@ -18,6 +18,26 @@
 
 #include "libexalt_private.h"
 
+
+Exalt_Ioctl_Key exalt_ioctl_key[] =
+{
+    {SIOCSIFFLAGS, "SIOCSIFFLAGS"},
+    {SIOCDELRT, "SIOCDELRT"},
+    {SIOCSIFADDR, "SIOCSIFADDR"},
+    {SIOCSIFNETMASK, "SIOCSIFNETMASK"},
+    {SIOCADDRT, "SIOCADDRT"},
+    {SIOCETHTOOL, "SIOCETHTOOL"},
+    {SIOCGIWNAME, "SIOCGIWNAME"},
+    {SIOCGIWESSID, "SIOCGIWESSID"},
+    {SIOCGIWNAME, "SIOCGIWNAME"},
+    {SIOCGIFFLAGS, "SIOCGIFFLAGS"},
+    {SIOCGIFADDR, "SIOCGIFADDR"},
+    {SIOCGIFNETMASK, "SIOCGIFNETMASK"},
+    {SIOCGIFHWADDR, "SIOCGIFHWADDR"}
+};
+
+
+
 /**
  * @brief execute a ioctl call
  * @param argp the strucuture with data (struct ifreq, rtentry, iwreq)
@@ -28,6 +48,21 @@ short exalt_ioctl(void* argp, int request)
 {
     int fd;
     short busy = 0;
+    char* ioctl_msg_buf[1024];
+    char* ioctl_msg;
+
+    snprintf(ioctl_msg_buf,1024,"%s",request);
+    ioctl_msg = ioctl_msg_buf;
+
+int i;
+    for (i = 0; i < sizeof (exalt_ioctl_key) / sizeof (Exalt_Ioctl_Key); ++i)
+        if (request == exalt_ioctl_key[i].key)
+        {
+            ioctl_msg = exalt_ioctl_key[i].value;
+            break;
+        }
+
+
     //edit param: SIOCSIFFLAGS SIOCSIFFLAGS SIOCDELRT SIOCSIFADDR SIOCSIFNETMASK SIOCADDRT SIOCETHTOOL
     //read param: SIOCGIWNAME SIOCGIWESSID SIOCGIWNAME SIOCGIFFLAGS SIOCGIFADDR SIOCGIFNETMASK SIOCGIFHWADDR
 
@@ -51,23 +86,17 @@ short exalt_ioctl(void* argp, int request)
             if( (busy==1 || busy==3 || busy==5 ) && errno==11)//ressource not available
             {
                 busy++;
-                EXALT_ASSERT_ADV(0,,"ioctl(%d): %s (%d) (will retry)",request,strerror(errno),errno);
+                EXALT_ASSERT_ADV(0,,"ioctl(%s): %s (%d) (will retry)",ioctl_msg,strerror(errno),errno);
                 usleep(50000);
             }
             else
             {
                 close(fd);
-                EXALT_ASSERT_ADV(0,,"ioctl(%d): %s (%d)",request,strerror(errno),errno);
+                EXALT_ASSERT_ADV(0,,"ioctl(%s): %s (%d)",ioctl_msg,strerror(errno),errno);
                 return 0;
             }
         }
     }while(busy == 2 || busy==4 || busy==6);
-
-    //old code
-    /*EXALT_ASSERT_ADV( ioctl(fd, request, argp) !=-1,
-            close(fd);return 0,
-            "ioctl(%d): %s (%d)",request,strerror(errno),errno);
-    */
 
     close(fd);
     return 1;

@@ -59,7 +59,7 @@
 #define PACKAGE_NAME ""
 
 /* Source Code Directory */
-#define PACKAGE_SOURCE_DIR "/home/watchwolf/Projects/C/exalt/exalt/libexalt"
+#define PACKAGE_SOURCE_DIR "/home/watchwolf/Projects/C/exalt/libexalt"
 
 /* Define to the full name and version of this package. */
 #define PACKAGE_STRING ""

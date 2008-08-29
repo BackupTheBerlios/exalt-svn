@@ -61,6 +61,11 @@ struct Exalt_Ethernets
     void* wireless_scan_cb_user_data;
 };
 
+typedef struct exalt_ioctl_key
+{
+    int key;
+    char* value;
+} Exalt_Ioctl_Key;
 
 /** Command to launch a dhcp */
 #ifdef DHCP_COMMAND_PATH
